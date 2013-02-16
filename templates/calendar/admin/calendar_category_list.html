@@ -1,0 +1,76 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+    // 選択されたカテゴリを削除します。\n削除するカテゴリに含まれるデータは「未分類」となります。よろしいですか？
+    if (confirm('{/literal}{'/modules/calendar/msg/confirm_del_selected_categories'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/calendar/label/calendar_category_list'|translate}{* カテゴリ一覧 *}</h2>
+<ul>
+{if $rauth->canInsert("/calendar/category/")}
+<li class="add"><a href="/management/calendar/calendar_category_edit/"><span>{'/modules/calendar/label/create_new_category_btn'|translate}{* カテゴリ追加 *}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/calendar/calendar_list/">{'/modules/calendar/label/calendar_list'|translate}</a>
+{'/modules/calendar/label/calendar_category_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カレンダー >> カレンダーカテゴリ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+{rcms_include file="common/admin/shonin_list.html"}{* 承認待ち一覧 *}
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/calendar/calendar_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+{pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+        <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'event_category_id[]');"></th>
+        <th>{'/modules/calendar/label/category_name'|translate}{* カテゴリ名 *}</th>
+        <th>{'/label/last_updated_time'|translate}{* 最終更新日時 *}</th>
+      </tr>
+{foreach from=$calendar_category_list item=row}
+{assign var=event_category_id value=$row.event_category_id}
+
+      <tr>
+          <td><input type="checkbox" name="event_category_id[]" value="{$row.event_category_id}" {if !$rauth->canDelete("/calendar/category/$event_category_id")}disabled="disabled"{/if}/></td>
+        <td>
+            <a href="/management/calendar/calendar_category_edit/event_category_id={$row.event_category_id}">{$row.category_nm|escape}</a>
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$event_category_id] link="/management/calendar/calendar_category_edit/event_category_id=$event_category_id"}
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+{/foreach}
+    </table>
+{pager info=$pageInfo}
+
+  {buttonbox}
+    <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+    <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

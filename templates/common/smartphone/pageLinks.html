@@ -1,0 +1,9 @@
+{if $module.param.no_disp_pagelinks}
+{* パラメータで表示しない設定の時は表示しない *}
+
+{else}
+{* 1ページしかない時は表示しない *}
+<p class="page_links">
+{rcms_include file="common/pageLinks_inner.html"}
+</p>
+{/if}

@@ -1,0 +1,18 @@
+{if $photoList}
+<h2>[emoji:068]{'/label/prev_and_next_image'|translate}{*前後の画像*}</h2>
+<div style="text-align:center;font-size:small;">
+{if $photoList[0]}
+<a href="/photo_detail/id={$photoList[0].photo_id}&{$parm}&season={$season}">{$photoList[0].title}</a><br/>
+[{$photoList[0].ymd}]<br/>
+<a href="/photo_detail/id={$photoList[0].photo_id}&{$parm}&season={$season}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList[0].photo_id}.jpg" alt="{$photoList[0].title}"/></a><br/><br/>
+{/if}
+{if $photoList[1]}
+<a href="/photo_detail/id={$photoList[1].photo_id}&{$parm}&season={$season}">
+{$photoList[1].title}</a><br/>
+[{$photoList[1].ymd}]<br/>
+<a href="/photo_detail/id={$photoList[1].photo_id}&{$parm}&season={$season}">
+<img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList[1].photo_id}.jpg" alt="{$photoList[1].title}"/></a><br/>
+{/if}
+</div>
+<hr/>
+{/if}

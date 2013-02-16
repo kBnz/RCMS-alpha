@@ -1,0 +1,43 @@
+<h2>{'/modules/member/label/member_profile'|translate}{*メンバープロフィール*}</h2>
+{if $memberList.image_s_exist}
+  <img src="{$member.image_url}" alt="{$memberList.disp_name}" /><br/>
+{elseif $exists_noimage}
+  <img src="/files/member/noimage.jpg" alt="noimage" /><br/>
+{/if}
+<dl>
+{if $memberList.nickname != ""}
+<dt>{'/label/nickname'|translate}{*ニックネーム*}</dt><dd>{$memberList.disp_name}</dd>
+{else}
+<dt>{'/label/name'|translate}{*名前*}</dt><dd>{$memberList.name1} {$memberList.name2}</dd>
+<dt>{'/label/name_kana'|translate}{*名前かな*}</dt><dd>{$memberList.namekana1} {$memberList.namekana2}</dd>
+{/if}
+{if $memberList.univ_short_nm ne '' || $memberList.univ_name ne ''}
+<dt>{'/label/last_university_attended'|translate}{*出身大学*}</dt><dd>{if $memberList.univ_short_nm ne '' }{$memberList.univ_short_nm}{else}{$memberList.univ_name}{/if}</dd>
+{/if}
+{if $memberList.hs_sname ne '' || $memberList.hs_name ne ''}
+<dt>{'/label/last_high_school_attended'|translate}{*出身高校*}</dt><dd>{if $memberList.hs_sname ne '' }{$memberList.hs_sname}{else}{$memberList.hs_name}{/if}</dd>
+{/if}
+{if $memberList.jrhigh_school ne ''}
+<dt>{'/label/last_junior_high_school_attended'|translate}{*出身中学校*}</dt><dd>{$memberList.jrhigh_school}</dd>
+{/if}
+{if $memberList.elementary_school ne ''}
+<dt>{'/label/last_elementary_school_attended'|translate}{*出身小学校*}</dt><dd>{$memberList.elementary_school}</dd>
+{/if}
+</dl>
+
+<br/>
+{if $memberList.contact_open_flg == "1" && $memberList.email2 ne '' }
+<a href="/member_mail/id={$memberList.member_id}">{'/label/send_mail'|translate}{*メールを送る*}</a>
+{/if}
+
+{if $memberList.subData|@count > 0}
+<h2>{'/label/comments'|translate}{*コメント*}</h2>
+<dl>
+{section name=mydata loop=$memberList.subData}
+<dt STYLE="font-weight:bold;">▼{$memberList.subData[mydata].title}</dt>
+<dd>{$memberList.subData[mydata].comment}</dd>
+{/section}
+</dl>
+{/if}
+
+<hr/>

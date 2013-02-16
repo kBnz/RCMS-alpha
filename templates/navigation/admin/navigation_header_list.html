@@ -1,0 +1,91 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete() {
+    var msg = '{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}';
+    if (confirm(msg)) {
+        document.navigation_header_list.MODE.value = "DELETE";
+        document.navigation_header_list.submit();
+    }
+}
+
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/navigation'|translate}</h2>
+<ul>
+{if $rauth->canInsert("/navigation/header/")}
+<li class="add"><a href="/management/navigation/navigation_header_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation'|translate}</a>
+{'/modules/navigation/label/navigation_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div id="navigation_header_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}<!-- 承認待ち一覧 -->
+
+
+{if $rauth->canSelect("/navigation/header/")}
+  {foreach from=$navigations item=item name=files_nm}
+    {assign var=navigation_header_id value=$item.navigation_header_id}
+    {if $smarty.foreach.files_nm.first}
+    <form name="navigation_header_list" action="/management/navigation/navigation_header_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'navigation_header_id[]')" /></th>
+        <th width="26">{'/label/publish'|translate}</th>{*公開*}
+        <th>{'/modules/navigation/label/name'|translate}</th>{*名前*}
+        <th>{'/modules/navigation/label/type'|translate}</th>{*形式*}
+        <th>{'/label/last_updated_time'|translate}</th>{*更新日時*}
+        <th>{'/label/edit'|translate}</th>{*編集*}
+      </tr>
+    {/if}
+      <tr>
+        <td><input type="checkbox" name="navigation_header_id[]" value="{$item.navigation_header_id}" {if !$rauth->canDelete("/navigation/header/$navigation_header_id") && !$rauth->canUpdate("/navigation/header/$navigation_header_id")}disabled="disabled"{/if} /></td>
+        <td>{$item.open_flg|rcms_publicimg}</td>
+        <td>
+            {$item.navigation_nm}
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$navigation_header_id] link="/management/navigation/navigation_header_edit/navigation_header_id=$navigation_header_id"}{* 他言語入力ステータス *}
+        </td>
+        <td>{$navi_type_options[$item.navi_type]}</td>
+        <td width="120px" style="white-space:nowrap">{$item.update_ymdhi|pg_dateformat}</td>
+        <td>
+        <a href="/management/navigation/navigation_header_edit/navigation_header_id={$item.navigation_header_id}">{'/label/edit'|translate}</a>{*編集*}
+        {if $rauth->canSelect("/navigation/item/[@navigation_header_id=$navigation_header_id]")}
+        {if $item.navi_type eq '3'}｜<a href="/management/navigation/navigation_list/navigation_header_id={$item.navigation_header_id}">{'/modules/navigation/label/item_list'|translate}</a>{/if}{*素材一覧*}
+        {/if}
+        </td>
+      </tr>
+    {if $smarty.foreach.files_nm.last}
+    </table>
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}</button>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+    {/buttonbox}
+    </form>
+    {/if}
+  {/foreach}
+{else}
+  <p style="margin-top:10px">{'/msg/not_allowed_to_select'|translate}</p>
+{/if}
+</div>
+</div>
+<br>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,82 @@
+{foreach from=$teamList item=row}
+<h3>{$row.round}</h3>
+<table cellspacing="0" cellpadding="0" class="score_table">
+	<tbody>
+		<tr>
+			<td></td>
+			{section name=i start=1 loop=$row.numberOfMember+1}{assign var="i" value=$smarty.section.i.index}
+				<td class="round">{$arrTabletennisNumbers[$i]}</td>
+			{/section}
+			<td class="total"></td>
+		</tr>
+		<tr>
+			<th rowspan="2" class="self_team" style="background-color:{$smarty.const.TEAMCOLOR_tabletennis};">{$smarty.const.SELF_TEAM_NM}</th>
+
+			{* 自チーム選手名 *}
+			{section name=i start=1 loop=$row.numberOfMember+1}{assign var="i" value=$smarty.section.i.index}
+				<td>
+					{section name=j start=1 loop=3}{assign var="j" value=$smarty.section.j.index}
+						{* member_idがvalidならmember_detailにリンクを貼る *}
+						{if $row.members.self[$i][$j].member_id != "" && $row.members.self[$i][$j].member_id != -1}
+							<a href="/member_detail/id={$row.members.self[$i][$j].member_id}">{$row.members.self[$i][$j].name}</a>
+						{else}
+							{$row.members.self[$i][$j].name}
+						{/if}
+						{if !$smarty.section.last}<br />{/if}
+					{/section}
+				</td>
+			{/section}
+			{* 総勝利数 *}
+			<td rowspan="2">{$row.Self_Won_Total}</td>
+		</tr>
+		<tr>
+			{* 自チーム勝利ゲーム数 *}
+			{section name=i start=1 loop=$row.numberOfMember+1}{assign var="i" value=$smarty.section.i.index}
+				<td>{$row.Self_Won[$i]}</td>
+			{/section}
+		</tr>
+		<tr>
+			<td></td>
+			{section name=i start=1 loop=$row.numberOfMember+1}{assign var="i" value=$smarty.section.i.index}
+			<td>
+				{if $row.Self_Won[i] > 0 || $row.Opp_Won[i] > 0}
+				<table cellspacing="0" cellpadding="0" class="detail">
+					<tbody>
+						<tr>
+							{* 自チーム得点入力欄 *}
+							{section name=j start=1 loop=6}{assign var="j" value=$smarty.section.j.index}
+								<td>{$row.Self_Game[$i][$j]}</td>
+							{/section}
+						</tr>
+						<tr>
+							{* 相手チーム得点入力欄 *}
+							{section name=j start=1 loop=6}{assign var="j" value=$smarty.section.j.index}
+								<td>{$row.Opp_Game[$i][$j]}</td>
+							{/section}
+						</tr>
+					</tbody>
+				</table>
+				{/if}
+			</td>
+			{/section}
+			<td></td>
+		</tr>
+		<tr>
+			<th rowspan="2" class="opp_team">{$row.opp_team_name}</th>
+			{* 相手チーム勝利ゲーム数 *}
+			{section name=i start=1 loop=$row.numberOfMember+1}{assign var="i" value=$smarty.section.i.index}
+				<td>{$row.Opp_Won[$i]}</td>
+			{/section}
+			{* 相手チーム総勝利数 *}
+			<td rowspan="2">{$row.Opp_Won_Total}</td>
+		</tr>
+		<tr>
+			{* 相手チーム選手名 *}
+			{section name=i start=1 loop=$row.numberOfMember+1}{assign var="i" value=$smarty.section.i.index}
+				<td>{$row.members.opp[$i][1].name}<br />{$row.members.opp[$i][2].name}</td>
+			{/section}
+		</tr>
+	</tbody>
+</table>
+
+{/foreach}

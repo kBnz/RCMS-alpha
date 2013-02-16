@@ -1,0 +1,14 @@
+<h3 class="plugin_header">トラックバック</h3>
+{foreach item=itemList from=$trackback_list name=blog_tb}
+  {if $samrty.foreach.blog_tb.first}<ul>{/if}
+  <li class="small_text">
+    &raquo;
+    <a rel="nofollow" href="{$itemList.url}">{$itemList.title}</a>
+    from {$itemList.blog_name}<br>
+    {$itemList.excerpt}
+  </li>
+  {if $samrty.foreach.blog_tb.last}</ul>{/if}
+{/foreach}
+
+<a href="javascript:;" onclick="display('tb_url');" class="small_text">この記事のトラックバックURL</a>
+<div id="tb_url" style="display:none">/r.php?page_module=blog_detail&id={$blog_item_id}</div>

@@ -1,0 +1,99 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>アクセス制限設定</h2>
+<ul>
+{*}<li class="add"><a href="/management/blog/blog_edit/"><span>ファイル追加</span></a></li>{*}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/fileserver/fileserver_list/folder_id={$folder_id}">ファイル管理</a>
+<a href="/management/fileserver/fileserver_folder_edit/folder_id={$folder_id}">フォルダ情報設定</a>
+<a href="/management/fileserver/fileserver_auth_edit/folder_id={$folder_id}">アクセス制限設定</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div id="fileserver_auth_edit" class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/fileserver/fileserver_auth_edit/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="folder_id" value="{$folder_id}" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="150px">フォルダ名</th>
+        <td>{$folders.current.name}</td>
+      </tr>
+    </table>
+
+    <h3>アクセス権限</h3>
+    <div id="access_control">
+      アクセス制限の設定を
+      <div>
+      <input type="radio" name="auth_flg" value="0" {if $formData.auth_flg ne '1'}checked{/if} ><label for="access_control_off">行わない</label><br />
+      <input type="radio" name="auth_flg" value="1" {if $formData.auth_flg eq '1'}checked{/if} ><label for="access_control_on">行う</label>
+      <span class="hint">(下記のリストでグループごとの権限設定を行ってください。)</span>
+      </div>
+    </div>
+    {foreach from=$groupList name=groupList_nm item=group_nm key=group_id}
+      {if $smarty.foreach.groupList_nm.first}
+        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+          <tr>
+            <th width="150px">グループ名</th>
+            <th>権限</th>
+          </tr>
+      {/if}
+      <tr>
+        <td>{$group_nm}</td>
+        <td>
+          {assign var=vName value='group_'|cat:$group_id}
+          {assign var=aType value=$formData.$vName}
+          <input type="radio" class="rbNon"  name="group_{$group_id}" id="group_{$group_id}" value="" {if $aType != 'R' && $aType != 'CRUD'}checked="checked"{/if} /><label for="group_{$group_id}">アクセス不可</label>
+          <input type="radio" class="rbR"    name="group_{$group_id}" id="group_{$group_id}R" value="R" {if $aType == 'R'}checked="checked"{/if} /><label for="group_{$group_id}R">閲覧</label>
+          <input type="radio" class="rbCRUD" name="group_{$group_id}" id="group_{$group_id}CRUD" value="CRUD" {if $aType == 'CRUD'}checked="checked"{/if} /><label for="group_{$group_id}CRUD">閲覧・作成・更新・削除</label>
+        </td>
+      </tr>
+      {if $smarty.foreach.groupList_nm.last}
+        </table>
+      {/if}
+    {/foreach}
+
+    <input type="submit" value="　更　新　" />
+
+  </form>
+</div>
+</div>
+
+{literal}
+<style type="text/css">
+.rbNon, .rbR, .rbCRUD {
+  margin-left: 15px;
+}
+#access_control {
+  font-size: 15px;
+  margin: 10px 0;
+  border: 1px solid #CCC;
+  background-color: #EEE;
+  padding: 5px;
+}
+#access_control div {
+  font-size: 12px;
+  line-height: 20px;
+  margin-top: 5px;
+  margin-left: 20px;
+}
+</style>
+{/literal}
+{rcms_include file="management/footer.html"}

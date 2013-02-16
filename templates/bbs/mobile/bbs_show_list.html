@@ -1,0 +1,41 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+
+<h2>{'/modules/bbs/label/post_list'|translate}{*投稿記事一覧*}</h2>
+{if $pageInfo.totalCnt!=0}
+
+{foreach from=$list item=bbsItem name=itemlist}
+    {if $bbsItem.new}[emoji:120]{/if}▼{if $bbsItem.dflg ne '1'}{$bbsItem.title|escape}{else}{if $bbsItem.deltype eq ''}{'/msg/deleted_by_user'|translate}{else}{'/msg/deleted_by_admin'|translate}{/if}{*ユーザーにより or 管理者により削除されました。*}{/if}<br/>{if $bbsItem.dflg ne '1'}
+    <div style="text-align:right;">
+    {$bbsItem.name|escape}
+    </div>
+    <div style="text-align:right;font-size:small;">
+    [{$bbsItem.create_date|pg_dateformat:"%Y/%m/%e  %H:%M:%S"}]
+    </div>
+    {$bbsItem.note|escape|nl2br}<br/>
+    {if $bbsItem.thumb_uploadimg ne '' && $bbsItem.uploadimg ne ''}
+    <div style="text-align:center;">
+    <a href="{$smarty.const.BBS_UPLOAD_URL}{$bbsItem.uploadimg}"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$bbsItem.thumb_uploadimg}" /></a>
+    </div>
+    {elseif $bbsItem.uploadimg ne ''}
+    <div style="text-align:center;">
+    <img src="{$smarty.const.BBS_UPLOAD_URL}{$bbsItem.uploadimg}" />
+    </div>
+    {/if}
+<div style="text-align:right;">
+      <a href="/bbs_show/bbs_header_id={$bbs_header_id}&MODE=input&reply_seq={$bbsItem.seq}">{'/label/send_answer_btn'|translate}{* 返信する *}</a>
+</div>
+{/if}
+<hr/>
+{/foreach}
+
+<div style="text-align:center;font-size:small;">
+{'/label/pagination/summary'|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}{*a件中 b-c件目*}
+[{ if $pageInfo.pageNo > 1 }<a href="/bbs_show/page={$pageInfo.pageNo-1}&vm=list&bbs_header_id={$bbs_header_id}">{'/label/prev'|translate}{*前へ*}</a>{else}{'/label/prev'|translate}{*前へ*}
+{/if}|{ if $pageInfo.pageNo < $pageInfo.totalPageCnt }<a href="/bbs_show/page={$pageInfo.pageNo+1}&vm=list&bbs_header_id={$bbs_header_id}">{'/label/next'|translate}{*次へ*}</a>{else}{'/label/next'|translate}{*次へ*}{/if}]
+</div>
+{else}
+{'/modules/bbs/msg/no_post_yet'|translate}{*まだ書き込みがありません*}
+{/if}
+<hr/>

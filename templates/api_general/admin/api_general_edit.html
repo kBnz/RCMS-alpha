@@ -1,0 +1,111 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>外部データ編集</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+  <a href="/management/menu/contents/">コンテンツ更新</a>
+  <a href="/management/{$mt}/{$mt}_source_list/">{$module_nm}</a>
+  外部データ編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+  <ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_source_list/">データソース一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_search/">外部データ検索</a></li>
+    <li><a href="/management/{$mt}/{$mt}_list/">外部データ一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_edit/{if $id}xid={$id->raw}{/if}" class="active">外部データ編集</a></li>
+  </ul>
+
+  <div class="list_main">
+
+    {* 外部IDによる検索ボックス *}
+    <form action="/management/{$mt}/{$mt}_edit/" onsubmit="xid.value = $F(data_source) + ':' + $F(external_id)">
+      <fieldset class="search_box">
+        データソース:
+        <select name="data_source">
+          {foreach from=$sources item=src}
+            {if $id->data_source == $src.id}
+              <option value="{$src.id}" selected="selected">{$src.name}</option>
+            {else}
+              <option value="{$src.id}">{$src.name}</option>
+            {/if}
+          {/foreach}
+        </select>
+        ID:
+        <input type="text" name="external_id" value="{$id->external_id}"/>
+        <input type="submit" value="表示"/>
+        <input type="hidden" name="xid"/>
+      </fieldset>
+    </form>
+
+    {if $id}
+      {* Webのデータを表示 *}
+      {if $existsOnWeb}
+        <table style="width:100%">
+          <tr>
+            <th colspan="2">{$item.web->getName()}</th>
+          </tr>
+          <tr>
+            <td colspan="2">{$item.web->getDescription()}</td>
+          </tr>
+          <tr>
+            {if $item.web->getUrl()}<td><a href="{$item.web->getUrl()}" onclick="window.open(href); return false;">詳細はこちら</a></td>{/if}
+            <td>{$credit}</td>
+          </tr>
+        </table>
+      {elseif $isCaptured}
+        <table style="width:100%">
+          <tr>
+            <th>{$item.db.name}</th>
+          </tr>
+          <tr>
+            <td>該当IDのデータは外部データソースに存在しません。</td>
+          </tr>
+        </table>
+      {else}
+        <p>該当IDのデータは外部データソースに存在しません。</p>
+      {/if}
+
+
+      {* dbのデータを表示 *}
+      {if $existsOnWeb || $isCaptured}
+      <form action="/management/{$mt}/{$mt}_edit/xid={$id->raw}" method="post">
+          {rcms_include file="management/messages_box.html" messages=$messages}
+          {rcms_include file="management/errors_box.html" errors=$errors}
+
+          <table style="width:100%">
+            <tr>
+              <th>コメント</th>
+            </tr>
+            <tr>
+              <td style="text-align:center">
+                <textarea name="note" rows="5" style="width:98%">{$item.db.note}</textarea>
+                <input type="hidden" name="name" value="{if $existsOnWeb}{$item.web->getName()}{else}{$item.db.name}{/if}"/>
+              </td>
+            </tr>
+          </table>
+
+          {rcms_include file="management/relation_edit.html"}
+
+          {if $auth[$mt].update}
+            <input type="hidden" name="MODE" value="update" />
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            {buttonbox}
+              <button type="submit">更新する</button>
+            {/buttonbox}
+          {/if}
+        </form>
+      {/if}
+    {else}
+      <p>対象のデータを指定してください。</p>
+    {/if} {* end of if $id *}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

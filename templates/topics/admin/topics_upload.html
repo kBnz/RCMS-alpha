@@ -1,0 +1,65 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$topics_group_nm} {'/modules/topics/label/batch_process'|translate}</h2>{* 一括処理 *}
+<ul>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics/label/topics_group_list'|translate}</a>
+{'/modules/topics/label/batch_process'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> 一括処理*}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="topics/admin/minitabs.html" page_type=$ct}
+<div class="list_main">
+    <form name="topics_upload" id="topics_upload" action="/management/topics/topics_upload/" method="POST" ENCTYPE="multipart/form-data">
+        <input type="hidden" name="topics_group_id" value="{$topics_group_id}">
+
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="UPLOAD" />
+    {include file="management/messages_box.html" messages=$messages}
+    {include file="management/errors_box.html" errors=$errors}
+    <table style="width:100%">
+        <tr>
+            <th>{'/label/file_settings'|translate}{*ファイル指定*}</th>
+            <td>
+                <p><input type="file" name="topics_file"></p>
+                <!-- 
+                <p><a href="/management/topics/topics_upload_sample/topics_group_id={$topics_group_id}">{'/msg/download_sample'|translate}{*サンプルをダウンロード*}</a></p>
+                 -->
+            </td>
+        </tr>
+    </table>
+    {buttonbox}
+      {if $auth.topics.update}
+        <button type="submit" onclick="this.form.MODE.value='UPLOAD'">{'/label/send_btn'|translate}{*送信する*}</button>
+      {/if}
+    {/buttonbox}
+
+    {if $successful}
+      <table>
+        <tr>
+            <th>{'/label/insert'|translate}{*新規追加*}</th>
+            <td>{$insert_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+        <tr>
+            <th>{'/label/update'|translate}{*更新*}</th>
+            <td>{$update_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+      </table>
+    {/if} </div>
+    
+ </div>
+</div>
+
+
+  </form>
+</div><!--//list_main-->
+</div>
+
+{rcms_include file="management/footer.html"}

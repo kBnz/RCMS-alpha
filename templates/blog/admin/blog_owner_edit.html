@@ -1,0 +1,114 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="javascript" type="text/javascript" src="/js/pager.js"></script>
+
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_owner_edit'|translate}</h2>{* ブログオーナー設定 *}
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+<a href="/management/blog/blog_edit/blog_id={$header.blog_id}">{'/modules/blog/label/blog_settings'|translate}</a>
+{'/modules/blog/label/blog_owner_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> ブログ設定 >> ブログオーナー設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main" style="margin-top:25px;">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <p style="margin-bottom:10px">
+      {'/modules/blog/msg/make_other_member_blog_owner'|translate}{* 他のメンバーをオーナーにする場合、まずはブログメンバーに追加してください。 *}<br />
+      <a id="post_new_item" href="/management/blog/blog_member_edit/blog_id={$header.blog_id}">&gt;&gt;{'/modules/blog/label/add_member'|translate}</a>{* メンバー追加 *}
+    </p>
+    <form name="blog_owner_edit" action="/management/blog/blog_owner_edit/" method="POST">
+      <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+      <input type="hidden" name="MODE" value="UPDATE" />
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+  {foreach from=$member_list name=member_nm item=item}
+    {if $smarty.foreach.member_nm.first}
+        <table id="member_list" width="100%" border="0" cellspacing="2" cellpadding="0">
+          <tr>
+            <th width="80">{'/modules/blog/label/blog_owner_options'|translate}</th>{* ブログオーナー選択 *}
+            <th>{'/label/name'|translate}{* 名前 *}</th>
+            <th>{'/label/role'|translate}</th>{* 役割 *}</th>
+          </tr>
+    {/if}
+          <tr>
+            <td style="text-align:center">
+              {if $item.role != 'owner'}
+                <input type="radio" name="newOwner" id="newOwner_{$item.member_id}" value="{$item.member_id}"/>
+                <input type="hidden" id="member_nm_{$item.member_id}" value="{$item.name}"/>
+              {/if}
+            </td>
+            <td><label for="newOwner_{$item.member_id}">{$item.name}</label></td>
+            <td width="30%">{$blogMemberRoles[$item.role]}</td>
+          </tr>
+    {if $smarty.foreach.member_nm.last}
+        </table>
+    {/if}
+  {/foreach}
+
+  {buttonbox}
+    <button type="button" onclick="confirmChangeOwner()">{'/label/update_btn'|translate}</button>{* 更新する *}
+  {/buttonbox}
+    </form>
+  </div>
+</div>
+
+{literal}
+<script type="text/javascript">
+<!--
+
+var sendflg = false;
+function confirmChangeOwner() {
+    if (sendflg) {
+        return;
+    }
+    var member_id = "";
+    var len = document.blog_owner_edit.newOwner.length;
+
+    if (len) {
+        for (var i = 0 ; i < len ; i++) {
+            if (document.blog_owner_edit.newOwner[i].checked) {
+                member_id = document.blog_owner_edit.newOwner[i].value;
+                break;
+            }
+        }
+    }
+    else if (document.blog_owner_edit.newOwner.checked){
+        member_id = document.blog_owner_edit.newOwner.value;
+    }
+    if (member_id == "") {
+        // 新オーナーを選択してください
+        alert("{/literal}{'/modules/blog/msg/select_blog_owner_error'|translate}{literal}");
+        return;
+    }
+    var nm = document.getElementById("member_nm_" + member_id).value;
+
+    // ブログオーナーを変更します。よろしいですか？
+    var msg = "{/literal}{'/modules/blog/msg/confirm_change_blog_owner'|translate}{literal}";
+
+    if (confirm(msg)) {
+        document.blog_owner_edit.submit();
+        sendflg = true;
+    }
+}
+-->
+</script>
+{/literal}
+
+<!-- //メンバー一覧 -->
+{rcms_include file="management/footer.html"}

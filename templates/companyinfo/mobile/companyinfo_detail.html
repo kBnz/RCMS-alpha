@@ -1,0 +1,118 @@
+<h2>会社概要</h2>
+
+{foreach from=$companyinfoData.order_list item=key name=list_data}
+    {if $key == "addres"}
+        {if $companyinfoData.comp_zip_main || $companyinfoData.comp_zip_sub || $companyinfoData.comp_tdfk_nm || $companyinfoData.comp_add}
+            ■{'/modules/companyinfo/label/ｈeadquarters'|translate}{*本社所在地*}<br/>
+            {if $companyinfoData.comp_zip_main || $companyinfoData.comp_zip_sub}
+                {$companyinfoData.comp_zip_main}&nbsp;-&nbsp;{$companyinfoData.comp_zip_sub}<br/>
+            {/if}
+            {$companyinfoData.comp_tdfk_nm}{$companyinfoData.comp_add|nl2br}{$companyinfoData.comp_add2|nl2br}<br/>
+
+            {if $location_linkurl|@count == 1}
+            
+                [ <a href="{$location_linkurl.0.url}" >MAP</a> ]
+            
+            {elseif  $location_linkurl|@count > 1}
+            
+                {section name=location_url loop=$location_linkurl}
+                [ <a href="{$location_linkurl[location_url].url}" >{$location_linkurl[location_url].location_nm}</a> ]<br/>
+                {/section}
+                
+
+            {/if}
+            <br/>
+        {/if}
+    {elseif $key == "gmap_type"}
+    ■[<a href="http://maps.google.com/maps?q={$companyinfoData.gmap_y},{$companyinfoData.gmap_x}({$companyinfoData.comp_nm|urlencode})&spn=0.003503,0.009645&z=17">GoogleMaps</a>]<br/>
+    <br/>
+    {elseif $key == "company_image_url"}
+      {if $companyinfoData.mobile_company_image_url && $companyinfoData.mobile_company_image_url|rcms_file_exists}
+      ■{$companyinfo_items_options[$key].name}<br/>
+      <img src="{$companyinfoData.mobile_company_image_url}" /><br/><br/>
+      {/if}
+    {elseif $key == "ext_title_01"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_01}
+            ■{$companyinfoData.ext_title_01|nl2br}<br/>
+            {$companyinfoData.ext_txt_01|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_02"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_02}
+            ■{$companyinfoData.ext_title_02|nl2br}<br/>
+            {$companyinfoData.ext_txt_02|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_03"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_03}
+            ■{$companyinfoData.ext_title_03|nl2br}<br/>
+            {$companyinfoData.ext_txt_03|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_04"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_04}
+            ■{$companyinfoData.ext_title_04|nl2br}<br/>
+            {$companyinfoData.ext_txt_04|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_05"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_05}
+            ■{$companyinfoData.ext_title_05|nl2br}<br/>
+            {$companyinfoData.ext_txt_05|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_06"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_06}
+            ■{$companyinfoData.ext_title_06|nl2br}<br/>
+            {$companyinfoData.ext_txt_06|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_07"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_07}
+            ■{$companyinfoData.ext_title_07|nl2br}<br/>
+            {$companyinfoData.ext_txt_07|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_08"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_08}
+            ■{$companyinfoData.ext_title_08|nl2br}<br/>
+            {$companyinfoData.ext_txt_08|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_09"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_09}
+            ■{$companyinfoData.ext_title_09|nl2br}<br/>
+            {$companyinfoData.ext_txt_09|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_10"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_10}
+            ■{$companyinfoData.ext_title_10|nl2br}<br/>
+            {$companyinfoData.ext_txt_10|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_11"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_11}
+            ■{$companyinfoData.ext_title_11|nl2br}<br/>
+            {$companyinfoData.ext_txt_11|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_12"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_12}
+            ■{$companyinfoData.ext_title_12|nl2br}<br/>
+            {$companyinfoData.ext_txt_12|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_13"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_13}
+            ■{$companyinfoData.ext_title_13|nl2br}<br/>
+            {$companyinfoData.ext_txt_13|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_14"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_14}
+            ■{$companyinfoData.ext_title_14|nl2br}<br/>
+            {$companyinfoData.ext_txt_14|nl2br}<br/><br/>
+        {/if}
+    {elseif $key == "ext_title_15"}
+        {if $companyinfoData[$key] && $companyinfoData.ext_txt_15}
+            ■{$companyinfoData.ext_title_15|nl2br}<br/>
+            {$companyinfoData.ext_txt_15|nl2br}<br/><br/>
+        {/if}
+    {else}
+      {if $companyinfoData[$key]}
+          ■{$companyinfo_items_options[$key].name}<br/>
+          {$companyinfoData[$key]|nl2br}<br/><br/>
+      {/if}
+    {/if}
+{/foreach}
+
+<hr/>
+

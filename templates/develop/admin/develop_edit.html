@@ -1,0 +1,80 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$edit_table_nm}&nbsp;レコード一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_list/">RCMS_DB</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<ul class="tabnavi" style="width:100%;">
+  <li class="regist_000"><a href="/management/develop/develop_struct/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">構造</div></a></li>
+  <li id="here" class="regist_000"><a href="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">レコード</div></a></li>
+  <li class="regist_000"><a href="/management/develop/develop_sql/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">SQL</div></a></li>
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+<h3>レコード一覧</h3>
+
+{if $smarty.request.edit_table_nm=='st_module_tpl'}
+<span class="hint">module_php_idを「0」にした場合、サイト共通テンプレートとしてテンプレート編集機能でカスタマイズできます。</span>
+{/if}
+
+<table width="100%">
+{if $arrErr neq ""}
+<tr><td align="center">{$arrErr}</td></tr>
+{else}
+<tr>
+<th align="center"></th>
+{section name="loopname" loop=$key_nam}
+{if $key_nam[loopname] eq $primary_key}
+    <th align="center" style="background-color:#B7EAA2;">{$key_nam[loopname]}</th>
+{else}
+    <th align="center">{$key_nam[loopname]}</th>
+{/if}
+{/section}
+</tr>
+{section name="loopname2" loop=$table_data}
+    <tr>
+        <form method="POST" action="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}&action=update&pos={$table_data[loopname2].rowid}" >
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <td align="center"><input type="submit" value="編集" /></td>
+        </form>
+{section name="loopname3" loop=$key_nam}
+{assign var="key" value=$key_nam[loopname3]}
+    {if $table_data[loopname2].$key eq ""}
+    <td align="center">&nbsp;</td>
+    {else}
+    <td align="center">{$table_data[loopname2].$key|mbtruncate:30:"..."}</td>
+    {/if}
+{/section}
+</tr>
+{/section}
+{/if}
+</table>
+
+{if $smarty.request.edit_table_nm=='st_module_tpl'}
+<span class="hint">module_php_idを「0」にした場合、サイト共通テンプレートとしてテンプレート編集機能でカスタマイズできます。</span>
+{/if}
+
+<form method="POST" action="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}&action=insert" >
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  {buttonbox}
+    <button type="submit">レコード追加</button>
+  {/buttonbox}
+</form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}
+
+

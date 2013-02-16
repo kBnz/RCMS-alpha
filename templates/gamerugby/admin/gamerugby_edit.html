@@ -1,0 +1,506 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+
+    // var が無いのは外部windowから呼び出せるようにするためです (window.placeChecker = ... と同じ)
+    placeChecker = new Checker({notifier : document.getElementById('subInfo'),
+                                idInput  : document.game_edit.place_id,
+                                nmInput  : document.game_edit.place});
+});
+
+var tmp_member_name;
+var tmp_member_id;
+var showing_no = '';
+
+function inputMemberInfo(order_no) {
+    if(showing_no != '') {
+      document.getElementById('inputArea['+showing_no+']').style.visibility = "hidden";
+    }
+    showing_no = order_no;
+    tmp_member_name = document.getElementById('member_name['+order_no+']').value;
+    tmp_member_id = document.getElementById('member_id['+order_no+']').value;
+    var element = document.getElementById('member_name['+order_no+']');
+    document.getElementById('inputFrame['+order_no+']').src = '/js/infoInput.php?order='+order_no+'&type=gamemember';
+    document.getElementById('inputArea['+order_no+']').style.visibility = "visible";
+    document.getElementById('inputArea['+order_no+']').style.display = "";
+}
+
+function chkMemId(order_no) {
+    if(tmp_member_name != document.getElementById('member_name['+order_no+']').value
+    && tmp_member_id == document.getElementById('member_id['+order_no+']').value
+    && document.getElementById('member_name['+order_no+']').value != "") {
+    // 名前が変わっているがidが変わっていない場合は手で入力したとみなす
+        document.getElementById('member_id['+order_no+']').value = "";
+        document.getElementById('subInfo['+order_no+']').style.display = "inline";
+    }
+    else if(document.getElementById('member_name['+order_no+']').value == "") {
+        document.getElementById('subInfo['+order_no+']').style.display = "none";
+    }
+}
+
+function writeWithKeybourd(order_no) {
+    document.getElementById('member_id['+order_no+']').value = "";
+    document.getElementById('inputArea['+order_no+']').style.visibility = "hidden";
+    if(document.getElementById('member_name['+order_no+']').value != "") {
+        document.getElementById('subInfo['+order_no+']').style.display = "inline";
+    }
+    else {
+        document.getElementById('subInfo['+order_no+']').style.display = "none";
+    }
+}
+
+function placeInput(){
+    window.open('/direct/page/locationInput/jsObject=placeChecker&type=gamerugby_place','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameTypeInput(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type&type=gamerugby_game_type','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameType2Input(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type2&type=gamerugby_game_type2','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function teamInput() {
+    window.open('/js/teamInput.php?type=rugby','','width=400,height=250,scrollbars=1,resizable=yes');
+}
+
+function oppmembercl() {
+    var self_mem = document.game_edit.self_mem.value;
+    var opp_mem = document.game_edit.self_mem.value;
+    for(i = self_mem ; i < Number(opp_mem) + Number(self_mem) + 1; i++) {
+        element = document.getElementById('member_grade[' + i + ']');
+        if(element){element.value = '';}
+        element = document.getElementById('member_name[' + i + ']');
+        if(element){element.value = '';}
+    }
+}
+
+function game_copy() {
+    document.game_edit.MODE.value='COPY';
+    document.game_edit.submit();
+}
+
+function add_self_mem() {
+    document.game_edit.MODE.value='ADD_SELF_MEM';
+    document.game_edit.submit();
+}
+
+function add_opp_mem() {
+    document.game_edit.MODE.value='ADD_OPP_MEM';
+    document.game_edit.submit();
+}
+
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+//スコア表の切り替え
+function chg_nogame(){
+    var i;
+    for(i = 0; i < document.game_edit.win_default.length; i++){
+      if(document.game_edit.win_default[i].checked){ break; }
+    }
+    //0以上=試合は行われなかった
+    $A($('score_table').getElementsByTagName('input')).each(function(e){e.disabled=(i==0?false:true)});
+}
+
+function Checker(option) {
+    var notifier = option.notifier; // [object HTMLSpanElement]
+    var idInput  = option.idInput;  // [object HTMLInputElement]
+    var nmInput  = option.nmInput;  // [object HTMLInputElement]
+
+    var idInputValue = idInput.value;
+    var nmInputValue = ((idInputValue == "" || idInputValue == -1) ? "" : nmInput.value);
+
+    nmInput.onblur = check;
+    check();
+
+    // called from locationInput.php
+    this.reset = function (option) {
+        nmInputValue = nmInput.value = option.location_nm;
+        idInputValue = idInput.value = option.location_id;
+        notifier.innerHTML = ((idInputValue == "" || idInputValue == -1) ? "({/literal}{'/label/not_registered_data'|translate}{literal})" : "");   // 登録外
+        if ((idInputValue == "" || idInputValue == -1)) nmInputValue = "";
+    }
+
+    function check (e) {
+        if (nmInputValue != nmInput.value) {
+            notifier.innerHTML = "({/literal}{'/label/not_registered_data'|translate}{literal})";   // 登録外
+            idInput.value = -1;
+        } else {
+            notifier.innerHTML = "";
+            idInput.value = idInputValue;
+        }
+    }
+}
+</script>
+{/literal}
+
+{headblock}
+<style type="text/css">
+{literal}
+table.tokuten{
+  background-color: #CCCCCC;
+}
+table.tokuten td{
+  border: solid #FFFFFF 1px;
+  background: #D5D5D5;
+}
+#member_self{
+  float:left;
+}
+
+#member_opp {
+  float:left;
+  padding-left:5px;
+}
+tr.member_row td{
+  height: 2.25em;
+}
+{/literal}
+</style>
+{/headblock}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm} {'/label/edit'|translate}{*編集*}</h2>
+<ul>
+  {if $rauth->canInsert('/gamerugby/item')}
+  <li class="add"><a href="/management/gamerugby/gamerugby_edit/"><span>{'/modules/game/label/create_new_game_btn'|translate}{*試合追加*}</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/gamerugby/gamerugby_history/game_id={$game_id}"><span>{'/label/update_history'|translate}{*更新履歴*}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=gamerugby&id={$game_id}"><span>{'/label/access_analysis'|translate}{*アクセス解析*}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/gamerugby_detail/id={$game_id}" target="_blank"><span>{'/label/view_page'|translate}{*ページを見る*}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm} {'/label/list'|translate}</a>
+{$module_nm} {'/label/edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 各種ゲーム >> 各種ゲーム一覧 >> 各種ゲーム編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{*関連情報*}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>　<a href="/gamerugby_detail/id={$game_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/gamerugby/gamerugby_edit/game_id=$game_id"}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="game_edit" id="gamerugby_edit" action="/management/gamerugby/gamerugby_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="self_mem" value="{$self_mem}" />
+    <input type="hidden" name="opp_mem" value="{$opp_mem}" />
+    <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+    {section name=cnt start=0 loop=$self_mem}
+    <input type="hidden" name="member_id[{$smarty.section.cnt.index}]" id="member_id[{$smarty.section.cnt.index}]" value="{$data_self[cnt].member_id}" />
+    {/section}
+
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {if $game_id}
+      {lang_selector meta=$docmeta link='/management/gamerugby/gamerugby_edit/game_id='|cat:$game_id}
+    {/if}
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <br style="clear: both;">
+
+      <h3>{'/modules/game/label/game_information'|translate}{*試合情報*}</h3>
+      {if $game_id == '' && $copyArr|@count > 0}
+      <table width="100%">
+        <tr><td><select name="copy_id">{html_options options=$copyArr selected=$copy_id}</select><input type="submit" name="copy" value="{'/modules/game/label/copy_following_content'|translate}{*以下の内容をコピーする*}" onclick="game_copy()" /><br />
+        <input type="checkbox" id="copy_game_detail" name="copy_game_detail" {if $copy_id == "" || $copy_game_detail != ""}checked="checked"{/if} /><label for="copy_game_detail">{'/modules/game/label/game_detail'|translate}{*試合詳細*}</label>
+        <input type="checkbox" id="copy_self_member" name="copy_self_member" {if $copy_id == "" || $copy_self_member != ""}checked="checked"{/if} /><label for="copy_self_member">{'/modules/game/label/member_of_my_team'|translate}{*自メンバー*}</label>
+        <input type="checkbox" id="copy_opp_member" name="copy_opp_member" {if $copy_id == "" || $copy_opp_member != ""}checked="checked"{/if}><label for="copy_opp_member">{'/modules/game/label/member_of_opponent'|translate}{*相手メンバー*}</label></td></tr>
+      </table>
+      {/if}
+      <table width="100%">
+        <tr>
+          <th>{'/label/season'|translate}{*シーズン*}<span class="required">※</span></th>
+          <td><select name="season" id="season">{rcms_seasonOptions selected=$data.season}</select></td>
+        </tr>
+        <tr>
+          <th>{'/label/date'|translate}{*日付*}<span class="required">※</span></th>
+          <td>
+            <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/game_beginning_time'|translate}{*試合開始時間*}</th>
+          <td><input type="text" name="ko_time" value="{$data.ko_time|escape}" onBlur="return changeHankaku(this, 'time');" /></td>
+        </tr>
+        <tr>
+          <th>{'/label/game_site'|translate}{*試合会場*}<span class="required">※</span></th>
+          <td><input type="text" name="place" value="{$data.place|escape}" /><a href="javascript:void(0);" onclick="placeInput()">{'/label/select_btn'|translate}{*選択*}</a><span id="subInfo"></span></td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/game_type'|translate}{*試合タイプ*}<span class="required">※</span></th>
+          <td><input type="text" name="game_type" value="{$data.game_type|escape}" /><a href="javascript:void(0);" onclick="gameTypeInput()">{'/label/select_btn'|translate}{*選択*}</a> <input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked="checked"{/if} />{'/modules/game/label/official_game'|translate}{*公式戦*}</td>
+        </tr>
+        <tr>
+          <th>{'/label/tournament'|translate}{*トーナメント*}</th>
+          <td><input type="text" name="game_type2" value="{$data.game_type2|escape}" /><a href="javascript:void(0);" onclick="gameType2Input()">{'/label/select_btn'|translate}{*選択*}</a></td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/opponent'|translate}{*対戦相手*}<span class="required">※</span></th>
+          <td>
+            {$smarty.const.SELF_TEAM_SNM}<input type="text" name="team_grade" value="{$data.team_grade|escape}" size="4" />
+            vs
+            <select name="team_type" id="team_type" onchange="onChangeTeamType(this.value, 'rugby')">
+            {html_options options=$arrTeamRugbyType selected=$data.team_type}
+            </select>
+            <select name="opponent" id="opponent">
+            <option value="">------</option>
+            {html_options options=$opponent_arr selected=$data.opponent}
+            </select>
+            <input type="text" name="opponent_grade" value="{$data.opponent_grade|escape}" size="4" />
+            <p><a href="javascript:;" onclick="teamInput()">&gt;&gt;{'/modules/game/msg/register_opponent_in_the_list'|translate}{*対戦相手をチームリストに登録*}</a></p>
+            <p>※{'/modules/game/msg/please_input_team_type'|translate}{*２つめの入力欄にはＡ、Ｂ、ＯＢ等のチームの種類を入力してください。*}</p>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/game_result'|translate}{*試合結果*}</th>
+          <td>
+            <table cellpadding="0" cellspacing="5" class="not_list_main tokuten" id="score_table">
+              <tr style="text-align:center">
+                <td>{'/label/my_team'|translate}{*自チーム*}</td>
+                <td>{'/label/first_half'|translate}{*前半*}</td>
+                <td>{'/label/second_half'|translate}{*後半*}</td>
+                <td></td>
+                <td>{'/label/first_half'|translate}{*前半*}</td>
+                <td>{'/label/second_half'|translate}{*後半*}</td>
+                <td>{'/label/opponent_team'|translate}{*相手チーム*}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><input type="text" name="Self_Half1" value="{$data.Self_Half1}" size="3" onBlur="changeHankaku(this,'number')" /></td>
+                <td><input type="text" name="Self_Half2" value="{$data.Self_Half2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td style="text-align:center">TOTAL</td>
+                <td><input type="text" name="Opp_Half1" value="{$data.Opp_Half1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Opp_Half2" value="{$data.Opp_Half2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><input type="text" name="Self_T1" value="{$data.Self_T1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Self_T2" value="{$data.Self_T2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td style="text-align:center">T</td>
+                <td><input type="text" name="Opp_T1" value="{$data.Opp_T1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Opp_T2" value="{$data.Opp_T2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td style="text-align:center"><input type="text" name="Self_Total" value="{$data.Self_Total}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Self_G1" value="{$data.Self_G1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Self_G2" value="{$data.Self_G2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td style="text-align:center">G</td>
+                <td><input type="text" name="Opp_G1" value="{$data.Opp_G1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Opp_G2" value="{$data.Opp_G2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td style="text-align:center"><input type="text" name="Opp_Total" value="{$data.Opp_Total}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><input type="text" name="Self_P1" value="{$data.Self_P1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Self_P2" value="{$data.Self_P2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td style="text-align:center">P</td>
+                <td><input type="text" name="Opp_P1" value="{$data.Opp_P1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Opp_P2" value="{$data.Opp_P2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><input type="text" name="Self_D1" value="{$data.Self_D1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Self_D2" value="{$data.Self_D2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td style="text-align:center">D</td>
+                <td><input type="text" name="Opp_D1" value="{$data.Opp_D1}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td><input type="text" name="Opp_D2" value="{$data.Opp_D2}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+                <td></td>
+              </tr>
+            </table>
+<label>
+{html_radios name="win_default" options=$arrNOGAME selected=$data.win_default onclick="chg_nogame()" separator="</label><label>"}
+</label>
+<script type="text/javascript">
+<!--
+{literal}
+Event.observe(window, 'load', function () { chg_nogame(); }, false);
+{/literal}
+-->
+</script>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/half_time'|translate}{*ハーフタイム*}</th>
+          <td><input type="text" name="half_time" value="{$data.half_time|escape}" onBlur="changeHankaku(this, 'number')" /></td>
+        </tr>
+        <tr>
+          <th>{'/label/referee'|translate}{*レフリー*}</th>
+          <td><input type="text" name="referee" value="{$data.referee|escape}" /></td>
+        </tr>
+        <tr>
+          <th>{'/label/touch_judge'|translate}{*タッチジャッジ*}</th>
+          <td><input type="text" name="touch_judge1" value="{$data.touch_judge1|escape}" /><input type="text" name="touch_judge2" value="{$data.touch_judge2|escape}" /><input type="text" name="touch_judge3" value="{$data.touch_judge3|escape}" /></td>
+        </tr>
+        <tr>
+          <th>{'/label/comments'|translate}{*コメント*}</th>
+          <td><textarea name="game_comment" rows="7" cols="50">{$data.game_comment|escape}</textarea></td>
+        </tr>
+        <tr>
+          <th>{'/label/status_katakana'|translate}{*ステータス*}<span class="required">※</span></th>
+          <td>{html_radios name="game_status" options=$arrGameStatus selected=$data.game_status}</td>
+        </tr>
+      </table>
+      <br style="clear: both;">
+
+      <h3>{'/label/member_information'|translate}{*メンバー情報*}</h3>
+      <div id="member_self">
+      <br />
+        <table>
+          <tr>
+            <th>POS</th>
+            <th>{'/label/grade'|translate}{*学年*}</th>
+            <th>{'/label/name'|translate}{*名前*}</th>
+            <th>T</th>
+            <th>G</th>
+            <th>P</th>
+            <th>D</th>
+          </tr>
+{section name="loopname" loop=$self_mem}
+          <tr class="member_row">
+            <th>
+              {$smarty.section.loopname.iteration}.{if $arrPositionAllRugby[loopname.iteration] != ''}{$arrPositionAllRugby[loopname.iteration]}{else}R{/if}
+            </th>
+            <td>
+              <input type="text" name="member_grade[{$smarty.section.loopname.index}]" id="member_grade[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_grade}" size="3" />
+            </td>
+            <td>
+              <input type="text" name="member_name[{$smarty.section.loopname.index}]" id="member_name[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_name}" size="20" onBlur="chkMemId({$smarty.section.loopname.index})" onKeyup="writeWithKeybourd({$smarty.section.loopname.index})" />
+              <input type="button" value="..." onclick="inputMemberInfo({$smarty.section.loopname.index});" />
+              <span id="subInfo[{$smarty.section.loopname.index}]" style="display:{if ($data_self[loopname].member_id == -1 && $data_self[loopname].member_name != "") || ($data_self[loopname].member_id == "" && $data_self[loopname].member_name != "")}inline{else}none{/if}">({'/label/not_registered_data'|translate}{*登録外*})</span>
+              <div id="inputArea[{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                  <iframe name="inputFrame" id="inputFrame[{$smarty.section.loopname.index}]" frameborder="0" marginwidth="0" marginheight="0" src="" scrolling="no" width="400" height="370"></iframe>
+              </div>
+            </td>
+            <td>
+              <input type="text" name="try_point[{$smarty.section.loopname.index}]" value="{if $data_self[loopname].try_point != ""}{$data_self[loopname].try_point}{else}0{/if}" size="2" onBlur="changeHankaku(this, 'number')" />
+            </td>
+            <td>
+              <input type="text" name="goal_point[{$smarty.section.loopname.index}]" value="{if $data_self[loopname].goal_point != ""}{$data_self[loopname].goal_point}{else}0{/if}" size="2" onBlur="changeHankaku(this, 'number')" />
+            </td>
+            <td>
+              <input type="text" name="pgoal_point[{$smarty.section.loopname.index}]" value="{if $data_self[loopname].pgoal_point != ""}{$data_self[loopname].pgoal_point}{else}0{/if}" size="2" onBlur="changeHankaku(this, 'number')" />
+            </td>
+            <td>
+              <input type="text" name="dgoal_point[{$smarty.section.loopname.index}]" value="{if $data_self[loopname].dgoal_point != ""}{$data_self[loopname].dgoal_point}{else}0{/if}" size="2" onBlur="changeHankaku(this, 'number')" />
+            </td>
+          </tr>
+{/section}
+        </table>
+        <table><tr><td><input type="submit" name="subflg" value="{'/modules/game/msg/add_reserve_members'|translate}{*リザーブを増やす*}" onclick="add_self_mem()" /></td></tr></table>
+        <table>
+          <tr>
+            <td>{'/modules/game/label/player_change'|translate}{*交代*}</td>
+          </tr>
+{section name="loopname1" start=15 loop=$self_mem}
+          <tr>
+            <td>
+              <select name="change_type[{$smarty.section.loopname1.index}]">{html_options options=$arrChange_type selected=$data_self[loopname1].change_type}</select>
+              <input type="text" name="change_time[{$smarty.section.loopname1.index}]" value="{if $data_self[loopname1].change_time != ""}{$data_self[loopname1].change_time}{else}0{/if}" size="3" onBlur="changeHankaku(this, 'number')" />{'/label/minute'|translate}{*分*}
+              <select name="change_from_order[{$smarty.section.loopname1.index}]">
+                <option value="0"></option>
+                {html_options values=1|range:$self_mem output=1|range:$self_mem selected=$data_self[loopname1].change_from_order}
+              </select>
+              -&gt; {$smarty.section.loopname1.index_next}
+              {$data_self[loopname1].member_name}
+            </td>
+          </tr>
+{/section}
+        </table>
+      </div>
+      <div id="member_opp">
+      <a href="javascript:;" onclick="oppmembercl()">{'/modules/game/msg/clear_info_about_opponent'|translate}{*相手選手情報をクリア*}</a>
+        <table>
+          <tr>
+            <th>POS</th>
+            <th>{'/label/grade'|translate}{*学年*}</th>
+            <th>{'/label/name'|translate}{*名前*}</th>
+          </tr>
+{section name="loopname2" loop=$self_mem+$opp_mem start=$self_mem}
+          <tr class="member_row">
+            <th>
+              {$smarty.section.loopname2.iteration}.{if $arrPositionAllRugby[loopname2.iteration] != ''}{$arrPositionAllRugby[loopname2.iteration]}{else}R{/if}
+            </th>
+            <td>
+             <input type="text" name="member_grade[{$smarty.section.loopname2.index}]" value="{$data_opp[loopname2].member_grade}" size="3" />
+            </td>
+            <td>
+              <input type="text" name="member_name[{$smarty.section.loopname2.index}]" id="member_name[{$smarty.section.loopname2.index}]" value="{$data_opp[loopname2].member_name}" />
+            </td>
+          </tr>
+{/section}
+        </table>
+        <table><tr><td><input type="submit" name="subflg" value="{'/modules/game/msg/add_reserve_members'|translate}{*リザーブを増やす*}" onclick="add_opp_mem()" /></td></tr></table>
+        <table>
+          <tr>
+            <td>{'/modules/game/label/player_change'|translate}{*交代*}</td>
+          </tr>
+{section name="loopname3" loop=$self_mem+$opp_mem start=$self_mem+15}
+          <tr>
+            <td>
+              <select name="change_type[{$smarty.section.loopname3.index}]">{html_options options=$arrChange_type selected=$data_opp[loopname3].change_type}</select>
+              <input type="text" name="change_time[{$smarty.section.loopname3.index}]" value="{if $data_opp[loopname3].change_time != ""}{$data_opp[loopname3].change_time}{else}0{/if}" size="3" onBlur="changeHankaku(this, 'number')" />{'/label/minute'|translate}{*分*}
+              <select name="change_from_order[{$smarty.section.loopname3.index}]">
+                <option value="0"></option>
+                {html_options values=1|range:$opp_mem output=1|range:$opp_mem selected=$data_opp[loopname3].change_from_order}
+              </select>
+              -&gt; {$smarty.section.loopname3.index_next-$self_mem}
+              {$data_opp[loopname3].member_name}
+            </td>
+          </tr>
+{/section}
+        </table>
+      </div>
+      <div class="clear"></div>
+
+      {rcms_include file="management/open_date_box.html" id=$game_id data=$data}
+
+    {buttonbox}
+      {if $game_id != ""}
+        {if $rauth->canUpdate("/gamerugby/item/$game_id", $docmeta.lang)}
+          <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        {if $rauth->canDelete("/gamerugby/item/$game_id", $docmeta.lang)}
+          <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+        {/if}
+      {else}
+        {if $rauth->canInsert("/gamerugby/item/", $docmeta.lang)}
+          <button type="submit">{'/label/add_btn'|translate}{*追加する*}</button>
+        {/if}
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

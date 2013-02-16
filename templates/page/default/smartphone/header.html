@@ -1,0 +1,17 @@
+<a id="top"></a>
+{if $page_sysnm eq 'top'}
+{if $mobile_logo_url ne ''}
+<div style="text-align:center;">
+<img src="{$mobile_logo_url}" alt="<!--%site_nm%-->" />
+</div>
+{/if}
+<h1><!--%site_nm%--></h1>
+{if $mobile_marquee ne ''}
+<marquee>{$mobile_marquee}</marquee>
+{/if}
+{else}
+<div data-role="header" data-position="inline">
+    <a data-icon="home" href="/">TOP</a>
+    <h1>{$page_nm}</h1>
+</div>
+{/if}

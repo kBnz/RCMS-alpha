@@ -1,0 +1,8 @@
+「{$row.subject}」の投稿を受け付けました。
+
+こちらからご確認ください↓
+{$smarty.const.ROOT_URL}/topics_detail/id={$row.topics_id}
+
+------------------------------
+{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/

@@ -1,0 +1,144 @@
+{module name="salesclient_detail"}
+<h2 class="module_title"><span>{$salesclientData.salesclient_nm}</span></h2>
+<div class="module_contents">
+{if $Login_member_id}{* ログイン状態のときに表示する *}
+<a href="{$smarty.const.ROOT_SSL_URL}/management/salesclient/salesclient_edit/salesclient_id={$salesclientData.salesclient_id}">編集する</a>
+{/if}
+  <table class="list" width="100%">
+    <tr>
+      <th width="30%">営業状況</th>
+      <td>{$salesclientData.sales_status}</td>
+    </tr>
+    <tr>
+      <th>担当営業</th>
+      <td>
+      {foreach item=member_list from=$salesclientData.member}
+      <a href="/salesclient_member/?id={$member_list.member_id}">{$member_list.disp_name}</a><br>
+      {/foreach}
+      </td>
+    </tr>
+    <tr>
+      <th>会社名かな</th>
+      <td>{$salesclientData.salesclient_knm}</td>
+    </tr>
+    <tr>
+      <th>住所</th>
+      <td>〒{$salesclientData.zip_main}-{$salesclientData.zip_sub}<br>
+      {$salesclientData.tdfk_nm}{$salesclientData.address1} {$salesclientData.address2}
+      </td>
+    </tr>
+    <tr>
+      <th>連絡先</th>
+      <td>E-mail:{$salesclientData.email}<br>
+      TEL:{$salesclientData.tel}<br>
+      FAX:{$salesclientData.fax}<br>
+      </td>
+    </tr>
+    <tr>
+      <th>営業数字</th>
+      <td>
+        <table class="list">
+          <tr>
+            <th></th>
+            <th width="70">確定</th>
+            <th width="70">Ａ</th>
+            <th width="70">Ｂ</th>
+            <th width="70">Ｃ</th>
+            <th width="70">次月以降</th>
+            <th width="70">受注済（前月まで）</th>
+            <th width="70">キャンセル</th>
+          </tr>
+          <tr>
+            <td>売上</td>
+            <td align="right">{$salesclientData.sales_order}</td>
+            <td align="right">{$salesclientData.sales_a}</td>
+            <td align="right">{$salesclientData.sales_b}</td>
+            <td align="right">{$salesclientData.sales_c}</td>
+            <td align="right">{$salesclientData.sales_d}</td>
+            <td align="right">{$salesclientData.sales_e}</td>
+            <td align="right">{$salesclientData.sales_cancel}</td>
+          </tr>
+          <tr>
+            <td>粗利</td>
+            <td align="right">{$salesclientData.gross_order}</td>
+            <td align="right">{$salesclientData.gross_a}</td>
+            <td align="right">{$salesclientData.gross_b}</td>
+            <td align="right">{$salesclientData.gross_c}</td>
+            <td align="right">{$salesclientData.gross_d}</td>
+            <td align="right">{$salesclientData.gross_e}</td>
+            <td align="right">{$salesclientData.gross_cancel}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <th>前任者</th>
+      <td>{$salesclientData.predecessor}
+      </td>
+    </tr>
+{if $salesclientData.tanto1_nm ne ''}
+    <tr>
+      <th>担当者１</th>
+      <td>部署:{$salesclientData.tanto1_busyo} 役職:{$salesclientData.tanto1_yakusyoku}<br>
+      名前:{$salesclientData.tanto1_nm}<br>
+      連絡先:{$salesclientData.tanto1_tel}<br>
+      E-mail:{$salesclientData.tanto1_email}<br>
+      住所:{$salesclientData.tanto1_address}<br>
+      </td>
+    </tr>
+{/if}
+{if $salesclientData.tanto2_nm ne ''}
+    <tr>
+      <th>担当者２</th>
+      <td>部署:{$salesclientData.tanto2_busyo} 役職:{$salesclientData.tanto2_yakusyoku}<br>
+      名前:{$salesclientData.tanto2_nm}<br>
+      連絡先:{$salesclientData.tanto2_tel}<br>
+      E-mail:{$salesclientData.tanto2_email}<br>
+      住所:{$salesclientData.tanto2_address}<br>
+      </td>
+    </tr>
+{/if}
+{if $salesclientData.tanto3_nm ne ''}
+    <tr>
+      <th>担当者３</th>
+      <td>部署:{$salesclientData.tanto3_busyo} 役職:{$salesclientData.tanto3_yakusyoku}<br>
+      名前:{$salesclientData.tanto3_nm}<br>
+      連絡先:{$salesclientData.tanto3_tel}<br>
+      E-mail:{$salesclientData.tanto3_email}<br>
+      住所:{$salesclientData.tanto3_address}<br>
+      </td>
+    </tr>
+{/if}
+{if $salesclientData.tanto4_nm ne ''}
+    <tr>
+      <th>担当者４</th>
+      <td>部署:{$salesclientData.tanto4_busyo} 役職:{$salesclientData.tanto4_yakusyoku}<br>
+      名前:{$salesclientData.tanto4_nm}<br>
+      連絡先:{$salesclientData.tanto4_tel}<br>
+      E-mail:{$salesclientData.tanto4_email}<br>
+      住所:{$salesclientData.tanto4_address}<br>
+      </td>
+    </tr>
+{/if}
+{if $salesclientData.tanto5_nm ne ''}
+    <tr>
+      <th>担当者５</th>
+      <td>部署:{$salesclientData.tanto5_busyo} 役職:{$salesclientData.tanto5_yakusyoku}<br>
+      名前:{$salesclientData.tanto5_nm}<br>
+      連絡先:{$salesclientData.tanto5_tel}<br>
+      E-mail:{$salesclientData.tanto5_email}<br>
+      住所:{$salesclientData.tanto5_address}<br>
+      </td>
+    </tr>
+{/if}
+    <tr>
+      <th>受注履歴・備考</th>
+      <td>{$salesclientData.bikou|nl2br}
+      </td>
+    </tr>
+  </table>
+<!--br style="clear:both;"-->
+
+<div class="relation_link"><a href="/salesclient_list/" class="small_text">営業情報一覧へ</a></div>
+</div>
+{/module}

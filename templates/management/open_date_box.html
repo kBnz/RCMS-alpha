@@ -1,0 +1,211 @@
+{head_include file="common/calendar_scripts.html"}
+{headblock}
+<link href="/js/jqueryDatepick/jquery.datepick.css" rel="stylesheet" type="text/css" />
+{/headblock}
+<div id="open_date_box">
+<h3>{'/label/publish_settings'|translate}</h3>
+<table width="100%">
+  <tr>
+    <th width="150">{'/label/publish_settings'|translate}</th>
+    <td>
+      <p>
+
+{* 既存のコンテンツの場合に「公開」「非公開」のメッセージを出す。新規の場合は「...を行ってください。」メッセージ *}
+
+        {if $id != ""}
+          {if $data.open_flg == "1"}
+            {if $docmeta.is_waiting}
+              {assign var='varPublishStatus_1' value='/label/publish'|translate}
+              {'/msg/status_will_be_0_when_approved'|translate:$varPublishStatus_1}{*承認後、公開状態になります。*}
+            {else}
+              {'/msg/this_content_is_publish_now'|translate}{* この内容は、現在公開中です。 *}
+            {/if}
+          {else}
+            {if $docmeta.is_waiting}
+              {assign var='varPublishStatus_2' value='/label/unpublish'|translate}
+              {'/msg/status_will_be_0_when_approved'|translate:$varPublishStatus_2}{*承認後、非公開状態になります。*}
+            {else}
+              {'/msg/this_content_is_unpublish_now'|translate}{* この内容は、現在非公開です。 *}
+            {/if}
+          {/if}
+        {else}
+          {if $docmeta.is_waiting}
+              {assign var='varPublishStatus_3' value='/label/publish_time'|translate}
+              {'/msg/0_will_be_effective_when_approved'|translate:$varPublishStatus_3}{* 承認後、日付設定が有効になります。 *}
+          {else}
+            <span class="hint">{'/msg/choose_publish_setting'|translate}</span>
+          {/if}
+        {/if}
+
+      </p>
+
+{* デフォルトで公開を選択する *}
+      {if $data.open_type == 'open' || $data.open_type == 'close' || $data.open_type == 'sitei'}
+          {assign var=open_type value=$data.open_type}
+      {else}
+          {assign var=open_type value='open'}
+      {/if}
+
+      <input type="hidden" name="open_flg" value="{$data.open_flg}" />
+      <input type="radio" name="open_type" id="open_type1" value="open" {if $open_type == 'open'}checked="checked"{/if} /><label for="open_type1">{'/label/do_publish'|translate}</label><br />
+      <input type="radio" name="open_type" id="open_type2" value="close" {if $open_type == 'close'}checked="checked"{/if} /><label for="open_type2">{'/label/do_unpublish'|translate}</label><br />
+      <input type="radio" name="open_type" id="open_type3" value="sitei" {if $open_type == 'sitei' || $data.ext_sta_end.open_type3}checked="checked"{/if} /><label for="open_type3">{'/label/publish_time'|translate}</label>
+{if $smarty.const.RCMS_DEV_MODE || $smarty.const.SITE_ID == 105776}
+      <select name="ext_sta_end[open_type3]" onChange="j$('.open_type3_div').hide();j$('#'+j$(this).val()).show();j$('input[name=open_type]:radio').val(['sitei']);">
+      <option value="open_sitei" {if !$data.ext_sta_end.open_type3 || $data.ext_sta_end.open_type3 == 'open_sitei'}selected="selected"{/if}>日時指定</option>
+      <option value="open_monthly" {if $data.ext_sta_end.open_type3 == 'open_monthly'}selected="selected"{/if}>毎月</option>
+      <option value="open_weekly" {if $data.ext_sta_end.open_type3 == 'open_weekly'}selected="selected"{/if}>毎週</option>
+      <option value="open_daily" {if $data.ext_sta_end.open_type3 == 'open_daily'}selected="selected"{/if}>毎日</option>
+      </select><br />
+{/if}
+{* 日時指定 *}
+      <div style="margin-left:15px;{if $data.ext_sta_end.open_type3 && $data.ext_sta_end.open_type3 != 'open_sitei'}display:none;{/if}" id="open_sitei" class="open_type3_div">
+        <div>
+        {'/label/start_date'|translate}<input id="open_sta_date" name="open_sta_date" type="text" value="{$data.open_sta_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_sta_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_sta_date-pop"></div>
+        {'/label/time'|translate}{rcms_opentimeOptions selected=$data.open_sta_time name='open_sta_time'}
+        <span class="hint2">({'/label/time_example'|translate})</span>
+        </div>
+        <div>
+        {'/label/end_date'|translate}<input id="open_end_date" name="open_end_date" type="text" value="{$data.open_end_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_end_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_end_date-pop"></div>
+        {'/label/time'|translate}{rcms_opentimeOptions selected=$data.open_end_time name='open_end_time'}
+        </div>
+      </div>
+{if $smarty.const.RCMS_DEV_MODE || $smarty.const.SITE_ID == 105776}
+{* 毎月 *}
+      <div style="margin-left:15px;{if $data.ext_sta_end.open_type3 != 'open_monthly'}display:none;{/if}" id="open_monthly" class="open_type3_div">
+        <div style="margin-top:7px;">
+        毎月：<input id="open_monthly_date" name="ext_sta_end[open_monthly_date]" type="text" value="{$data.ext_sta_end.open_monthly_date}" size="30" autocomplete="off" />
+        <span class="hint2">{'/label/open_monthly_date_explain'|translate}</span>
+        </div>
+        <div style="margin-top:7px;">
+        {'/label/time'|translate}：{rcms_opentimeOptions selected=$data.ext_sta_end.open_monthly_sta_time name='ext_sta_end[open_monthly_sta_time]'}～{rcms_opentimeOptions selected=$data.ext_sta_end.open_monthly_end_time name='ext_sta_end[open_monthly_end_time]' end_time=true} <input id="setAlltime_monthly" type="checkbox" name="ext_sta_end[open_monthly_allday_flg]" value="1" onChange="setAlltime(this,'monthly');">終日
+        </div>
+        <div style="margin-top:7px;">
+        {'/label/start_date'|translate}<input id="open_monthly_sta_date" name="open_monthly_sta_date" type="text" value="{$data.ext_sta_end.open_monthly_sta_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_monthly_sta_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_monthly_sta_date-pop"></div>
+        {'/label/end_date'|translate}<input id="open_monthly_end_date" name="open_monthly_end_date" type="text" value="{$data.ext_sta_end.open_monthly_end_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_monthly_end_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_monthly_end_date-pop"></div>
+        <span class="hint2">({'/label/time_example'|translate})</span>
+        </div>
+        <div style="margin-top:7px;">
+        除外日：<input id="open_exclude_date1" name="ext_sta_end[open_exclude_date1]" type="text" value="{$data.ext_sta_end.open_exclude_date1}" size="70" autocomplete="off" />
+        </div>
+      </div>
+
+{* 毎週 *}
+      <div style="margin-left:15px;{if $data.ext_sta_end.open_type3 != 'open_weekly'}display:none;{/if}" id="open_weekly" class="open_type3_div">
+        <div style="margin-top:7px;">
+        毎週：<label>{foreach from=$arrJweek item=week key=key}<input type="checkbox" name="ext_sta_end[open_weekly_date][]" value="{$key}"{if $key|in_array:$data.ext_sta_end.open_weekly_date}checked="checked"{/if}>{$week}曜日</label>{/foreach}
+        </div>
+        <div style="margin-top:7px;">
+        {'/label/time'|translate}：{rcms_opentimeOptions selected=$data.ext_sta_end.open_weekly_sta_time name='ext_sta_end[open_weekly_sta_time]'}～{rcms_opentimeOptions selected=$data.ext_sta_end.open_weekly_end_time name='ext_sta_end[open_weekly_end_time]' end_time=true} <input id="setAlltime_weekly" type="checkbox" name="ext_sta_end[open_weekly_allday_flg]" value="1" onChange="setAlltime(this,'weekly');">終日
+        </div>
+        <div style="margin-top:7px;">
+        {'/label/start_date'|translate}<input id="open_weekly_sta_date" name="open_weekly_sta_date" type="text" value="{$data.ext_sta_end.open_weekly_sta_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_weekly_sta_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_weekly_sta_date-pop"></div>
+        {'/label/end_date'|translate}<input id="open_weekly_end_date" name="open_weekly_end_date" type="text" value="{$data.ext_sta_end.open_weekly_end_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_weekly_end_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_weekly_end_date-pop"></div>
+        <span class="hint2">({'/label/time_example'|translate})</span>
+        </div>
+        <div style="margin-top:7px;">
+        除外日：<input id="open_exclude_date2" name="ext_sta_end[open_exclude_date2]" type="text" value="{$data.open_exclude_date2}" size="70" autocomplete="off" />
+        </div>
+      </div>
+
+{* 毎日 *}
+      <div style="margin-left:15px;{if $data.ext_sta_end.open_type3 != 'open_daily'}display:none;{/if}" id="open_daily" class="open_type3_div">
+        <div style="margin-top:7px;">
+        毎日：
+        {'/label/time'|translate}：{rcms_opentimeOptions selected=$data.ext_sta_end.open_daily_sta_time name='ext_sta_end[open_daily_sta_time]'}～{rcms_opentimeOptions selected=$data.ext_sta_end.open_daily_end_time name='ext_sta_end[open_daily_end_time]' end_time=true} <input id="setAlltime_daily" type="checkbox" name="ext_sta_end[open_daily_allday_flg]" value="1" onChange="setAlltime(this,'daily');">終日
+        </div>
+        <div style="margin-top:7px;">
+        {'/label/start_date'|translate}<input id="open_daily_sta_date" name="open_daily_sta_date" type="text" value="{$data.ext_sta_end.open_daily_sta_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_daily_sta_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_daily_sta_date-pop"></div>
+        {'/label/end_date'|translate}<input id="open_daily_end_date" name="open_daily_end_date" type="text" value="{$data.ext_sta_end.open_daily_end_date}" size="16" autocomplete="off" />
+        <button type="button" id="open_daily_end_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="open_daily_end_date-pop"></div>
+        <span class="hint2">({'/label/time_example'|translate})</span>
+        </div>
+        <div style="margin-top:7px;">
+        除外日：<input id="open_exclude_date3" name="ext_sta_end[open_exclude_date3]" type="text" value="{$data.ext_sta_end.open_exclude_date3}" size="70" autocomplete="off" />
+        </div>
+      </div>
+{/if}
+    </td>
+  </tr>
+</table>
+
+</div>
+
+{literal}
+<script type="text/javascript">
+<!--
+j$(document).ready(function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_sta_date', btnId: 'open_sta_date-btn', boxId: 'open_sta_date-pop', tableId: 'open_sta_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_end_date', btnId: 'open_end_date-btn', boxId: 'open_end_date-pop', tableId: 'open_end_date-table'});
+{/literal}{if $smarty.const.RCMS_DEV_MODE || $smarty.const.SITE_ID == 105776}{literal}
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_monthly_sta_date', btnId: 'open_monthly_sta_date-btn', boxId: 'open_monthly_sta_date-pop', tableId: 'open_monthly_sta_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_monthly_end_date', btnId: 'open_monthly_end_date-btn', boxId: 'open_monthly_end_date-pop', tableId: 'open_monthly_end_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_weekly_sta_date', btnId: 'open_weekly_sta_date-btn', boxId: 'open_weekly_sta_date-pop', tableId: 'open_monthly_sta_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_weekly_end_date', btnId: 'open_weekly_end_date-btn', boxId: 'open_weekly_end_date-pop', tableId: 'open_monthly_end_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_daily_sta_date', btnId: 'open_daily_sta_date-btn', boxId: 'open_daily_sta_date-pop', tableId: 'open_monthly_sta_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'open_daily_end_date', btnId: 'open_daily_end_date-btn', boxId: 'open_daily_end_date-pop', tableId: 'open_monthly_end_date-table'});
+
+    j$('#open_exclude_date1').datepick({
+        multiSelect: 999, monthsToShow: 3,
+        dateFormat:'yyyy/mm/dd'
+    });
+    j$('#open_exclude_date2').datepick({
+        multiSelect: 999, monthsToShow: 3,
+        dateFormat:'yyyy/mm/dd'
+    });
+    j$('#open_exclude_date3').datepick({
+        multiSelect: 999, monthsToShow: 3,
+        dateFormat:'yyyy/mm/dd'
+    });
+
+{/literal}
+    {if $data.ext_sta_end.open_monthly_sta_time eq '' && $data.ext_sta_end.open_monthly_end_time eq ''}
+        j$('#setAlltime_monthly').attr('checked',true);
+        setAlltime('#setAlltime_monthly','monthly');
+    {/if}
+    {if $data.ext_sta_end.open_weekly_sta_time eq '' && $data.ext_sta_end.open_weekly_end_time eq ''}
+        j$('#setAlltime_weekly').attr('checked',true);
+        setAlltime('#setAlltime_weekly','weekly');
+    {/if}
+    {if $data.ext_sta_end.open_daily_sta_time eq '' && $data.ext_sta_end.open_daily_end_time eq ''}
+        j$('#setAlltime_daily').attr('checked',true);
+        setAlltime('#setAlltime_daily','daily');
+    {/if}
+{literal}
+{/literal}{/if}{literal}
+});
+
+function setAlltime(elm,term){
+    if(j$(elm).attr('checked')){
+        j$('#ext_sta_end_open_'+term+'_sta_time').val('00:00');
+        j$('#ext_sta_end_open_'+term+'_end_time').val('24:00');
+        j$('#ext_sta_end_open_'+term+'_end_time').attr('disabled', 'disabled');
+        j$('#ext_sta_end_open_'+term+'_sta_time').attr('disabled', 'disabled');
+    }else{
+        j$('#ext_sta_end_open_'+term+'_sta_time').val('');
+        j$('#ext_sta_end_open_'+term+'_end_time').val('');
+        j$('#ext_sta_end_open_'+term+'_sta_time').removeAttr('disabled');
+        j$('#ext_sta_end_open_'+term+'_end_time').removeAttr('disabled');
+    }
+}
+
+//-->
+</script>
+<script type="text/javascript" src="/js/jqueryDatepick/jquery.datepick.js"></script>
+{/literal}
+

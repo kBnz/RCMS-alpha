@@ -1,0 +1,18 @@
+<h2>[emoji:068]{'/modules/photo/label/search_images_by_member'|translate}{*写真をメンバーで検索*}</h2>
+<form name="photo_search_member" method="get" action="/photo_list/">
+  <input type="hidden" name="type" value="member" />
+  <input type="hidden" name="season" value="{$season}" />
+  {if $searched_type == "member"}
+    {if $photo_search_member_grade_list|@count > 0}
+    {'/label/grade'|translate}{*学年*}:<select name="grade" onChange="onChangeMmeberData(this.value, {$season})">{html_options options=$photo_search_member_grade_list selected=$photo_search_member_selected_grade}</select><br/>
+    {/if}
+    {'/label/name'|translate}{*名前*}:<select name="search_id" id="photo_member">{html_options options=$photo_search_member_list selected=$searched_value}</select><br />
+  {else}
+    {if $photo_search_member_grade_list|@count > 0}
+    {'/label/grade'|translate}{*学年*}:<select name="grade" onChange="onChangeMmeberData(this.value, {$season})">{html_options options=$photo_search_member_grade_list}</select><br/>
+    {/if}
+    {'/label/name'|translate}{*名前*}:<select name="search_id" id="photo_member">{html_options options=$photo_search_member_list}</select><br />
+  {/if}
+  <input type="submit" value="{'/label/search'|translate}{*検索*} ">
+</form>
+<hr/>

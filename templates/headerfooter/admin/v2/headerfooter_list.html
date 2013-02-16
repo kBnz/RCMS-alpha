@@ -1,0 +1,232 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="headerfooter_device_container">
+    <div class="device_icon">
+        <div class="device_icon_pc"></div>
+        <p class="device_name">PC</p>
+    </div>
+    <div class="headerfooter_contents triangle_border_pc">
+        <h3>{'/modules/headerfooter/label/for_label'|translate:$headerfooter_pagetype.top}</h3>{*Top Page用*}
+        <table width="100%">
+            {foreach from=$headerfooterList.top key=key item=item name=top_list_nm}
+            <tr>
+                <td nowrap width="20%"><a href="/management/headerfooter/headerfooter_edit/page_type=top&region_id={$key}">{$item.title}{*編集*}</a></td>
+                <td width="80%">{$item.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+        <h3>{'/modules/headerfooter/label/for_label'|translate:$headerfooter_pagetype.contents}</h3>{*一般用*}
+        <table width="100%">
+            {foreach from=$headerfooterList.contents key=key item=item name=top_list_nm}
+            <tr>
+                <td nowrap width="20%"><a href="/management/headerfooter/headerfooter_edit/page_type=contents&region_id={$key}">{$item.title}{*編集*}</a></td>
+                <td width="80%">{$item.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+    </div>
+</div>
+
+
+
+<div class="headerfooter_device_container">
+    <div class="device_icon">
+        <div class="device_icon_mobile"></div>
+        <p class="device_name">{'/label/mobile'|translate}</p>{*モバイル*}
+    </div>
+    <div class="headerfooter_contents triangle_border">
+        <table width="100%">
+            {foreach from=$headerfooterList.mobile key=key item=item name=top_list_nm}
+            <tr>
+                <td nowrap width="20%"><a href="/management/mobile/mobile_template_edit/device_type=mobile&region_id={$key}">{$item.title}{*編集*}</a></td>
+                <td width="80%">{$item.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+    </div>
+</div>
+
+<div class="headerfooter_device_container">
+    <div class="device_icon">
+        <div class="device_icon_smartphone"></div>
+        <p class="device_name">{'/label/smart_phone'|translate}</p>{*スマートフォン*}
+    </div>
+    <div class="headerfooter_contents triangle_border">
+        <table width="100%">
+            {foreach from=$headerfooterList.smartphone key=key item=item name=top_list_nm}
+            <tr>
+                <td nowrap width="20%"><a href="/management/mobile/mobile_template_edit/device_type=smartphone&region_id={$key}">{$item.title}{*編集*}</a></td>
+                <td width="80%">{$item.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+    </div>
+</div>
+
+<div class="headerfooter_device_container">
+    <div class="device_icon">
+        <div class="device_icon_mobileapp"></div>
+        <p class="device_name">{'/label/mobileapp'|translate}</p>{*モバイルアプリ*}
+    </div>
+    <div class="headerfooter_contents triangle_border">
+        <table width="100%">
+            {foreach from=$headerfooterList.mobileapp key=key item=item name=top_list_nm}
+            <tr>
+                <td nowrap width="20%"><a href="/management/mobile/mobile_template_edit/device_type=mobileapp&region_id={$key}">{$item.title}{*編集*}</a></td>
+                <td width="80%">{$item.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+    </div>
+</div>
+
+<div class="headerfooter_device_container">
+    <div class="device_icon">
+        <div class="device_icon_facebook"></div>
+        <p class="device_name">facebook</p>{*facebook*}
+    </div>
+    <div class="headerfooter_contents triangle_border">
+        <table width="100%">
+            {foreach from=$headerfooterList.social key=key item=item name=top_list_nm}
+            <tr>
+                <td nowrap width="20%"><a href="/management/social/social_template_edit/device_type=social&region_id={$key}">{$item.title}{*編集*}</a></td>
+                <td width="80%">{$item.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+    </div>
+</div>
+
+
+
+{rcms_include file="management/footer.html"}
+
+<style type="text/less">
+{literal}
+/* 変数定義 */
+@device_icon : 48px;
+
+
+/* 関数定義 */
+.border-radius(@radius: 5px) {
+    -moz-border-radius: @radius;
+    -webkit-border-radius: @radius;
+    -o-border-radius: @radius;
+    -ms-border-radius: @radius;
+}
+
+/* デバイスボックスのスタイル指定 */
+.headerfooter_device_container {
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    padding: 10px;
+    .border-radius();
+    min-width: 500px;
+}
+.headerfooter_device_container:after {
+    content: "";
+    display: block;
+    clear: both;
+    height: 1px;
+    overflow: hidden;
+}
+.device_icon {
+    float: left;
+    width: 120px;
+    text-align: center;
+}
+.headerfooter_contents {
+    border-left: 1px solid #cccccc;
+    padding-left: 25px;
+    margin-left: 120px;
+    h3 {
+        background: linear-gradient(#ffffff, #eeeeee);
+        background: -moz-linear-gradient(top, #ffffff, #eeeeee);
+        background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eeeeee));
+        -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(StartColorStr=#ffffff, EndColorStr=#eeeeee)";
+        padding: 8px 5px;
+        border: 1px solid #cccccc;
+        margin: 10px 0;
+        font-size: 12px;
+    }
+    h3:first-child {
+        margin-top: 0;
+    }
+    table tr td a {
+        line-height: 1.5em;
+    }
+}
+
+/* 境界線（三角） */
+.triangle_border_pc,
+.triangle_border {
+    position: relative;
+}
+.triangle_border_pc:after,
+.triangle_border_pc:before,
+.triangle_border:after,
+.triangle_border:before {
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    left: -1px;
+    position: absolute;
+    width: 0;
+}
+.triangle_border_pc:after {
+    border-width: 9px;
+    border-left-color: #ffffff;
+    top: 137px;
+}
+.triangle_border:after {
+    border-width: 9px;
+    border-left-color: #ffffff;
+    top: 43px;
+}
+.triangle_border_pc:before {
+    border-width: 10px;
+    border-left-color: #cccccc;
+    top: 136px;
+}
+.triangle_border:before {
+    border-width: 10px;
+    border-left-color: #cccccc;
+    top: 42px;
+}
+
+.device_icon_pc {
+    background: url("../../../images/management/v2/common/common_icons.png") -384px 0 no-repeat;
+    width: @device_icon;
+    height: @device_icon;
+    margin: 117px auto 0;
+    line-height: 100px;
+}
+.device_icon_mobile,
+.device_icon_smartphone,
+.device_icon_mobileapp,
+.device_icon_facebook {
+    width: @device_icon;
+    height: @device_icon;
+    margin: 25px auto 0;
+    line-height: 110px;
+}
+
+.device_icon_mobile {
+    background: url("../../../images/management/v2/common/common_icons.png") -432px 0 no-repeat;
+}
+.device_icon_smartphone {
+    background: url("../../../images/management/v2/common/common_icons.png") -336px 0 no-repeat;
+}
+.device_icon_mobileapp {
+    background: url("../../../images/management/v2/common/common_icons.png") -288px 0 no-repeat;
+}
+.device_icon_facebook {
+    background: url("../../../images/management/v2/common/common_icons.png") -480px 0 no-repeat;
+}
+
+{/literal}
+</style>

@@ -1,0 +1,92 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+var langOptions = new Array();
+{foreach from=$language_options key=lang item=item name=lang}
+    langOptions[{$smarty.foreach.lang.iteration}] = '{$lang}';
+{/foreach}
+
+{literal}
+function confirmDelete(f) {
+    if (confirm("削除してもよろしいですか？")) {
+        f.mode.value='DELETE';
+        f.submit();
+    }
+}
+
+function viewSimilarWord() {
+
+    // 入力チェック
+    var strString = '';
+    for(i=1; i<=langOptions.length-1; i++){
+        var obj = document.getElementById(langOptions[i] + '_text');
+        strString = strString + obj.value;
+     }
+
+    if (strString == '')
+    {
+        alert('テキストを入力してください。');
+        return false;
+    }
+
+     var strQS = '';
+     for(i=1; i<=langOptions.length-1; i++){
+        var obj = document.getElementById(langOptions[i] + '_text');
+        if (obj.value != 'undefined')
+        {
+            strQS = strQS + langOptions[i] + '_text=' + obj.value + '&';
+        }
+     }
+
+     window.open('/management/develop/develop_similar_word/' + strQS ,'' ,'width=600,height=600,scrollbars=1,resizable=yes');
+}
+
+</script>
+<style type="text/css">
+dl.naming {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  line-height: 1.5em;
+}
+dl.naming dt {
+  margin-left: 10px;
+}
+dl.naming dd {
+  margin-left: 30px;
+}
+{/literal}
+</style>
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_make_langconfig/">i18n対応configファイル作成</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/{$mt}/{$ct}/{if $key}?key={$key}{/if}" method="post">
+  <input type="hidden" name="MODE" value="EXECUTE" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+
+<p class="hint">
+    『/モジュール名/langconfig/』のディレクトリに、外国語に対応したconfigファイルを作成します。
+</p>
+
+  {buttonbox}
+    <button type="submit">処理実行</button>
+  {/buttonbox}
+</form>
+
+</div><!--//list_main-->
+{rcms_include file="management/footer.html"}
+

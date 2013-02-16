@@ -1,0 +1,120 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>高校マスタを編集</h2>
+
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/master/masterMenu/">{$module_nm}管理</a>
+高校マスタを編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <form action="/management/master/highschool_master_list/" method="post" name="hs_list" onsubmit="return validate_hs_list(this);">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+      <p>
+        都道府県<select name="s_tdfk_cd">{html_options options=$tdfk_list selected=$s_tdfk_cd}</select>&nbsp;&nbsp;
+        高校名<input size="20" name="s_hs_name" type="text" value="{$s_hs_name}" />&nbsp;&nbsp;
+        <input name="search" value="検索する" type="submit" />
+      </p>
+
+      {pager info=$pageInfo}
+      <table width="100%" border="0" cellspacing="2" cellpadding="0">
+        <tr>
+          <th scope="col" width="58">修正</th>
+          <th scope="col">高校名</th>
+          <th scope="col">短縮名</th>
+          <th scope="col">都道府県</th>
+          <th scope="col" width="200">ホームページURL</th>
+          <th scope="col" width="58">削除</th>
+        </tr>
+
+{if $duplicate_list}
+  {* 重複チェックのリスト *}
+
+    {foreach name="hsloop" item="hsitem" from=$hs_list}
+      {assign var="i" value=$smarty.foreach.hsloop.index}
+        <tr>
+          <td width="58">
+            <input type="hidden" name="duplicateOK[{$i}]" value="ok">
+            {if $hsitem.hs_id}<input type="hidden" name="hs_id[{$i}]" value="{$hsitem.hs_id}"/>{/if}
+            {if $auth.master.update && $hsitem.hs_id}
+              <input type="submit" name="update[{$i}]" value="更新"/>
+            {elseif $auth.master.insert}
+              <input type="submit" name="insert[{$i}]" value="新規追加"/>
+            {/if}
+          </td>
+          <td nowrap>{$hsitem.hs_name}<input type="hidden" name="hs_name[{$i}]" value="{$hsitem.hs_name}"/></td>
+          <td>{$hsitem.hs_sname}<input type="hidden" name="hs_sname[{$i}]" value="{$hsitem.hs_sname}"/></td>
+          <td>{$tdfk_list[$hsitem.tdfk_cd]}<input type="hidden" name="tdfk_cd[{$i}]" value="{$hsitem.tdfk_cd}" ></td>
+          <td>{$hsitem.hp_url}<input type="hidden" name="hp_url[{$i}]" value="{$hsitem.hp_url}"/></td>
+          <td width="58">
+              <input type="submit" name="cancel" value="キャンセル">
+          </td>
+        </tr>
+    {/foreach}
+
+    {foreach item="hsitem" from=$duplicate_list}
+        <tr>
+          <td width="58">&nbsp;</td>
+          <td nowrap>{$hsitem.hs_name}</td>
+          <td>{$hsitem.hs_sname}</td>
+          <td>{$tdfk_list[$hsitem.tdfk_cd]}</td>
+          <td>{$hsitem.hp_url}</td>
+          <td width="58">&nbsp;</td>
+        </tr>
+    {/foreach}
+
+{else}
+  {* 通常のリスト *}
+
+    {* 更新処理で入力エラーがあった場合に、更新前データをここに表示する *}
+    {if $hs_before_list}
+            <tr>
+              <td><span style="color:red;">更新前の内容</span></td>
+              <td>{$hs_before_list.hs_name}</td>
+              <td>{$hs_before_list.hs_sname}</td>
+              <td>{$tdfk_list[$hs_before_list.tdfk_cd]}</td>
+              <td>{$hs_before_list.hp_url}</td>
+              <td>&nbsp;</td>
+            </tr>
+    {/if}
+
+    {foreach name="hsloop" item="hsitem" from=$hs_list}
+      {assign var="i" value=$smarty.foreach.hsloop.index}
+            <tr>
+              <td width="58">
+                {if $hsitem.hs_id}<input type="hidden" name="hs_id[{$i}]" value="{$hsitem.hs_id}"/>{/if}
+                {if $auth.master.update && $hsitem.hs_id}
+                  <input type="submit" name="update[{$i}]" value="更新"/>
+                {elseif $auth.master.insert}
+                  <input type="submit" name="insert[{$i}]" value="新規追加"/>
+                {/if}
+              </td>
+              <td><input type="text" name="hs_name[{$i}]" value="{$hsitem.hs_name}"/></td>
+              <td><input type="text" name="hs_sname[{$i}]" value="{$hsitem.hs_sname}"/></td>
+              <td><select name="tdfk_cd[{$i}]">{html_options options=$tdfk_list selected=$hsitem.tdfk_cd}</select></td>
+              <td><input type="text" name="hp_url[{$i}]" value="{$hsitem.hp_url}"/></td>
+              <td width="58">
+                {if $auth.master.delete && $hsitem.hs_id}
+                  <input type="submit" name="delete[{$i}]" onclick="if (!confirm('削除してよろしいですか')) return false ;" value="削除">
+                {/if}
+              </td>
+            </tr>
+    {/foreach}
+{/if}
+
+      </table>
+      {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

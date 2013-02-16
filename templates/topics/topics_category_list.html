@@ -1,0 +1,20 @@
+{module name="topics_category_list"}
+<h2 class="module_title"><span>{'/label/category'|translate}{* カテゴリ *}</span></h2>
+<div class="module_contents">
+<ul>
+  {* <li><a href="/RSS.rdf"><span class="rss_button"><img src="/images/modules/rss/rss.gif" alt="rss"></span></a>（全トピックスカテゴリ用）</li> *}
+  <li><a href="/files/topics/rss/group{$topics_group_id}.rdf"><span class="rss_button"><img src="/images/modules/rss/rss.gif" alt="rss"></span></a>【{'/modules/topics/label/all_topics_of_this_group'|translate}{* このグループの全記事 *}】</li>
+{foreach from=$topics_category_tree item=row}
+  <li><a href="/{$link_page_sysnm}/contents_type={$row.contents_type}">{$row.category_nm}<span>({$row.cnt})</span></a>{if $row.cnt > 0}<a href="/files/topics/rss/category{$row.contents_type}.rdf"><span class="rss_button"><img src="/images/modules/rss/rss.gif" alt="rss"></span></a>{/if}
+    {if $row.child|@count > 0}
+        <ul>
+        {foreach from=$row.child item=row2}
+            <li><a href="/{$link_page_sysnm}/contents_type={$row2.contents_type}">{$row2.category_nm}<span>({$row2.cnt})</span></a>{if $row2.cnt > 0}<a href="/files/topics/rss/category{$row2.contents_type}.rdf"><span class="rss_button"><img src="/images/modules/rss/rss.gif" alt="rss"></span></a>{/if}</li>
+        {/foreach}
+        </ul>
+    {/if}
+  </li>
+{/foreach}
+</ul>
+</div>
+{/module}

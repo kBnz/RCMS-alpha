@@ -1,0 +1,10 @@
+{if $recommend_data|@count > 0}
+<h2>[emoji:145]{'/modules/aaccesscount/label/access_recommend_title'|translate}</h2>
+
+<ul>
+{foreach from=$recommend_data item=item name=comment_recommend}
+<li><a href="{$item.module_link}">{$item.title|escape}</a></li>
+{/foreach}
+</ul>
+<hr/>
+{/if}

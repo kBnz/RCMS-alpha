@@ -1,0 +1,7 @@
+
+<ul class="minitabs">
+      {foreach from=$headerfooterList[$hf_page_type] key=key item=item}
+          <li><a href="/management/headerfooter/headerfooter_edit/page_type={$hf_page_type}&region_id={$key}" {if $region_id eq $key}class="active"{/if} style="font-size:10px;">{$item.title}</a></li>
+      {/foreach}
+</ul>
+<div class="clear"></div>

@@ -1,0 +1,798 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{rcms_include file="gameamefoot/admin/gameamefoot_js.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+        DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+//        DUI.calendar.PopupWindow({title:"日付", textId: 'end_ymd', btnId: 'end_ymd-btn', boxId: 'end_ymd-pop', tableId: 'ymd-table'});
+
+        // var が無いのは外部windowから呼び出せるようにするためです (window.placeChecker = ... と同じ)
+        placeChecker = new Checker({notifier : $('subInfo'),
+                                                                idInput  : document.game_edit.place_id,
+                                                                nmInput  : document.game_edit.place});
+});
+</script>
+{/literal}
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+    <ul>
+        {if $auth.gameamefoot.insert}
+        <li class="add"><a href="/management/gameamefoot/gameamefoot_edit/"><span>試合追加</span></a></li>
+        {/if}
+        <li class="normal"><a href="/management/gameamefoot/gameamefoot_history/game_id={$game_id}"><span>{'/label/update_history'|translate}</span></a></li>
+        <li class="normal"><a href="/management/accesscount/accesscount_list/module=gameamefoot&id={$game_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+        <li class="view"><a href="{$smarty.const.ROOT_URL}/gameamefoot_detail/id={$game_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+    </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/gameamefoot/gameamefoot_list/">{$module_nm}</a>
+<a href="/management/gameamefoot/gameamefoot_list/">{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>　<a href="/gameamefoot_detail/id={$game_id}">総アクセス数:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+<div class="main_contents">
+<div class="list_main">
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+    <form name="game_edit" id="gameamefoot_edit" action="/management/gameamefoot/gameamefoot_edit/" method="POST">
+        <input type="hidden" name="pageID" value="{$pageID}" />
+        <input type="hidden" name="game_id" value="{$game_id}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="UPDATE" />
+        <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+        <input type="hidden" name="self_mem" value="{$self_mem}" />
+        <a name="relation_data"></a>
+        {rcms_include file="management/relation_edit.html"}
+        <br style="clear: both;">
+
+        <h3>試合情報</h3>
+            {if $game_id == '' && $copyArr|@count > 0}
+            <table width="100%">
+                <tr><td><select name="copy_id">{html_options options=$copyArr selected=$copy_id}</select>の以下の内容を<input type="submit" name="copy" value="コピーする" onclick="game_copy()" /><br />
+                <input type="checkbox" id="copy_game_detail" name="copy_game_detail" {if $copy_id == "" || $copy_game_detail != ""}checked="checked"{/if} /><label for="copy_game_detail">試合詳細</label>
+                <input type="checkbox" id="copy_self_member" name="copy_self_member" {if $copy_id == "" || $copy_self_member != ""}checked="checked"{/if} /><label for="copy_self_member">自メンバー</label>
+                </td></tr>
+            </table>
+            {/if}
+            <table width="100%">
+                <tr>
+                    <th>シーズン<span class="required">※</span></th>
+                    <td><select name="season" id="season">{rcms_seasonOptions selected=$data.season}</select></td>
+                </tr>
+                <tr>
+                    <th>日付<span class="required">※</span></th>
+                    <td>
+                        <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+                        <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                        <div class="pop_calendar" id="ymd-pop"></div>
+                        <span class="hint">(例 2006/05/01)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>試合開始時間<span class="required">※</span></th>
+                    <td><input type="text" name="ko_time" value="{$data.ko_time|escape}"></td>
+                </tr>
+                <tr>
+                    <th>試合会場<span class="required">※</span></th>
+                    <td><input type="text" name="place" value="{$data.place|escape}"><a href="javascript:void(0);" onclick="placeInput()">選択</a><span id="subInfo"></span></td>
+                </tr>
+                <tr>
+                    <th>試合形式<span class="required">※</span></th>
+                    <td><input type="text" name="game_type" value="{$data.game_type|escape}"><a href="javascript:void(0);" onclick="gameTypeInput()">選択</a> <input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked{/if}>公式戦</td>
+                </tr>
+                <tr>
+                    <th>トーナメント</th>
+                    <td><input type="text" name="game_type2" value="{$data.game_type2|escape}"><a href="javascript:void(0);" onclick="gameType2Input()">選択</a></td>
+                </tr>
+                <tr>
+                    <th>対戦相手<span class="required">※</span></th>
+                    <td>{$smarty.const.SELF_TEAM_SNM}<input type="text" name="team_grade" value="{$data.team_grade|escape}" size="2">
+                     vs
+                     <select name="team_type" id="team_type" onchange="onChangeTeamType(this.value, 'amefoot')">
+                     {html_options options=$arrTeamAmefootType selected=$data.team_type}
+                     </select>
+                     <select name="opponent" id="opponent">
+                     <option value="">------</option>
+                     {html_options options=$opponent_arr selected=$data.opponent}
+                     </select>
+                     <input type="text" name="opponent_grade" value="{$data.opponent_grade|escape}" size="2">
+                     <a href="javascript:;" onclick="teamInput()">対戦相手をチームリストに登録</a>
+                     <br>※２つめの入力欄にはＡ、Ｂ、ＯＢ等のチームの種類を入力してください。
+                     </td>
+                </tr>
+                <tr>
+                        <th>試合結果</th>
+                        <td>
+                        <table cellpadding="0" cellspacing="5" class="not_list_main tokuten">
+                            <tr>
+                            <td></td>
+                            <td>1Q</td>
+                            <td>2Q</td>
+                            <td>3Q</td>
+                            <td>4Q</td>
+                            <td>OT</td>
+                            <td>合計</td>
+                            </tr>
+                            <tr>
+                            <td>自チーム</td>
+                            <td><input type="text" name="Self_1Q" value="{$data.Self_1Q|escape}" size="3"></td>
+                            <td><input type="text" name="Self_2Q" value="{$data.Self_2Q|escape}" size="3"></td>
+                            <td><input type="text" name="Self_3Q" value="{$data.Self_3Q|escape}" size="3"></td>
+                            <td><input type="text" name="Self_4Q" value="{$data.Self_4Q|escape}" size="3"></td>
+                            <td><input type="text" name="Self_OT" value="{$data.Self_OT|escape}" size="3"></td>
+                            <td><input type="text" name="Self_Total" value="{$data.Self_Total}" size="3"></td>
+                            </tr>
+                            <tr>
+                            <td>相手チーム</td>
+                            <td><input type="text" name="Opp_1Q" value="{$data.Opp_1Q|escape}" size="3"></td>
+                            <td><input type="text" name="Opp_2Q" value="{$data.Opp_2Q|escape}" size="3"></td>
+                            <td><input type="text" name="Opp_3Q" value="{$data.Opp_3Q|escape}" size="3"></td>
+                            <td><input type="text" name="Opp_4Q" value="{$data.Opp_4Q|escape}" size="3"></td>
+                            <td><input type="text" name="Opp_OT" value="{$data.Opp_OT|escape}" size="3"></td>
+                            <td><input type="text" name="Opp_Total" value="{$data.Opp_Total}" size="3"></td>
+                            </tr>
+                        </table>
+                        </td>
+                </tr>
+                <tr>
+                    <th>得点の内訳</th>
+                    <td>
+                        <table cellpadding="0" cellspacing="5" class="not_list_main tokuten">
+                            <tr align="center">
+                            <td colspan="2"></td>
+                            <td>自チーム</td>
+                            <td>他チーム</td>
+                            </tr>
+                            <tr align="center">
+                            <td colspan="2">タッチダウン</td>
+                            <td><input type="text" name="Self_TD" value="{$data.Self_TD}" size="3"></td>
+                            <td><input type="text" name="Opp_TD" value="{$data.Opp_TD}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td rowspan="2">PAT</td>
+                            <td>（１点）回数-成功</td>
+                            <td><input type="text" name="Self_PAT1_CNT" value="{$data.Self_PAT1_CNT}" size="3">-<input type="text" name="Self_PAT1_GET" value="{$data.Self_PAT1_GET}" size="3"></td>
+                            <td><input type="text" name="Opp_PAT1_CNT" value="{$data.Opp_PAT1_CNT}" size="3">-<input type="text" name="Opp_PAT1_GET" value="{$data.Opp_PAT1_GET}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>（２点）回数-成功</td>
+                            <td><input type="text" name="Self_PAT2_CNT" value="{$data.Self_PAT2_CNT}" size="3">-<input type="text" name="Self_PAT2_GET" value="{$data.Self_PAT2_GET}" size="3"></td>
+                            <td><input type="text" name="Opp_PAT2_CNT" value="{$data.Opp_PAT2_CNT}" size="3">-<input type="text" name="Opp_PAT2_GET" value="{$data.Opp_PAT2_GET}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>フィールドゴール</td>
+                            <td>回数-成功</td>
+                            <td><input type="text" name="Self_FG_CNT" value="{$data.Self_FG_CNT}" size="3">-<input type="text" name="Self_FG_GET" value="{$data.Self_FG_GET}" size="3"></td>
+                            <td><input type="text" name="Opp_FG_CNT" value="{$data.Opp_FG_CNT}" size="3">-<input type="text" name="Opp_FG_GET" value="{$data.Opp_FG_GET}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td colspan="2">セーフティ</td>
+                            <td><input type="text" name="Self_SAFTY" value="{$data.Self_SAFTY}" size="3"></td>
+                            <td><input type="text" name="Opp_SAFTY" value="{$data.Opp_SAFTY}" size="3"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>チーム記録</th>
+                    <td>
+                        <table cellpadding="0" cellspacing="5" class="not_list_main tokuten">
+                            <tr align="center">
+                            <td colspan="2"></td>
+                            <td>自チーム</td>
+                            <td>相手チーム</td>
+                            </tr>
+                            <tr align="center">
+                            <td colspan="2">ファーストダウン</td>
+                            <td><input type="text" name="Self_FD" value="{$data.Self_FD}" size="3"><br>(<input type="text" name="Self_FD1" value="{$data.Self_FD1}" size="3">-<input type="text" name="Self_FD2" value="{$data.Self_FD2}" size="3">-<input type="text" name="Self_FD3" value="{$data.Self_FD3}" size="3">)</td>
+                            <td><input type="text" name="Opp_FD" value="{$data.Opp_FD}" size="3"><br>(<input type="text" name="Opp_FD1" value="{$data.Opp_FD1}" size="3">-<input type="text" name="Opp_FD2" value="{$data.Opp_FD2}" size="3">-<input type="text" name="Opp_FD3" value="{$data.Opp_FD3}" size="3">)</td>
+                            </tr>
+                            <tr align="center">
+                            <td rowspan="2">パス</td>
+                            <td>試投-成功-Intercept</td>
+                            <td><input type="text" name="Self_PASS_CNT" value="{$data.Self_PASS_CNT}" size="3">-<input type="text" name="Self_PASS_GET" value="{$data.Self_PASS_GET}" size="3">-<input type="text" name="Self_PASS_I" value="{$data.Self_PASS_I}" size="3"></td>
+                            <td><input type="text" name="Opp_PASS_CNT" value="{$data.Opp_PASS_CNT}" size="3">-<input type="text" name="Opp_PASS_GET" value="{$data.Opp_PASS_GET}" size="3">-<input type="text" name="Opp_PASS_I" value="{$data.Opp_PASS_I}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>獲得ヤード</td>
+                            <td><input type="text" name="Self_PASS_YARD" value="{$data.Self_PASS_YARD}" size="3"></td>
+                            <td><input type="text" name="Opp_PASS_YARD" value="{$data.Opp_PASS_YARD}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>ラン</td>
+                            <td>回数-獲得ヤード</td>
+                            <td><input type="text" name="Self_RUN_CNT" value="{$data.Self_RUN_CNT}" size="3">-<input type="text" name="Self_RUN_YARD" value="{$data.Self_RUN_YARD}" size="3"></td>
+                            <td><input type="text" name="Opp_RUN_CNT" value="{$data.Opp_RUN_CNT}" size="3">-<input type="text" name="Opp_RUN_YARD" value="{$data.Opp_RUN_YARD}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>合計</td>
+                            <td>回数-獲得ヤード</td>
+                            <td><input type="text" name="Self_TOTAL_CNT" value="{$data.Self_TOTAL_CNT}" size="3">-<input type="text" name="Self_TOTAL_YARD" value="{$data.Self_TOTAL_YARD}" size="3"></td>
+                            <td><input type="text" name="Opp_TOTAL_CNT" value="{$data.Opp_TOTAL_CNT}" size="3">-<input type="text" name="Opp_TOTAL_YARD" value="{$data.Opp_TOTAL_YARD}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>反則</td>
+                            <td>回数-罰則ヤード</td>
+                            <td><input type="text" name="Self_FOUL_CNT" value="{$data.Self_FOUL_CNT}" size="3">-<input type="text" name="Self_FOUL_YARD" value="{$data.Self_FOUL_YARD}" size="3"></td>
+                            <td><input type="text" name="Opp_FOUL_CNT" value="{$data.Opp_FOUL_CNT}" size="3">-<input type="text" name="Opp_FOUL_YARD" value="{$data.Opp_FOUL_YARD}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td>ファンブル</td>
+                            <td>回数-喪失</td>
+                            <td><input type="text" name="Self_FUMBLE_CNT" value="{$data.Self_FUMBLE_CNT}" size="3">-<input type="text" name="Self_FUMBLE_YARD" value="{$data.Self_FUMBLE_YARD}" size="3"></td>
+                            <td><input type="text" name="Opp_FUMBLE_CNT" value="{$data.Opp_FUMBLE_CNT}" size="3">-<input type="text" name="Opp_FUMBLE_YARD" value="{$data.Opp_FUMBLE_YARD}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td colspan="2">攻撃時間</td>
+                            <td><input type="text" name="Self_ATTACK_TIME" value="{$data.Self_ATTACK_TIME}" size="3"></td>
+                            <td><input type="text" name="Opp_ATTACK_TIME" value="{$data.Opp_ATTACK_TIME}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td colspan="2">3rd Down Conversions</td>
+                            <td><input type="text" name="Self_3DC1" value="{$data.Self_3DC1}" size="3">/<input type="text" name="Self_3DC2" value="{$data.Self_3DC2}" size="3"></td>
+                            <td><input type="text" name="Opp_3DC1" value="{$data.Opp_3DC1}" size="3">/<input type="text" name="Opp_3DC2" value="{$data.Opp_3DC2}" size="3"></td>
+                            </tr>
+                            <tr align="center">
+                            <td colspan="2">4th Down Conversions</td>
+                            <td><input type="text" name="Self_4DC1" value="{$data.Self_4DC1}" size="3">/<input type="text" name="Self_4DC2" value="{$data.Self_4DC2}" size="3"></td>
+                            <td><input type="text" name="Opp_4DC1" value="{$data.Opp_4DC1}" size="3">/<input type="text" name="Opp_4DC2" value="{$data.Opp_4DC2}" size="3"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>コメント</th>
+                    <td><textarea name="game_comment" rows="7" cols="50" style="font-size:100%">{$data.game_comment|escape}</textarea></td>
+                </tr>
+                <tr>
+                    <th>ステータス<span class="required">※</span></th>
+                    <td>{html_radios name="game_status" options=$arrGameStatus selected=$data.game_status}</td>
+                </tr>
+        </table>
+            <br style="clear: both;">
+            <h3>試合情報詳細</h3>
+            <h4 class="basic">メンバー情報</h4>
+            <div id="member_self">
+                <table>
+                   <thead>
+                    <tr>
+                        <th>背番号</th>
+                        <th>POS</th>
+                        <th>学年</th>
+                        <th>名前</th>
+                        <th>並び順</th>
+                    </tr>
+                    </thead>
+
+{section name="loopname" loop=$self_mem}
+                    <tr class="member_row" id="member_row{$smarty.section.loopname.iteration}">
+                        <td>
+                            <input type="text" name="member_no[]" id="member_no[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_no}" size="3" />
+                            <input type="hidden" name="member_id[]" id="member_id[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_id}" />
+                        </td>
+                        <td>
+                        <select name="member_position[]">{html_options options=$arrPositionAllamefoot selected=$data_self[loopname].member_position}</select>
+                        </td>
+                        <td>
+                            <input type="text" name="member_grade[]" id="member_grade[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_grade}" size="3" />
+                        </td>
+                        <td>
+                            <input type="text" name="member_name[]" id="member_name[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_name}" size="20" onBlur="chkMemId({$smarty.section.loopname.index})" onKeyup="writeWithKeybourd({$smarty.section.loopname.index})" />
+                            <input type="button" value="..." onclick="inputMemberInfo({$smarty.section.loopname.index});" />
+                            <span id="subInfo[{$smarty.section.loopname.index}]" style="display:{if ($data_self[loopname].member_id == -1 && $data_self[loopname].member_name != "") || ($data_self[loopname].member_id == "" && $data_self[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                            <div id="inputArea[{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                                    <iframe name="inputFrame" id="inputFrame[{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                            </div>
+                        </td>
+                          <td>
+                            <a href="javascript:;" onclick="swapSibling(-1, 'member_row{$smarty.section.loopname.iteration}');return false;"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+                            <a href="javascript:;" onclick="swapSibling(1, 'member_row{$smarty.section.loopname.iteration}');return false;"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+                          </td>
+                    </tr>
+{/section}
+                </table>
+                <table><tr><td><input type="button" name="subflg" value="メンバーを増やす" onclick="add_self_mem()" /></td></tr></table>
+            </div>
+            <h4 class="basic">得点経過</h4>
+            <table width="100%" id="score_passage">
+                <tbody>
+                <tr>
+                    <th>TEAM</th>
+                    <th>TIME</th>
+                    <th>PLAY</th>
+                    <th>PLAYER(S)</th>
+                    <th>PAT</th>
+                    <th>PLAYER(S)</th>
+                    <th>G/NG</th>
+                    <th>Score</th>
+                    <th width="35">削除</th>
+                </tr>
+                {foreach from=$data.score_passage item=item name=score_passage}
+                <tr id="score_passage_tr{$smarty.foreach.score_passage.index}">
+                    <td><select id="score_passage_team[{$smarty.foreach.score_passage.index}]" name="score_passage_team[]">{html_options options=$score_passage_team selected=$item.score_passage_team}</select></td>
+                    <td><input type="text" name="score_passage_time[]" value="{$item.score_passage_time|escape}" size="15"></td>
+                    <td><input type="text" name="score_passage_play[]" value="{$item.score_passage_play|escape}" size="15"></td>
+                    <td><input type="text" name="score_passage_players1[]" value="{$item.score_passage_players1|escape}" size="15"></td>
+                    <td><select id="score_passage_pat[{$smarty.foreach.score_passage.index}]" name="score_passage_pat[]">{html_options options=$score_passage_pat selected=$item.score_passage_pat}</select></td>
+                    <td><input type="text" name="score_passage_players2[]" value="{$item.score_passage_players2|escape}" size="15"></td>
+                    <td><select id="score_passage_g_ng[{$smarty.foreach.score_passage.index}]"    name="score_passage_g_ng[]">{html_options options=$score_passage_goal selected=$item.score_passage_g_ng}</select></td>
+                    <td><input type="text" name="score_passage_score[]" value="{$item.score_passage_score|escape}" size="3"></td>
+                {if $smarty.foreach.score_passage.first}
+                    <td width="35"></td>
+                {else}
+                    <td><input type="button" name="score_passage_delete[]" value="削除" onclick="delete_element('score_passage_tr{$smarty.foreach.score_passage.index}')"></td>
+                {/if}
+                </tr>
+                {foreachelse}
+                <tr>
+                    <td><select id="score_passage_team[0]" name="score_passage_team[]">{html_options options=$score_passage_team selected=$item.score_passage_team}</select></td>
+                    <td><input type="text" name="score_passage_time[]" value="" size="15"></td>
+                    <td><input type="text" name="score_passage_play[]" value="" size="15"></td>
+                    <td><input type="text" name="score_passage_players1[]" value="" size="15"></td>
+                    <td><select id="score_passage_pat[0]" name="score_passage_pat[]">{html_options options=$score_passage_pat selected=$item.score_passage_pat}</select></td>
+                    <td><input type="text" name="score_passage_players2[]" value="" size="15"></td>
+                    <td><select id="score_passage_g_ng[0]" name="score_passage_g_ng[]">{html_options options=$score_passage_goal selected=$item.score_passage_g_ng}</select></td>
+                    <td><input type="text" name="score_passage_score[]" value="" size="3"></td>
+                    <td width="35"></td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="score_passage_add_tbody('score_passage'); " ></p>
+            <p class="hint" style="margin-top:15px;">並び順はyardsの大きい順に並びます。</p>
+            <p class="hint">ロストヤードの場合は、マイナスを付けてください。</p>
+            <h4 class="basic">RUSHING</h4>
+            <table width="100%">
+                <tbody id="rushing">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>Att</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th>LG</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.rushing|@count}
+                <tr id="rushing_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[rushing][]" value="{$data.rushing[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[rushing][]" id="member_name[rushing{$smarty.section.loopname.index}]" value="{$data.rushing[loopname].member_name}" size="20" onBlur="chkMemId('rushing{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('rushing{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('rushing{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[rushing{$smarty.section.loopname.index}]" style="display:{if ($data.rushing[loopname].member_id == -1 && $data.rushing[loopname].member_name != "") || ($data.rushing[loopname].member_id == "" && $data.rushing[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[rushing{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                            <iframe name="inputFrame" id="inputFrame[rushing{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="rushing_att_point[]" value="{$data.rushing[loopname].att_point}" size="3"></td>
+                    <Td><input type="text" name="rushing_yard[]"      value="{$data.rushing[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="rushing_td_point[]"  value="{$data.rushing[loopname].td_point}" size="3"></td>
+                    <td><input type="text" name="rushing_lg_point[]"  value="{$data.rushing[loopname].lg_point}" size="3">
+                        <input type="hidden" name="rushing_game_amefoot_score_id[]"  value="{$data.rushing[loopname].game_amefoot_score_id}" >
+                        <input type="hidden" name="member_id[rushing][]" id="member_id[rushing{$smarty.section.loopname.index}]" value="{$data.rushing[loopname].member_id}" size="3" />
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[rushing{$smarty.section.loopname.index}]" id="member_grade[rushing{$smarty.section.loopname.index}]" value="" size="3" />
+                    </td>
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="rushing_delete[]" value="削除" onclick="delete_element('rushing_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('rushing'); " ></p>
+            <h4 class="basic">PASSING</h4>
+            <table    width="100%">
+                <tbody id="passing">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>Att</th>
+                    <th>COMP</th>
+                    <th>INT</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th>LG</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.passing|@count}
+                <tr id="passing_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[passing][]" value="{$data.passing[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[passing][]" id="member_name[passing{$smarty.section.loopname.index}]" value="{$data.passing[loopname].member_name}" size="20" onBlur="chkMemId('passing{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('passing{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('passing{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[passing{$smarty.section.loopname.index}]" style="display:{if ($data.passing[loopname].member_id == -1 && $data.passing[loopname].member_name != "") || ($data.passing[loopname].member_id == "" && $data.passing[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[passing{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="inputFrame" id="inputFrame[passing{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="passing_att_point[]" value="{$data.passing[loopname].att_point}" size="3"></td>
+                    <td><input type="text" name="passing_comp_point[]" value="{$data.passing[loopname].comp_point}" size="3"></td>
+                    <td><input type="text" name="passing_int_point[]" value="{$data.passing[loopname].int_point}" size="3"></td>
+                    <td><input type="text" name="passing_yard[]" value="{$data.passing[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="passing_td_point[]" value="{$data.passing[loopname].td_point}" size="3"></td>
+                    <td><input type="text" name="passing_lg_point[]" value="{$data.passing[loopname].lg_point}" size="3"></td>
+                        <input type="hidden"   name="passing_game_amefoot_score_id[]"  value="{$data.passing[loopname].game_amefoot_score_id}" >
+                        <input type="hidden" name="member_id[passing][]" id="member_id[passing{$smarty.section.loopname.index}]" value="{$data.passing[loopname].member_id}" size="3" />
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[passing{$smarty.section.loopname.index}]" id="member_grade[passing{$smarty.section.loopname.index}]" value="" size="3" />
+                    </td>
+                {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                {else}
+                    <td><input type="button" name="passing_delete[]" value="削除" onclick="delete_element('passing_tr{$smarty.section.loopname.index}')"></td>
+                {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('passing'); " ></p>
+            <h4 class="basic">RECEIVING</h4>
+            <table width="100%">
+                <tbody id="receiving">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>NO</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th>LG</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.receiving|@count}
+                <tr id="receiving_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[receiving][]" value="{$data.receiving[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[receiving][]" id="member_name[receiving{$smarty.section.loopname.index}]" value="{$data.receiving[loopname].member_name}" size="20" onBlur="chkMemId('receiving{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('receiving{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('receiving{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[receiving{$smarty.section.loopname.index}]" style="display:{if ($data.receiving[loopname].member_id == -1 && $data.receiving[loopname].member_name != "") || ($data.receiving[loopname].member_id == "" && $data.receiving[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[receiving{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="receiving_inputFrame" id="inputFrame[receiving{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="receiving_no_point[]"   value="{$data.receiving[loopname].no_point}" size="3"></td>
+                    <td><input type="text" name="receiving_yard[]"       value="{$data.receiving[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="receiving_td_point[]"   value="{$data.receiving[loopname].td_point}" size="3"></td>
+                    <td><input type="text" name="receiving_lg_point[]"   value="{$data.receiving[loopname].lg_point}" size="3"></td>
+                        <input type="hidden"   name="receiving_game_amefoot_score_id[]"  value="{$data.receiving[loopname].game_amefoot_score_id}" >
+                        <input type="hidden"   name="member_id[receiving][]" id="member_id[receiving{$smarty.section.loopname.index}]" value="{$data.receiving[loopname].member_id}" size="3" />
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[receiving{$smarty.section.loopname.index}]" id="member_grade[receiving{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="receiving_delete[]" value="削除" onclick="delete_element('receiving_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('receiving'); " ></p>
+            <h4 class="basic">FIELD GOAL</h4>
+            <table width="100%">
+            <tbody id="field_goal">
+            <tr>
+                <th>背番号</th>
+                <th>members</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th width="35">削除</th>
+            </tr>
+{section name="loopname" loop=$data.field_goal|@count}
+                <tr id="field_goal_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[field_goal][]" value="{$data.field_goal[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[field_goal][]" id="member_name[field_goal{$smarty.section.loopname.index}]" value="{$data.field_goal[loopname].member_name}" size="20" onBlur="chkMemId('field_goal{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('field_goal{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('field_goal{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[field_goal{$smarty.section.loopname.index}]" style="display:{if ($data.field_goal[loopname].member_id == -1 && $data.field_goal[loopname].member_name != "") || ($data.field_goal[loopname].member_id == "" && $data.field_goal[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[field_goal{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="punt_inputFrame" id="inputFrame[field_goal{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="field_goal1[]" value="{$data.field_goal[loopname].field_goal1}" size="3"><select id="field_goal1_good[0]" name="field_goal1_good[]">{html_options options=$field_goal selected=$data.field_goal[loopname].field_goal1_good}</select></td>
+                    <td><input type="text" name="field_goal2[]" value="{$data.field_goal[loopname].field_goal2}" size="3"><select id="field_goal2_good[0]" name="field_goal2_good[]">{html_options options=$field_goal selected=$data.field_goal[loopname].field_goal2_good}</select></td>
+                    <td><input type="text" name="field_goal3[]" value="{$data.field_goal[loopname].field_goal3}" size="3"><select id="field_goal3_good[0]" name="field_goal3_good[]">{html_options options=$field_goal selected=$data.field_goal[loopname].field_goal3_good}</select></td>
+                    <td><input type="text" name="field_goal4[]" value="{$data.field_goal[loopname].field_goal4}" size="3"><select id="field_goal4_good[0]" name="field_goal4_good[]">{html_options options=$field_goal selected=$data.field_goal[loopname].field_goal4_good}</select></td>
+                    <td><input type="text" name="field_goal5[]" value="{$data.field_goal[loopname].field_goal5}" size="3"><select id="field_goal5_good[0]" name="field_goal5_good[]">{html_options options=$field_goal selected=$data.field_goal[loopname].field_goal5_good}</select></td>
+                        <input type="hidden" name="member_id[field_goal][]" id="member_id[field_goal{$smarty.section.loopname.index}]" value="{$data.field_goal[loopname].member_id}" size="3" />
+                        <input type="hidden"   name="game_amefoot_score_id[]"  value="{$data.field_goal[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[field_goal{$smarty.section.loopname.index}]" id="member_grade[field_goal{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="field_goal_delete[]" value="削除" onclick="delete_element('field_goal_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('field_goal'); " ></p>
+            <h4 class="basic">PUNT</h4>
+            <table width="100%">
+                <tbody id="punt">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th>TB</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.punt|@count}
+                <tr id="punt_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[punt][]" value="{$data.punt[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[punt][]" id="member_name[punt{$smarty.section.loopname.index}]" value="{$data.punt[loopname].member_name}" size="20" onBlur="chkMemId('punt{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('punt{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('punt{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[punt{$smarty.section.loopname.index}]" style="display:{if ($data.punt[loopname].member_id == -1 && $data.punt[loopname].member_name != "") || ($data.punt[loopname].member_id == "" && $data.punt[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[punt{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="punt_inputFrame" id="inputFrame[punt{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="punt_cnt[]" value="{$data.punt[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="punt_yard[]" value="{$data.punt[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="punt_tb_point[]" value="{$data.punt[loopname].tb_point}" size="3"></td>
+                        <input type="hidden" name="member_id[punt][]" id="member_id[punt{$smarty.section.loopname.index}]" value="{$data.punt[loopname].member_id}" size="3" />
+                        <input type="hidden"   name="punt_game_amefoot_score_id[]"  value="{$data.punt[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[punt{$smarty.section.loopname.index}]" id="member_grade[punt{$smarty.section.loopname.index}]" value="" size="3" />
+                    </td>
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="punt_delete[]" value="削除" onclick="delete_element('punt_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                <tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('punt'); " ></p>
+            <h4 class="basic">KICK OFF RETURN</h4>
+            <table width="100%">
+                <tbody id="kick_off_return">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.kick_off_return|@count}
+                <tr id="kick_off_return_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[kick_off_return][]" value="{$data.kick_off_return[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[kick_off_return][]" id="member_name[kick_off_return{$smarty.section.loopname.index}]" value="{$data.kick_off_return[loopname].member_name}" size="20" onBlur="chkMemId('kick_off_return{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('kick_off_return{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[kick_off_return{$smarty.section.loopname.index}]" style="display:{if ($data.kick_off_return[loopname].member_id == -1 && $data.kick_off_return[loopname].member_name != "") || ($data.kick_off_return[loopname].member_id == "" && $data.kick_off_return[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[kick_off_return{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="kick_off_return_inputFrame" id="inputFrame[kick_off_return{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="kick_off_return_cnt[]"       value="{$data.kick_off_return[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="kick_off_return_yard[]"      value="{$data.kick_off_return[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="kick_off_return_td_point[]"  value="{$data.kick_off_return[loopname].td_point}" size="3"></td>
+                        <input type="hidden" name="member_id[kick_off_return][]" id="member_id[kick_off_return{$smarty.section.loopname.index}]" value="{$data.kick_off_return[loopname].member_id}" size="3" />
+                        <input type="hidden" name="kick_off_return_game_amefoot_score_id[]"  value="{$data.kick_off_return[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[kick_off_return{$smarty.section.loopname.index}]" id="member_grade[kick_off_return{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="kick_off_return_delete[]" value="削除" onclick="delete_element('kick_off_return_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                <tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('kick_off_return'); " ></p>
+            <h4 class="basic">QB SACK</h4>
+            <table width="100%">
+                <tbody id="qb_sack">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.qb_sack|@count}
+                <tr id="qb_sack_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[qb_sack][]" value="{$data.qb_sack[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[qb_sack][]" id="member_name[qb_sack{$smarty.section.loopname.index}]" value="{$data.qb_sack[loopname].member_name}" size="20" onBlur="chkMemId('qb_sack{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('qb_sack{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('qb_sack{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[qb_sack{$smarty.section.loopname.index}]" style="display:{if ($data.qb_sack[loopname].member_id == -1 && $data.qb_sack[loopname].member_name != "") || ($data.qb_sack[loopname].member_id == "" && $data.qb_sack[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[qb_sack{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="qb_sack_inputFrame" id="inputFrame[qb_sack{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="qb_sack_cnt[]"   value="{$data.qb_sack[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="qb_sack_yard[]"  value="{$data.qb_sack[loopname].yard}" size="3"></td>
+                        <input type="hidden" name="member_id[qb_sack][]" id="member_id[qb_sack{$smarty.section.loopname.index}]" value="{$data.qb_sack[loopname].member_id}" size="3" />
+                        <input type="hidden"   name="qb_sack_game_amefoot_score_id[]"  value="{$data.qb_sack[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[qb_sack{$smarty.section.loopname.index}]" id="member_grade[qb_sack{$smarty.section.loopname.index}]" value="" size="3" />
+                    </td>
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="qb_sack_delete[]" value="削除" onclick="delete_element('qb_sack_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('qb_sack'); " ></p>
+            <h4 class="basic">PUNT RETURN</h4>
+            <table width="100%">
+                <tbody id="punt_return">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.punt_return|@count}
+                <tr id="punt_return_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[punt_return][]" value="{$data.punt_return[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[punt_return][]" id="member_name[punt_return{$smarty.section.loopname.index}]" value="{$data.punt_return[loopname].member_name}" size="20" onBlur="chkMemId('punt_return{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('punt_return{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('punt_return{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[punt_return{$smarty.section.loopname.index}]" style="display:{if ($data.punt_return[loopname].member_id == -1 && $data.punt_return[loopname].member_name != "") || ($data.punt_return[loopname].member_id == "" && $data.punt_return[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[punt_return{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="punt_return_inputFrame" id="inputFrame[punt_return{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="punt_return_cnt[]" value="{$data.punt_return[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="punt_return_yard[]" value="{$data.punt_return[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="punt_return_td_point[]" value="{$data.punt_return[loopname].td_point}" size="3"></td>
+                        <input type="hidden" name="member_id[punt_return][]" id="member_id[punt_return{$smarty.section.loopname.index}]" value="{$data.punt_return[loopname].member_id}"  size="3" />
+                        <input type="hidden" name="punt_return_game_amefoot_score_id[]"  value="{$data.punt_return[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[punt_return{$smarty.section.loopname.index}]" id="member_grade[punt_return{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="punt_return_delete[]" value="削除" onclick="delete_element('punt_return_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('punt_return');" ></p>
+            <h4 class="basic">INTERCEPTION</h4>
+            <table width="100%">
+                <tbody id="interception">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th>削除</th>
+                </tr>
+{section name="loopname" loop=$data.interception|@count}
+                <tr id="interception_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[interception][]" value="{$data.interception[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[interception][]" id="member_name[interception{$smarty.section.loopname.index}]" value="{$data.interception[loopname].member_name}" size="20" onBlur="chkMemId('interception{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('interception{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('interception{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[interception{$smarty.section.loopname.index}]" style="display:{if ($data.interception[loopname].member_id == -1 && $data.interception[loopname].member_name != "") || ($data.interception[loopname].member_id == "" && $data.interception[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[interception{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="inputFrame" id="inputFrame[interception{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="interception_cnt[]" value="{$data.interception[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="interception_yard[]" value="{$data.interception[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="interception_td_point[]" value="{$data.interception[loopname].td_point}" size="3"></td>
+                        <input type="hidden" name="member_id[interception][]" id="member_id[interception{$smarty.section.loopname.index}]" value="{$data.interception[loopname].member_id}" size="3" />
+                        <input type="hidden"   name="interception_return_game_amefoot_score_id[]"  value="{$data.interception[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[interception{$smarty.section.loopname.index}]" id="member_grade[interception{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="interception_delete[]" value="削除" onclick="delete_element('interception_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('interception'); " ></p>
+            <h4 class="basic">FUMBLE RETURN</h4>
+            <table width="100%">
+                <tbody id="fumble_return">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.fumble_return|@count}
+                <tr id="fumble_return_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[fumble_return][]" value="{$data.fumble_return[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[fumble_return][]" id="member_name[fumble_return{$smarty.section.loopname.index}]" value="{$data.fumble_return[loopname].member_name}" size="20" onBlur="chkMemId('fumble_return{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('fumble_return{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('fumble_return{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[fumble_return{$smarty.section.loopname.index}]" style="display:{if ($data.fumble_return[loopname].member_id == -1 && $data.fumble_return[loopname].member_name != "") || ($data.fumble_return[loopname].member_id == "" && $data.fumble_return[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[fumble_return{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="fumble_return_inputFrame" id="inputFrame[fumble_return{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="fumble_return_cnt[]" value="{$data.fumble_return[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="fumble_return_yard[]" value="{$data.fumble_return[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="fumble_return_td_point[]" value="{$data.fumble_return[loopname].td_point}" size="3"></td>
+                        <input type="hidden" name="member_id[fumble_return][]" id="member_id[fumble_return{$smarty.section.loopname.index}]" value="{$data.fumble_return[loopname].member_id}" size="3" />
+                        <input type="hidden"   name="fumble_return_game_amefoot_score_id[]"  value="{$data.fumble_return[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[fumble_return{$smarty.section.loopname.index}]" id="member_grade[fumble_return{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="fumble_return_delete[]" value="削除" onclick="delete_element('fumble_return_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('fumble_return'); " ></p>
+            <h4 class="basic">その他のリターン</h4>
+            <table width="100%">
+                <tbody id="etc_return">
+                <tr>
+                    <th>背番号</th>
+                    <th>members</th>
+                    <th>回数</th>
+                    <th>yards</th>
+                    <th>TD</th>
+                    <th width="35">削除</th>
+                </tr>
+{section name="loopname" loop=$data.etc_return|@count}
+                <tr id="etc_return_tr{$smarty.section.loopname.index}">
+                    <td><input type="text" name="member_no[etc_return][]" value="{$data.etc_return[loopname].member_no}" size="3"></td>
+                    <td><input type="text" name="member_name[etc_return][]" id="member_name[etc_return{$smarty.section.loopname.index}]" value="{$data.etc_return[loopname].member_name}" size="20" onBlur="chkMemId('etc_return{$smarty.section.loopname.index}')" onKeyup="writeWithKeybourd('etc_return{$smarty.section.loopname.index}')" />
+                        <input type="button" value="..." onclick="inputMemberInfo('etc_return{$smarty.section.loopname.index}');" />
+                        <span id="subInfo[etc_return{$smarty.section.loopname.index}]" style="display:{if ($data.etc_return[loopname].member_id == -1 && $data.etc_return[loopname].member_name != "") || ($data.etc_return[loopname].member_id == "" && $data.etc_return[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+                        <div id="inputArea[etc_return{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                        <iframe name="etc_return_inputFrame" id="inputFrame[etc_return{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+                        </div>
+                    </td>
+                    <td><input type="text" name="etc_return_cnt[]" value="{$data.etc_return[loopname].cnt}" size="3"></td>
+                    <td><input type="text" name="etc_return_yard[]" value="{$data.etc_return[loopname].yard}" size="3"></td>
+                    <td><input type="text" name="etc_return_td_point[]" value="{$data.etc_return[loopname].td_point}" size="3"></td>
+                        <input type="hidden" name="member_id[etc_return][]" id="member_id[etc_return{$smarty.section.loopname.index}]" value="{$data.etc_return[loopname].member_id}" size="3" />
+                        <input type="hidden"   name="etc_return_game_amefoot_score_id[]"  value="{$data.etc_return[loopname].game_amefoot_score_id}" >
+                        {*javascriptエラー回避のため学年用エレメントを埋め込んでおく*}
+                        <input type="hidden" name="member_grade[etc_return{$smarty.section.loopname.index}]" id="member_grade[etc_return{$smarty.section.loopname.index}]" value="" size="3" />
+                    {if $smarty.section.loopname.first}
+                    <td width="35"></td>
+                    {else}
+                    <td><input type="button" name="etc_return_delete[]" value="削除" onclick="delete_element('etc_return_tr{$smarty.section.loopname.index}')"></td>
+                    {/if}
+                </tr>
+{/section}
+                </tbody>
+            </table>
+            <p class="add"><input type="button" value="追加" onclick="add_tr_element('etc_return'); " ></p>
+        {rcms_include file="management/open_date_box.html" id=$game_id data=$data}
+        {buttonbox}
+            {if $auth.gameamefoot.update}
+                <button type="submit">更新する</button>
+                {if $game_id != ''}
+                    <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+                {/if}
+            {/if}
+        {/buttonbox}
+    </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

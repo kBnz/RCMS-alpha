@@ -1,0 +1,7 @@
+<ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_search/" {if $ct eq 'api_youtube_search'}class="active"{/if}>動画検索</a></li>
+    <li><a href="/management/{$mt}/{$mt}_list/"   {if $ct eq 'api_youtube_list' || $ct eq 'api_youtube_edit'}class="active"{/if}>動画一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_category_list/" {if $ct eq 'api_youtube_category_list' || $ct eq 'api_youtube_category_edit'}class="active"{/if}>カテゴリ設定</a></li>
+    <li><a href="/management/{$mt}/{$mt}_upload/" {if $ct eq 'api_youtube_upload'}class="active"{/if}>アップロード</a></li>
+    <li><a href="/management/{$mt}/{$mt}_myvideos/" {if $ct eq 'api_youtube_myvideos'}class="active"{/if}>マイ動画</a></li>
+</ul>

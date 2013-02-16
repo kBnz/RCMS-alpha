@@ -1,0 +1,142 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if (confirm('選択された投稿を削除します。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}投稿一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_supportforum_list/">サポート</a>
+<a href="/management/rcms/rcms_supportforuml_list/">投稿記事一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="main_contents supportforum_detail">
+    
+    <div class="list_main">
+        <h3>Q&A作成</h3>
+        <div class="qa_edit">
+    <form method="post" name="f1" action="/management/rcms/rcms_supportforum_detail_list/">
+    <input type="hidden" name="MODE" value="UPDATE">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="supportforum_id" value="{$supportforum_detail_list.0.supportforum_id}">
+        <table width="100%">
+            <tr>
+                <th width="80">モジュール</th>
+                <td>
+<select name="module_type" id="module_type">{html_options options=$moduleList selected=$supportforum_detail_list.0.module_type}</select>
+                </td>
+            </tr>
+            <tr>
+                <th>Q.質問</th>
+                <td>
+        <textarea name="question" style="width:600px;height:40px;">{$supportforum_detail_list.0.question}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>A.回答</th>
+                <td>
+                    <textarea name="answer" style="width:600px;height:200px;">{$supportforum_detail_list.0.answer}</textarea>
+                    <p><input type="checkbox" name="qa_flg" value="1" {if $supportforum_detail_list.0.qa_flg}checked{/if}>Q&Aに表示する</p>
+                </td>
+            </tr>
+            <tr>
+                <th>公開状態</th>
+                <td>
+                    <input type="checkbox" name="open_flg" value="1" {if $supportforum_detail_list.0.open_flg}checked{/if}>公開する
+                </td>
+            </tr>
+        </table>
+
+
+
+    {buttonbox}
+<button type="submit" name="subflg1">編集する</button>
+<button type="button" name="subflg2" onClick="return confirmDelete(this.form);">この質問を削除する</button>
+    {/buttonbox}
+</form>
+        </div>
+
+        <div id="forum_h2">
+            <h2>{$moduleList[$header.module_type]} : {$supportforum_category[$header.supportforum_category_id]}</h2>
+        </div>
+
+
+        {foreach item=row from=$supportforum_detail_list name=supportforum_list}
+
+{if $row.rootnode != $row.supportforum_id}
+
+        <div class="answer_list">
+            <div class="answerDate">
+                <p class="dateArea">
+                    {if $row.new}<img src="/images/management/forum/icon_new.gif" alt="new">{/if}
+                    <span class="date">{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%e  %H:%M:%S"}</span>
+                    <span class="name">名前：{$row.name|escape}</span>
+                    {if $row.site_url}<span class="site"><a href="{$row.site_url|escape}" target="_blank">サイト</a></span>{/if}
+                </p>
+                <p class="help">お役立ち度 : {$row.good_cnt}</p>
+            </div>
+
+            <div class="clearFloat"><br></div>
+
+            <p class="answer">{$row.note|escape|nl2br}</p>
+            <p class="buttonArea">
+                        <a href="javascript:void(0);" onClick="if(confirm('削除してもよろしいですか？')){ldelim}location.href='/management/rcms/rcms_supportforum_detail_list/&MODE=DELETE&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}';{rdelim}"><img src="/images/management/forum/btn_delete.gif" alt="削除する"></a>
+
+                    <a href="javascript:void(0);">編集する</a>
+            </p>
+
+        </div>
+
+{else}
+
+        <div class="forum_contentsBox asking">
+            <div class="forum_contentsBox2">
+
+                <p class="dateArea">
+                    {if $row.new}<img src="/images/management/forum/icon_new.gif" alt="new">{/if}
+                    <span class="date">{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%e  %H:%M:%S"}</span>
+                    <span class="name">名前：{$row.name|escape}</span>
+                    {if $row.site_url}<span class="site"><a href="{$row.site_url|escape}" target="_blank">サイト</a></span>{/if}
+                    {if $row.url}&nbsp;<span class="site"><a href="{$row.url|escape}" target="_blank">{'/label/url'|translate}{*URL*}</a></span>{/if}
+                    {if $row.resolved_flg==1}<img src="/images/management/forum/solved.gif" alt="解決済み">{/if}
+                </p>
+                <p class="help">お役立ち度 : {$row.good_cnt}</p>
+
+                <h3>{$row.title|escape}</h3>
+                <p class="writing">{$row.note|escape|nl2br}</p>
+                <p class="buttonArea">
+                        {if $row.resolved_flg == 0}
+                                <a href="/management/rcms/rcms_supportforum_detail_list/&MODE=RESOLVED&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}"><img src="/images/management/forum/btn_solved.gif" alt="解決した"></a>
+                        {/if}
+                        <!--<a href="javascript:void(0);" onClick="if(confirm('削除してもよろしいですか？')){ldelim}location.href='/management/rcms/rcms_supportforum_detail_list/&MODE=DEL&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}';{rdelim}"><img src="/images/management/forum/btn_delete.gif" alt="削除する"></a>-->
+                    <a href="javascript:void(0);">編集する</a>
+                </p>
+
+            </div>
+        </div>
+        <h4>回答一覧</h4>
+{/if}
+
+            {/foreach}
+
+    </div>
+</div>
+{rcms_include file="management/footer.html"}

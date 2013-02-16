@@ -1,0 +1,97 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f){
+    if (confirm("削除してもよろしいですか？")) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}バックナンバー詳細</h2>
+<ul></ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}一覧</a>
+<a href="/management/ml/ml_bn_list/ml_id={$ml_id}">バックナンバー</a>
+バックナンバー詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.ml_name}</h3>
+<ul class="minitabs">
+  <li><a href="/management/ml/ml_edit/ml_id={$ml_id}">基本設定</a></li>
+  <li><a href="/management/ml/ml_bn_list/ml_id={$ml_id}" class="active">バックナンバー</a></li>
+  <li><a href="/management/ml/ml_member_list/ml_id={$ml_id}">メンバー</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="ml_bn_detail_form" method="POST" action="/management/ml/ml_bn_detail/">
+    <input type="hidden" name="ml_id" value="{$ml_id}" />
+    <input type="hidden" name="ml_bn_id" value="{$ml_bn_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table width="100%">
+      <tr>
+        <th>インデックス</th>
+        <td>{$data.index}</td>
+      </tr>
+      <tr>
+        <th>件名</th>
+        <td>{$data.subject}</td>
+      </tr>
+      <tr>
+        <th>本文</th>
+        <td>{$data.body|nl2br}</td>
+      </tr>
+      <tr>
+        <th>発信者</th>
+        <td>{if $data.member_id != ''}
+            {$data.disp_name}
+          {else}
+            {$data.ml_member_id}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>CC:</th>
+        <td>{$data.cc_info}</td>
+      </tr>
+      <tr>
+        <th>受信日時</th>
+        <td>{$data.receive_date|pg_dateformat}</td>
+      </tr>
+      <tr>
+        <th>添付ファイル</th>
+        <td>{$str_attachmentHTML}</td>
+      </tr>
+      <tr>
+        <th>ステータス</th>
+        <td>{$data.status_txt}</td>
+      </tr>
+    </table>
+
+  {if $auth.ml.delete}
+    {buttonbox}
+      <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+    {/buttonbox}
+  {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

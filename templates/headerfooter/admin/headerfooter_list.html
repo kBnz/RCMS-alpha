@@ -1,0 +1,83 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/headerfooter/label/headerfooter_list'|translate}</h2>
+<ul>
+<li class="add"><a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a></li>
+<li class="normal"><a href="javascript:;" onclick="window.open('/direct/design/changeHeaderImage/', 'cHI', 'width=400,height=650');"><span>{'/modules/headerfooter/label/header_image_btn'|translate}{*ヘッダ画像*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/headerfooter/headerfooter_list/">{'/modules/headerfooter'|translate}</a>
+{'/modules/headerfooter/label/headerfooter_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <form name="headerfooter_list_form" id="headerfooter_list_form" method="POST" action="/management/headerfooter/headerfooter_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    {if !$customized_flg}
+      <p style="text-align:center;">
+        {'/modules/headerfooter/msg/confirm_customize'|translate}
+        <input type="submit" value="{'/label/yes'|translate}" {*は　い*}onclick="gotoCustomize(this.form)" />
+      </p>
+
+    {else}
+
+      {*カスタマイズ済み*}
+      <h3>{'/modules/headerfooter/label/for_label'|translate:$headerfooter_pagetype.top}</h3>{*Top Page用*}
+      <table width="100%">
+      {foreach from=$headerfooterList.top key=key item=item name=top_list_nm}
+        <tr>
+          <td nowrap width="20%">{$item.title}</td>
+          <td nowrap><a href="/management/headerfooter/headerfooter_edit/page_type=top&region_id={$key}">[{'/label/edit'|translate}]{*編集*}</a></td>
+          <td width="70%">{$item.comment}</td>
+        </tr>
+      {/foreach}
+      </table>
+      <h3>{'/modules/headerfooter/label/for_label'|translate:$headerfooter_pagetype.contents}</h3>{*一般用*}
+      <table width="100%">
+      {foreach from=$headerfooterList.contents key=key item=item name=top_list_nm}
+        <tr>
+          <td nowrap width="20%">{$item.title}</td>
+          <td nowrap><a href="/management/headerfooter/headerfooter_edit/page_type=contents&region_id={$key}">[{'/label/edit'|translate}]{*編集*}</a></td>
+          <td width="70%">{$item.comment}</td>
+        </tr>
+      {/foreach}
+      </table>
+
+      {buttonbox}
+        <button type="button" onclick="gotoDel(this.form)">{'/label/headerfooter/end_customaize_btn'|translate}</button>{*カスタマイズをやめる*}
+      {/buttonbox}
+      <span class="hint">{'/modules/headerfooter/msg/recommend_not_to_customize_header_and_footer'|translate}{*特に変更が必要ない場合はカスタマイズをしない状態にしておくことをお勧めいたします。*}</span>
+
+    {/if}
+
+  </form>
+</div>
+</div>
+{literal}
+<script type="text/javascript">
+<!--
+function gotoCustomize(f) {
+    f.MODE.value = 'INSERT';
+}
+function gotoDel(f) {
+{/literal}{* 選択されたヘッダフッタテンプレートを削除してもよろしいですか？ *}{literal}
+    var msg = "{/literal}{'/modules/headerfooter/msg/delete_confirm'|translate}{literal}";
+    if(confirm(msg)){
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+//-->
+</script>
+{/literal}
+
+
+{rcms_include file="management/footer.html"}

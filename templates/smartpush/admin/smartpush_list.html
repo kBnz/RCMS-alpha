@@ -1,0 +1,55 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+    <h2>{'/modules/smartpush/label/smartpush_list'|translate}{*プッシュ通知一覧*}</h2>
+    <ul>{*ボタンなど*}</ul>
+</div>
+{pankuzu}
+    <a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+    <a href="/management/smartpush/smartpush_list/">{'/modules/smartpush'|translate}</a>
+    {'/modules/smartpush/label/smartpush_list'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+    <div class="list_main">
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form method="POST" action="/management/smartpush/smartpush_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+        <tr>
+            <th>{'/modules/smartpush/label/device_token'|translate}</th>
+            <th>{'/label/inst_ymdhi'|translate}</th>
+        </tr>
+        {foreach from=$smartpush_list item=row}
+        <tr>
+            <td>{$row.device_token}</td>
+            <td>{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+        </tr>
+        {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+<!--
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="submit" onclick="this.form.MODE.value='public'">{'/label/publish_btn'|translate}</button>{* 公開にする *}
+      <button type="submit" onclick="this.form.MODE.value='private'">{'/label/unpublish_btn'|translate}</button>{* 非公開にする *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+    {/buttonbox}
+-->
+
+    </form>
+
+    </div>
+
+</div>
+{rcms_include file="management/footer.html"}

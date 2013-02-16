@@ -1,0 +1,55 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<style type="text/css">
+tr.section {
+  color: #000;
+  font-size: 1.125em;
+  text-align: center;
+}
+</style>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/menu/label/subscription_edit'|translate}</h2>
+</div>
+
+<div class="main_contents">
+{rcms_include file="menu/admin/subscription_minitabs.html" page_type=$ct}
+<h3 class="title">{$memberInfo.disp_name|escape} <a href="/management/member/member_edit/member_id={$memberInfo.member_id}">{'/msg/back_to_the_member_info'|translate}{*メンバー情報に戻る*}</a></h3>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <div class="hint">{'/modules/menu/msg/explanation_about_subscription_edit'|translate}{*更新された場合に通知を受けたいコンテンツにチェックを入れてください。*}</div>
+  <form action="/management/menu/subscription_edit/member_id={$memberInfo.member_id}" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <table width="100%">
+      <tr>
+        <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'module_nm[]');" /></th>
+        <th>{'/label/module'|translate}</th>
+      </th>
+    {foreach from=$module_section item=section}
+      <tr class="section">
+        <th colspan="2">{"/label/menus/$section"|translate}</th>
+      </tr>
+      {foreach from=$subcription_modules.include_module_list item=module_nm}
+        {if $subcription_modules.conf_tab[$module_nm] eq $section}
+          <tr>
+            <td><input type="checkbox" name="module_nm[]" value="{$module_nm|escape}" {if $module_nm|in_array:$formData.modules}checked="checked"{/if}/></td>
+            <td>{$module_nm|translate_modules|default:$subcription_modules.contName[$module_nm]}</td>
+          </tr>
+        {/if}
+      {/foreach}
+    {/foreach}
+    </table>
+    {buttonbox}
+      <button type="submit">{'/label/update_btn'|translate}</button>
+    {/buttonbox}
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

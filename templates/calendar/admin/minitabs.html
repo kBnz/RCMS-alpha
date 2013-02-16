@@ -1,0 +1,9 @@
+<ul class="minitabs">
+    <li id="minitab_calendar_list"><a href="/management/calendar/calendar_list/" {if $page_type eq 'calendar_list' || $page_type eq 'calendar_edit'}class="active"{/if}>{'/modules/calendar/label/calendar_list'|translate}{* カレンダー *}</a></li>
+    <li id="minitab_calendar_category_list"><a href="/management/calendar/calendar_category_list/" {if $page_type eq 'calendar_category_list' || $page_type eq 'calendar_category_edit'}class="active"{/if}>{'/modules/calendar/label/calendar_category'|translate}{* カテゴリ設定 *}</a></li>
+    <li id="minitab_calendar_recurrence_list"><a href="/management/calendar/calendar_recurrence_list/" {if $page_type eq 'calendar_recurrence_list' || $page_type eq 'calendar_recurrence_edit'}class="active"{/if}>{'/modules/calendar/label/recurrence_settings'|translate}{*繰り返し設定*}</a></li>
+    {if $auth.site.select}
+    <li id="minitab_calendar_setup"><a href="/management/calendar/setup/"{if $page_type eq 'setup'} class="active"{/if}>{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    {/if}
+</ul>
+<div class="clear"></div>

@@ -1,0 +1,17 @@
+{module name="data_list"}
+<h2 class="module_title"><span>{'/modules/jobs/label/jobs_list'|translate}{* 採用情報一覧 *}</span></h2>
+<div class="module_contents">
+{if $list|@count>0}
+  <table class="list">
+{foreach from=$list item=row}
+    <tr>
+      <td><a href="/scraping_detail/url={$row.2|urlencode}">{$row.3}</a><br>
+      <a href="/scraping_detail/url={$row.2|urlencode}"><img src="http://asaichi.biz/{$row.7}"></a>
+      </td>
+      <td>{$row.5}</td>
+    </tr>
+{/foreach}
+  </table>
+{/if}
+</div>
+{/module}

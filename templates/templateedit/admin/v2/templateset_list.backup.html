@@ -1,0 +1,504 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{headblock}
+<link href="{$smarty.const.ROOT_URL}/css/management/modules/templateedit.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/css/management/v2/temp_edit.css">
+<script src="/js/management/v2/template_edit.js"></script>
+{/headblock}
+
+
+<h3 class="test">{'/modules/templateedit'|translate}</h3>
+<div id="titleOption">
+    <ul>
+        <li class="linkbox button"><a href="#">テンプレート追加</a></li>
+    </ul>
+</div>
+
+{*{'/modules/templateedit/msg/you_can_customize'|translate} 通常はシステム側の用意されたテンプレートが利用されますが、カスタマイズもできます。 *}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+
+<div id="resizableframe">
+
+    <!--左側　テンプレート選択-->
+    <div id="temp_edit_select">
+
+    <form action="/management/templateedit/templateedit_list/" method="get">
+        <h4 id="filter_header">絞り込み</h4>
+        <div id="sort_temps">
+            <ul>
+                <li>
+                    <dl>
+                        <dt>適用ページ</dt>
+                        <dd>
+                            <input type="text" id="page_picker" size="50"/>
+                            {*
+                            <select name="search_page_id" size="15">
+                                {html_options options=$arrPage selected=$smarty.request.search_page_id}
+                            </select>
+                            *}
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt>{'/label/keyword'|translate}{* キーワード *}</dt>
+                        <dd>
+                            <input type="text" name="keyword" value="{$smarty.request.keyword}">
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <input type="submit" name="subflg" value="{'/label/search'|translate}{* 検索 *}">
+
+                </li>
+            </ul>
+            
+        </div>
+        <!-- /id="sort_temps" -->
+    </form>
+
+    <div id="sorted_temps">
+        
+            <ul>
+
+{if $changedFileList|@count > 0}
+
+
+{foreach item=item from=$changedFileList}
+    <li>
+        <dl class="temp_card">
+            <dt class="linkbox">
+            <a class="template_editor_opener" href="#" data-id="{$item.templateedit_id}" data-name="{$item.target_nm|escape}" data-url="/management/templateedit/templateedit_edit/templateedit_id={$item.templateedit_id}&page_modify_mode=1">{$item.target_nm|escape}</a>
+            </dt>
+            <dd class="temp_filename">{$item.module_title} > {$item.module_php_nm} > {$item.module_tpl_nm}</dd>
+            <dd class="temp_update">last update:{$item.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</dd>
+        </dl>
+        <div class="btn_popup">
+        {*
+        <a href="javascript:void(0);" onClick="window.open('/management/templateedit/templateedit_edit/templateedit_id={$item.templateedit_id}&page_modify_mode=1','','width=820,height=800,scrollbars=1,resizable=yes');return false;">ポップアップ</a>
+        *}
+        </div>
+    </li>
+
+{*表ページへのリンク*}
+{*
+    {if $item.use_page_list|@count > 0}
+        <tr>
+            <td colspan="4" class="usepage">
+            {foreach from=$item.use_page_list item=page}
+                <a href="{if $page.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $page.page_sysnm ne 'top'}{$page.page_sysnm}/{/if}" target="_blank">{$page.page_nm|escape}</a>
+            {/foreach}
+            </td>
+        </tr>
+    {/if}
+*}
+
+{/foreach}
+
+            </ul>
+{/if}
+
+        </div>
+
+    </div><!-- / id="temp_edit_select" -->
+
+    <!--右側　編集エリア　-->
+    <div id="temp_edit_box">
+    
+        <ul id="template_editor_tab_field">
+        
+        </ul>
+
+        <div id="template_editor_field">
+            
+        </div>
+
+    </div><!-- / id="temp_edit_box" -->
+
+</div>
+
+
+<!-- JS用CSSの読み込み -->
+{headblock}
+<link rel="stylesheet" href="/js/jqueryTokenInput/styles/token-input.css" type="text/css" />
+<link rel="stylesheet" href="/js/jqueryTokenInput/styles/token-input-facebook.css" type="text/css" />
+{/headblock}
+
+{literal}
+<style type="text/css">
+</style>
+
+<!-- テンプレートエンジン,jQueryUIの読み込み -->
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.ui/1.8.10/jquery-ui.js"></script>
+<script type="text/javascript" src="/js/jquerySha256/jquery.sha256.js"></script>
+<script type="text/javascript" src="/js/jqueryTokenInput/jquery.tokeninput.js"></script>
+
+<!-- テンプレートの定義   editor_frame_tmpl-->
+<script id="editor_frame_tmpl" type="text/x-jquery-tmpl">
+    <iframe class="editor_frame" id="editor_frame_${id}" data-id="${id}" data-sha256="" src="${url}" >
+</script>
+
+<!-- テンプレートの定義   editor_tab_tmpl-->
+<script id="editor_tab_tmpl" type="text/x-jquery-tmpl">
+    <li class="editor_tab active" data-id="${id}">
+        <div class="close_tab_btn">&times;</div>
+        <a href="#">${name}</a>
+    </li>
+</script>
+
+<!-- テンプレートの定義   editor_frame_tmpl -->
+<script id="input_token_candidate_tmpl" type="text/x-jquery-tmpl">
+    <li>
+        <div class='label'>${pageName}</div>
+        <div class='description'>${pageSysName}</div>
+    </li>
+</script>
+
+<script id="input_token_keyword_tmpl" type="text/x-jquery-tmpl">
+    <li>
+        <p>${pageName}</p>
+    </li>
+</script>
+
+
+
+<!-- 編集画面表示用JS -->
+<script type="text/javascript">
+
+var TemplateEdit = {
+    
+    // 挿入位置
+    editorField          : $("#template_editor_field"),
+    editorTabField       : $("#template_editor_tab_field"),
+
+    // テンプレート
+    editorFrameTmpl      : $("#editor_frame_tmpl"),
+    editorTabTmpl        : $("#editor_tab_tmpl"),
+
+    // ボタン類
+    templateEditorOpener : $(".template_editor_opener"),
+    filterHeader         : $("#filter_header"),
+    closeTabBtn          : $(".close_tab_btn"),
+    
+    
+    // その他
+    editorFrame          : $(".editor_frame"),
+    _editorFrame         : ".editor_frame",
+    editorTab            : $(".editor_tab"),
+    _editorTab           : ".editor_tab",
+    
+    // 可変クラス名
+    activeTabClassName   : "active",
+
+
+    /**
+    * 初期化
+    * @return void
+    */
+    init : function(){
+        // イベントハンドラの登録
+        TemplateEdit.templateEditorOpener.click(TemplateEdit.openEditorTab);
+        TemplateEdit.editorTab.live("click",TemplateEdit.toggleEditorTab);
+        TemplateEdit.closeTabBtn.live("click",TemplateEdit.closeEditorTab);
+        
+        // Jquery UI イベントの登録
+        TemplateEdit.editorTabField.sortable({ items: TemplateEdit._editorTab,
+                                               axis: "x",
+                                               tolerance: "pointer",
+                                               distance: 1,
+                                               scroll:false,
+                                               opacity :0.7
+                                             });
+    },
+    
+    /**
+    * タブを開く
+    * @return void
+    */
+    openEditorTab : function(){
+        
+        var id   = $(this).data("id");
+        var name = $(this).data("name");
+        var url  = $(this).data("url");
+        
+        var tab = $(TemplateEdit._editorTab+"[data-id="+id+"]");
+        
+        if(tab.size() > 0){
+            // 既に存在する場合
+            tab.click();
+            
+        }else{
+            // 存在しない場合
+            var json = {"id":id,"url":url,"name":name};
+        
+            $(TemplateEdit._editorTab).removeClass(TemplateEdit.activeTabClassName);     // 全てのタブからactiveを削除
+            $(TemplateEdit._editorFrame).hide();                                         // 全てのエディタを非表示
+            TemplateEdit.editorField.append( TemplateEdit.editorFrameTmpl.tmpl(json) );  // エディタを追加
+            TemplateEdit.editorTabField.append( TemplateEdit.editorTabTmpl.tmpl(json) ); // タブを追加
+            
+        }
+        
+    },
+
+    /**
+    * 差分を確認する(保存確認用)
+    * @param   int   id
+    * @return  bool
+    */
+    isModified : function(id){
+    
+        try{
+            var thisFrame    = $(TemplateEdit._editorFrame+"[data-id="+id+"]");
+            var thisFlameId  = thisFrame.attr("id");
+            var initialValue = thisFrame.contents().find("#template_text").val();
+            var currentValue = document.getElementById(thisFlameId).contentWindow.editor.getValue(); //読み込み完了していない場合などはここで例外発生
+
+        }catch(e){
+            return false;
+        
+        }finally{
+            if(initialValue==currentValue){
+                // 変更されていない場合
+                return false;
+                
+            }else{
+                // 変更されている場合
+                return true;
+            }
+
+        }
+    
+    },
+
+    
+    /**
+    * タブを切り替える
+    * @return void
+    */
+    toggleEditorTab : function(){
+    
+        var id = $(this).data("id");
+        
+        $(TemplateEdit._editorTab).removeClass(TemplateEdit.activeTabClassName);  // 全てのタブからactiveを削除
+        $(this).addClass(TemplateEdit.activeTabClassName);                        // 現在のタブにactiveを追加
+        
+        // idを検索して該当のタブのみ表示する
+        $(TemplateEdit._editorFrame+"[data-id="+id+"]").show();
+        $(TemplateEdit._editorFrame+"[data-id!="+id+"]").hide();
+        
+    },
+    
+    /**
+    * タブを閉じる
+    * @return void
+    */
+    closeEditorTab : function(event){
+    
+        var id       = $(this).parent().data("id");
+        var modified = TemplateEdit.isModified(id);
+        
+        if(modified){
+            //変更されていた場合
+            if(!window.confirm('変更されています。保存せずにタブを閉じますか？')){
+                // キャンセルした場合
+                return false;
+            }
+        }
+        
+        // Activeなタブが閉じられるときは、隣接するタブをアクティブにする
+        if( $(this).parent().hasClass(TemplateEdit.activeTabClassName) ){
+            var index = $(this).parent().index();
+            $(TemplateEdit._editorTab).eq(index-1).click();
+        }
+        
+        // 該当するidのエディタを削除する
+        $(TemplateEdit._editorFrame+"[data-id="+id+"]").remove();
+        
+        $(this).parent().animate({width:"0px",opacity:"0"},300,"linear",function(){$(this).remove();}); // タブを消した後に削除
+        event.stopPropagation();  // イベントの伝播を止める *削除した要素へイベントがセットされてしまっているので
+    }
+
+    
+}
+
+
+var PageFilter = {
+
+    pagePicker    : $("#page_picker"),
+
+    // テンプレート
+    candidateTmpl : $("#input_token_candidate_tmpl"),
+    keywordTmpl   : $("#input_token_keyword_tmpl"),
+    
+    availableTags : [
+        {/literal}
+        {foreach name=pages from=$plain_page_list item=page}
+            {ldelim}
+            pageName    : "{$page.page_nm|escape}",
+            pageSysName : "{$page.page_sysnm|escape}",
+            keywords    : "{$page.page_nm|escape} {$page.page_sysnm|escape} {$page.page_id|escape}"
+            {rdelim}
+            {if $smarty.foreach.pages.last}{else},{/if}
+        {/foreach}
+        {literal}
+    ],
+    
+    init : function(){ 
+        PageFilter.pagePicker.tokenInput(
+            PageFilter.availableTags,
+            {
+                propertyToSearch : "keywords",
+                resultsFormatter : function(item){return "<li>"+item.pageName+"<br>"+item.pageSysName+"</li>"},
+                tokenFormatter   : function(item){return "<li><p>"+item.pageName+"</p></li>"},
+                hintText: "ページ名を入力してください...",
+                noResultsText: "該当するページがありません",
+                searchingText: "検索中..."
+                
+            }
+        );
+    }
+}
+
+
+// 初期化
+$(document).ready(
+    function(){
+        console.log("hello");
+        TemplateEdit.init();
+        PageFilter.init();
+    }
+);
+
+
+</script>
+{/literal}
+
+
+{*
+<!-- テンプレート選択タブ用JS -->
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmSubmit() {
+        var contentsval = document.getElementById('contents_type').value;
+        if(contentsval == '') {
+                alert('編集するテンプレートを選択してください');
+                return false;
+        }
+        return true;
+}
+
+$(document).ready(function(){
+
+        // モジュールタイプが変わったときにコンテンツとテンプレートの選択肢を入れ替える
+        function changeModuleType() {
+                var module_type     = document.getElementById("module_type").value;
+                if (module_type == 'common'){
+                        var moduleList = [["0","{/literal}{'/label/common'|translate}{literal}"]];
+                        contentstypeLoatedhandler(moduleList);
+                }else{
+                        getModuleData(module_type, "", "type", contentstypeLoatedhandler);
+                }
+        }
+
+        function changeContentsType() {
+                var module_type     = document.getElementById("module_type").value ;
+                var contents_type = document.getElementById("contents_type").value ;
+                // テンプレート一覧
+                new Ajax.Request(
+                        "/direct/templateedit/templates/",
+                        {
+                                method:'get',
+                                parameters: 'module_nm=' + module_type + '&contents_type=' + contents_type,
+                                onComplete: function(req) {
+                                        var rs = eval(req.responseText);
+                                        var opt = document.getElementById("template") ;
+                                        for (var i = opt.options.length ; i >= 0 ; i--) {
+                                                opt.options[i] = null;
+                                        }
+                                        for (var i = 0 ; i < rs.length ; i++) {
+                                                opt.options[i] = new Option(rs[i].name, rs[i].id);
+                                        }
+                                }
+                        }
+                );
+                // コンテンツ一覧
+                new Ajax.Request(
+                        "/direct/templateedit/contents/",
+                        {
+                                method:'get',
+                                parameters: 'module_nm=' + module_type + '&contents_type=' + contents_type,
+                                onComplete: function(req) {
+                                        var rs = eval(req.responseText);
+                                        //console.log(rs);
+                                        var opt = $("module_id");
+                                        for (var i = opt.options.length ; i >= 0 ; i--) {
+                                                opt.options[i] = null;
+                                        }
+                                        for (var i = 0 ; i < rs.length ; i++) {
+                                                opt.options[i] = new Option(rs[i].name, rs[i].id);
+                                        }
+                                        if (rs.length) {
+                                                $('target_type_content_li').style.display = '';
+                                        }
+                                        else {
+                                                $('target_type_content_li').style.display = 'none';
+                                                if ($('target_type_content').checked) {
+                                                        $('target_type_all').checked = true;
+                                                }
+                                        }
+                                }
+                        }
+                );
+        }
+
+        function contentstypeLoatedhandler(data, args) {
+                var opt = document.getElementById("contents_type") ;
+                for (var i = opt.options.length ; i >= 0 ; i--) {
+                        opt.options[i] = null;
+                }
+                for (var i = 0 ; i < data.length ; i++) {
+                        opt.options[i] = new Option(data[i][1], data[i][0]);
+                }
+                changeContentsType();
+        }
+
+        Event.observe($('module_type'), 'change', function() {
+                changeModuleType();
+        });
+        Event.observe($('contents_type'), 'change', function() {
+                changeContentsType();
+        });
+
+        // 個別のページを選択する場合に、ラジオボタンを自動で変更する
+        $('.page_id').click(function(){
+                $('target_type_page').checked = true; 
+        });
+        $('.module_id').click(function() {
+                $('.target_type_content').checked = true; 
+        });
+
+        // initialize
+        changeModuleType();
+{/literal}{if $smarty.request.contents_type}{literal}
+
+        $('contents_type').value('{/literal}{$smarty.request.contents_type}{literal}');
+{/literal}{/if}{literal}
+{/literal}{if $smarty.request.module_tpl_id}{literal}
+
+        $('template').value('{/literal}{$smarty.request.module_tpl_id}{literal}');
+{/literal}{/if}{literal}
+});
+
+{/literal}
+-->
+</script>
+*}
+
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,45 @@
+{* "[]"がid属性では使えないので"_"へ置換します *}
+{assign var=railway_ext_col value=$item.name|replace:"[":"_"|replace:"]":"_"}
+
+<div id="railway_tdfk_box"  style="padding-bottom:5px;" >
+    <span style="padding-right:10px;">{'/label/prefecture'|translate}</span>{*都道府県*}
+    <select name="{$item.name}[tdfk_cd]" onchange="j$('#{$railway_ext_col}line').load('/direct/topics/line_info/tdfk_cd='+this.options[this.selectedIndex].value+'&ext_col={$item.name}'); j$('#{$item.name}_station_cd').val('')">
+      <option value="">{'/label/no_select'|translate}</option>
+      {html_options options=$arrTdfk selected=$item.tdfk_cd}
+    </select>
+</div>
+<div id="line_box"   style="padding-bottom:5px;" >
+    <span style="padding-right:28px;">{'/label/railway'|translate}</span>{*路線*}
+    <span id="{$railway_ext_col}line">
+    <select name="{$item.name}[line_cd]">
+        <option value="">{'/label/no_select'|translate}</option>
+    </select>
+    </span>
+</div>
+<div id="station_box"  style="padding-bottom:5px;" >
+    <span style="padding-right:38px;">{'/label/station'|translate}</span>{*駅*}
+    <span id="{$railway_ext_col}station">
+    <select  name="{$item.name}[station_cd]">
+        <option value="">{'/label/no_select'|translate}</option>
+    </select>
+    </span>
+</div>
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}
+
+{if $item.tdfk_cd ne "" || $item.line_cd ne "" || $item.station_cd ne ""}
+<script type="text/javascript">
+{literal}
+j$(function(){
+{/literal}
+{if $item.tdfk_cd ne ""}
+    j$('#{$railway_ext_col}line').load('/direct/topics/line_info/tdfk_cd={$item.tdfk_cd}{if $item.line_cd ne ""}&line_cd={$item.line_cd}{/if}&ext_col={$item.name}');
+{/if}
+{if $item.line_cd ne "" || $item.station_cd ne ""}
+    j$('#{$railway_ext_col}station').load('/direct/topics/station_info/{if $item.line_cd ne ""}line_cd={$item.line_cd}{/if}{if $item.station_cd ne ""}&station_cd={$item.station_cd}{/if}&ext_col={$item.name}');
+{/if}
+{literal}
+});
+
+{/literal}
+</script>
+{/if}

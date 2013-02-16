@@ -1,0 +1,79 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}アカウント詳細</h2>
+<ul>
+{if $rauth->canInsert("/api_twitter/item/")}
+    <li class="add"><a href="/management/api_twitter/api_twitter_edit/"><span>{'/modules/api_twitter/label/add_new_account_btn'|translate}</span></a></li>{* アカウント追加 *}
+{/if}
+</ul>
+</div><!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_twitter/api_twitter_list/">{$module_nm}</a>
+{$module_nm}アカウント詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+  <div class="list_main">
+
+{if $twitter.twitter_id && $twitter.profile_image_url}
+      <p><img src="{$twitter.profile_image_url}"></p>
+{/if}
+    <form id="agForm" action="/management/api_twitter/api_twitter_edit/" method="post">
+        <input type="hidden" name="id" value="{$twitter.twitter_id}" />
+        <input type="hidden" name="MODE" value="{$MODE}"  />
+        <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $twitter.user_account}
+      <table style="width:100%">
+        <tr>
+          <th>{'/label/account'|translate}{*アカウント*}</th>
+          <td>
+            {$twitter.user_account}
+          </td>
+        </tr>
+      </table>
+{/if}
+{if $twitter.twitter_id}
+
+  {buttonbox}
+    <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+{else}
+Twitterアカウントの紐付けを行います。以下のアイコンをクリックして下さい。<br>
+Twitterでログインしている場合には、現在、ログインしているアカウントが登録されます。
+<p style="text-align:center;padding:10px;">
+<a href="{"/direct/api_twitter/receivekey/DG_CODE="|cat:$DG_CODE}"> <img src="http://a0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png"> </A>
+</p>
+{/if}
+
+    </form>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+      f.MODE.value='DELETE';
+      f.submit();
+  }
+}
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

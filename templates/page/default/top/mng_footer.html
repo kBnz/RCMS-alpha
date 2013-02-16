@@ -1,0 +1,474 @@
+{headblock}
+<link rel="stylesheet" href="/js/modalbox/modalbox.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/js/lightwindow/css/lightwindow.css" type="text/css" media="screen">
+<style type="text/css">
+<!--
+#MB_close span {ldelim}
+    visibility: hidden;
+{rdelim}
+#MB_close {ldelim}
+    padding:0;
+    margin-right:5px;
+    width:64px;
+    height:21px;
+    background-image: url({'/images/management/close_l.gif'|lang_img_path}); 
+{rdelim}
+#MB_close:hover {ldelim}
+    background-image: url({'/images/management/close_l_on.gif'|lang_img_path}); 
+{rdelim}
+#lightwindow_title_bar_close_link span {ldelim}
+    visibility: hidden;
+{rdelim}
+#lightwindow_title_bar_close_link {ldelim}
+    width:63px;
+    height:19px;
+    background-image: url({'/images/management/close_s.gif'|lang_img_path}); 
+{rdelim}
+#lightwindow_title_bar_close_link:hover {ldelim}
+    background-image: url({'/images/management/close_s_on.gif'|lang_img_path}); 
+    text-decoration: none;
+{rdelim}
+-->
+</style>
+{/headblock}
+
+<script type="text/javascript">
+google.load("prototype", "1.7");
+</script> 
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/scriptaculous/1.8.1/scriptaculous.js?load=builder,effects">
+</script>
+<script type="text/javascript" src="/js/modalbox/modalbox.js"></script>
+<script type="text/javascript" src="/js/lightwindow/lightwindow.js"></script>
+
+{if $smarty.const.ROOT_SSL_URL eq $smarty.const.ROOT_URL}
+{assign var="mng_url" value=""}
+{else}
+{assign var="mng_url" value=$smarty.const.ROOT_SSL_URL}
+{/if}
+
+<script type="text/javascript">
+<!--
+var this_padding = "";
+
+var rcmsLightWindow = null;
+function init_rcmsLightWindow(){ldelim}
+    rcmsLightWindow = new lightwindow({ldelim}resizeSpeed : 10{rdelim});
+    rcmsLightWindow.showManagement = function(link) {ldelim}
+      rcmsLightWindow.activateWindow({ldelim}
+       title: '',
+       href: link + '&page_modify_mode=1',
+       width: '820'
+      {rdelim});
+    {rdelim};
+{rdelim}
+
+Event.observe(window,'load',init_rcmsLightWindow,false);
+
+{if $smarty.session.super_flg >= 0}
+function modalbox_show(){ldelim}
+this_padding = document.body.style.padding;
+document.body.style.padding = "0px";
+
+var modalbox = '<div id="mng_box" style="color:#000000;font-size:12px;">'+
+'<div style="background: url(/images/management/h3_back.gif) no-repeat;text-align:left;padding: 9px 0px 9px 10px;margin: 0px 3px;font-size:12px;">{'/modules/page/label/edit_menu_about_this_page'|translate:$page_nm|replace:"'":"\'"}{*この[{$page_nm}]に関する編集メニュー*}　　>>{'/modules/page/msg/go_to_my_page_to_complete_management'|translate:"$mng_url/management/menu/menu/"}{*全体的な管理は<a href="{$mng_url}/management/menu/menu/">マイページ</a>へ*}</div>'+
+{if $id ne '' && $auth[$mt].update}{*該当コンテンツの更新権限を持つ場合*}
+'<div style="padding:3px 5px;text-align:left;font-size:12px;">'+
+{if $page_title ne ''}
+'<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$main_edit_url}\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><span style="color:#0000FF;">{'/msg/edit_the_paremeter'|translate:$page_title|replace:"'":"\'"}{*[{$page_title}]を編集する*}</span></a><br>'+
+{else}
+'<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$main_edit_url}\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><span style="color:#0000FF;">{'/msg/edit_this_contents'|translate}{*このコンテンツを編集する*}</a></span><br>'+
+{/if}
+'</div>'+
+{/if}
+{if $page_page_id ne '' && $auth.page.update}
+'<div style="padding:3px 5px;float:left;text-align:center;font-size:12px;">'+
+'<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/page/page_edit/_doc_lang={$mylang}&page_page_id={$page_page_id}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><img src="/images/management/menu_layout.gif" width="168" height="46"></a><br>'+
+'[<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/page/page_edit/_doc_lang={$mylang}&page_page_id={$page_page_id}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});">{'/label/change_settings'|translate}{*設定を変更する*}</a>]'+
+'</div>'+
+'</div>'+
+{/if}
+'<div style="padding:3px 5px;float:left;text-align:center;font-size:12px;">'+
+'<a href="javascript:void(0);" onClick="location.href=\'{$smarty.server.PHP_SELF}?&page_modify_mode=1\';return false;"><img src="/images/management/menu_contents.gif" width="168" height="46"></a><br>[<a href="javascript:void(0);" onClick="location.href=\'{$smarty.server.PHP_SELF}?&page_modify_mode=1\';return false;"><span style="color:#0000FF;">{'/modules/page/msg/select_contents_want_to_update'|translate}{*更新するコンテンツを選択する*}</span></a>]'+
+'</div>'+
+{if $auth.design.update}
+'<div style="padding:3px 5px;float:left;text-align:center;font-size:12px;">'+
+'<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/design/design_list/_doc_lang={$mylang}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><img src="/images/management/menu_design.gif" width="168" height="46"></a><br>'+
+'[<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/design/design_list/_doc_lang={$mylang}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><span style="color:#0000FF;">{'/msg/select_the_design'|translate}{*デザインを選択*}</span></a>]'+
+'</div>'+
+{/if}
+{if $auth.headerfooter.update || $auth.layout.update || $auth.site.update || $auth.templateedit.update }
+{*以下に表示するいずれかのモジュールの更新権限を持つ場合*}
+'<div style="padding:3px 5px;float:left;text-align:left;font-size:12px;">'+
+{if $auth.headerfooter.update }
+'[<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/headerfooter/headerfooter_list/_doc_lang={$mylang}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><span style="color:#0000FF;">{'/msg/set_up_the_header_footer'|translate}{*ヘッダフッタの設定*}</span></a>]<br>'+
+{/if}
+{if $auth.layout.update }
+'[<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/layout/layout_list/_doc_lang={$mylang}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><span style="color:#0000FF;">{'/msg/change_the_site_width'|translate}{*サイトの幅を変更する*}</span></a>]<br>'+
+{/if}
+{if $auth.site.update }
+'[<a href="javascript:void(0);" onClick="Modalbox.hide();rcmsLightWindow.activateWindow({ldelim}href: \'{$mng_url}/management/site/site_edit/_doc_lang={$mylang}&edit_page_id={$page_page_id}&page_modify_mode=1\',title: \'{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}\',width:\'820\'{rdelim});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {ldelim}location.href=\'{$smarty.server.PHP_SELF}\';return false;{rdelim});"><span style="color:#0000FF;">{'/msg/change_the_site_name_and_vaious_parameters'|translate}{*サイト名や各種パラメータを変更する*}</span></a>]<br>'+
+{/if}
+{if $auth.templateedit.update }
+'[<a href="javascript:void(0);" onClick="location.href=\'{$smarty.server.PHP_SELF}?&page_modify_mode=2\';return false;"><span style="color:#0000FF;">{'/msg/edit_the_templates'|translate}{*テンプレートを編集する*}</span></a>]<br>'+
+{/if}
+'</div>'+
+{/if}
+'</div>';
+
+Modalbox.show(modalbox,{ldelim}title: '{'/modules/page/label/rcms_management_menu'|translate}{*RCMS管理メニュー*}', width: 800,height: 190,slideDownDuration : 0.4,slideUpDuration : 0.4,overlayDuration:0,afterHide:function(){ldelim}document.body.style.padding = this_padding;{rdelim}{rdelim});
+
+{rdelim}
+{/if}
+//-->
+</script>
+
+{*
+ここからデザインのプレビュー用
+*}
+{if $design_test_mode}
+{headblock}
+<style type="text/css">
+<!--
+{literal}
+.buttonbox {
+    border-top: solid #ec661b 1px;
+    margin-top: 10px;
+    padding: 5px 10px 30px;
+    clear: both;
+}
+.buttonbox p {
+    float: left;
+    line-height: 22px;
+    margin: 0 5px 0 0;
+}
+.buttonbox li {
+    float: left;
+    margin-right: 3px;
+    height: 27px;
+    text-align: center;
+    background: url(/images/management/bt_orange_l.gif);
+    list-style-type: none;
+
+}
+.buttonbox li button {
+    cursor: pointer;
+    display: block;
+    height: 27px;
+    border: none;
+    background: url(/images/management/bt_orange_r.gif) top right no-repeat !important;
+    padding: 0 5px 0 22px;
+}
+*html .buttonbox li button {
+    padding: 0 0 0 10px;
+}
+.buttonbox li:hover {
+    background: url(/images/management/bt_orange_l.gif) bottom left;
+}
+.buttonbox li:hover button {
+    background: url(/images/management/bt_orange_r.gif) bottom right no-repeat !important;
+}
+{/literal}
+-->
+</style>
+{/headblock}
+
+<div id="mng_design_preview_box" style="text-align: justify; border: solid 1px #aaaaaa; z-index: 100; position: absolute; top: 100px; left: 150px;width:600px;">
+  <div id="mng_design_preview_box_title" style="margin: 0; padding: 2px; border-bottom: solid 1px #cccccc; background: #dddddd; cursor: move;">
+    <table style="width: 100%; margin: 0; padding: 0;">
+      <tr>
+        <td style="font-size: larger; color: #000000; padding-left: 10px;">
+          {'/msg/you_can_change_the_design'|translate}{*プレビューをしながらデザインの変更ができます。*}
+        </td>
+        <td>
+          <a href="{$smarty.server.PHP_SELF}?design_test_end=1" style="display: block; width: 147px; height: 26px; background: url(/images/management/bt_close.gif) no-repeat center; text-decoration: none; float: right;"><span style="color: #000000; padding-left: 16px; line-height: 26px;">{'/modules/page/label/quit_without_change'|translate}{*確定しないで終了*}</span></a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <form method="post" action="{$smarty.server.PHP_SELF}" style="margin: 0; padding: 5px; border-top: solid 1px #ffffff; background: #efefef; clear: right;">
+    <table style="margin: 0; padding: 0;">
+      <tr>
+        <td>
+          <div style="margin: 15px; border: solid 1px #dddddd;">
+            <div style="padding: 2px; background: #ffe6b3; font-weight: bold;">
+              {'/label/design'|translate}{*デザイン*}
+            </div>
+            <div style="padding: 5px; background: #ffffff; text-align: center;">
+              <p style="margin: 5px;">{$design_test.design_nm}</p>
+              <p style="margin: 5px;"><img src="/images/css/{$smarty.session.preview_current_design_id}.jpg" /></p>
+          {if $design_test.header_footer}
+          <p style="color: #000000; margin: 9px;"><input type="checkbox" name="rewriteHF" value="1" checked/> {'/modules/page/msg/use_special_header_for_this_design'|translate}{*このデザインのヘッダを適用する*}</p>
+          {else}
+          <input type="hidden" id="no_headerfooter" name="no_headerfooter" value="1" />
+          {/if}
+
+            </div>
+          </div>
+        </td>
+        <td>
+{if $design_test.code1 || $design_test.code2 || $design_test.code3 || $design_test.code4 || $design_test.code5}
+          <div style="color: #000000; background: url(/images/management/h3_back.gif) no-repeat left center; padding: 9px;">
+            {'/modules/page/msg/you_can_varipously_test_desing_color'|translate}{*デザインの配色を変更することができます*}
+          </div>
+{/if}
+          <table style="margin-left: 6px;">
+          {if $design_test.code1}
+            <tr>
+              <td style="color: #000000; width: 90px; vertical-align: top; padding: 5px 0;">{'/label/base_color'|translate}{*ベースカラー*}</td>
+              <td style="width: 80px; vertical-align: top; padding: 5px 0;"><span id="swatch1">■</span><input type="text" id="code1" name="code1" value="{$design_code1}" onkeyup="changeColor(1)" size="8" style="width: 60px;" /></td>
+              <td style="font-size: smaller; vertical-align: top; padding: 5px 0;">
+                <input type="button" value="{'/label/settings'|translate}{*設定*}" onclick="showColorPicker(1)" />
+              </td>
+              <td style="font-size: smaller; padding: 5px 0 5px 5px;">
+                ※{'/modules/page/label/sample_color'|translate}{*サンプルカラー*} <span style="color:{$design_test.code1}">■</span>{$design_test.code1}
+                {if $design_test.comment_code1}<br>（{$design_test.comment_code1}）{/if}
+              </td>
+            </tr>
+          {/if}
+          {if $design_test.code2}
+            <tr>
+              <td style="color: #000000; width: 90px; vertical-align: top; padding: 5px 0;">{'/label/sub_color'|translate}1{*サブカラー1*}</td>
+              <td style="width: 80px; vertical-align: top; padding: 5px 0;"><span id="swatch2">■</span><input type="text" id="code2" name="code2" value="{$design_code2}" onkeyup="changeColor(2)" size="8" style="width: 60px;" /></td>
+              <td style="font-size: smaller; vertical-align: top; padding: 5px 0;">
+                <input type="button" value="{'/label/settings'|translate}{*設定*}" onclick="showColorPicker(2)" />
+              </td>
+              <td style="font-size: smaller; padding: 5px 0 5px 5px;">
+                ※{'/modules/page/label/sample_color'|translate}{*サンプルカラー*} <span style="color:{$design_test.code2}">■</span>{$design_test.code2}
+                {if $design_test.comment_code2}<br>（{$design_test.comment_code2}）{/if}
+              </td>
+            </tr>
+          {/if}
+          {if $design_test.code3}
+            <tr>
+              <td style="color: #000000; width: 90px; vertical-align: top; padding: 5px 0;">{'/label/sub_color'|translate}2{*サブカラー2*}</td>
+              <td style="width: 80px; vertical-align: top; padding: 5px 0;"><span id="swatch3">■</span><input type="text" id="code3" name="code3" value="{$design_code3}" onkeyup="changeColor(3)" size="8" style="width: 60px;" /></td>
+              <td style="font-size: smaller; vertical-align: top; padding: 5px 0;">
+                <input type="button" value="{'/label/settings'|translate}{*設定*}" onclick="showColorPicker(3)" />
+              </td>
+              <td style="font-size: smaller; padding: 5px 0 5px 5px;">
+                ※{'/modules/page/label/sample_color'|translate}{*サンプルカラー*} <span style="color:{$design_test.code3}">■</span>{$design_test.code3}
+                {if $design_test.comment_code3}<br>（{$design_test.comment_code3}）{/if}
+              </td>
+            </tr>
+          {/if}
+          {if $design_test.code5}
+            <tr>
+              <td style="color: #000000; width: 90px; vertical-align: top; padding: 5px 0;">{'/label/sub_color'|translate}3{*サブカラー3*}</td>
+              <td style="width: 80px; vertical-align: top; padding: 5px 0;"><span id="swatch5">■</span><input type="text" id="code5" name="code5" value="{$design_code5}" onkeyup="changeColor(5)" size="8" style="width: 60px;" /></td>
+              <td style="font-size: smaller; vertical-align: top; padding: 5px 0;">
+                <input type="button" value="{'/label/settings'|translate}{*設定*}" onclick="showColorPicker(5)" />
+              </td>
+              <td style="font-size: smaller; padding: 5px 0 5px 5px;">
+                ※{'/modules/page/label/sample_color'|translate}{*サンプルカラー*} <span style="color:{$design_test.code5}">■</span>{$design_test.code5}
+                {if $design_test.comment_code5}<br>（{$design_test.comment_code5}）{/if}
+              </td>
+            </tr>
+          {/if}
+          {if $design_test.code4}
+            <tr>
+              <td style="color: #000000; width: 90px; vertical-align: top; padding: 5px 0;">{'/label/accent_color'|translate}{*アクセントカラー*}</td>
+              <td style="width: 80px; vertical-align: top; padding: 5px 0;"><span id="swatch4">■</span><input type="text" id="code4" name="code4" value="{$design_code4}" onkeyup="changeColor(4)" size="8" style="width: 60px;" /></td>
+              <td style="font-size: smaller; vertical-align: top; padding: 5px 0;">
+                <input type="button" value="{'/label/settings'|translate}{*設定*}" onclick="showColorPicker(4)" />
+              </td>
+              <td style="font-size: smaller; padding: 5px 0 5px 5px;">
+                ※{'/modules/page/label/sample_color'|translate}{*サンプルカラー*} <span style="color:{$design_test.code4}">■</span>{$design_test.code4}
+                {if $design_test.comment_code4}<br>（{$design_test.comment_code4}）{/if}
+              </td>
+            </tr>
+          {/if}
+          </table>
+          {if $design_test.comment}<p>{$design_test.comment}</p>{/if}
+        </td>
+      </tr>
+      <tr style="margin: 5px; text-align: center;">
+        <td>
+          <a href="javascript:rcmsLightWindow.activateWindow({ldelim}href: '{$mng_url}/management/design/design_list/_doc_lang={$mylang}&page_modify_mode=1',title: '{'/modules/page/msg/directly_editing_contents_now'|translate}{*コンテンツを直接編集しています。*}',width:'820'{rdelim}); void Event.observe($('lightwindow_title_bar_close_link'), 'click', function() {ldelim}location.href='{$smarty.server.PHP_SELF}?design_test_end=1';return false;{rdelim})" style="display: block; width: 164px; height: 27px; background: url(/images/management/bt_return.gif) no-repeat center; text-decoration: none;"><span style="color: #000000; padding-left: 16px; line-height: 27px;">{'/modules/page/msg/select_the_design_again'|translate}{*別のデザインを選択*}</span></a>
+        </td>
+        <td>
+<div class="buttonbox"><ul>
+          <li><button  type="submit" name="subflg" onclick="$('design_fix').value = 0">{'/label/preview'|translate}{*プレビュー*}</button></li>
+          <li><button  type="submit" name="subflg" onclick="if (!confirm('{'/modules/page/msg/disign_might_not_change_in_that_case'|translate}{*確定してもブラウザのキャッシュでデザインが変わらない場合があります。その場合はCtrl+F5ボタンを押してみてください。*}')) return false; $('design_fix').value = 1">{'/label/fix_btn'|translate}{*確定*}</button></li>
+</ul></div><div class="clear"></div>
+
+          <input type="hidden" id="design_fix" name="design_fix" value="0" />
+          <input type="hidden" name="preview_design_id" value="{$smarty.session.preview_design_id}" />
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+{literal}
+<script type="text/javascript">
+<!--
+  /* 色関係 */
+  function changeColor(id) {
+    $('swatch' + id).style.color = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+  }
+
+  var color_picker_current_id = null;
+  function showColorPicker(id) {
+    color_picker_current_id = id;
+    var wnd = window.open(
+        '/js/colorpicker/colorpicker.php?callback=callback_color_picker',
+        'color_picker', 'status=no,modal=yes,width=350,height=250'
+        );
+
+    // 現在の色を渡す
+    wnd.dialogArguments = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+    return wnd;
+  }
+
+  function callback_color_picker(wnd) {
+    $('swatch' + color_picker_current_id).style.color
+      = $('code' + color_picker_current_id).value
+      = wnd.returnValue;
+  }
+
+  new Draggable('mng_design_preview_box',{ handle: "mng_design_preview_box_title"});
+  for (var i = 1; i <= 5; i++) if ($('code' + i)) $('swatch' + i).style.color = $F('code' + i);
+
+//-->
+</script>
+{/literal}
+{/if} {* デザインプレビューここまで *}
+
+
+{if $smarty.const.PAGE_MODIFY_MODE eq 1 || $smarty.const.PAGE_MODIFY_MODE eq 2}
+
+<div id="waku"><br></div>
+
+{headblock}
+<style type="text/css" media="screen">
+<!--
+#waku{ldelim}
+    position:absolute;
+    border:4px solid #FF8A10;
+    background-color:#FFCF63;
+    z-index:100;
+    overflow:auto;
+{rdelim}
+-->
+</style>
+{/headblock}
+
+{literal}
+
+<script type="text/javascript">
+<!--
+
+Event.observe($("header"), 'mouseover', function() {
+    if('{/literal}{$page_sysnm}{literal}' == 'top'){
+        setBlock($("header"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=top&region_id=header&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/label/header'|translate}{*ヘッダ*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    }else{
+        setBlock($("header"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=contents&region_id=header&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/label/header'|translate}{*ヘッダ*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    }
+});
+
+Event.observe($("footer"), 'mouseover', function() {
+    if('{/literal}{$page_sysnm}{literal}' == 'top'){
+        setBlock($("footer"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=top&region_id=footer&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/label/footer'|translate}{*フッタ*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    }else{
+        setBlock($("footer"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=contents&region_id=footer&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/label/footer'|translate}{*フッタ*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    }
+});
+
+Event.observe($("navi"), 'mouseover', function() {
+    if('{/literal}{$page_sysnm}{literal}' == 'top'){
+        setBlock($("navi"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=top&region_id=navi&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/modules/navigation'|translate}{*ナビゲーション*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    }else{
+        setBlock($("navi"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=contents&region_id=navi&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/modules/navigation'|translate}{*ナビゲーション*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    }
+});
+
+if('{/literal}{$page_sysnm}{literal}' != 'top'){
+    Event.observe($("footpath"), 'mouseover', function() {
+        setBlock($("footpath"),'headerfooter','{/literal}{if $auth.headerfooter.update }{literal}/management/headerfooter/headerfooter_edit/_doc_lang={/literal}{$mylang}{literal}&page_type=contents&region_id=footpath&edit_page_id={/literal}{$page_page_id}{literal}&page_modify_mode=1{/literal}{/if}{literal}',"{/literal}{'/label/topic_path'|translate}{*ぱんくずリンク*}{literal}","{/literal}{'/modules/headerfooter'|translate}{*ヘッダフッタ*}{literal}","");
+    });
+}
+
+{/literal}
+
+{if $smarty.const.PAGE_MODIFY_MODE eq 1}
+{foreach from=$contentsInfo item=contents}
+{literal}
+
+    if($("contents{/literal}{$contents.contents_id}{literal}")){
+
+        Event.observe($("contents{/literal}{$contents.contents_id}{literal}"), 'mouseover', function() {
+            setBlock(
+                $("contents{/literal}{$contents.contents_id}{literal}"),
+                '{/literal}{$contents.module_type}{literal}',
+                '{/literal}{$contents.edit_url}{literal}',
+                '{/literal}{$contents.module_title|replace:"'":""}{literal}',
+                '{/literal}{$contName[$contents.module_type]}{literal}',
+                '{/literal}{$contents.module_php_nm}{literal}'
+                );
+        });
+    }
+
+{/literal}
+{/foreach}
+{elseif $smarty.const.PAGE_MODIFY_MODE eq 2 && $auth.templateedit.update}
+{foreach from=$contentsInfo item=contents}
+{literal}
+
+    if($("contents{/literal}{$contents.contents_id}{literal}")){
+
+        Event.observe($("contents{/literal}{$contents.contents_id}{literal}"), 'mouseover', function() {
+            setBlock(
+                $("contents{/literal}{$contents.contents_id}{literal}"),
+                '{/literal}{$contents.module_type}{literal}',
+                '{/literal}{if $contents.template_edit_flg }{$contents.template_edit_url}{else}{$contents.edit_url}{/if}{literal}',
+                '{/literal}{$contents.module_title|replace:"'":""}[{if $contents.template_edit_flg eq 9}デフォルトテンプレートを利用{elseif $contents.template_edit_flg eq 1}カスタマイズ済み(適用範囲：このモジュールのIDのみ){elseif $contents.template_edit_flg eq 2}カスタマイズ済み(適用範囲：このページのみ){elseif $contents.template_edit_flg eq 3}カスタマイズ済み(適用範囲：サイト全体){else}このモジュールはテンプレートを利用していません。{/if}]{literal}',
+                '{/literal}{$contName[$contents.module_type]}{literal}',
+                '{/literal}{$contents.module_php_nm}{literal}'
+                );
+        });
+    }
+
+{/literal}
+{/foreach}
+{/if}
+{literal}
+
+var win_open_flg = 0;
+
+function setBlock(elm,module_type,edit_url,module_title,module_nm,module_php_nm){
+win_open_flg = 0;
+
+var ret = elm.getDimensions();
+
+$('waku').style.width = (ret.width-8)+"px";
+$('waku').style.height = (ret.height-8)+"px";
+
+var offset = elm.positionedOffset();
+
+$('waku').style.top = offset[1]+"px";
+$('waku').style.left = offset[0]+"px";
+$('waku').setOpacity(0.9);
+
+if(module_php_nm != ''){
+    module_php_nm = '['+module_php_nm+']';
+}
+
+if (edit_url != ''){
+    $('waku').innerHTML = '<div align="left" style="padding:5px 10px;"><table border="0" bgcolor="#FFCF63" style="border:none;"><tr><td style="padding:2px;" rowspan="2"><img src="/images/management/icon_s/'+module_type+'_s.gif"></td><td style="padding:2px;"><span style="font-weight: bold;font-size:15px;color:black;">['+module_nm+']</span></td><td style="padding:2px;color:#333333;">'+module_php_nm+'</td><td style="padding:2px;"><a href="javascript:void(0);" onClick="if(win_open_flg == 0){rcmsLightWindow.activateWindow({href: \'{/literal}{$mng_url}{literal}'+edit_url+'\',title: \'{/literal}{'/modules/page/msg/the_area_that_you_selected'|translate}{*選択された箇所はこのデータを利用しています。*}{literal}\',width:\'820\'});Event.observe($(\'lightwindow_title_bar_close_link\'), \'click\', function() {location.href=\'{/literal}{$smarty.server.PHP_SELF}{literal}\';return false;});}win_open_flg = 1;">{/literal}<span style="color:#0000FF;">{'/label/edit_btn'|translate}{*編集する*}</span>{literal}</a></td></tr><tr><td colspan="3" style="color:#333333;">'+module_title+'</td></tr></table></div>';
+}else{
+    $('waku').innerHTML = '<div align="left" style="padding:5px 10px;"><table border="0" bgcolor="#FFCF63" style="border:none;"><tr><td style="padding:2px;" rowspan="2"><img src="/images/management/icon_s/'+module_type+'_s.gif"></td><td style="padding:2px;"><span style="font-weight: bold;font-size:15px;color:black;">['+module_nm+']</span></td><td style="padding:2px;color:#333333;">'+module_php_nm+'</td><td style="padding:2px;">{/literal}<span style="color:#0000FF;">{'/label/cant_edit_for_js'|translate}{*編集する*}</span>{literal}</td></tr><tr><td colspan="3" style="color:#333333;">'+module_title+'</td></tr></table></div>';
+}
+
+Event.stopObserving($("waku"), 'click');
+Event.observe($("waku"), 'click', function() {
+    if(win_open_flg == 0 && edit_url != ''){
+        rcmsLightWindow.activateWindow({href: '{/literal}{$mng_url}{literal}'+edit_url,title: '{/literal}{'/modules/page/msg/the_area_that_you_selected'|translate}{*選択された箇所はこのデータを利用しています。*}{literal}',width:'820'});
+        Event.observe($('lightwindow_title_bar_close_link'), 'click', function() {location.href='{/literal}{$smarty.server.PHP_SELF}{literal}';return false;});
+    }
+    win_open_flg = 1;
+});
+
+}
+//-->
+</script>
+{/literal}
+{/if}

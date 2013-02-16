@@ -1,0 +1,148 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+{if $this_month == 12}
+  {assign var="aft_year" value=$next_year}
+  {assign var="bef_year" value=$this_year}
+{elseif $this_month == 1}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$pre_year}
+{else}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$this_year}
+{/if}
+
+
+<div class="list_right_bt">
+<h2>{$module_nm}の予約一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+予約一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$this_year}年{$this_month}月の予約一覧</h3>
+
+<!--クラス一覧とスケジュール一覧を切り替えるタブナビ-->
+<ul class="minitabs">
+ <li><a href="/management/program/program_list/">クラス一覧</a></li>
+ <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+ <li><a href="/management/program/program_schedule_list/">スケジュール一覧</a></li>
+ <li><a href="/management/program/program_reserve_list/" class="active">予約一覧</a></li>
+</ul>
+
+<div class="list_main">
+
+<div class="calendar_list">
+
+{* 年月の選択テーブル *}
+<table width="100%" border="0" cellspacing="2" cellpadding="0" class="navi">
+<tr class="header">
+  <th colspan="12">
+  <span>{$this_year}年</span>[今月:<a href="/management/program/program_reserve_list/">{$this_year}年{$this_month}月</a>]
+  </th>
+</tr>
+<tr class="month">
+  <td>{if $this_month=="01"}<span>１月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}01">１月</a>{/if}</td>
+  <td>{if $this_month=="02"}<span>２月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}02">２月</a>{/if}</td>
+  <td>{if $this_month=="03"}<span>３月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}03">３月</a>{/if}</td>
+  <td>{if $this_month=="04"}<span>４月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}04">４月</a>{/if}</td>
+  <td>{if $this_month=="05"}<span>５月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}05">５月</a>{/if}</td>
+  <td>{if $this_month=="06"}<span>６月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}06">６月</a>{/if}</td>
+  <td>{if $this_month=="07"}<span>７月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}07">７月</a>{/if}</td>
+  <td>{if $this_month=="08"}<span>８月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}08">８月</a>{/if}</td>
+  <td>{if $this_month=="09"}<span>９月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}09">９月</a>{/if}</td>
+  <td>{if $this_month=="10"}<span>１０月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}10">１０月</a>{/if}</td>
+  <td>{if $this_month=="11"}<span>１１月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}11">１１月</a>{/if}</td>
+  <td>{if $this_month=="12"}<span>１２月</span>{else}<a href="/management/program/program_reserve_list/ym={$this_year}12">１２月</a>{/if}</td>
+</tr>
+<tr class="jump">
+  <td colspan="12">
+    <form name="program_schedule_form" method="POST" action="/management/program/program_reserve_list/">
+      <select name="year" style="width:60px;">{html_options options=$arrYear selected=$year}</select>年
+      <select name="month" style="width:60px;">{html_options options=$arrMonth selected=$month}</select>月
+     <input type="submit" name="subflg" value="移動する" />
+    </form>
+  </td>
+</tr>
+</table>
+<br style="clear:both">
+
+{* 検索入力欄 *}
+<form name="schedule_search_form" method="POST" action="/management/program/program_reserve_list/{if $ym}ym={$ym}{/if}">
+  <!--検索部分-->
+  カテゴリ：
+  <select name="category">
+    {html_options options=$searchCategory selected = $selected_category_id}
+  </select>
+  &nbsp;
+    公開状況：
+  <select name="opflg">
+    {html_options options=$searchOpflg selected=$opflg}
+  </select>
+<br />
+  クラス名：<input type="text" name="s_name" value="{$s_name}" />
+&nbsp;
+  担当者名：<input type="text" name="s_teacher" value="{$s_teacher}" />
+&nbsp;
+  <input type="submit" name="search" value="検索する" />
+</form>
+
+<br style="clear:both">
+
+{* 月間カレンダー本体 *}
+
+<table width="100%" border="0" cellspacing="1" cellpadding="0" class="monthCal">
+<tr class="header">
+  <th colspan="7">
+    <span class="pre"><a href="/management/program/program_reserve_list/ym={$bef_year}{$pre_month}">&lt;&lt;</a></span>
+    <span class="this">{$this_year}年{$this_month}月</span>
+    <span class="next"><a href="/management/program/program_reserve_list/ym={$aft_year}{$next_month}">&gt;&gt;</a></span>
+  </th>
+</tr>
+<tr class="daysHeader">
+  <td class="Mon">日</td>
+  <td class="Tue">月</td>
+  <td class="Wed">火</td>
+  <td class="Thu">水</td>
+  <td class="Fri">木</td>
+  <td class="Sat">金</td>
+  <td class="Sun">土</td>
+</tr>
+
+{foreach item=cal_line from=$cal_data.days}
+<tr class="days">
+  {* 週毎の段 *}
+  {foreach from=$cal_line key=key item=item}
+  {* 日毎のデータ *}
+    <td class="{$item.day_type}" width="90">
+    <div class="head"><span>{$item.day}</span>
+    {if $item.day_type == "Out"}{else}<a href="/management/program/program_reserve_daily/day={$item.date}">表示</a>{/if}
+    </div>
+    <br style="clear:both"/>
+    <ul>
+      {foreach  from=$monthly_reserve_list[$item.date] item = reserve_cnt key = category_id}
+      <li><span>{$category[$category_id].category_data.category_nm} : 予約 {$reserve_cnt}件</span></li>
+      {/foreach}
+    </ul>
+    </td>
+  {/foreach}
+</tr>
+{/foreach}
+
+</table>
+
+</div> <!--calendar_list-->
+
+</div>
+
+</div>
+
+{rcms_include file="management/footer.html"}
+

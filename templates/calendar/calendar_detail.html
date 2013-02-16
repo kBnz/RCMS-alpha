@@ -1,0 +1,99 @@
+{module name="calendar_detail"}
+<h2 class="module_title"><span>{'/modules/calendar/label/calendar_detail'|translate}{* 予定詳細 *}</span></h2>
+<div class="module_contents">
+<table class="list">
+
+{if $data.canAccess}
+  <tr>
+    <th>{'/modules/calendar/label/calendar_event'|translate}{* イベント *}</th>
+    <td>{$data.event_txt}</td>
+  </tr>
+  <tr>
+    <th>{'/modules/calendar/label/event_detail'|translate}{* イベントの詳細 *}</th>
+    <td>{if $calendar_wysiwyg_use_flg}{$data.event_detail}{else}{$data.event_detail|nl2br}{/if}</td>
+  </tr>
+  <tr>
+    <th>{'/label/date'|translate}{* 日付 *}</th>
+    <td>
+      {if $data.from_date != ''}
+        {if $data.from_time != ''}
+          {$data.from_date|cat:' '|cat:$data.from_time|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}
+        {else}
+          {$data.from_date|cat:' 00:00:00'|pg_dateformat:"%Y/%m/%d(%%w%%)"}
+        {/if}
+      {/if}
+      ～
+      {if $data.to_date != '' && $data.from_date != $data.to_date}
+        {$data.to_date|cat:' 00:00:00'|pg_dateformat:"%Y/%m/%d(%%w%%)"}
+      {/if}
+      {if $data.to_time != ''}
+        {$data.to_date|cat:' '|cat:$data.to_time|pg_dateformat:" %H:%M"}
+      {/if}
+    </td>
+  </tr>
+{else}
+  <tr>
+    <td colspan="2">{'/msg/authority_error'|translate}{* 権限がありません *}</td>
+  </tr>
+{/if}
+</table>
+
+{if $data.attend_flg == 1}{* attend_flg==1で出席を取る *}
+    {* 出欠ありでも参照・投稿権限なしならヘッダーも出さない -->*}
+    {if $data.AttShowChk || $data.AttPostChk}
+    <h3 class="module_title" style="margin-top:10px;">{'/label/attendance'|translate}{* 出席 *}/{'/label/absence'|translate}{* 欠席 *}</h3>
+    {/if}
+
+    {if count($attend)  > 0 && $data.attend_flg == 1 && $data.AttShowChk}{* 配列に値が入っていれば出欠情報があるとみなせる *}
+    <ul>
+    {foreach from=$attend key="key" item="att"}
+        <li>
+        <span style="font-weight:bold;{if $att.attend_type eq 1}color:#00cc00;">{'/label/attendance'|translate}{* 出席 *}{elseif $att.attend_type eq 0}color:#ff0000;">{'/label/absence'|translate}{* 欠席 *}{elseif $att.attend_type eq 2}color:#777777;">{'/label/undesided'|translate}{* 未定 *}{/if}</span>:
+        {$att.attend_nm}:
+        <span style="font-size:84%;letter-spacing:0.11em;color:#666666;vertical-align:top;">{$att.comment}
+        {if $att.canDelFlg}　<a href="/{$page_sysnm}/id={$data.event_id}&event_id={$data.event_id}&mode=del_attend&DelNo={$att.event_attend_id}" onclick="return confirm('{'/msg/confirm_del'|translate}{* 本当に削除しますか？ *}');">[{'/label/delete_btn'|translate}{* 削除する *}]</a>　{/if} ({$att.date})</span>
+        </li>
+    {/foreach}
+    </ul>
+    {/if}
+
+{* 出欠投稿権限が無い時は入力フォームも出さない　--> *}
+    {if $data.AttPostChk}
+{* <-- 2013/2/8 T.Yoshino *}
+    <form name="calendar_attend" id="calendar_attend" action="/{$page_sysnm}/{if $data.event_id}id={$data.event_id}{/if}" method="POST">
+        <input type="hidden" name="event_id" value="{$data.event_id}">
+        <table class="list">
+        <tr>
+            <th>{'/label/name'|translate}{* 名前 *}</th>
+            <td><input type="text" name="attend_nm" maxlength="20" size="20" value="{$smarty.session.disp_name}"></td>
+        </tr>
+        <tr>
+            <th>{'/label/attendance'|translate}{* 出席 *}/{'/label/absence'|translate}{* 欠席 *}</th>
+                <td>
+                    <label for="att"><input type="radio" value="1"  id="att" name="attend_type" checked="checked">：{'/label/attendance'|translate}{* 出席 *}</label>
+                    <label for="abs"><input type="radio" value="0" id="abs" name="attend_type">：{'/label/absence'|translate}{* 欠席 *}</label>
+                    <label for="sus"><input type="radio" value="2" id="sus" name="attend_type">：{'/label/undesided'|translate}{* 未定 *}</label>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/comments'|translate}{* コメント *}</th>
+                <td>
+                    <input name="comment" type="text" value="" size="60">
+                </td>
+            </tr>
+            <tr>
+            <td colspan="2" style="text-align:center;padding-right:10px;">
+                <input type="hidden" value="set_attend"  id="mode" name="mode">
+                <input type="submit" value="{'/label/send_btn'|translate}{* 送信 *}" style="padding:0 5px;">
+            </td>
+        </tr>
+        </table>
+    </form>
+{* 出欠参照権限が無い時は入力フォームも出さない　--> *}
+	{/if}
+{* <--　2013/2/8 T.Yoshino *}
+
+{/if}
+
+</div>
+{/module}

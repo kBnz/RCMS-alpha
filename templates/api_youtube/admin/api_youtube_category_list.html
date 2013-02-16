@@ -1,0 +1,81 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+  {literal}
+  function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    {/literal}var conf = confirm("{'/msg/confirm_del_selected_items'|translate}");{literal}
+    if (conf) {
+      f.MODE.value = "delete";
+      return true;
+    } else {
+      return false;
+    }
+  }
+  {/literal}
+</script>
+
+<div class="list_right_bt">
+  <h2>カテゴリ一覧</h2>
+  <ul>
+    {if $rauth->canInsert('/api_youtube/category')}
+    <li class="add"><a href="/management/{$mt}/{$mt}_category_edit/"><span>{'/label/create_new_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+    {/if}
+  </ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_search/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_category_list/">カテゴリ設定</a>
+カテゴリ一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+  <div class="list_main">
+    {rcms_include file="common/admin/shonin_list.html"}
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form method="post" action="/management/{$mt}/{$mt}_category_list/">
+      <p><input type="hidden" name="DG_CODE" value="{$DG_CODE}" /><input type="hidden" name="MODE" value="" /></p>
+      {pager info=$pageInfo}
+      <table style="width: 100%">
+        <tr>
+          <th style="width: 30px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'category_id[]')" /></th>
+          <th style="width: 30px">{'/label/publish'|translate}</th>{*公開*}
+          <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+          <th>説明</th>
+        </tr>
+        {foreach item=data from=$list}
+        {assign var=_id value=$data.category_id}
+        <tr>
+          <td><input type="checkbox" name="category_id[]" value="{$_id}" {if !$rauth->canUpdate("/api_youtube/category/$_id") && !$rauth->canDelete("/api_youtube/category/$_id")}disabled="disabled" {/if}/></td>
+          <td>
+            <img src="/images/management/{if $data.open_flg eq 1}check{else}batu{/if}.gif" />
+          </td>
+          <td><a href="/management/api_youtube/api_youtube_category_edit/category_id={$data.category_id}">{$data.name}</a>{rcms_include file="common/admin/language_status.html" meta=$docmetas[$_id] link="/management/$mt/api_youtube_category_edit/category_id=$_id"}</td>
+          <td>{$data.description|truncate}</td>
+        </tr>
+        {/foreach}
+      </table>
+      {pager info=$pageInfo}
+
+      {buttonbox}
+      <p>選択した項目を</p>
+      <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+      <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+      <button type="submit" onclick="return confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+      {/buttonbox}
+    </form>
+
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

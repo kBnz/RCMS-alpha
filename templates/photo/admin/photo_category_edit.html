@@ -1,0 +1,88 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/photo/label/category_edit'|translate}</h2>{*画像カテゴリ編集*}
+<ul>
+{if $rauth->canInsert("/photo/category/")}
+    <li class="add"><a href="/management/photo/photo_category_edit/"><span>{'/label/add_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/if}
+</li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/photo/photo_list/">{$module_nm}</a>
+<a href="/management/photo/photo_category_list/">{'/modules/photo/label/category_list'|translate}</a>
+{'/modules/photo/label/category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 画像 >> 画像カテゴリ設定 >> 画像カテゴリ編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<h3 class="title">{if $photo_category_id != ""}{$latestRow.category_nm|escape}{else}{'/label/new_category'|translate}{*カテゴリ追加*}{/if}</h3>
+
+<div class="list_main">
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/catalog/catalog_group_edit/catalog_group_id=$catalog_group_id"}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/photo/photo_category_edit/" method="POST">
+    {if $photo_category_id}
+    <input type="hidden" name="photo_category_id" value="{$photo_category_id}" />
+    {/if}
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {if $latestRow.photo_category_id}
+    {lang_selector meta=$docmeta link="/management/photo/photo_category_edit/photo_category_id=$photo_category_id"}
+    {/if}
+
+
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/label/category_name'|translate}{*カテゴリ名*}</th>
+        <td>
+          <input type="text" style="width: 400px" name="category_nm" value="{$formData.category_nm}" /><span class="required">{'/label/required'|translate}{*必須*}</span>
+        </td>
+      </tr>
+{if $docmeta.is_primary}
+      <tr>
+        <th>{'/label/parent_category'|translate}{*親カテゴリ*}</th>
+        <td>
+            <select name="parent_id">{html_options options=$category_parent_options selected=$formData.parent_id}</select><span class="required">{'/label/required'|translate}{*必須*}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/memo'|translate}{*メモ*}</th>
+        <td>
+            <textarea name="memo" style="height: 150px; width: 400px">{$formData.memo}</textarea>
+            <p class="hint">{'/msg/describe_purpose'|translate}{*用途などを記入しておくと便利です。*}</p>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/publish_settings'|translate}{*公開設定*}</th>
+        <td>
+            {html_radios name='open_flg' options=$publish_option selected=$formData.open_flg}
+        </td>
+      </tr>
+{/if}
+    </table>
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/photo/item/$photo_id", $docmeta.lang) docmeta=$docmeta link="/management/catalog/catalog_group_edit/catalog_group_id=$catalog_group_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

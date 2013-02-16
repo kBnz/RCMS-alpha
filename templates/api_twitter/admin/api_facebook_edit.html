@@ -1,0 +1,145 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}アプリ詳細</h2>
+<ul>
+{if $rauth->canInsert("/api_facebook/item/")}
+    <li class="add"><a href="/management/api_facebook/api_facebook_edit/"><span>{'/modules/api_facebook/label/add_new_app_btn'|translate}</span></a></li>{* アカウント追加 *}
+{/if}
+</ul>
+</div><!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_facebook/api_facebook_list/">{$module_nm}</a>
+{$module_nm}アプリ詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+  <div class="list_main">
+
+    <form id="agForm" action="/management/api_facebook/api_facebook_edit/" method="post">
+        <input type="hidden" name="id" value="{$facebook.facebook_id}" />
+        <input type="hidden" name="MODE" value="{$MODE}"  />
+        <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+
+{if $facebook.facebook_id}
+
+  {buttonbox}
+    <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+{else}
+
+{/if}
+
+    </form>
+        
+    <p>1.facebookアプリを新規作成します（別ウィンドウ）</p>
+    <button id="create_new_app">アプリを新規作成</button>
+    <p>2.作成したアプリの情報を入力</p>
+    
+    <form name="app_propeties" action="/management/api_facebook/api_facebook_edit/">
+        <input type="hidden" name="id" value="{$facebook.facebook_id}" />
+        <input type="hidden" name="MODE" value="{if $facebook.facebook_id}UPDATE{else}INSERT{/if}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    
+    <table>
+        <tr>
+            <td>APP ID</td><td><input type="text" name="app_id" size="60" value="{$facebook.app_id}"/></td>
+        </tr>
+        <tr>
+            <td>API KEY</td><td><input type="text" name="api_key" size="60" value="{$facebook.api_key}" /></td>
+        </tr>
+        <tr>
+            <td>アプリの秘訣</td><td><input type="text" name="app_secret" size="60" value="{$facebook.app_secret}" /></td>
+        </tr>
+    </table>
+    
+        <br />
+        
+    <p>3.作成したアプリの情報を入力</p>
+    <table>
+        <tr>
+            <td>タブのURL</td><td><input type="text" name="tab_url" size="60" value="{$facebook.tab_url}" /></td>
+        </tr>
+        <tr>
+            <td>タブの名前</td><td><input type="text" name="tab_name" size="60" value="{$facebook.tab_name}" /></td>
+        </tr>
+    </table>
+    
+    
+    <p>4.作成したアプリの設定を適用</p>
+    <input type="submit" value="アプリを設定" />
+    <!--
+    <button id="set_app_propety">アプリを設定</button>
+    -->
+    </form>
+
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+      f.MODE.value='DELETE';
+      f.submit();
+  }
+}
+
+
+j$(document).ready(function(){
+    //「アプリを新規作成」ボタンクリック時のシーケンス
+    j$("#create_new_app").click(function(){
+        window.open("http://www.facebook.com/developers/createapp.php", "アプリを新規作成","width=1000,height=600,resizable=yes,scrollbars=yes");
+        return false;
+    });
+
+    //「アプリを設定」ボタンクリック時のシーケンス
+    j$("#set_app_propety").click(function(){
+        var api_key = j$("#api_key").val();
+        var app_secret = j$("#app_secret").val();
+        var tab_url = j$("#tab_url").val();
+        var tab_name = j$("#tab_name").val();
+        if(api_key.match(/^\w+$/) && app_secret.match(/^\w+$/)){
+            
+            j$.ajax({
+                type: "POST",
+                url: "/direct/api_facebook/set_app_propety/",
+                data: {"api_key":api_key,"app_secret":app_secret,"tab_url":tab_url,"tab_name":tab_name},
+                success: function(msg){
+                    alert(msg);
+
+                }
+             });
+             
+            
+        }else{
+            alert("入力された値が不正です");
+        };
+        
+
+    });
+});
+
+
+
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}
+

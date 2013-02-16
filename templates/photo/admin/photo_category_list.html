@@ -1,0 +1,147 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<style>
+td.child a{
+  margin-left: 10px;
+  padding-left: 5px;
+  border-left: 1px dotted #000;
+}
+#generate_param_box {
+  margin-top:5px;
+  padding:10px 10px 10px 10px;
+  border: 1px solid #999;
+}
+#generate_param_box p {
+  margin-bottom:10px;
+  line-height: 1.25em;
+}
+</style>
+{/literal}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+// パラメータ生成
+function generateParam() {
+    var param = new Array();
+    var cb = document.module_param_form.module_param_category_id;
+    if (cb.length) {
+        for (var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                param.push('category_id[]=' + cb[i].value);
+            }
+        }
+    }
+    else {
+        if (cb.checked) {
+            param.push('category_id[]=' + cb.value);
+        }
+    }
+    document.module_param_form.module_param.value = param.join('&');
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/photo/label/category_list'|translate}</h2>{*画像カテゴリ設定*}
+<ul>
+{if $rauth->canInsert("/photo/category/")}
+    <li class="add"><a href="/management/photo/photo_category_edit/"><span>{'/label/add_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/photo/photo_list/">{$module_nm}</a>
+{'/modules/photo/label/category_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 画像 >> 画像カテゴリ設定  *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 承認待ちブログ一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form name="photo_category_list" method="POST" action="/management/photo/photo_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    <p class="page_links">{$page_links}</p>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th style="width:20px;"><input type="checkbox" name="select_all_list" value="1" onClick="AllChecked(this.checked, this.form, 'photo_category_id[]');"></th>
+        <th width="26">{'/label/publish'|translate}{* 公開 *}</th>
+        <th style="width:30px;">ID</th>
+        <th>{'/label/category_name'|translate}{*カテゴリ名*}</th>
+        <th>{'/label/memo'|translate}{*メモ*}</th>
+        <th style="width:30px;">{'/label/sort'|translate}{*並び順*}</th>
+      </tr>
+    {foreach from=$photo_category_list item=row}
+        {assign var=photo_category_id value=$row.photo_category_id}
+        <tr>
+        <td><input type="checkbox" name="photo_category_id[]" value="{$row.photo_category_id}" {if !$rauth->canUpdate("/photo/category/$photo_category_id") && !$rauth->canDelete("/photo/category/$photo_category_id")}disabled="disabled"{/if} /></td>
+        <td>{$row.open_flg|rcms_publicimg}</td>
+        <td>{$row.photo_category_id}</td>
+        <td {if $row.parent_id != 0}class="child"{/if}>
+        <a href="/management/photo/photo_category_edit/photo_category_id={$row.photo_category_id}">{$row.category_nm}</a>
+        {rcms_include file="common/admin/language_status.html" meta=$docmetas[$photo_category_id] link="/management/photo/photo_category_edit/photo_category_id=$photo_category_id"}
+        </td>
+        <td>{$row.memo|escape|nl2br}</td>
+        <td><input type="text" name="category_weight[{$row.photo_category_id}]" value="{$row.category_weight}"></td>
+        </tr>
+    {/foreach}
+    </table>
+    <p class="page_links">{$page_links}</p>
+        {buttonbox}
+        <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+		<button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+		<button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+		<button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{* 更新する *}</button>
+        {/buttonbox}
+  </form>
+
+  <div style="margin-top:20px">
+    <a href="javascript:;" onclick="display('generate_param_box');return false;">&gt;&gt;{'/msg/if_you_would_like_to_display_with_selected_category'|translate}{*カテゴリを指定してサイト表示したい場合はこちら*}</a>
+    <div id="generate_param_box" style="display:none">
+      <p>
+{'/modules/photo/msg/can_display_image_list_with_selected_category'|translate}
+{*
+        カテゴリを指定して画像一覧をサイト表示することができます。<br>
+        方法は<a href="/management/page/page_list/">サイト基本設定／ページ設定</a>でページ編集を行うときに、コンテンツのパラメータを設定することです。<br/><br/>
+        ここでは、そのパラメータを生成します。<br />
+        １．一覧に表示したいカテゴリを選択して「パラメータ生成」をクリックしてください。複数選択できます。<br >
+        ２．するとテキストボックスにパラメータ文字列が生成されます。<br />
+        ３．この文字列をコピーしてページ編集画面で貼り付けて使用してください。
+*}
+      </p>
+      <form name="module_param_form">
+      <ul>
+      {foreach from=$photo_category_list item=row}
+        <li><input type="checkbox" name="module_param_category_id" id="module_param_category_id{$row.photo_category_id}" value="{$row.photo_category_id}" /><label for="module_param_category_id{$row.photo_category_id}">{$row.category_nm}</label></li>
+      {/foreach}
+      </ul>
+      <input type="button" onclick="generateParam()" value="{'/label/generate_parameter'|translate}{*パラメータ生成*}" /><br />
+      <input type="text" size="80" name="module_param" id="module_param" />
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

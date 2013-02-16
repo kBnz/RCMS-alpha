@@ -1,0 +1,366 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function changeTemlate(temp_id,ctr_id){
+  var index = $(temp_id).selectedIndex;
+  var url = '/direct/inquiry/getTemplateData/';
+  var para = 'template_id='+$(temp_id).options[index].value
+  options = {method:'post',parameters:para,onComplete:function(httpObj){$(ctr_id).value += httpObj.responseText;}}
+  var ajaxobj = new Ajax.Request(url,options);
+}
+
+function changeBnData(ins_org_id,ctr_id){
+  var index = $(ins_org_id).selectedIndex;
+  var url = '/direct/inquiry/getBnData/';
+  var para = 'inquiry_bn_id='+$(ins_org_id).options[index].value
+  options = {method:'post',parameters:para,onComplete:function(httpObj){$(ctr_id).value += httpObj.responseText;}}
+  var ajaxobj = new Ajax.Request(url,options);
+}
+
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/inquiry/label/inquiry_reply_edit'|translate}{*メール詳細*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry/label/inquiry_list'|translate}</a>
+<a href="/management/inquiry/inquiry_bn_list/inquiry_id={$inquiry_id}">{'/modules/inquiry/label/inquiry_bn_list'|translate}</a>
+{'/modules/inquiry/label/inquiry_reply_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 問い合わせ一覧 >> メール一覧 >> メール詳細 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.inquiry_name}</h3>
+{rcms_include file="inquiry/admin/minitabs.html" page_type=$ct auth=$auth header=$header mail_flg=$mail_flg}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="inquiry_reply_edit_form" id="inquiry_reply_edit_form" action="/management/inquiry/inquiry_reply_edit/" method="POST">
+    <input type="hidden" name="iq_pageID" value="{$iq_pageID}" />
+    <input type="hidden" name="bn_pageID" value="{$bn_pageID}" />
+    <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+    <input type="hidden" name="inquiry_bn_id" value="{$inquiry_bn_id}" />
+    <input type="hidden" name="return_inquiry_bn_id" value="" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="BN_UPDATE" />
+
+<div id="inquiry_infomation">
+  <h3>{'/modules/inquiry/label/inquiry_mail_detail'|translate}{*問い合わせメール内容*}</h3>
+  <table width="100%" id="table_inquiry">
+    <tr id="tr_inquiry_no">
+      <th id="th_inquiry_no" width="200">{'/modules/inquiry/label/inquiry_no'|translate}{*問い合わせNo.*}</th>
+      <td id="td_inquiry_no">{$inquiry_bn_id}{*アンカー*}<a name="{$inquiry_bn_id}"></a></td>
+    </tr>
+    <tr id="tr_date">
+      <th id="th_date">{if  $data.inquiry_category_id != '-1'}{'/label/receive_date'|translate}{*受信日時*}{else}{'/label/sent_date'|translate}{*送信日時*}{/if}</th>
+      <td id="td_date">{if  $data.inquiry_category_id != '-1'}{$data.receive_date}{else}{$data.send_date}{/if}</td>
+    </tr>
+    <tr id="tr_receive_type">
+      <th id="th_receive_type">{'/label/receive_type'|translate}{*受信形態*}</th>
+      <td id="td_receive_type">
+        {if $data.inquiry_category_id == '0'}
+          {'/label/receiving_mail'|translate}{*メール受信*}
+        {elseif $data.inquiry_category_id == '-1'}
+          {'/label/sending_mail'|translate}{*メール送信*}
+        {else}
+          WEB
+        {/if}
+      </td>
+    </tr>
+    {if $data.inquiry_category_id != '0' &&  $data.inquiry_category_id != '-1'}
+      {if $data.from_id != ''}
+        <tr id="tr_origin_page_title">
+          <th id="th_origin_page_title">{'/modules/inquiry/label/origin_page_title'|translate}{*問い合わせをした<br />ページのタイトル*}</th>
+          <td id="td_origin_page_title">
+            {$data.from_title}
+          </td>
+        </tr>
+      {/if}
+      <tr id="tr_origin_page_url">
+        <th id="th_origin_page_url">{'/modules/inquiry/label/origin_page_url'|translate}{*問い合わせをした<br />ページのURL*}</th>
+        <td id="td_origin_page_url">
+          {$smarty.const.ROOT_URL}{$data.from_uri}
+        </td>
+      </tr>
+      <tr id="tr_user_agent">
+        <th id="th_user_agent">{'/modules/inquiry/label/user_agent'|translate}{*ブラウザ・OS情報*}</th>
+        <td id="td_user_agent">
+          {$data.user_agent}
+        </td>
+      </tr>
+    {/if}
+    <tr id="tr_category">
+      <th id="tr_category">{'/label/category'|translate}{*カテゴリ*} / {'/label/subject'|translate}{*件名*}</th>
+      <td id="tr_category">
+        {if $data.inquiry_category_id == '0' || $data.inquiry_category_id == '-1'}
+          {$data.subject|escape}
+        {elseif $data.inquiry_category_name != ''}
+          {$data.inquiry_category_name|escape}
+        {else}
+          ({'/label/no_subject'|translate}{*件名なし*})
+        {/if}
+      </td>
+    </tr>
+    <tr id="tr_body">
+      <th id="tr_body">{'/label/body'|translate}{*本文*}</th>
+      <td id="tr_body">{$data.body|escape|nl2br}</td>
+    </tr>
+    <tr id="tr_sender_name">
+      <th id="tr_sender_name" width="200">{'/label/sender_name'|translate}{*発信者名*}</th>
+      <td id="tr_sender_name">
+        {if $data.inquiry_category_id == '0'}
+          {'/label/receiving_mail'|translate}{*メール受信*}
+        {elseif $data.inquiry_category_id == '-1'}
+          {$data.admin_nm}
+        {else}
+          {if $data.member_id}
+            {if $auth.member.select}<a href="/management/member/member_edit/member_id={$data.member_id}">{/if}
+            {if $data.name !== ''}{$data.name}{else}({'/label/no_input'|translate}{*入力なし*}){/if}
+             {if $auth.member.select}</a>{/if}
+          {else}
+            {if $data.name !== ''}{$data.name}{else}({'/label/no_input'|translate}{*入力なし*}){/if}
+          {/if}
+        {/if}
+      </td>
+    </tr>
+    {if $data.inquiry_category_id ne -1}
+      {section name=cnt start=1 loop=$extends_cnt+1}
+        {assign var="i" value=$smarty.section.cnt.index|string_format:"%02d"}
+        {assign var="ext_title" value="ext_title_$i"}
+        {assign var="ext" value="ext_$i"}
+        {if $data.$ext_title != ""}
+        {capture name=$ext_title}
+          <tr id="tr_{$ext_title}">
+            <th id="th_{$ext_title}">{$data.$ext_title|escape}</th>
+            <td id="td_{$ext_title}">
+            {if $header.form_type.$ext_title == $smarty.const.INQUIRY_RADIO_BUTTON_FORMAT || $header.form_type.$ext_title == $smarty.const.INQUIRY_SELECT_BOX_FORMAT}
+                {if $data[$ext_title] != ""}
+                    {assign var="selected_value" value=$data[$ext]} 
+                    {$header.form_type_option.$ext_title[$selected_value]}
+                {else}
+                    {'/modules/survey/label/no_answer'|translate}{*未回答*}
+                {/if}
+            {elseif $header.form_type.$ext_title == $smarty.const.INQUIRY_CHECK_BOX_FORMAT}
+                {foreach from=$data.$ext item=selected_value}
+                    {$header.form_type_option.$ext_title[$selected_value]}
+                {foreachelse}
+                    {'/modules/survey/label/no_answer'|translate}{*未回答*}
+                {/foreach}
+            {elseif $header.form_type.$ext_title == $smarty.const.INQUIRY_DATE_FORMAT}
+                {assign var="ext_y" value=$ext|cat:"_y"}
+                {assign var="ext_m" value=$ext|cat:"_m"}
+                {assign var="ext_d" value=$ext|cat:"_d"}
+                {'/label/yyyymmdd'|translate:$data.$ext_y:$data.$ext_m:$data.$ext_d}
+            {elseif $header.form_type.$ext_title == $smarty.const.INQUIRY_FILE_FORMAT}
+                {if $data.$ext|substr:-3|lower eq "jpg" || $data.$ext|substr:-3|lower eq "png" || $data.$ext|substr:-3|lower eq "gif" || $data.$ext|substr:-4|lower eq "jpeg"}
+                    {*本番環境でlighttpdを使っている場合、画像系拡張子を最終クエリに渡すとlighttpdからNot foundが返ってきてしまうためdummy=1を渡しておく*}
+                    <a href="/direct/inquiry/file_download/?file_nm={$data.$ext}&dummy=1" target="_blank">
+                        <img src="/direct/inquiry/file_download/?file_nm=/s/{$data.$ext}&dummy=1"/>
+                    </a>
+                {else}
+                    <a href="/direct/inquiry/file_download/?file_nm={$data.$ext}" target="_blank">{$data.$ext}</a>
+                {/if}
+            {else}
+                {$data.$ext|escape}
+            {/if}
+            </td>
+          </tr>
+        {/capture}
+        {/if}
+      {/section}
+
+    {* お問い合わせ項目を重要度の高い順に表示 *}
+    {foreach from=$header.sort_grade item=value}
+    {$smarty.capture.$value}
+    {/foreach}
+
+    {/if}
+    <tr id="tr_sender_mail_address">
+      <th id="th_sender_mail_address">{'/label/sender_mail_address'|translate}{*送信者アドレス*}</th>
+      <td id="td_sender_mail_address">{$data.from_mail|escape}</td>
+    </tr>
+    <tr id="tr_admin_comments">
+      <th id="tr_admin_comments">{'/label/admin_comments'|translate}{*管理メモ*}</th>
+      <td id="tr_admin_comments"><textarea name="comment" cols="60" rows="3">{$data.comment|escape}</textarea></td>
+    </tr>
+    <tr id="tr_status_katakana">
+      <th id="tr_status_katakana">{'/label/status_katakana'|translate}{*ステータス*}</th>
+      <td id="tr_status_katakana"><select name="status">{html_options options=$arrInquiry_bn_status selected=$data.status}</select></td>
+    </tr>
+    <tr id="tr_moving_inquiry_no">
+      <th id="tr_moving_inquiry_no">{'/modules/inquiry/label/moving_inquiry_no'|translate}{*問い合わせメール振り分け*}</th>
+      <td id="tr_moving_inquiry_no"><input type="checkbox" name="parent_inquiry_bn_id_updateflg" value="1" {if $data.parent_inquiry_bn_id_updateflg}checked="checked"{/if} />{'/modules/inquiry/msg/inquiry_no_move_to'|translate}{*振り分ける問い合わせNo.*}<input type="text" name="parent_inquiry_bn_id" {if $data.parent_inquiry_bn_id}value="{$data.parent_inquiry_bn_id}"{/if} size="4" maxlength="10" /></td>
+    </tr>
+  </table>
+
+  {buttonbox}
+    {rcms_auth target="update:/inquiry/mail/$inquiry_bn_id"}
+      <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+    {/rcms_auth}
+    {rcms_auth target="delete:/inquiry/mail/$inquiry_bn_id"}
+      <button type="button" onclick="withConfirm.remove()">{'/label/delete_btn'|translate}{*削除する*}</button>
+    {/rcms_auth}
+  {/buttonbox}
+</div><!--//#inquiry_infomation-->
+
+{if $mail_flg}
+  {if $rauth->canUpdate("/inquiry/mail/[@inquiry_id=$inquiry_id]")}
+    <h3>{'/modules/inquiry/label/create_new_reply_mail'|translate}{*返信メール新規作成*}</h3>
+    <table width="100%" id="table_reply">
+      <tr id="tr_send_to">
+        <th id="th_send_to" width="200">{'/label/send_to'|translate}{*宛先*}</th>
+        <td id="td_send_to"><input type="text" name="from_mail" id="from_mail" size="50" value="{$data.from_mail|escape}" /></td>
+      </tr>
+      <tr id="tr_subject">
+        <th id="th_subject">{'/label/subject'|translate}{*件名*}</th>
+        <td id="td_subject"><input type="text" name="inquiry_reply_subject" size="75" value="{$data.default_subject|escape}"></td>
+      </tr>
+      <tr id="tr_template">
+        <th id="th_template">{'/label/template'|translate}{*定型文*}</th>
+        <td id="td_template">
+        <select name="template_id" id="template_id" onchange="changeTemlate(template_id,inquiry_reply_body)">{html_options options=$searchTemplate selected=$template_id}</select>
+        {if $rauth->canInsert("/inquiry/template/")}
+        &nbsp;&nbsp;<a href="/management/inquiry/inquiry_template_list/">{'/modules/inquiry/msg/edit_template'|translate}{*定型文編集*}</a>
+        {/if}
+        </td>
+      </tr>
+      <tr id="tr_message">
+        <th id="th_message">{'/label/message'|translate}{*メッセージ*}</th>
+        <td id="td_message">
+        <select name="ins_org_id" id="ins_org_id" onchange="changeBnData(ins_org_id, inquiry_reply_body)">{html_options options=$search_ins_org selected=$ins_org_id}</select>
+        </td>
+      </tr>
+      <tr id="tr_body">
+        <th id="th_body">{'/label/body'|translate}{*本文*}</th>
+        <td id="td_body"><textarea name="inquiry_reply_body" id="inquiry_reply_body" cols="60" rows="20">{$data.default_body|escape}</textarea>
+        </td>
+      </tr>
+      <tr id="tr_status_after_sending">
+        <th id="th_status_after_sending">{'/modules/inquiry/label/status_after_sending'|translate}{*送信後のステータス*}</th>
+        <td id="td_status_after_sending"><input type="checkbox" name="inquiry_bn_status_updateflg">{'/modules/inquiry/label/status_update'|translate}{*送信後、更新する*}
+        <select name="inquiry_bn_status2">{html_options options=$arrInquiry_bn_status}</select></td>
+      </tr>
+    </table>
+    {buttonbox}
+        <button type="button" onclick="withConfirm.send()">{'/label/send_mail'|translate}{*メール送信*}</button>
+    {/buttonbox}
+  {/if}
+
+  <h3>{'/label/mail_history'|translate}{*メール履歴*}</h3>
+  {foreach from=$inquiry_bn_data item=row}
+    <table width="100%" id="table_history">
+      <tr id="tr_reply_status">
+        <th id="th_reply_status" colspan="2">{*アンカー⇒*}<a name="{$row.inquiry_bn_id}"></a>
+          {if $row.reply_status eq '10'}
+            ＜＜{'/label/sent_mail'|translate}{*送信メール*}
+          {else}
+            ＞＞{'/label/received_mail'|translate}{*受信メール*}
+          {/if}
+        </th>
+      </tr>
+      <tr id="tr_inquiry_bn_id">
+        <th id="th_inquiry_bn_id" width="200">No.</th>
+        <td id="td_inquiry_bn_id">{$row.inquiry_bn_id}</td>
+      </tr>
+    {if $row.send_date ne ""}
+      <tr id="tr_send_date">
+        <th id="th_send_date">{'/label/sent_date'|translate}{*送信日時*}</th>
+        <td id="td_send_date">{$row.send_date}</td>
+      </tr>
+    {else}
+      <tr id="tr_receive_date">
+        <th id="th_receive_date">{'/label/receive_date'|translate}{*受信日時*}</th>
+        <td id="td_receive_date">{$row.receive_date}</td>
+      </tr>
+      <tr id="tr_sender_name">
+        <th id="th_sender_name">{'/label/sender_name'|translate}{*発信者名*}</th>
+        <td id="td_sender_name">
+          {if $row.inquiry_category_id == '0'}
+            {'/label/receiving_mail'|translate}{*メール受信*}
+          {else}
+            {$row.name}
+          {/if}
+        </td>
+      </tr>
+      <tr id="tr_sender_mail_address">
+        <th id="th_sender_mail_address">{'/label/sender_mail_address'|translate}{*送信者アドレス*}</th>
+        <td id="td_sender_mail_address">{$row.from_mail}</td>
+      </tr>
+    {/if}
+      <tr id="tr_subject">
+        <th id="th_subject">{'/label/subject'|translate}{*件名*}</th>
+        <td id="td_subject">{$row.subject}</td>
+      </tr>
+      <tr id="tr_body">
+        <th id="th_body">{'/label/body'|translate}{*本文*}</th>
+        <td id="td_body">{$row.body}</td>
+      </tr>
+    {if $row.send_date ne ""}
+      <tr id="tr_send_date">
+        <th id="th_send_date">{'/label/status_katakana'|translate}{*ステータス*}</th>
+        <td id="td_send_date">{$arrInquiry_reply_bn_status[$row.status]}</td>
+      </tr>
+    {/if}
+    {if $row.reply_inquiry_bn_id eq ""}
+      <tr id="tr_reply_inquiry_bn_id">
+        <th id="tr_reply_inquiry_bn_id">{'/modules/inquiry/msg/do_you_return_inquiry_no_to_initial'|translate}{*メールの振り分けを元に戻しますか？*}</th>
+        <td id="tr_reply_inquiry_bn_id"><a href = "javascript:withConfirm.reset({$row.inquiry_bn_id});">{'/label/initialize_btn'|translate}{*元に戻す*}</a></td>
+      </tr>
+    {/if}
+    </table>
+  {/foreach}
+
+{/if}{* mail_flg *}
+
+<script type="text/javascript">
+{literal}
+//<![CDATA[
+var withConfirm = {
+  f: document.getElementById('inquiry_reply_edit_form'),
+  send: function() {
+    // メール送信してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_send_mail'|translate}{literal}')) {
+      this.f.MODE.value = 'SEND_MAIL';
+      this.f.submit();
+    }
+  },
+  reset: function(id) {
+    // このメールの振り分けを元に戻します。よろしいですか？
+    if (confirm('{/literal}{'/modules/inquiry/msg/confirm_inquiry_no_initialize'|translate}{literal}')) {
+      this.f.MODE.value='RETURN_MAIL';
+      this.f.return_inquiry_bn_id.value=id;
+      this.f.submit();
+    }
+  },
+  remove: function() {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+      this.f.MODE.value='DELETE';
+      this.f.submit();
+    }
+  }
+}
+function change_sender_address() {
+  document.getElementById('sender_address').style.display = "";
+  document.getElementById('sender_address_static').style.display = "none";
+}
+//]]>
+{/literal}
+</script>
+
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

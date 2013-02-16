@@ -1,0 +1,38 @@
+{headblock}
+<link type="text/css" href="/css/jtweetsanywhere/jquery.jtweetsanywhere-1.2.1.css" />
+{/headblock}
+
+<script type="text/javascript" src="http://www.google.com/jsapi"></script> 
+<script type="text/javascript">google.load('jquery', '1.4.4');</script>
+<script type="text/javascript">var j$ = jQuery.noConflict();</script>
+<script type="text/javascript" src="/js/jtweetsanywhere/jquery.jtweetsanywhere-1.2.1.min.js"></script>
+<script type="text/javascript" src="http://platform.twitter.com/anywhere.js?id=OdksKjdNjUgI65jjMnZSg&v=1"></script>
+<script type='text/javascript'>
+{literal}
+j$(document).ready(function(){
+    j$('#tweetFeed').jTweetsAnywhere({
+{/literal}
+    username: {$twitter_id},
+    count: {$per_cnt},
+{literal}
+
+    showTweetFeed: {
+        showTimestamp: {
+            refreshInterval: 30
+        },
+        autorefresh: {
+            mode: 'trigger-insert',
+            interval: 60
+        },
+        paging: { mode: 'more' },
+        includeRetweets: false,
+        showProfileImages: true
+    },
+    });
+});
+</script>
+{/literal}
+{module name="api_twitter_tweet}
+    <div id="tweetFeed">
+    </div>
+{/module}

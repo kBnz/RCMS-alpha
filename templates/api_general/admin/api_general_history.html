@@ -1,0 +1,19 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_source_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_source_list/">外部データソース一覧</a>
+<a href="/management/{$mt}/{$mt}_edit/internal_id={$internal_id}">{$module_nm}編集</a>
+更新履歴一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/%mt/%mt_edit/internal_id=$internal_id"|replace:'%mt':$mt pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

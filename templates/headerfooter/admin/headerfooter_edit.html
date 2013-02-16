@@ -1,0 +1,260 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{headblock}
+{literal}
+<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css">
+<script src="/js/codemirror/lib/codemirror.js"></script>
+<script src="/js/codemirror/lib/overlay.js"></script>
+<script src="/js/codemirror/mode/xml/xml.js"></script>
+<script src="/js/codemirror/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror/mode/css/css.js"></script>
+<link rel="stylesheet" href="/js/codemirror/theme/default.css">
+<link rel="stylesheet" href="/js/codemirror/theme/night.css">
+<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<style type="text/css">
+span.usepage a {
+  font-size: 0.8em;
+  margin-right: 15px; 
+  color: green;
+}
+.CodeMirror {border: 1px solid black;}
+.cm-s-default .cm-smarty {color: #A11;}
+.cm-s-night .cm-smarty {color: #FF8000;}
+.cm-smarty-cmt {color: green;}
+.cm-smarty-val {color: blue;}
+.cm-s-default .cm-smarty-if,.cm-s-default .cm-smarty-foreach  {color: #A11;font-weight:bold;}
+.cm-s-night .cm-smarty-if,.cm-s-night .cm-smarty-foreach  {color: #FF8000;font-weight:bold;}
+.cm-s-default span.cm-tag  {color: #000;}
+.cm-s-default span.cm-string  {color: #808000;}
+.cm-s-default span.cm-comment,.cm-s-night span.cm-comment  {color: green;}
+.cm-s-default span.cm-attribute,.cm-s-night span.cm-attribute  {color: #93f;}
+.cm-s-default span.cm-error,.cm-s-night span.cm-error  {color: #000;}
+.searched {background: yellow;}
+
+.CodeMirror-scroll {
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom:10px;
+}
+.CodeMirror {
+        line-height:130%;
+        font-size: 1.2em;
+}
+</style>
+
+{/literal}
+{/headblock}
+
+
+<div class="list_right_bt">
+<h2>{'/modules/headerfooter/label/headerfooter_edit'|translate}</h2>{*ヘッダフッタ編集*}
+<ul>
+<li class="add"><a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a></li>
+<li class="normal"><a href="/management/headerfooter/headerfooter_history/page_type={$page_type}&region_id={$region_id}&headerfooter_id={$headerfooter_id}"><span>{'/label/update_history'|translate}</span></a></li>
+<li class="normal"><a href="javascript:;" onclick="window.open('/direct/design/changeHeaderImage/', 'cHI', 'width=400,height=650');"><span>{'/modules/headerfooter/label/header_image_btn'|translate}{*ヘッダ画像*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/headerfooter/headerfooter_list/">{'/modules/headerfooter'|translate}</a>
+<a href="/management/headerfooter/headerfooter_list/">{'/modules/headerfooter/label/headerfooter_list'|translate}</a>
+{'/modules/headerfooter/label/headerfooter_edit'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" hf_page_type=$page_type region_id=$region_id}
+
+<h3 class="title">【{$headerfooter_pagetype.$page_type}】{$headerfooterList.$page_type.$region_id.title}</h3>
+
+<div style="margin-top: 10px" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/headerfooter/headerfooter_edit/">
+    <input type="hidden" name="page_type" value="{$page_type}" />
+    <input type="hidden" name="region_id" value="{$region_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    {if $page_type and $region_id}
+      {lang_selector meta=$docmeta link='/management/headerfooter/headerfooter_edit/'|cat:"page_type=$page_type&region_id=$region_id"}
+    {/if}
+
+    {if $region_id eq 'navi'}<span class="hint">{'/modules/headerfooter/msg/navi_help'|translate}</span><br>{/if}
+    <p class="hint">{'/modules/headerfooter/msg/inst2'|translate}</p>{*javascriptなどで{ldelim} {rdelim}を使用する場合は、その部分を{ldelim}literal{rdelim} {ldelim}/literal{rdelim}で囲むようにしてください。*}
+
+<input type="checkbox" name="" value="1" onclick="switchTheme(this.checked);">色を反転させる
+｜
+<input type="checkbox" name="" value="1" onclick="switchCoedMirror(this.checked);">ハイライトしない
+｜
+<input type="text" style="width: 5em" id="query" value="">
+<button type="button" onclick="CodeMirrorSearch()">検索</button>
+｜
+<input type="text" style="width: 5em" id="query2">=>
+<input type="text" style="width: 5em" id="replace">
+<button type="button" onclick="CodeMirrorReplace()">置換</button>
+<button type="button" onclick="j$('div.CodeMirror').focus();j$('div.CodeMirror').select();">全て選択</button>
+
+    <textarea name="contents" style="width:100%;height:500px" id="contents_edit">{$formData.contents|escape}</textarea>
+
+    {if $auth.headerfooter.update}
+      {buttonbox}
+        <button type="submit">{'/label/update_btn'|translate}</button>{*更新する*}
+        <button type="button" onclick="resetConfirm(this.form)">{'/modules/templateedit/label/reset'|translate}</button>{*初期に戻す*}
+      {/buttonbox}
+      {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+    {/if}
+
+
+     <p class="hint" style="margin-top:20px">{'/modules/headerfooter/msg/inst1'|translate}</p>{*{literal}{1|mt_rand:5}{/literal}と書くと数字の1～5の数字がランダムで表示されます。画像のランダム表示などにご利用ください。*}
+     <p class="hint">{'/modules/headerfooter/msg/inst3'|translate}</p>
+
+{*
+RCMSではswfobject.jsというFLASHを表示する為のJavaScriptを用意していますので、そちらをご利用ください。<br>
+<br>
+記述の方の例は以下になります。<br>
+<br>
+&lt;div id="flashcontent"&gt;&lt;/div&gt;<br>
+&lt;script type="text/javascript" src="/js/swfobject.js"&gt;&lt;/script&gt;<br>
+&lt;script type="text/javascript"&gt;<br>
+&lt;!--<br>
+   var so = new SWFObject("[flashファイルのパス]", "header_flash", "891", "224",8,"#ffffff");<br>
+   so.write("flashcontent");<br>
+//--&gt;<br>
+&lt;/script&gt;<br>
+<br>
+・891となっている部分は横幅<br>
+・224となっている部分は高さ<br>
+・8となっている部分は必要とするFlashPlayerのバージョン<br>
+・#ffffffとなっている部分は背景色（例：#ffffff）<br>
+※SWFObjectをGoogleで検索していただくと、詳しい使い方がたくさん載っています。<br>
+*}
+  </form>
+</div>
+</div>
+{literal}
+<script type="text/javascript">
+function resetConfirm(f) {
+{/literal}{*これまで編集した内容を破棄して、\nRCMSの初期設定値を読み込みます。\nよろしいですか？*}{literal}
+    var msg = "{/literal}{'/modules/headerfooter/msg/reset_confirm'|translate}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "RESET";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+
+CodeMirror.defineMode("smarty", function(config, parserConfig) {
+  var smartyOverlay = {
+    token: function(stream, state) {
+      if (stream.match("{*")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "*" && stream.next() == "}") break;
+        return "smarty-cmt";
+      }else if (stream.match("{$")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-val";
+      }else if (stream.match("{if")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-if";
+      }else if (stream.match("{/if")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-if";
+      }else if (stream.match("{else")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-if";
+      }else if (stream.match("{foreach")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-foreach";
+      }else if (stream.match("{/foreach")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-foreach";
+      }else if (stream.match("{")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty";
+      }
+      while (stream.next() != null && !stream.match("{", false) && !stream.match("{*", false)) {}
+      return null;
+    }
+  };
+  return CodeMirror.overlayParser(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), smartyOverlay);
+});
+
+var editor = CodeMirror.fromTextArea(
+                 document.getElementById("contents_edit"),
+                 {
+                     mode: "smarty",
+                     indentUnit: 4,
+                     indentWithTabs: false,
+                     tabMode: "shift",
+                     enterMode: "keep",
+                     electricChars: false,
+                     lineNumbers: true,
+                     firstLineNumber: 1,
+                     gutter: false,
+                     fixedGutter:false,
+                     matchBrackets: true
+                  });
+
+var lastPos = null, lastQuery = null, marked = [];
+
+function unmark() {
+  for (var i = 0; i < marked.length; ++i) marked[i]();
+  marked.length = 0;
+}
+
+function CodeMirrorSearch() {
+  unmark();                     
+  var text = document.getElementById("query").value;
+  if (!text) return;
+  for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+    marked.push(editor.markText(cursor.from(), cursor.to(), "searched"));
+
+  if (lastQuery != text) lastPos = null;
+  var cursor = editor.getSearchCursor(text, lastPos || editor.getCursor());
+  if (!cursor.findNext()) {
+    cursor = editor.getSearchCursor(text);
+    if (!cursor.findNext()) return;
+  }
+  editor.setSelection(cursor.from(), cursor.to());
+  lastQuery = text; lastPos = cursor.to();
+}
+
+function CodeMirrorReplace() {
+  unmark();
+  var text = document.getElementById("query2").value,
+      replace = document.getElementById("replace").value;
+  if (!text) return;
+  for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+    cursor.replace(replace);
+}
+
+function switchCoedMirror(checked){
+    if(checked){
+        editor.setOption("mode", false);
+    }else{
+        editor.setOption("mode", "smarty");
+    }
+}
+function switchTheme(checked){
+    if(checked){
+        editor.setOption("theme", 'night');
+    }else{
+        editor.setOption("theme", 'default');
+    }
+}
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

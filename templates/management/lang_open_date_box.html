@@ -1,0 +1,84 @@
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+<!--
+j$(document).ready(function() {
+        DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'lang_open_sta_date', btnId: 'lang_open_sta_date-btn', boxId: 'lang_open_sta_date-pop', tableId: 'lang_open_sta_date-table'});
+});
+j$(document).ready(function() {
+        DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'lang_open_end_date', btnId: 'lang_open_end_date-btn', boxId: 'lang_open_end_date-pop', tableId: 'lang_open_end_date-table'});
+});
+//-->
+</script>
+{/literal}
+<div id="lang_open_date_box">
+<h3>{'/label/lang_publish_settings'|translate}</h3>
+<table width="100%">
+  <tr>
+    <th width="150">{'/label/lang_publish_settings'|translate}</th>
+    <td>
+      <p>
+
+{* 既存のコンテンツの場合に「公開」「非公開」のメッセージを出す。新規の場合は「...を行ってください。」メッセージ *}
+
+        {* 副言語の公開状態を参照する *}
+        {if $id != "" && $data.lang_open_flg != ""}
+          {if $data.lang_open_flg == "1"}
+            {if $docmeta.is_waiting}
+              {assign var='varPublishStatus_1' value='/label/publish'|translate}
+              {'/msg/status_will_be_0_when_approved'|translate:$varPublishStatus_1}{*承認後、公開状態になります。*}
+            {else}
+              {'/msg/this_content_is_publish_now'|translate}{* この内容は、現在公開中です。 *}
+            {/if}
+          {else}
+            {if $docmeta.is_waiting}
+              {assign var='varPublishStatus_2' value='/label/unpublish'|translate}
+              {'/msg/status_will_be_0_when_approved'|translate:$varPublishStatus_2}{*承認後、非公開状態になります。*}
+            {else}
+              {'/msg/this_content_is_unpublish_now'|translate}{* この内容は、現在非公開です。 *}
+            {/if}
+          {/if}
+        {else}
+          {if $docmeta.is_waiting}
+              {assign var='varPublishStatus_3' value='/label/publish_time'|translate}
+              {'/msg/0_will_be_effective_when_approved'|translate:$varPublishStatus_3}{* 承認後、日付設定が有効になります。 *}
+          {else}
+            <span class="hint">{'/msg/choose_publish_setting'|translate}</span>
+          {/if}
+        {/if}
+
+      </p>
+
+      {* デフォルトで公開を選択する *}
+      {if $data.lang_open_type == 'open' || $data.lang_open_type == 'close' || $data.lang_open_type == 'sitei'}
+          {assign var=lang_open_type value=$data.lang_open_type}
+      {else}
+          {assign var=lang_open_type value='default'}
+      {/if}
+
+      <input type="hidden" name="lang_open_flg" value="{$data.lang_open_flg}" />
+      <input type="radio" name="lang_open_type" id="lang_open_type0" value="default" {if $lang_open_type == 'default'}checked="checked"{/if} onChange="j$('#set_lang_open_flg').toggle();if(j$(this).attr('checked')){ldelim}j$('#span_lang_only_settings').show();{rdelim}else{ldelim}j$('#span_lang_only_settings').hide();{rdelim}" /><label for="lang_open_type0">{$docmeta.primary_lang_nm} {'/label/primary_language_setting'|translate}</label><span id="span_lang_only_settings"><a href="javascript:void(0);" onClick="j$('#set_lang_open_flg').toggle();">>>{'/label/lang_only_settings'|translate}</a></span><br />
+      <div id="set_lang_open_flg" {if $lang_open_type == 'default'}style="display:none;"{/if}>
+      <input type="radio" name="lang_open_type" id="lang_open_type1" value="open" {if $lang_open_type == 'open'}checked="checked"{/if} onChange="if(j$(this).attr('checked')){ldelim}j$('#span_lang_only_settings').hide();{rdelim}" /><label for="lang_open_type1">{'/label/do_publish'|translate}</label><br />
+      <input type="radio" name="lang_open_type" id="lang_open_type2" value="close" {if $lang_open_type == 'close'}checked="checked"{/if} onChange="if(j$(this).attr('checked')){ldelim}j$('#span_lang_only_settings').hide();{rdelim}" /><label for="lang_open_type2">{'/label/do_unpublish'|translate}</label><br />
+      <input type="radio" name="lang_open_type" id="lang_open_type3" value="sitei" {if $lang_open_type == 'sitei'}checked="checked"{/if} onChange="if(j$(this).attr('checked')){ldelim}j$('#span_lang_only_settings').hide();{rdelim}" /><label for="lang_open_type3">{'/label/publish_time'|translate}</label><span class="hint2">({'/label/time_example'|translate})</span><br />
+      <div style="margin-left:15px">
+        <div>
+        {'/label/start_date'|translate}<input id="lang_open_sta_date" name="lang_open_sta_date" type="text" value="{$data.lang_open_sta_date}" size="16" autocomplete="off" />
+        <button type="button" id="lang_open_sta_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="lang_open_sta_date-pop"></div>
+        {'/label/time'|translate}{rcms_opentimeOptions selected=$data.lang_open_sta_time name='lang_open_sta_time'}
+        </div>
+        <div>
+        {'/label/end_date'|translate}<input id="lang_open_end_date" name="lang_open_end_date" type="text" value="{$data.lang_open_end_date}" size="16" autocomplete="off" />
+        <button type="button" id="lang_open_end_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="lang_open_end_date-pop"></div>
+        {'/label/time'|translate}{rcms_opentimeOptions selected=$data.lang_open_end_time name='lang_open_end_time'}
+        </div>
+      </div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+</div>

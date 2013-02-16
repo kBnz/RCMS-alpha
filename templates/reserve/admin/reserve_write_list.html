@@ -1,0 +1,135 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+<!--
+function confirmDelete() {
+    if (confirm('選択された予約を削除します。')) {
+        document.reserve_write_list_form.MODE.value = 'DELETE';
+        document.reserve_write_list_form.submit();
+    }
+}
+
+function confirmOpen() {
+    document.reserve_write_list_form.MODE.value = 'OPEN';
+    document.reserve_write_list_form.submit();
+}
+
+function confirmClose() {
+    document.reserve_write_list_form.MODE.value = 'CLOSE';
+    document.reserve_write_list_form.submit();
+}
+
+function switchVal(id, mode, val) {
+    document.switch_form.id.value   = id;
+    document.switch_form.MODE.value = mode;
+    document.switch_form.val.value  = val;
+    document.switch_form.submit();
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>予約一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">{'/modules/reserve'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">モジュール一覧</a>
+予約一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">【{$header.module_type_nm}】{if $content_title}{$content_title}{else}(すべて){/if}</h3>
+<ul class="minitabs">
+  <li><a href="/management/reserve/reserve_edit/reserve_header_id={$header.reserve_header_id}">基本設定</a></li>
+  <li><a href="/management/reserve/reserve_list/reserve_header_id={$header.reserve_header_id}">コンテンツ一覧</a></li>
+  <li><a href="/management/reserve/reserve_write_list/reserve_header_id={$header.reserve_header_id}&module_id={$module_id}" class="active">予約一覧</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form name="reserve_write_list_form" method="POST" action="/management/reserve/reserve_write_list/">
+  <input type="hidden" name="pageID" value="{$currentPageID}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="reserve_header_id" value="{$reserve_header_id}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="module_id" value="{$module_id}" />
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+{if $auth.reserve.update || $auth.reserve.delete}
+      <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'reserve_id[]')" /></th>
+{/if}
+
+      {foreach item=ext key=ext_title from=$grades}
+      <th style="width:90px">{$header.$ext_title}</th>
+      {/foreach}
+      <th style="width:90px">申し込み日時</th>
+      <th style="width:30px">詳細</th>
+      <th style="width:20px">処理</th>
+    </tr>
+    {foreach item=row from=$reserve_list}
+    <tr>
+{if $auth.reserve.update || $auth.reserve.delete}
+      <td><input type="checkbox" name="reserve_id[]" value="{$row.reserve_id}" /></td>
+{/if}
+
+      {foreach item=ext key=ext_title from=$grades}
+      <td>{$row.$ext|nl2br}</td>
+      {/foreach}
+      <td>{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      <td><a href="/management/reserve/reserve_write_edit/reserve_id={$row.reserve_id}">詳細</a></td>
+      <td>
+        {if $row.syori_flg eq $smarty.const.RESERVE_SYORI_NOTDONE}
+          <a href="javascript:void(0)" onclick="switchVal({$row.reserve_id}, 'switch_syori_flg', {$row.syori_flg}); return false;"><img src="/images/management/intact.gif" title="未処理" border="0" /></a>
+        {elseif $row.syori_flg eq $smarty.const.RESERVE_SYORI_DOING}
+          <a href="javascript:void(0)" onclick="switchVal({$row.reserve_id}, 'switch_syori_flg', {$row.syori_flg}); return false;"><img src="/images/management/work.gif" title="処理中" border="0" /></a>
+        {elseif $row.syori_flg eq $smarty.const.RESERVE_SYORI_DONE}
+          <a href="javascript:void(0)" onclick="switchVal({$row.reserve_id}, 'switch_syori_flg', {$row.syori_flg}); return false;"><img src="/images/management/ok.gif" title="処理済" border="0" /></a>
+        {elseif $row.syori_flg eq $smarty.const.RESERVE_SYORI_PENDING}
+          <a href="javascript:void(0);" onclick="switchVal({$row.reserve_id}, 'switch_syori_flg', {$row.syori_flg}); return false;"><!--img src="/images/management/pending.gif" title="保留" border="0" /-->保留  </a>
+        {/if}
+      </td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+  <div class="btn_box_bottom">
+    {*{if $auth.reserve.update}
+    <span style="float: left; margin-top: 5px;">選択した予約設定を一括で</span>
+    <ul class="bt_orange" style="margin-left: -5px;">
+    <li><a href="javascript:void(0)" onclick="confirmOpen();return false;"><span>公開にする</span></a></li>
+    <li><a href="javascript:void(0)" onclick="confirmClose();return false;"><span>非公開にする</span></a></li>
+    </ul>
+    {/if}*}
+    {if $auth.reserve.delete}
+    <span style="float: left; margin-top: 5px;">選択した予約設定を一括で</span>
+    <ul class="bt_orange" style="margin-left: -5px;">
+    <li><a href="javascript:void(0)" onclick="confirmDelete();return false;"><span>削除する</span></a></li>
+    </ul>
+    {/if}
+  </div>
+</form>
+
+  {* 処理状況切り替え用のフォーム *}
+  <form action="/management/reserve/reserve_write_list/" method="post" name="switch_form">
+    <input type="hidden" name="reserve_header_id" value="{$reserve_header_id}" />
+    <input type="hidden" name="module_id" value="{$module_id}" />
+    <input type="hidden" name="pageID" value="{$currentPageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="id" value="" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="val" value="" />
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

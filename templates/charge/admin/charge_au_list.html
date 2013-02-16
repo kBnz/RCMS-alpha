@@ -1,0 +1,64 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+<!--
+-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>au月額課金</h2>
+<ul>
+  {if $auth.charge.insert}
+  <li class="add"><a href="/management/charge/charge_au_edit/"><span>追加</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_au_list/">au月額課金一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+{rcms_include file="charge/admin/minitabs.html" page_type="au"}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+  <form  action="/management/charge/charge_au_list/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+  <table style="width: 100%">
+    <tr>
+      <th>id</th>
+      <th>名前</th>
+      <th>cp_cd</th>
+      <th>cp_srv_cd</th>
+      <th>item_cd</th>
+      <th>会員数</th>
+      <th>課金履歴</th>
+    </tr>
+{foreach from=$charge_list item=row}
+  <tr>
+    <td>{$row.charge_au_id}</td>
+    <td><a href="/management/charge/charge_au_edit/charge_au_id={$row.charge_au_id}">{$row.name|escape}</a></td>
+    <td>{$row.cp_cd}</td>
+    <td>{$row.cp_srv_cd}</td>
+    <td>{$row.item_cd}</td>
+    <td>{$row.member_cnt}</td>
+    <td><a href="/management/charge/charge_history_au_list/charge_au_id={$row.charge_au_id}">課金履歴</a></td>
+  </tr>
+
+{/foreach}
+  </table>
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

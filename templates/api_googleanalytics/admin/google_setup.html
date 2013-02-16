@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2 class="api_googleanalytics">{'/modules/api_googleanalytics/label/google_setup'|translate}</h2>{* 基本設定 *}
+</div>
+
+{* 【ぱんくず】サイト基本設定>> Google Analytics >> 基本設定 *}
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/api_googleanalytics/access_data/">{'/modules/api_googleanalytics'|translate}</a>
+{'/modules/api_googleanalytics/label/google_setup'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+  <form name="setup_edit" id="setup_edit" action="/management/{$mt}/google_setup/" method="POST">
+
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="MODE" value="UPDATE">
+
+    <table>
+  {foreach item=d from=$data name=list}
+      <tr>
+        <th width="150">{$d.disp_nm}<input type="hidden" name="send[{$d.sys_nm}]" value="1"></th>
+          <td>
+{if $d.sys_nm eq 'GoogleAnalyticsWebPropertyId' || $d.sys_nm eq 'GoogleAnalyticsWebPropertyId2' || $d.sys_nm eq 'GoogleAnalyticsWebPropertyId3'}
+    {if $webPropertyIds|@count > 0}
+            <select name="value[{$d.sys_nm}]"><option value="">{'/msg/please_select'|translate}</option>{html_options options=$webPropertyIds selected=$d.value}</select>
+    {else}
+            {'/modules/api_googleanalytics/msg/zero_webpropertyid'|translate}{* Googleの認証が通ると、WebPropertyIdを選択できるようになります。 *}
+    {/if}
+{elseif $d.input_type == "CHECKBOX"}
+            <input type="checkbox" name="value[{$d.sys_nm}]" value="1" {if $d.value == "1"}checked{/if}>
+{else}
+            <input type="text" name="value[{$d.sys_nm}]" size="40" value="{$d.value|escape:"html"}">
+{/if}
+          </td>
+          <td>
+            {$d.comment|nl2br}
+          </td>
+      </tr>
+  {/foreach}
+    </table>
+
+        {if $auth.site.update}
+          {buttonbox}
+            <button type="submit">{'/label/update_btn'|translate}</button>{*更新する*}
+          {/buttonbox}
+        {/if}
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

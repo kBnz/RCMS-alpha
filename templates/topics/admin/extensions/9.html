@@ -1,0 +1,14 @@
+{assign var=file_nm value=$item.name|replace:"]":""|replace:"[":"-"}
+<p>
+  {fileupload id=$file_nm url='/direct/topics/file_upload/?type=files' default=$item.file_url default_L=$item.file_url_L hidden_nm='tmpfile_'|cat:$item.name file_type='files' max_file_size=$item.options.max_file_size}{/fileupload}
+</p>
+<div id="textarea_{$item.name}">
+  {'/label/file_name'|translate}:
+  {if !$docmeta.is_primary && $ext_columns_disp_primary.group[$cols_key][$item_key].value!=''}
+<p class="major_language">
+    <span class="step">{$ext_columns_disp_primary.group[$cols_key][$item_key].value|escape}</span>
+</p>
+  {/if}
+  <input type="text" name="{$item.name}" size="40" value="{if $docmeta.is_primary}{$item.value|escape}{elseif !$toopics_id}{$item.value|escape}{/if}">
+  {if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}
+</div>

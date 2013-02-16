@@ -1,0 +1,10 @@
+<h2>{'/modules/jobs/label/jobs_list'|translate}{* 採用情報一覧 *}</h2>
+{if $jobsList|@count>0}
+{section name=mydata loop=$jobsList}
+■<a href="/jobs_detail/id={$jobsList[mydata].jobs_id}">{$jobsList[mydata].job_nm}</a><br/>
+{$jobsList[mydata].explanation|strip_tags:false|mbtruncate:100}<br/><br/>
+{/section}
+{else}
+{'/modules/jobs/msg/no_job_info'|translate}{* 現在、採用情報はありません。 *}
+{/if}
+<hr/>

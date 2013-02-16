@@ -1,0 +1,73 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+
+<h2>{'/modules/bbs/label/post_list'|translate}{*投稿記事一覧*}</h2>
+{if $pageInfo.totalCnt!=0}
+
+{foreach from=$itemList item=rootItem}
+    {if $rootItem.new}[emoji:120]{/if}■{if $rootItem.dflg ne '1'}{$rootItem.title|escape}{else}{if $rootItem.deltype eq ''}{'/msg/deleted_by_user'|translate}{else}{'/msg/deleted_by_admin'|translate}{/if}{*ユーザーにより or 管理者により削除されました。*}{/if}<br/>
+
+{if $rootItem.dflg ne '1'}
+<div style="text-align:right;">
+    [{$rootItem.name|escape}]
+</div>
+    <div style="text-align:right;font-size:small;">
+    [{$rootItem.create_date|pg_dateformat:"%Y/%m/%e  %H:%M:%S"}]
+    </div>
+    {$rootItem.note|escape|nl2br}<br/>
+    {if $rootItem.thumb_uploadimg ne '' && $rootItem.uploadimg ne ''}
+    <div style="text-align:center;">
+    <a href="{$smarty.const.BBS_UPLOAD_URL}{$rootItem.uploadimg}"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$rootItem.thumb_uploadimg}" /></a>
+    </div>
+    {elseif $rootItem.uploadimg ne ''}
+    <div style="text-align:center;">
+    <img src="{$smarty.const.BBS_UPLOAD_URL}{$rootItem.uploadimg}" />
+    </div>
+    {/if}
+<div style="text-align:right;">
+      <a href="/bbs_show/bbs_header_id={$bbs_header_id}&amp;MODE=input&amp;reply_seq={$rootItem.seq}">{'/label/send_answer_btn'|translate}{* 返信する *}</a>
+</div>
+{/if}
+
+  {* 親記事 *}
+<hr/>
+  {foreach from=$rootItem.child item=childItem name=childItems}
+    {* 子記事 *}
+    {if $smarty.foreach.childItems.first}{counter start=0 skip=1 print=false}{/if}
+      {if $childItem.new}[emoji:120]{/if}▼[{counter}]{if $childItem.dflg ne '1'}{$childItem.title|escape}{else}{if $childItem.deltype eq ''}ﾕｰｻﾞにより{else}管理者により{/if}削除されました。{/if}<br/>
+{if $childItem.dflg ne '1'}
+<div style="text-align:right;">
+      [{$childItem.name|escape}]
+</div>
+      <div style="text-align:right;font-size:small;">
+      [{$childItem.create_date|pg_dateformat:"%Y/%m/%d %H:%M:%S"}]
+      </div>
+      {$childItem.note|escape|nl2br|urllink:$bbs_header.auto_url_link_flg}<br/>
+
+      {if $childItem.thumb_uploadimg ne '' && $childItem.uploadimg ne ''}
+      <div style="text-align:center;">
+      <a href="{$smarty.const.BBS_UPLOAD_URL}{$childItem.uploadimg}"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$childItem.thumb_uploadimg}" /></a>
+      </div>
+      {elseif $childItem.uploadimg ne ''}
+      <div style="text-align:center;">
+      <img src="{$smarty.const.BBS_UPLOAD_URL}{$childItem.uploadimg}" />
+      </div>
+      {/if}
+<div style="text-align:right;">
+      <a href="/bbs_show/bbs_header_id={$bbs_header_id}&MODE=input&reply_seq={$childItem.seq}">{'/label/send_answer_btn'|translate}{* 返信する *}</a>
+</div>
+{/if}
+<hr/>
+  {/foreach}
+{/foreach}
+
+<div style="text-align:center;font-size:small;">
+{'/label/pagination/summary'|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}{*a件中 b-c件目*}
+[{ if $pageInfo.pageNo > 1 }<a href="/bbs_show/page={$pageInfo.pageNo-1}&vm=thread&bbs_header_id={$bbs_header_id}">{'/label/prev'|translate}{*前へ*}</a>{else}{'/label/prev'|translate}{*前へ*}{/if}|{ if $pageInfo.pageNo < $pageInfo.totalPageCnt }<a href="/bbs_show/page={$pageInfo.pageNo+1}&vm=thread&bbs_header_id={$bbs_header_id}">{'/label/next'|translate}{*次へ*}</a>{else}{'/label/next'|translate}{*次へ*}
+{/if}]
+</div>
+{else}
+{'/modules/bbs/msg/no_post_yet'|translate}{*まだ書き込みがありません*}
+{/if}
+<hr/>

@@ -1,0 +1,12 @@
+{if $items}
+<h2>{'/modules/api_youtube/label/related_youtube_videos'|translate}{*関連動画*}</h2>
+
+      {foreach from=$items item=item}
+<div style="text-align:center;font-size:small;">
+<a href="{$item.mobile_link}"><img src="{$item.thumb}" alt="{$item.name}" /></a><br/>
+<a href="{$item.mobile_link}">{$item.name}</a><br/>
+<br/>
+</div>
+      {/foreach}
+<hr/>
+{/if}

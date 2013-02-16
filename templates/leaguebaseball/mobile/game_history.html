@@ -1,0 +1,33 @@
+{if $gameList|@count > 0}
+<h2>{if $gameList.0.team_grade ne '' and $gameList.0.official_flg ne '1'}{$gameList.0.team_grade}の{/if}{$gameList.0.league_type}　試合一覧</h2><br>
+
+{section name=mydata loop=$gameList}
+{$gameList[mydata].ymd_str} {$gameList[mydata].league_type2} {$gameList[mydata].home_team_nm}{$gameList[mydata].home_team_grade}
+<a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+{if $gameList[mydata].league_status eq '2' || $gameList[mydata].league_status eq '3'}
+  {if $gameList[mydata].vs_result_home eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_home eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_home eq 'even'}
+△
+  {/if}
+{$gameList[mydata].home_team_total}
+-
+{$gameList[mydata].away_team_total}
+  {if $gameList[mydata].vs_result_away eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_away eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_away eq 'even'}
+△
+  {/if}
+{elseif $gameList[mydata].league_status eq '4'}
+（雨天中止）
+{/if}
+</a>
+{$gameList[mydata].away_team_nm}{$gameList[mydata].away_team_grade}<br/>
+{/section}
+<hr/>
+{/if}
+

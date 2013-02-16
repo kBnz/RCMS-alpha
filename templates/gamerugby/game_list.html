@@ -1,0 +1,81 @@
+{module name="game_top"}
+<h2 class="module_title"><span>{'/label/game_list'|translate}{*試合情報一覧*}</span></h2>
+<div class="module_contents">
+{if $using_season}
+  <form action="/gamerugby_list/" method="get">
+    {rcms_seasonOptions name=season selected=$season firstOption=true}
+    <input type="submit" value="{'/label/search_btn'|translate}{*検索*}">
+  </form>
+{/if}
+  <table class="list">
+    <tr>
+      <th>{'/label/tournament'|translate}{*トーナメント*}／{'/modules/game/label/game_type'|translate}{*試合タイプ*}</th>
+      <th>{'/label/date'|translate}{*日付*}</th>
+      <th>{'/modules/game/label/opponent'|translate}{*対戦相手*}</th>
+      <th>{'/modules/game/label/game_result'|translate}{*結果*}</th>
+      <th>{'/label/game_site'|translate}{*試合会場*}</th>
+    </tr>
+{section name=mydata loop=$gameList}
+    <tr class="">
+      <td>
+          {$gameList[mydata].game_type} {$gameList[mydata].game_type2}
+      </td>
+      <td><a href="/gamerugby_detail/id={$gameList[mydata].game_id}">{$gameList[mydata].ymd_str}</a></td>
+      <td><a href="/gamerugby_detail/id={$gameList[mydata].game_id}">{$gameList[mydata].team_grade}&nbsp;vs&nbsp;{$gameList[mydata].team_nm}{$gameList[mydata].opponent_grade}</a></td>
+      <td>
+<a href="/gamerugby_detail/id={$gameList[mydata].game_id}">
+{if $gameList[mydata].game_status eq '3' && $gameList[mydata].win_default == 0}
+
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+{if $gameList[mydata].win_default == 0}
+-
+{/if}
+{if $gameList[mydata].game_status eq '3' && $gameList[mydata].win_default == 0}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+
+{elseif $gameList[mydata].game_status eq '3' && $gameList[mydata].win_default eq '1'}
+○({'/modules/game/label/no_fight_win'|translate}{*不戦勝*})
+{elseif $gameList[mydata].game_status eq '3' && $gameList[mydata].win_default eq '2'}
+●({'/modules/game/label/no_fight_loss'|translate}{*不戦敗*})
+{elseif $gameList[mydata].game_status eq '3' && $gameList[mydata].win_default eq '3'}
+●({'/label/withdrawal'|translate}{*棄権*})
+{/if}
+</a>
+      </td>
+      <td>
+          {if $gameList[mydata].place_id != "" && $gameList[mydata].place_id != -1}
+            <a href="/location_detail/id={$gameList[mydata].place_id}">{$gameList[mydata].place}</a>
+          {else}
+            {$gameList[mydata].place}
+          {/if}
+      </td>
+    </tr>
+{/section}
+  </table>
+{if !$using_season}
+<div class="relation_link">
+{'/msg/display_current_page'|translate:$current_page:$all_page}{* n/Nページを表示*}({'/label/total'|translate}{*合計*}:{$all_cnt}{'/label/item'|translate}{*件*})
+[
+{if $game_pos > 0}
+<a href="/gamerugby_list/?game_pos={$current_page-1}">{'/label/prev'|translate}{*前へ*}</a>
+{else}
+{'/label/prev'|translate}{*前へ*}
+{/if}
+{if $game_pre_pos != ''}
+<a href="/gamerugby_list/?game_pos={$current_page+1}">{'/label/next'|translate}{*次へ*}</a>
+{else}
+{'/label/next'|translate}{*次へ*}
+{/if}
+]
+</div>
+{/if}
+  ※{'/modules/game/msg/game_data_will_be_added'|translate}{*試合の予定が決まり次第、順次追加します。*}
+</div>
+{/module}

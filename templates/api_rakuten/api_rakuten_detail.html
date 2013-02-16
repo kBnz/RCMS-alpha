@@ -1,0 +1,27 @@
+{module name="rakuten_detail"}
+<h2 class="module_title"><span>商品詳細</span></h2>
+<div class="module_contents">
+
+	<h3>{$item->itemName}</h3>
+
+	{if $item->imageFlag}
+	<p>
+		<img src="{$item->mediumImageUrl}" alt="{$item->itemName}" />
+	</p>
+	{/if}
+
+	<p><a title="{$item->shopName}" href="{$item->shopUrl}">{$item->shopName}</a></p>
+	<p>{$item->itemCaption}</p>
+	<p><a href="{$item->itemUrl}" onclick="return !window.open(this.href)">詳細情報はコチラ</a></p>
+
+	<p><a href="http://webservice.rakuten.co.jp/" onclick="return !window.open(this.href)"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a></p>
+
+	{if $item->notes ne '' && $item->open_flg ne '0'}
+	<dl>
+		<dt>コメント&nbsp;：&nbsp;</dt>
+		<dd>{$item->notes}</dd>
+	</dl>
+	{/if}
+
+</div>
+{/module}

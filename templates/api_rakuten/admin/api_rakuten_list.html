@@ -1,0 +1,49 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>商品一覧</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_rakuten/api_rakuten_search/">{$module_nm}</a>
+商品一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_rakuten/api_rakuten_search/">商品検索</a></li>
+  <li><a href="/management/api_rakuten/api_rakuten_list/" class="active">商品一覧</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+
+    <p>このサイトで紹介している商品の一覧です。</p>
+
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>商品名</th><th>関連</th><th>コメント</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$items item=item}
+        <tr>
+          <td><a href="{$item.detail}">{$item.item_name|mbtruncate}</a></td><td>{$item.nOfRelatedItems}件</td><td>{$item.notes|default:"なし"|mbtruncate}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+    <p><a href="http://webservice.rakuten.co.jp/" onclick="return !window.open(this.href)"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

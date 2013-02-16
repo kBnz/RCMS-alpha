@@ -1,0 +1,66 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript" src="/js/swfobject.js"></script>
+
+<div class="host">
+<h2>{'/label/image_updating'|translate}{*画像更新*}</h2>
+</div><!-- host -->
+
+<div id="main">
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+{foreach from=$file_list item=file}
+<form name="menu_img" id="menu_img" action="/management/menu/menu_img/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="simple_file_id" value="{$file.simple_file_id}">
+    <input type="hidden" name="file_type" value="{$file.file_type}">
+    <input type="hidden" name="file_path" value="{$file.file_path}">
+    <input type="hidden" name="max_height" value="{$file.max_height}">
+    <input type="hidden" name="max_width" value="{$file.max_width}">
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <div class="easy_menu_img">
+        <h3 class="big">{$file.file_nm}[{$file_type_options[$file.file_type]}]</h3>
+        <p>{$file.comment|nl2br}</p>
+        {if $file.file_type eq '2'}
+        <p>
+            <div id="flashcontent{$file.simple_file_id}"></div>
+            <script type="text/javascript">
+                // <![CDATA[
+                var so = new SWFObject("{$file.file_path}?{$stamp}", "swf", "{$file.max_width}", "{$file.max_height}", "8", "#000000");
+                so.write("flashcontent{$file.simple_file_id}");
+                // ]]>
+            </script>
+        </p>
+        {else}
+        <p><img src="{$file.file_path}?{$stamp}"></p>
+        {/if}
+
+        {if $auth.simple_file.select}
+            {if $file.file_type == '1'}
+            <p class="hint">{'/msg/maximum_file_size'|translate:30}{*アップロードできる最大サイズは30Mバイトまでです。*}</p>
+            {if $file.max_height > 0}<p class="hint">{'/msg/if_image_size_is_higher_than_photo_height'|translate:$file.max_height:$file.max_height}{*写真縦幅サイズは{$file.max_height}pxを超える場合、{$file.max_height}pxに縮小されます*}</p>{/if}
+            {if $file.max_width > 0}<p class="hint">{'/msg/if_image_size_is_wider_than_photo_width'|translate:$file.max_width:$file.max_width}{*写真横幅サイズは{$file.max_width}pxを超える場合、{$file.max_width}pxに縮小されます*}</p>{/if}
+            {/if}
+        <input type="file" name="new_file_path" />
+        {buttonbox}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+        <button type="button" onclick="location.href='/management/simple_file/simple_file_history/simple_file_id={$file.simple_file_id}'">{'/label/update_history'|translate}{*更新履歴*}</button>
+        {/buttonbox}
+        {/if}
+    </div><!-- easy_menu_img -->
+</form>
+{/foreach}
+
+</div><!-- list_main -->
+</div><!-- main_contents -->
+</div><!-- main -->
+
+<div class="clear"></div>
+
+{rcms_include file="management/footer.html"}
+

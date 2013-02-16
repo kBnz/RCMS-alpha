@@ -1,0 +1,506 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<style type="text/css">
+table#ApprovalGroupTable th {
+    white-space: nowrap;
+}
+table#ApprovalGroupTable td {
+    margin: 5px 0;
+}
+table#ApprovalGroupTable td input,
+table#ApprovalGroupTable td select {
+    margin-left: 10px;
+}
+
+table.MemberConfigDetailTable th {
+    white-space: nowrap;
+}
+table.MemberConfigDetailTable td {
+    margin: 5px 0;
+}
+table.MemberConfigDetailTable td input,
+table.MemberConfigDetailTable td select {
+    margin-left: 5px;
+}
+</style>
+
+{/literal}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+// 各種配列定義
+var arrMember_type = {/literal}{$arrApprovaflowMemberType|@json_encode}{literal};
+var arrAdmin_group = {/literal}{$arrAdmin|@json_encode}{literal};
+var arrMembers = {/literal}{$arrMember|@json_encode}{literal};
+var arrFormData = {/literal}{if $formData.formData}{$formData.formData|@json_encode}{else}{literal}new Array(){/literal}{/if}{literal}; // 
+var phaseCnt = {/literal}{$formData.formData|@count}{literal}
+
+// 変数定義
+var intGroupId = 0;
+var intRowId = 0;
+
+Event.observe(window, 'load', function() {
+
+    // グループを追加
+    if (phaseCnt == 0)
+    { // 最初は２つのグループを表示
+        fncAddGroup();
+        fncAddGroup();
+    }
+    else{
+        for (var intFormData = phaseCnt ; intFormData > 0 ; intFormData--){
+            fncAddGroup(arrFormData[intFormData]);
+        }
+    } 
+
+    Event.observe($('btnApprovalGroupAdd'), 'click', function() {
+        fncAddGroup();
+    });
+
+});
+
+// 承認グループを追加
+function fncAddGroup(arrInitData) {
+
+    arrInitData = arrInitData || {};    // 引数受け取り
+    var intGroupIdWK = intGroupId++;    // グループID
+
+    // 大元のテーブルの１番上に行挿入
+    var varApprovalGroupTbody_TR = $('ApprovalGroupTbody').insertRow($('ApprovalGroupTbody').rows.length);
+    varApprovalGroupTbody_TR.id = "ApprovalGroupTableRow_" + intGroupIdWK;
+
+        // メンバー設定テーブル定義
+        var varGroupConfigTable = document.createElement('table');
+        var varGroupConfigTbody = document.createElement('tbody');
+        varGroupConfigTable.appendChild(varGroupConfigTbody);
+
+        varGroupConfigTable.id = "approvalGroup_MemberConfig_Table_" + intGroupIdWK;
+        varGroupConfigTable.width = "100%";
+        varGroupConfigTable.border = "0";
+
+        varGroupConfigTbody.id = "approvalGroup_MemberConfig_Tbody_" + intGroupIdWK;
+        varGroupConfigTbody.width = "100%";
+        varGroupConfigTbody.border = "0";
+
+        // 0行目
+        var varGroupConfigTable_TR_0 = varGroupConfigTbody.insertRow(varGroupConfigTbody.rows.length);
+
+        var varGroupConfigTable_TD_0_1_3 = varGroupConfigTable_TR_0.insertCell(varGroupConfigTable_TR_0.cells.length);
+        varGroupConfigTable_TR_0.cells[0].colSpan = 3;
+        varGroupConfigTable_TD_0_1_3.style.textAlign = "center";
+        varGroupConfigTable_TD_0_1_3.style.backgroundColor = "white";
+
+        var varImg =  document.createElement('Img');
+        varImg.src = "/images/management/flow_arrow.gif";
+        varImg.border = "0";
+        varGroupConfigTable_TD_0_1_3.appendChild(varImg);
+
+        // 1行目
+        var varGroupConfigTable_TR_1 = varGroupConfigTable.insertRow(varGroupConfigTable.rows.length);
+
+            // 1行目の1列目
+            var varGroupConfigTable_TH_1_1 = document.createElement('th');
+            varGroupConfigTable_TH_1_1.appendChild(document.createTextNode('{/literal}{'/modules/approvalflow/label/approval_group_name'|translate}{*承認グループ名*}{literal}'));
+            varGroupConfigTable_TR_1.appendChild(varGroupConfigTable_TH_1_1);   // 1列目(TH)を1行目の(TR)に追加
+
+            // 1行目の2列目
+            var varGroupConfigTable_TD_1_2 = varGroupConfigTable_TR_1.insertCell(varGroupConfigTable_TR_1.cells.length);
+
+            varGroupConfigTable_TD_1_2.style.textAlign = "left";
+            var varTextBox = document.createElement('input');
+            varTextBox.type = "text";
+            varTextBox.size = "50";
+            varTextBox.name = "formData[" + intGroupIdWK + "][approvalflow_member_nm]";
+            varTextBox.id   = "approvalflow_member_nm_" + intGroupIdWK;
+            varTextBox.value = arrInitData.approvalflow_member_nm ? arrInitData.approvalflow_member_nm : '';
+            varGroupConfigTable_TD_1_2.appendChild(varTextBox);
+
+            // グループ削除ボタン
+            var varDeleteBtn = document.createElement('input');
+            varDeleteBtn.type  = "button";
+            varDeleteBtn.id    = "member_group_del_btn" + intGroupIdWK;
+            varDeleteBtn.value = "{/literal}{'/modules/approvalflow/label/delete_this_group'|translate}{*このグループを削除*}{literal}";
+            varGroupConfigTable_TD_1_2.appendChild(varDeleteBtn);
+            // ボタンにEventを割り振る
+            Event.observe(varDeleteBtn, 'click', function(){
+                var varParentObject=varApprovalGroupTbody_TR.parentNode;
+                varParentObject.removeChild(varApprovalGroupTbody_TR);
+            });
+
+            // 1行目の3列目
+            var varGroupConfigTable_TD_1_3 = varGroupConfigTable_TR_1.insertCell(varGroupConfigTable_TR_1.cells.length);
+
+        // 2行目
+        var varGroupConfigTable_TR_2 = varGroupConfigTbody.insertRow(varGroupConfigTbody.rows.length);
+
+            // 2行目の1～2列目
+            var varGroupConfigTable_TD_2_1_2 = varGroupConfigTable_TR_2.insertCell(varGroupConfigTable_TR_2.cells.length);
+            varGroupConfigTable_TR_2.cells[0].colSpan = 2;
+            varGroupConfigTable_TD_2_1_2.style.textAlign = "right";
+
+                // メンバー設定詳細テーブル(2列目内のテーブル)を作成
+                var varMemberConfigDetailTable = document.createElement('table');
+                var varMemberConfigDetailTbody = document.createElement('tbody');
+                varMemberConfigDetailTable.appendChild(varMemberConfigDetailTbody);
+
+                varMemberConfigDetailTable.id =  "MemberConfigDetailTable_" + intGroupIdWK;
+                varMemberConfigDetailTable.className = "MemberConfigDetailTable";
+                varMemberConfigDetailTable.width = "100%";
+                varMemberConfigDetailTable.border = "0";
+
+                varMemberConfigDetailTbody.id =  "MemberConfigDetailTbody_" + intGroupIdWK;
+                varMemberConfigDetailTbody.width = "100%";
+                varMemberConfigDetailTbody.border = "0";
+
+                // 2列目内のテーブルの1行目
+                var varMemberConfigDetailTable_TR_1 = varMemberConfigDetailTable.insertRow(varMemberConfigDetailTable.rows.length);
+
+                // 2列目内のテーブルの1行目の1列目
+                var varMemberConfigDetailTable_TH_1_1 = document.createElement('th');
+                varMemberConfigDetailTable_TH_1_1.appendChild( document.createTextNode('{/literal}{'/modules/approvalflow/label/approver_setting'|translate}{*承認者設定*}{literal}') );
+
+                // 2列目内のテーブルの1行目の2列目
+                var varMemberConfigDetailTable_TH_1_2 = document.createElement('th');
+
+                // 2列目内のテーブルの1行目の3列目
+                var varMemberConfigDetailTable_TH_1_3 = document.createElement('th');
+                varMemberConfigDetailTable_TH_1_3.appendChild( document.createTextNode('{/literal}{'/label/email_notice'|translate}{*メール通知*}{literal}') );
+
+                // 2列目内のテーブルの1行目の4列目
+                var varMemberConfigDetailTable_TH_1_4 = document.createElement('th');
+                varMemberConfigDetailTable_TH_1_4.appendChild( document.createTextNode('{/literal}{'/label/delete'|translate}{*削除ボタン*}{literal}') );
+
+                varMemberConfigDetailTable_TR_1.appendChild(varMemberConfigDetailTable_TH_1_1);
+                varMemberConfigDetailTable_TR_1.appendChild(varMemberConfigDetailTable_TH_1_2);
+                varMemberConfigDetailTable_TR_1.appendChild(varMemberConfigDetailTable_TH_1_3);
+                varMemberConfigDetailTable_TR_1.appendChild(varMemberConfigDetailTable_TH_1_4);
+
+                // 行追加ボタン
+                var varAddBtn = document.createElement('input');
+                varAddBtn.type  = "button";
+                varAddBtn.style.cssFloat = "right";
+                varAddBtn.id    = "member_group_add_btn" + intGroupIdWK;
+                varAddBtn.value = "{/literal}{'/modules/approvalflow/label/add_approver_btn'|translate}{*承認者追加*}{literal}";
+
+                varGroupConfigTable_TD_2_1_2.appendChild(varMemberConfigDetailTable);
+                varGroupConfigTable_TD_2_1_2.appendChild(varAddBtn);
+
+                // ボタンにEventを割り振る
+                Event.observe(varAddBtn, 'click', function() {
+                    fncAddRow(intGroupIdWK, null);
+                });
+
+            // 2行目の3列目
+            var varGroupConfigTable_TD_2_3 = varGroupConfigTable_TR_2.insertCell(varGroupConfigTable_TR_2.cells.length);
+
+            // 並び順を上にするボタン
+            var varA_Up = '<a href="javascript:;" onclick="fSwapSibling(-1, \'ApprovalGroupTableRow_' + intGroupIdWK + '\')" ><img src="/images/management/up.gif" border="0"></a>';
+            // 並び順を下にするボタン
+            var varA_Down = '<a href="javascript:;" onclick="fSwapSibling(1, \'ApprovalGroupTableRow_' + intGroupIdWK + '\')" ><img src="/images/management/down.gif" border="0"></a>';
+
+            varGroupConfigTable_TD_2_3.innerHTML = varA_Up + varA_Down;
+
+    // 大元のテーブルのTRにTableを貼り付ける
+    var varApprovalGroupTable_TD = varApprovalGroupTbody_TR.insertCell(varApprovalGroupTbody_TR.cells.length);
+    varApprovalGroupTable_TD.style.backgroundColor = "white";
+    varApprovalGroupTable_TD.appendChild(varGroupConfigTable);
+
+    // 行を追加
+    if(arrInitData.row)
+    {
+        if (!isNaN(arrInitData.row.length))
+        {
+            for (var intFormData = 0 ; intFormData < arrInitData.row.length ; intFormData++)
+            {
+                fncAddRow(intGroupIdWK, arrInitData.row[intFormData]);
+            }
+        }
+        else
+        {
+            for (var intFormData in arrInitData.row)
+            {
+                fncAddRow(intGroupIdWK, arrInitData.row[intFormData]);
+            }
+        }
+    }
+    else
+    {
+        fncAddRow(intGroupIdWK, null);
+    }
+}
+
+// 承認グループ設定を追加
+function fncAddRow(pintGroupId, arrInitData) {
+
+    arrInitData = arrInitData || {};    // 引数受け取り
+    var intRowIdWK = intRowId++;    // 行ID
+
+    // メンバー設定詳細テーブル(2列目内のテーブル)を取得
+    var varMemberConfigDetailTbody = $('MemberConfigDetailTbody_' + pintGroupId);
+
+    // メンバー設定詳細テーブルに１行挿入
+    var varMemberConfigDetailTable_TR = varMemberConfigDetailTbody.insertRow(varMemberConfigDetailTbody.rows.length);
+
+        // 1列目 設定 radio button
+        var varMemberConfigDetailTable_TD_1 = varMemberConfigDetailTable_TR.insertCell(varMemberConfigDetailTable_TR.cells.length);
+        varMemberConfigDetailTable_TD_1.style.textAlign = "left";
+
+            // メンバータイプ選択テーブル定義
+            for (var intMemberType in arrMember_type)
+            {
+                varMemberConfigDetailTable_TD_1.innerHTML+='<input type="radio" value="' + intMemberType + '" name="formData[' + pintGroupId + '][row][' + intRowIdWK + '][member_type]" id="member_type_' + pintGroupId + '_' + intRowIdWK + '_' + intMemberType + '" onclick="funcSelMemberType(' + pintGroupId + ',' + intRowIdWK + ');">' + arrMember_type[intMemberType] ;
+            }
+            if (arrInitData.member_type !='undifined' && arrInitData.member_type != null)
+            {
+                $('member_type_' + pintGroupId + '_' + intRowIdWK + '_' + arrInitData.member_type).checked = true;
+            }
+
+        // 2列目 メンバーORグループ選択
+        var varMemberConfigDetailTable_TD_2 = varMemberConfigDetailTable_TR.insertCell(varMemberConfigDetailTable_TR.cells.length);
+        varMemberConfigDetailTable_TD_2.style.textAlign = "left";
+
+            // メンバータイプ選択テーブル定義
+            for (var intMemberType in arrMember_type)
+            {
+                var varMemberDetailSelectTable_DIV = document.createElement('div');
+                varMemberDetailSelectTable_DIV.id = "approvalGroupRadio_" + pintGroupId + "_" + intRowIdWK + "_" + intMemberType;
+                varMemberDetailSelectTable_DIV.style.diplay = "none;";
+
+                // グループ選択
+                var varSelectBox = document.createElement('select');
+                varSelectBox.id = "group_member_id_" + pintGroupId + "_" + intRowIdWK + "_" + intMemberType;
+                varSelectBox.size = 1;
+                varSelectBox.style.width = '150px';
+
+                if (intMemberType == {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_1}{literal})
+                { // グループSELECTBOX
+                    varSelectBox.name = "formData[" + pintGroupId + "][row][" + intRowIdWK + "][group_id]";
+                    for (var intAdminGroupID in arrAdmin_group)
+                    {
+                        varSelectBox.options[varSelectBox.options.length] = new Option(arrAdmin_group[intAdminGroupID], intAdminGroupID);
+                        if (arrInitData.group_id == intAdminGroupID)
+                        {
+                            varSelectBox.selectedIndex = varSelectBox.options.length - 1;
+                        }
+                    }
+                }
+                else if (intMemberType == {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_2}{literal})
+                { // メンバーSELECTBOX
+                    varSelectBox.name = "formData[" + pintGroupId + "][row][" + intRowIdWK + "][member_id]";
+                    for (var intMemberID in arrMembers)
+                    {
+                        varSelectBox.options[varSelectBox.options.length] = new Option(arrMembers[intMemberID], intMemberID);
+                        if (arrInitData.member_id == intMemberID)
+                        {
+                            varSelectBox.selectedIndex = varSelectBox.options.length - 1;
+                        }
+                    }
+                }
+                varMemberDetailSelectTable_DIV.appendChild(varSelectBox);
+                varMemberConfigDetailTable_TD_2.appendChild(varMemberDetailSelectTable_DIV);    // メンバー/グループ選択SelectBoxテーブルをTDとして追加
+            }
+
+
+        // 3列目 メール通知
+        var varMemberConfigDetailTable_TD_3 = varMemberConfigDetailTable_TR.insertCell(varMemberConfigDetailTable_TR.cells.length);
+        varMemberConfigDetailTable_TD_3.style.textAlign = "left";
+
+        var varCheckBox = document.createElement('input');
+        varCheckBox.type = "checkbox";
+        varCheckBox.value = "1";
+        varCheckBox.id = "mail_notice_flg_" + pintGroupId + "_" + intRowIdWK;
+        varCheckBox.name = "formData[" + pintGroupId + "][row][" + intRowIdWK +"][mail_notice_flg]";
+        varMemberConfigDetailTable_TD_3.appendChild(varCheckBox); // ie7 先にappendChild()しないとcheckedが反映されない
+        varMemberConfigDetailTable_TD_3.appendChild(document.createTextNode("{/literal}{'/label/notice'|translate}{literal}")); // 通知する
+        varCheckBox.checked = (arrInitData.mail_notice_flg == 0) ? false : true;    // デフォルトはチェック有
+
+
+        // 4列目 削除ボタン
+        var varMemberConfigDetailTable_TD_4 = varMemberConfigDetailTable_TR.insertCell(varMemberConfigDetailTable_TR.cells.length);
+        varMemberConfigDetailTable_TD_4.style.textAlign = "left";
+
+        var varDeleteBtn = document.createElement('input');
+        varDeleteBtn.type = 'button'
+        varDeleteBtn.value = "{/literal}{'/label/delete'|translate}{literal}";  // '削除'
+        Event.observe(varDeleteBtn, 'click', function() {
+            varMemberConfigDetailTbody.deleteRow(varMemberConfigDetailTable_TR.rowIndex);
+        });
+        varMemberConfigDetailTable_TD_4.appendChild(varDeleteBtn);  // 削除ボタンをTDとして追加
+
+    // RadioButtonの選択状態によって画面制御
+    funcSelMemberType(pintGroupId, intRowIdWK);
+
+    return intRowIdWK;
+}
+
+// 並び替えを変更する
+function fSwapSibling(d,ele){
+
+    ele=$(ele);
+
+    var target=fgetTarget(d,ele);
+
+    if(!target){return false;}
+
+    var intSelfGroupID = ele.id.replace('ApprovalGroupTableRow_','');
+    var intTargetGroupID = target.id.replace('ApprovalGroupTableRow_','');
+
+    // IE6だとチェック状態(RadioとCheck)が消えてしまうので、保持する
+    var intSaveGroupID = 0;
+    if(d<0)
+    { // 自グループが上になる場合、自グループを保存
+        intSaveGroupID = intSelfGroupID;
+    }
+    else
+    { // 自グループが下になる場合、自グループの１つ下のグループを保存
+        intSaveGroupID = intTargetGroupID;
+    }
+
+    // 保持処理
+    var arrCheckboxStatus = new Object();
+    var arrRadioStatus = new Object();
+    for (i=0; i < intRowId; i++)
+    {
+        var varCheckbox = $('mail_notice_flg_' + intSaveGroupID + '_' + i);
+        if (varCheckbox != 'undefined' && varCheckbox != null)
+        {
+            arrCheckboxStatus[varCheckbox.id] = varCheckbox.checked;
+        }
+
+        for (var intMemberType in arrMember_type)
+        {
+            var varRadio = $('member_type_' + intSaveGroupID + '_' + i + '_' + intMemberType);
+            if (varRadio != 'undefined' && varRadio != null)
+            {
+                arrRadioStatus[varRadio.id] = varRadio.checked;
+            }
+        }
+    }
+
+    if(d<0){
+        ele.parentNode.insertBefore(ele,target);
+    }else{
+        ele.parentNode.insertBefore(target,ele);
+    }
+
+    // 保存したチェック状態を反映する
+    for (var keyCheckStatus in arrCheckboxStatus)
+    {
+        $(keyCheckStatus).checked = arrCheckboxStatus[keyCheckStatus];
+    }
+    for (var keyRadioStatus in arrRadioStatus)
+    {
+        $(keyRadioStatus).checked = arrRadioStatus[keyRadioStatus];
+    }
+
+    function fgetTarget(d,ele){
+
+        var prop=(d<0)?'previousSibling':'nextSibling';
+
+        var sib=ele[prop];
+
+        for(var sib=ele[prop];sib!=null;sib=sib[prop]){
+            if(ele.tagName==sib.tagName){return sib;}
+        }
+        return null;
+    }
+}
+
+// 対象の選択肢を変更する
+function funcSelMemberType(pintGroupId, intRowId) {
+
+    var opt_1 = $('member_type_' + pintGroupId + "_" + intRowId + "_" + {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_1}{literal} );
+    var opt_2 = $('member_type_' + pintGroupId + "_" + intRowId + "_" + {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_2}{literal} );
+
+    if (opt_1.checked == true)
+    {
+        var selected = $('approvalGroupRadio_' + pintGroupId + "_" + intRowId + "_" + {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_1}{literal} );
+        var notSelected = $('approvalGroupRadio_' + pintGroupId + "_" + intRowId + "_" + {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_2}{literal} );
+    }
+    else
+    {
+        opt_2.checked = true;   // デフォルト表示
+        var selected = $('approvalGroupRadio_' + pintGroupId + "_" + intRowId + "_" + {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_2}{literal} );
+        var notSelected = $('approvalGroupRadio_' + pintGroupId + "_" + intRowId + "_" + {/literal}{$smarty.const.APPROVALFLOW_MEMBER_TYPE_1}{literal} );
+    }
+    selected.style.display = '';
+    notSelected.style.display = 'none';
+}
+
+{/literal}
+// -->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</h2>
+<ul>
+{if $auth.approvalflow.insert}
+<li class="add"><a href="/management/approvalflow/approvalflow_edit/"><span>{'/modules/approvalflow/label/create_new_workflow_btn'|translate}{*ワークフロー追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/approvalflow/approvalflow_list/">{'/modules/approvalflow'|translate}</a>
+<a href="/management/approvalflow/approvalflow_list/">{'/modules/approvalflow/label/approvalflow_list'|translate}</a>
+{'/modules/approvalflow/label/approvalflow_member_edit'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> 承認ワークフロー >> 承認ワークフロー一覧 >> フロー設定*}
+
+<p class="page_info">
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{if $headerData.flow_nm}{$headerData.flow_nm|escape}{else} {'/label/create_new'|translate}{*新規作成*}{/if}</h3>
+<ul class="minitabs">
+  {if $approvalflow_id}
+    <li><a href="/management/approvalflow/approvalflow_edit/approvalflow_id={$approvalflow_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/approvalflow/approvalflow_member_edit/approvalflow_id={$approvalflow_id}" class="active">{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</a></li>
+  {/if}
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/approvalflow/approvalflow_member_edit/" id="approvalflow_member_edit" name="approvalflow_member_edit" >
+    <input type="hidden" name="approvalflow_id" value="{$approvalflow_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <h3>{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</h3>
+
+    <div class="clear"></div>
+    <div style="text-align:center;"><img src="{'/images/management/flow_publish.gif'|lang_img_path}" border="0"></div>
+    <table width="100%" border="0" id="ApprovalGroupTable">
+        <tbody id="ApprovalGroupTbody"></tbody>
+    </table>
+    <div style="text-align:center;"><img src="/images/management/flow_arrow.gif" border="0"></div>
+    <div style="text-align:center;"><img src="{'/images/management/flow_apply.gif'|lang_img_path}" border="0"></div>
+    <input type="button" value="{'/modules/approvalflow/label/add_new_group_btn'|translate}{*承認グループ追加*}" id="btnApprovalGroupAdd" style="float: right" />{* 承認グループ追加ボタン *}
+    {if $auth.approvalflow.insert || $auth.approvalflow.update || $auth.approvalflow.delete}
+        {buttonbox}
+        {if $auth.approvalflow.update}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{* 更新する *}</button>
+        {/if}
+        {/buttonbox}
+    {/if}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

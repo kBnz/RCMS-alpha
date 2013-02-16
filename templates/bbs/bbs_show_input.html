@@ -1,0 +1,183 @@
+{headblock}
+<script type="text/javascript"> 
+google.load("jquery", "1.4.4");
+</script> 
+<script type="text/javascript"> 
+var j$ = jQuery.noConflict();
+</script>
+{/headblock}
+
+
+{module name="bbs_show_input"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+<!-- #main 本文スペース -->
+{if $formData.reply_seq eq ''}
+  <h2>{'/label/first_posting'|translate}{*新規投稿*}</h2>
+{else}
+  <h2>{'/label/reply_posting'|translate}{*返信投稿*}</h2>
+{/if}
+<form enctype="multipart/form-data" method="post" action="/{$page_sysnm}/">
+  <input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}">
+  <input type="hidden" name="reply_seq" value="{$formData.reply_seq}">
+  <input type="hidden" name="MODE" value="verify">
+{if $formData.temp_imgfile|escape}
+  <input type="hidden" name="temp_imgfile" value="{$formData.temp_imgfile|escape}">
+  {if $formData.temp_s_imgfile}
+    <input type="hidden" name="temp_s_imgfile" value="{$formData.temp_s_imgfile|escape}">
+  {/if}
+{/if}
+
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <table width="100%" border="0" class="bbs_input_form">
+    <tr>
+      <th>{'/label/name'|translate}{*名前*}</th>
+      <td><input type="text" name="name" value="{if $formData.name|escape}{$formData.name|escape}{else}{$smarty.session.disp_name|escape}{/if}" class="name"><span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">{'/msg/less_than_letters'|translate:30}{*30文字以内*}</span></td>
+    </tr>
+    <tr>
+      <th>{'/label/title'|translate}{*タイトル*}</th>
+      <td><input type="text" name="title" value="{$formData.title|escape}" class="title"><span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">{'/msg/less_than_letters'|translate:50}{*50文字以内*}</span></td>
+    </tr>
+    <tr>
+      <th>{'/label/mail_address'|translate}{*メールアドレス*}</th>
+      <td><input type="text" name="mail" value="{if $formData.mail|escape}{$formData.mail|escape}{else}{$smarty.session.email|escape}{/if}" class="mail"></td>
+    </tr>
+    <tr>
+      <th>URL</th>
+      <td><input type="text" name="bbs_url" value="{$formData.bbs_url|escape}" class="url"></td>
+    </tr>
+    {if $arrBbsDetailCategoly|@count>0}
+    <tr>
+      <th>投稿記事分類</th>
+      <td>
+        <select name="bbs_detail_category_id">
+        <option value=""></option>
+        {html_options options=$arrBbsDetailCategoly selected=$formData.bbs_detail_category_id}
+        </select>
+      </td>
+    </tr>
+    {/if}
+    {if $module_installed.tag}
+    <tr>
+      <th>{'/modules/common/label/tag_input_area'|translate}{*タグ*}</th>
+      <td>
+      {editTagsBoxForUser tag_param=$tag_param}{/editTagsBoxForUser}
+      </td>
+    </tr>
+    {/if}
+    <tr>
+      <th>{'/label/content'|translate}{* 内容 *}</th>
+      <td>
+        <p><textarea name="note" class="note" id="note">{$input_text|escape}</textarea>
+            <span class="required">{'/label/required'|translate}{*必須*}</span>
+            <br><span class="hint">{'/msg/less_than_letters'|translate:2000}{*2000文字以内*}</span>
+            <br>{'/modules/bbs/msg/can_paste_youtube_image'|translate}{*[bbs:youtube:(Youtubeの動画ID)]と書くとYoutubeの動画が貼れます。*}（{'/label/example'|translate}{*例*}：[bbs:youtube:OQThUAQ0UN0]）
+        </p>
+        {if $formData.reply_seq ne '' && $input_text|escape eq ''}
+        <p><input type="button" onclick="insertOriginal()" value="{'/label/use_former_reply'|translate}{*返信元を引用*}"></p>
+    <script type="text/javascript">
+    <!--
+    {literal}
+    function insertOriginal(){
+        var originalMsg = '{/literal}{$formData.note|strip_tags|replace:"'":""}{literal}';
+        document.getElementById("note").value = document.getElementById("note").value + originalMsg;
+    }
+    {/literal}
+    //-->
+    </script>
+
+        {/if}
+      </td>
+    </tr>
+{if $img_size != 0}
+    <tr>
+      <th>{'/label/upload_image'|translate}{*画像アップロード*}</th>
+      <td><input type="file" name="uploadimg" value="" class="file">
+         <br><span class="hint">{'/msg/less_than'|translate:$bbs_header.img_size_str}{*以内*}</span></td>
+    </tr>
+{/if}
+
+    {if $BBS_ExtensionColumns|@count>0}
+    {foreach from=$BBS_ExtensionColumns item=bbs_ext_col}
+    {if $bbs_ext_col.disp_name}
+    {assign var=type value=$bbs_ext_col.type}
+    {assign var=is_require value=$bbs_ext_col.require}
+    {assign var=db_name value=$bbs_ext_col.db_name}
+    {assign var=disp_name value=$bbs_ext_col.disp_name}
+    <tr>
+        <th>
+            {$disp_name}
+        </th>
+        <td>
+            {if $type == $smarty.const.BBS_EXT_COL_TYPE_TEXT}
+            {*テキスト*}
+
+            <input type="text" name="{$db_name}" id="{$db_name}" class="{$db_name}" value="{$formData.$db_name|escape}" />
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_TEXTAREA}
+            {*テキストエリア*}
+
+            <textarea name="{$db_name}" class="{$db_name}" id="class="{$db_name}"">{$formData.$db_name|escape}</textarea>
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_DATE}
+            {*日付*}
+
+            {assign var="ext_y" value=$db_name|cat:"_y"}
+            {assign var="ext_m" value=$db_name|cat:"_m"}
+            {assign var="ext_d" value=$db_name|cat:"_d"}
+
+            <select name="{$db_name}_y"><option value="">
+            {'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrYear selected=$formData.$ext_y|escape}
+            </select>
+            /
+            <select name="{$db_name}_m"><option value="">
+            {'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrMonth selected=$formData.$ext_m|escape}
+            </select>
+            /
+            <select name="{$db_name}_d"><option value="">
+            {'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrDate selected=$formData.$ext_d|escape}
+            </select>
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_CHECKBOX}
+            {*チェックボックス*}
+
+            {html_checkboxes  name=$db_name options=$bbs_ext_col.options selected=$formData.$db_name|escape separator="<br />"}
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_SELECTBOX}
+            {*セレクトボックス*}
+
+            <select name="{$db_name}">
+            <option value="">{'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$bbs_ext_col.options selected=$formData.$db_name|escape}
+            </select>
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_RADIO}
+            {*ラジオボタン*}
+
+            {html_radios  name=$db_name options=$bbs_ext_col.options selected=$formData.$db_name separator=" "}
+
+            {/if}
+
+            {if $is_require}<span class="required">{'/label/required'|translate}{*必須*}</span>{/if}
+        </td>
+    </tr>
+    {/if}
+    {/foreach}
+    {/if}
+
+    <tr>
+      <th>{'/label/delete_key'|translate}{*削除キー*}</th>
+      <td><input name="delkey" type="password" value="" class="delkey"></td>
+    </tr>
+  </table>
+  <input type="submit" class="submit" value="{'/label/confirm_btn'|translate}{*確認する*}">
+</form>
+</div>
+{/module}

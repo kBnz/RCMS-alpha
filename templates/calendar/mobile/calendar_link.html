@@ -1,0 +1,9 @@
+{if $calendar_param|@count>0}
+{module name="calendar_link"}
+<h2>{'/modules/calendar/label/calendar_link'|translate}{* カレンダーリンク*}</h2>
+{foreach from=$calendar_param item=item}
+    <a href="/seminar_list/?year={$item.year}&month={$item.month}">{$item.year}{'/label/year'|translate}{$item.month}{'/label/month'|translate}</a><br/>
+{/foreach}
+{/module}
+{/if}
+

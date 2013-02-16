@@ -1,0 +1,1009 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{head_include file="common/calendar_scripts.html"}
+{rcms_include file="management/fileupload.html"}
+
+{headblock}
+<style type="text/css">
+{literal}
+div.edit_contents .title {
+  margin-top: 20px;
+  background-color: #fc6;
+  padding: 3px;
+}
+div.repeat {
+  color: green;
+  text-align: right;
+}
+div.repeat_add_btn {
+  text-align: left;
+}
+div.repeat_add_btn .add_btn {
+  *width:auto;
+  *overflow:visible;
+  font-size:85%;
+  height:22px;
+  padding:0 3px;
+}
+
+tr.extension dt {
+  font-weight: bold;
+}
+tr.extension dt.after_second {
+  margin-top: 10px;
+  padding-top: 5px;
+  border-top: 2px solid #fff;
+}
+.extension_relation p.label {
+  border: 1px solid #ccc;
+  padding: 3px;
+  text-decoration: underline;
+  color: rgb(0, 51, 204);
+  cursor: pointer;
+}
+.extension_relation .selection {
+  margin-top: 5px;
+}
+.extension_relation .search {
+  margin-bottom: 5px;
+}
+.extension_relation .search select {
+  margin-right: 10px;
+}
+.placeholder {
+  color: gray;
+}
+
+{/literal}
+</style>
+<script type="text/javascript">
+{literal}
+j$(document).ready(function() {
+  // 繰返し項目の追加ボタン
+  j$('.extension[ext_repeat_group][ext_repeat_no=0]').each(function() {
+    var rows = j$('.extension[ext_repeat_group=' + j$(this).attr('ext_repeat_group') + ']').get();
+    var empty = true;
+    for (var i = rows.length - 1 ; i >= 1 ; i--) {
+      if (empty && j$(rows[i]).css('display') == 'none') {
+        (function(me, pre) {
+          pre.find('.add_btn').show().bind('click', function() {
+            me.show().fadeTo(0, 0.5).fadeTo(300, 1.0);
+            j$(this).hide();
+          });
+        })(j$(rows[i]), j$(rows[i - 1]));
+      }
+      else {
+        empty = false;
+        j$(rows[i]).show();
+      }
+    }
+  });
+
+  // 記事が１つの場合、削除ボタンをみえなくする
+  {/literal}{if $data_limit == 1}{literal}
+  j$('#edit_action_delete_li').css('display', 'none');
+  {/literal}{/if}{literal}
+});
+
+function swapSiblingTopicsExt(d, ext_no, repeat_no){
+
+    j$('textarea.cked_class').each(function () {
+        var j$textarea = j$(this);
+        if(CKEDITOR.instances[j$textarea.attr('name')]){
+            j$textarea.val(CKEDITOR.instances[j$textarea.attr('name')].getData());
+        }
+    });
+
+    ele=$("#extension_" + ext_no + "_" + repeat_no);
+
+    var target=getTarget(d, ext_no, repeat_no);
+
+    if(!target){
+        return false;
+    }
+
+    if(d<0){
+        ele.parentNode.insertBefore(ele, target);
+    }else{
+        ele.parentNode.insertBefore(target, ele);
+    }
+
+    j$('textarea.cked_class').each(function () {
+        var j$textarea = j$(this);
+        if(CKEDITOR.instances[j$textarea.attr('name')]){
+            CKEDITOR.instances[j$textarea.attr('name')].setData(j$textarea.val());
+        }
+    });
+
+    function getTarget(d, ext_no, repeat_no){
+
+        ele=$("extension_" + ext_no + "_" + repeat_no);
+        var prop=(d<0)?'previousSibling':'nextSibling';
+        var sib=ele[prop];
+        var match_pattern = "extension_" + ext_no + "_";
+        re = new RegExp("^extension_" + ext_no + "_[0-9]+$");
+
+        for(var sib=ele[prop];sib!=null;sib=sib[prop]){
+            if(ele.tagName==sib.tagName && sib.id.match(re)){
+                return sib;
+            }
+        }
+        return null;
+    }
+}
+
+
+
+{/literal}
+</script>
+
+{if $docmeta.is_primary}
+{if $data_limit ne 1 && !$topics_group.no_use_ymd}
+<script type="text/javascript">
+{literal}
+<!--
+j$(document).ready(function() {
+  DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+//-->
+{/literal}
+</script>
+{/if}
+{else}
+<link href="/js/jqueryAlerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen,print" />
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("language", "1");
+
+{literal}
+function g_translate(org){
+  google.language.translate(org, '{/literal}{$smarty.const.I18N_DEFAULT_LANGUAGES}', '{$docmeta.lang}{literal}', function(result) {
+    if (result.translation) {
+      jAlert(result.translation+"<br><br><div id='branding'> </div>", 'Google Translate');
+      google.language.getBranding('branding');
+    }
+  });
+  return false;
+}
+{/literal}
+
+</script>
+{/if}
+{/headblock}
+
+<div class="list_right_bt">
+<h2>{$topics_group_nm} {'/modules/topics/label/topics_edit'|translate}{if $formData.version_no}{'/modules/topics/label/topics_version_no'|translate:$formData.version_no}{if $formData.latest_flg eq '1'}{'/modules/topics/label/topics_is_latest'|translate}{/if}{/if}</h2>{* 記事編集 第N版 最新 *}
+<ul>
+  {if $topics_id && $rauth->canInsert("/topics/item/[@topics_group_id=$topics_group_id]") && $data_limit ne 1}
+    <li class="normal"><a href="/management/topics/topics_copy/topics_id={$topics_id}"><span>{'/label/copy'|translate}{*コピー*}</span></a></li>
+  {/if}
+  {if $rauth->canInsert("/topics/item/[@topics_group_id=$topics_group_id]") && $data_limit ne 1}
+    <li class="add"><a href="/management/topics/topics_edit/topics_group_id={$topics_group_id}"><span>{'/modules/topics/label/add_topic_btn'|translate}</span></a></li>{* 記事追加 *}
+  {/if}
+  {if $latestRow.topics_id}
+    <li class="normal"><a href="/management/topics/topics_history/topics_id={$topics_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>{* 更新履歴 *}
+    {if $preview_link}
+      <li class="view"><a href="{$preview_link}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>{* サイトを確認 *}
+    {/if}
+  {/if}
+</ul>
+
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics/label/topics_group_list'|translate}</a>
+{if $data_limit ne 1}
+<a href="/management/topics/topics_list/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_list'|translate}</a>
+{/if}
+{'/modules/topics/label/topics_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> 記事一覧 >> 記事編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}：{$formData.relation_cnt}{'/label/items'|translate}</a>{* 関連情報 N件 *}
+{if $formData.accesscount_cnt ne ''}
+<a href="/management/accesscount/accesscount_list/module_type=topics&id={$topics_id}">{'/label/total_view_count'|translate}:{$formData.accesscount_cnt}pv</a>{* 総アクセス数 Npv *}
+{/if}
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/topics/topics_edit/topics_id=$topics_id"}
+
+{rcms_include file="topics/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main topics_group{$topics_group_id}">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form name="topics_edit" id="topics_edit" action="/management/topics/topics_edit/" method="POST" enctype="multipart/form-data">
+    {if $topics_id}
+      <input type="hidden" name="topics_id" value="{$topics_id}" />
+    {/if}
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+      <input type="hidden" name="topics_group_id" value="{$topics_group_id}" />
+    {if $formData.pdf_file}
+      <input type="hidden" name="pdf_file" value="{$formData.pdf_file}" />
+    {/if}
+    {if $formData.swf_file}
+      <input type="hidden" name="swf_file" value="{$formData.swf_file}" />
+    {/if}
+    {foreach from=$formData.pdf_files item=row key=i}
+      <input type="hidden" name="pdf_files[{$i}]" value="{$row}" />
+    {/foreach}
+      <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+      <input type="hidden" name="pno" value="{$pno}" />
+      <input type="hidden" name="search_param" value="{$search_param|escape}" />
+
+    {lang_selector meta=$docmeta link='/management/topics/topics_edit/topics_id='|cat:$topics_id}
+
+    {if $topics_group.content_input_type eq '3'}
+      <ul class="topics_tab">
+        <li class="extends"><a href="javascript:void(0)" onclick="j$('tr.extension').css('display','inline');j$('#write_text').css('display','block');j$('#write_text').css('write_link','block');return false;">{'/modules/topics/label/use_extends'|translate}</a></li>{* 項目を使って書く *}
+        <li class="text"><a href="javascript:void(0)" onclick="j$('tr.extension').css('display','none');display('write_text');display('write_link');return false;">{'/label/write_content'|translate}</a></li>{* 内容をテキストで書く *}
+        <li class="pdf"><a href="javascript:void(0)" onclick="j$('tr.extension').css('display','none');display('write_text');display('write_link');return false;">{'/label/outside_link_pdf'|translate}</a></li>{* 外部リンク・PDFにする *}
+      </ul>
+    {/if}
+
+    <table width="100%" class="topics_edit{$topics_group_id}">
+      <tr id="topics_group_name">
+        <th>{'/label/group_name'|translate}</th>{* グループ名 *}
+        <td>
+          {$arrGroupList[$topics_group_id]}
+        </td>
+      </tr>
+{if $data_limit ne 1}
+  {if $topics_group.no_use_ymd}
+      <tr id="topics_order_no">
+        <th>{'/label/order_no'|translate}</th>{* 並び順  *}
+        <td>
+          {if $docmeta.is_primary}
+            <input type="text" name="ymd" value="{$formData.ymd|escape}" size="4" />
+          {else}
+            {$latestRow.ymd|escape}
+          {/if}
+        </td>
+      </tr>
+  {else}
+      <tr id="topics_season">
+        <th>{'/label/season'|translate}<span class="required">{'/label/required'|translate}</span></th>{* シーズン 必須 *}
+        <td>
+          {if $docmeta.is_primary}
+            {rcms_seasonOptions name="season" selected=$formData.season}
+          {else}
+            {$latestRow.season}
+          {/if}
+        </td>
+      </tr>
+      <tr id="topics_ymd">
+        <th>{'/label/date'|translate}<span class="required">{'/label/required'|translate}</span></th>{* 日付 必須 *}
+        <td>
+          {if $docmeta.is_primary}
+            <input type="text" name="ymd" id="ymd" value="{$formData.ymd|escape}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+            {if $topics_group.post_time_flg}
+            <label style="margin-left:10px">{'/label/time'|translate}:</label>{* 時刻 *}<select style="width:45px" name="post_h">{html_options options=$time_h_options selected=$formData.post_h}</select> : <select style="width:45px" name="post_m">{html_options options=$time_m_options selected=$formData.post_m}</select><br>
+            {/if}
+            <span class="hint">{'/label/date_example'|translate}</span>{* 日付例 *}
+          {else}
+            {$latestRow.ymd|escape}
+          {/if}
+        </td>
+      </tr>
+  {/if}
+      <tr id="topics_contents_type">
+        <th>{'/label/category'|translate}<span class="required">{'/label/required'|translate}</span></th>{* カテゴリ 必須 *}
+        <td>
+          {if $docmeta.is_primary}
+            <select name="contents_type">{html_options options=$arrContents_type selected=$formData.contents_type}</select>
+          {else}
+            {$arrContents_type[$latestRow.contents_type]}
+          {/if}
+        </td>
+      </tr>
+
+      {if $topics_group.contents_type_cnt>1}{*カテゴリが2つ以上設定可能の場合*}
+      {section name=contents_type_adding loop=$topics_group.contents_type_cnt start="1"}
+      {assign var=contents_type_colnm value="contents_type_"|cat:$smarty.section.contents_type_adding.index+1}
+      <tr id="topics_{$contents_type_colnm}">
+        <th>{'/label/category'|translate}{$smarty.section.contents_type_adding.index+1}</th>
+        <td>
+          {if $docmeta.is_primary}
+            {assign var=contents_type_value value=$formData.$contents_type_colnm}
+            <select name="{$contents_type_colnm}"><option value=""></option>{html_options options=$arrContents_type selected=$contents_type_value}</select>
+          {else}
+            {assign var=contents_type_value value=$latestRow.$contents_type_colnm}
+            {$arrContents_type[$contents_type_value]}
+          {/if}
+        </td>
+      </tr>
+      {/section}
+      {/if}
+
+{/if}
+      <tr id="topics_subject">
+        <th>{'/label/title'|translate}<span class="required">{'/label/required'|translate}</span></th>{* タイトル 必須 *}
+        <td>
+          {if !$docmeta.is_primary && $primaryRow.subject!=''}
+            <p class="major_language">
+            <span class="step">{$primaryRow.subject|escape}</span><span class="g_translate"><a href="javascript:void(0);" onClick="g_translate('{$primaryRow.subject|escape:'quotes'|strip_tags|regex_replace:'/\n|\r/':''|escape}');">{'/label/translate'|translate}</a></span>
+            </p>
+          {/if}
+          <input type="text" id="subject" name="subject" value="{$formData.subject|escape}" size="80" title="この記事のタイトルを入力してください。" />
+          <input type="checkbox" name="no_contents" id="no_contents" value="1" {if $formData.no_contents}checked="checked"{/if}/><label id="label_no_contents" for="no_contents">{'/label/title_only'|translate}</label>{* タイトルのみ *}
+        </td>
+      </tr>
+
+{* 拡張項目 *}
+{foreach from=$ext_columns_disp.group key=cols_key item=cols}
+    <tr class="extension" id="extension_{$cols_key}" {if $cols.0.ext_group_loop > 1 && $cols.0.repeatCnt > 0 && $cols|@isempty_extension}style="display:none;"{/if} {if $cols.0.ext_group_loop > 1}ext_repeat_group="{$cols.0.disp_group_order}" ext_repeat_no="{$cols.0.repeatCnt}"{/if}>
+        {*拡張項目のインターフェースがカスタマイズ設定されている場合はそちらを優先する *}
+        {if $cols.0.ext_template ne ""}
+            {foreach from=$cols item=extension_col}
+                {$extension_col.ext_template}
+            {/foreach}
+        {else}
+            <th>
+              {if $cols|@count > 1}
+                  <!--グループ--> {$cols.0.ext_parent_col_nm}{assign var=ext_col_title value=$cols.0.ext_parent_col_nm} {else} <!--非グループ--> {$cols.0.title}{assign var=ext_col_title value=$cols.0.title}
+              {/if}
+
+              {if $cols.0.ext_group_loop > 1}
+                  {*$cols.0.ext_group_idを優先的に見に行く*}
+                  {if $cols.0.ext_group_id ne ""}
+                      {assign var=target_ext_id value=$cols.0.ext_group_id}
+                  {else}
+                      {assign var=target_ext_id value=$cols.0.topics_group_ext_id}
+                  {/if}
+                <!--繰り返し有り-->
+                <div class="repeat">
+                  {if $pre_group_ext_id  eq $cols.0.topics_group_ext_id}
+                      ({counter}/{$cols.0.ext_group_loop})
+                  {else}
+                      ({counter start=1}/{$cols.0.ext_group_loop})
+                  {/if}
+                  {if $docmeta.is_primary}
+                  <a href="javascript:;" onclick="swapSiblingTopicsExt(-1, '{$target_ext_id}', '{$cols.0.repeatCnt}')"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+                  <a href="javascript:;" onclick="swapSiblingTopicsExt(1, '{$target_ext_id}', '{$cols.0.repeatCnt}')"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+                  <input type="hidden" name="ext_group_sort[{$target_ext_id}][]" value="{$cols.0.repeatCnt}" />
+                  {/if}
+                </div>
+                <div class="repeat_add_btn">
+                  {if $ext_col_title}
+                  {assign var=btn_title value=$ext_col_title}
+                  {else}
+                  {assign var=btn_title value='/label/input_boxes'|translate}
+                  {/if}
+                  <input type="button" class="add_btn" value="{'/modules/topics/label/add_the_extends'|translate:$btn_title}" style="display:none;" />
+                </div>
+                  {assign var=pre_group_ext_id value=$cols.0.topics_group_ext_id}
+              {/if}
+              <!--必須表示-->
+              {assign var=blnRequire value=0}
+              {foreach from=$cols.0.limits item=limit}
+                  {if $limit.required==1 && !$blnRequire}{assign var=blnRequire value=1}{/if}
+              {/foreach}
+              {if $blnRequire}<span class="required">{'/label/required'|translate}</span>{/if}
+
+            </th>
+            <td>
+              {if $cols|@count > 1}
+                <!--グループ-->
+                <dl>
+                {foreach from=$cols name=extension_col item=item key=item_key}
+                  <dt{if !$smarty.foreach.extension_col.first} class="after_second"{/if}>{$item.title}</dt>
+                  <dd>
+                    {rcms_include file="topics/admin/extensions/"|cat:$item.type|cat:".html" cols_key=$cols_key}
+                  </dd>
+                {/foreach}
+                </dl>
+              {else}
+                  <!--非グループ-->
+                {foreach from=$cols name=extension_col item=item key=item_key}
+                  {rcms_include file="topics/admin/extensions/"|cat:$item.type|cat:".html" cols_key=$cols_key}
+                {/foreach}
+              {/if}
+            </td>
+        {/if}
+    </tr>
+{/foreach}
+
+
+</table>
+
+{* 拡張項目の入力形式 *}
+{foreach from=$ext_columns_conf item=conf}
+  <input type="hidden" name="ext_type_{$conf.no}" value="{$conf.type}" />
+{/foreach}
+
+{if !$docmeta.is_primary && $primaryRow.contents!=''}
+<div class="primary_text">
+  <p class="btn"><input type="button" class="conf_primary_btn" id="conf_primary_btn" value="{'/label/confirm_the_primary_language_traslatation'|translate}" onClick="j$('.primary_contents').show().fadeTo(0, 0.5).fadeTo(300, 1.0);j$('.close_preview_btn').show().fadeTo(0, 0.5).fadeTo(300, 1.0);j$(this).hide();" ></p>
+  <div style="display:none;" class="primary_contents">
+    <p class="btn"><input style="display:none;" type="button" class="close_preview_btn" value="{'/label/close'|translate}" onClick="j$('.primary_contents').hide().fadeTo(0, 0.5).fadeTo(300, 1.0);j$('.conf_primary_btn').show().fadeTo(0, 0.5).fadeTo(300, 1.0);j$(this).hide();" ></p>
+    <div>{$primaryRow.contents}</div>
+    <p class="g_translate"><a href="javascript:void(0);" onClick="g_translate('{$primaryRow.contents|escape:'quotes'|strip_tags|regex_replace:'/\n|\r/':''|escape}');">{'/label/translate'|translate}</a></p>
+
+  </div>
+</div>
+{/if}
+
+
+    <!-- 内容をテキストで書く -->
+    <div id="write_text">
+
+{if $sw_html}
+
+    {if $topics_group.content_input_type ne '3'}
+      <ul class="topics_tab">
+        <li class="text">{'/label/write_content'|translate}</li>{* 内容をテキストで書く *}
+        <li class="pdf"><a href="javascript:void(0)" onclick="display('write_text');display('write_link');return false;">{'/label/outside_link_pdf'|translate}</a></li>{* 外部リンク・PDFにする *}
+      </ul>
+    {/if}
+    {if $use_multi_page}
+      <div class="page_change">
+        {'/modules/topics/label/page'|translate}:<select name="pno" onchange="this.form.submit()">{html_options options=$page_options selected=$pno}</select>
+        {'/label/caption'|translate}:<input type="text" class="caption" name="captions[{$pno}]" value="{$formData.captions.$pno|escape}" />
+        {if $page_options|@count > 2}{* 複数ページあるときだけ削除ボタンを表示する *}
+          <input type="submit" class="delete_page" name="DELETE_PAGE[{$pno}]" value="{'/modules/topics/label/delete_page'|translate}" />
+        {/if}
+      </div>
+    {/if}
+      {rcms_include file="common/editor_info.html"}
+      <div class="kiji_hensyu_center">
+        {$sw_html}
+      </div>
+{/if}
+
+    {if $rauth->unlimitedUpdate("/topics/item/$topics_id", $docmeta.lang)}
+      <div id="add_files" class="edit_close" {if $formData.files|@count>0 || $formData.swf_url ne ''}style="display:none;"{/if}>
+        <h3>{'/label/attach_files'|translate}</h3>{* ファイルを添付する *}
+        <p><a href="javascript:void(0)" onclick="display('add_files');display('add_files2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+      </div>
+
+      <div id="add_files2" {if $formData.files|@count==0 && $formData.swf_url eq ''}style="display:none;"{/if}>
+        <div class="edit_open">
+          <h3><span class="link_button">{'/label/attach_files'|translate}</span></h3>{* ファイルを添付する *}
+          <p class="close"><a href="javascript:void(0)" onclick="display('add_files');display('add_files2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+        </div>
+        <div class="edit_contents">
+          <p class="title">{'/label/attach_pdf'|translate}</p>{* PDFを添付する *}
+          <table width="100%" id="pdf_files">
+          </table>
+
+        {if $docmeta.is_primary}<!--主言語の場合だけ入力行を増やせる-->
+          <input type="button" id="pdf_files_add" value="{'/label/add'|translate}" />
+{literal}
+<script type="text/javascript">
+(function() {
+
+// PDFに変換するかどうかの配列生成
+var convertArray = {};
+{/literal}
+{foreach from=$formData.convert_to_pdf key=key item=val}
+  convertArray[{$key}] = "{$val}";
+{/foreach}
+{literal}
+
+
+function addRow(title, url, isDelete, extension) {
+    var table = $('pdf_files');
+    var no = 0;
+    var delChecked = "";
+    var convertChecked = "";
+
+    no = j$("input[name^='pdf_titles']").size() + 1;
+
+    // 削除にチェック
+    if (isDelete) {
+      delChecked = "checked=\"checked\"";
+    }
+
+    // PDFに変換するにチェック
+    if (convertArray[no]) {
+        convertChecked = "checked=\"checked\"";
+    }
+
+    var tr = table.insertRow(-1);
+    var td = document.createElement('td');
+
+    // 添付ファイル用にjQuery uploadifyを適用
+    td.innerHTML =
+      '{/literal}{'/label/title'|translate}{literal}:<input id="filesUploaded_title_pdf' + no + '" type="text" name="pdf_titles[' + no + ']" value="' + title + '" size="20" />' +
+      '<div id="file_upload_pdf' + no + '">'+
+      '    <div id="filesUploaded_preview_pdf' + no + '">' +
+      '    <input type="hidden" name="files_' + no + '" value="' + url + '">' +
+      '    <a id="filesUploaded_file_pdf' + no + '" href="' + url + '" rel="' + url + '" target="_blank">Loading..</a></div><br>' +
+      '    <div id="fileQueue_pdf' + no + '"></div>' +
+      '    <input type="file" name="Filedata" id="uploadify_pdf' + no + '" />' +
+      '    <div id="filesUploaded_msg_pdf' + no + '"></div>' +
+      '</div>' +
+      '<input name="del_pdfs[' + no + ']" id="del_pdfs[' + no + ']" type="checkbox" value="delfile.' + extension + '" onChange="j$(\'#file_upload_pdf' + no + '\').toggle();" ' + delChecked + ' />' +
+      '{/literal}<label for="del_pdf_' + no + '">{'/label/delete'|translate}</label>{literal}' +
+      '<input type="checkbox" name="convert_to_pdf[' + no + ']" id="convert_to_pdf_' + no + '" ' + convertChecked + ' /><label for="convert_to_pdf_' + no + '">' +
+      '{/literal}{'/label/convert_to_pdf'|translate}{literal}</label>';
+    tr.appendChild(td);
+    if (!url) {
+        url = "/direct/topics/file_upload/?type=files";
+    }
+    DelayDoFunction(
+        "div",
+        "file_upload_pdf" + no,
+        function(){
+            file_upload("_pdf" + no, url,"files_" + no, "pdf", false, "#pdf_titles_" + no);
+            file_upload_ch_obj(j$("#filesUploaded_preview_pdf" + no), "files_" + no);
+        }
+    );
+}
+
+j$('#pdf_files_add').click(function() {
+    addRow("", "");
+});
+j$(document).ready(function() {
+  {/literal}
+  {foreach from=$formData.files key=key item=val}
+    addRow("{$val.title}", "{$val.url}", "{$val.del}", "{$val.extension}");
+  {/foreach}
+  {literal}
+  addRow("", "");
+
+  // 外部リンク・PDFにする
+  DelayDoFunction(
+    "div",
+    "file_upload_pdf",
+    function() {
+      file_upload("_pdf", "/direct/topics/file_upload/?type=files", "pdf_file", "pdf", false);
+      file_upload_ch_obj(j$("#filesUploaded_preview_pdf"), "pdf_file");
+      }
+    );
+
+  // swf
+  DelayDoFunction(
+    "div",
+    "file_upload_swf",
+    function() {
+      file_upload("_swf", "/direct/topics/file_upload/?type=files", "swf_file", "swf", false);
+      file_upload_ch_obj(j$("#filesUploaded_preview_swf"), "swf_file");
+      }
+    );
+
+
+});
+})();
+
+</script>
+{/literal}
+        {/if}
+
+          <p class="hint">{'/msg/use_wd_ex_pp'|translate}</p>{* MS-Word/MS-Excel/PowerPointファイルをアップすると自動的にPDFに変換されて保存されます *}
+
+      {if $docmeta.is_primary}
+          <p class="title">{'/label/attach_flash'|translate}</p>{* スライドショー（FLASHファイル）を添付 *}
+        {if $formData.swf_url}
+          <div id="swf{$formData.topics_id}" ></div>
+<script type="text/javascript" src="/js/swfobject.js"></script>
+<script type="text/javascript">
+<!--
+var so = new SWFObject("/images/common/swf_player.swf","swf{$formData.topics_id}", "520", "390", "8", "#000000");
+so.addVariable("swf_file", "{$formData.swf_url}");
+so.write("swf{$formData.topics_id}");
+//-->
+</script>
+        {/if}
+          <table width="100%">
+            <tr>
+              <td>
+                <div id="file_upload_swf">
+                  <div id="filesUploaded_preview_swf">
+                    <input type="hidden" name="attach_swf" value="/direct/topics/file_upload/?type=files">
+                    <a id="filesUploaded_file_swf" href="{$formData.swf_url}" rel="/direct/topics/file_upload/?type=files" target="_blank">Loading..</a></div><br>
+                    <div id="fileQueue_swf"></div>
+                    <input type="file" name="Filedata" id="uploadify_swf" />
+                  <div id="filesUploaded_msg_swf"></div>
+                  {if $formData.swf_url}
+                    <input type="checkbox" name="del_swf" id="del_swf" {if $formData.del_swf}checked="checked"{/if}/>
+                    <label for="del_swf">{'/label/delete_flash'|translate}</label>
+                  {/if}{* FLASHファイル削除 *}
+                </div>
+              </td>
+            </tr>
+          </table>
+          <p class="hint">{'/msg/use_pp'|translate}</p>{* PowerPointファイルをアップすると自動的にFLASHファイルに変換されて保存されます。 *}
+      {/if}
+
+        </div>
+      </div>
+    {/if}
+    </div>
+    <!-- //内容をテキストで書く -->
+
+    <!-- 外部リンク -->
+    <div id="write_link" style="display:none">
+    {if $topics_group.content_input_type ne '3'}
+      <ul class="topics_tab2">
+        <li class="text"><a href="javascript:void(0)" onclick="{literal}display('write_text');display('write_link');return false;{/literal}">{'/label/write_content'|translate}</a></li>{* 内容をテキストで書く *}
+        <li class="pdf">{'/label/outside_link_pdf'|translate}</li>{* 外部リンク・PDFにする *}
+      </ul>
+    {/if}
+
+      <div class="kiji_hensyu_center">
+        <p class="hint">{'/msg/use_text_and_pdf'|translate}</p>{* テキストとPDFを共存させたい場合は「内容をテキストで書く」を選択して、その下でPDFをアップしてください。 *}
+        <p class="hint">{'/msg/use_wd_ex_pp'|translate}</p>{* MS-Word/MS-Excel/PowerPointファイルをアップすると自動的にPDFに変換されて保存されます *}
+        <table width="650" border="0">
+          <tr>
+            <td>{'/label/link'|translate}</td>{* リンク *}
+            <td><input type="text" name="link_url" value="{$formData.link_url}" style="width:400px;"/></td>
+          </tr>
+          <tr>
+            <td valign="bottom">PDF<img src="/images/common/pdficon_large.gif"></td>
+            <td>
+              <div id="file_upload_pdf">
+                <div id="filesUploaded_preview_pdf">
+                  <input type="hidden" name="pdf_file" value="/direct/topics/file_upload/?type=files">
+                  <a id="filesUploaded_file_pdf" href="{$formData.pdf_url}" rel="/direct/topics/file_upload/?type=files" target="_blank">Loading..</a></div><br>
+                  <div id="fileQueue_pdf"></div>
+                  <input type="file" name="Filedata" id="uploadify_pdf" />
+                <div id="filesUploaded_msg_pdf"></div>
+              </div>
+              <input type="checkbox" name="del_pdf" id="del_pdf" {if $formData.del_pdf}checked="checked"{/if}/>
+              <label for="del_pdf">{'/label/delete_pdf'|translate}</label>
+            </td>{* PDF削除 *}
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!-- //外部リンク -->
+
+  {if $docmeta.is_primary}
+    <div id="detail_setting" class="edit_close" style="{if !$formData.topics_flg || $formData.regular_flg || $formData.secure_level } display:none; {/if}">
+      <h3>{'/label/other_settings'|translate}</h3>{* その他の設定 *}
+      <p><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+    </div>
+
+    <div id="detail_setting2" style="{if $formData.topics_flg && !$formData.regular_flg && !$formData.secure_level } display:none; {/if}">
+      <div class="edit_open">
+        <h3><span class="link_button">{'/label/other_settings'|translate}</span></h3>{* その他の設定 *}
+        <p class="close"><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+      </div>
+      <div class="edit_contents">
+        <table>
+          <tr>
+            <th style="width:150px">{'/label/display_in_list'|translate}<span class="required">{'/label/required'|translate}</span></th>{* 一覧に表示する 必須 *}
+            <td><select name="topics_flg">{html_options options=$arrTpFlg selected=$formData.topics_flg}</select></td>
+          </tr>
+          <tr>
+            <th>{'/label/display_always'|translate}<span class="required">{'/label/required'|translate}</span></th>{* 常時表示する 必須 *}
+            <td><select name="regular_flg">{html_options options=$arrRegFlg selected=$formData.regular_flg}</select></td>
+          </tr>
+          <tr class="light_gray">
+            <th valign="top">{'/label/access_limit'|translate}</th>{* アクセス制限 *}
+            <td colspan="3"><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select></td>
+          </tr>
+          <tr>
+            <th>{'/label/send_trackback'|translate}</th>{* トラックバック送信 *}
+            <td colspan="3"><span class="hint">{'/msg/multiple_ping'|translate}</span><textarea name="ping_url" cols="60" rows="2"></textarea></td>
+            {* 複数pingを送る場合は改行して一行に１URL書いてください。 *}
+          </tr>
+        {if $topics_id == ""}
+          {if $rauth->canInsert("/topics/item/[@topics_group_id=$topics_group_id]")}
+          <tr>
+            <th>{'/label/ping_server'|translate}</th>{* ping送信サーバの選択 *}
+            <td colspan="3">
+              <ul>
+              {foreach item=ping from=$pingList name=ping_list}
+                <li>
+                  <input type="checkbox" name="ping_server[{$smarty.foreach.ping_list.iteration-1}]" value="1"{if $ping.checked eq 1} checked="checked"{/if} />{$ping.name|escape}({$ping.url})
+                </li>
+              {/foreach}
+              </ul>
+            </td>
+          </tr>
+          {/if}
+        {/if}
+          <tr>
+            <th style="width:150px">Keywords</th>
+            <td><input type="text" name="keywords" value="{$formData.keywords}" style="width:90%" /></td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td><input type="text" id="page_description" name="description" value="{$formData.description}" style="width:90%" /></td>
+          </tr>
+          <tr>
+            <th>{'/label/id_alias'|translate}</th>
+            <td><input type="text" name="id_alias" id="id_alias" value="{$formData.id_alias|escape}" size="80" title="ファイル名を指定できます。" />.html<br>
+            <input type="button" value="{'/modules/topics/labe/translate_file_nm'|translate}" onClick="if(j$('#subject').val().length>0){ldelim}j$.get('/direct/menu/getTranslate/?s='+encodeURI(j$('#subject').val())+'&t=en&m=ja', function(data){ldelim}j$('#id_alias').val(data.replace(/quot/g,'').replace(/[^\w_\-\s]/g,'').replace(/\s\s/g,'').replace(/\s/g,'-'));{rdelim});{rdelim}"></td>
+          </tr>
+        </table><!--Keyword, descriotionの設定ここまで-->
+
+        {* SNSへの投稿設定 *}
+        {if $module_installed.api_twitter || $module_installed.api_facebook}
+        <table>
+        <thead><tr><th colspan="2">SNSへの投稿</th></tr></thead>
+          {if $module_installed.api_twitter}
+          <tr>
+            <th style="width:150px">{'/modules/twitter/label/send_twitter'|translate}{* Twiiterに送信する *}</th>
+            <td>{html_checkboxes name="twitter_id" options=$arrTwitter_id selected=$formData.twitter_id separator="<br>"}</td>
+          </tr>
+          <tr>
+            <th>twitter:メッセージ</th>
+            <td><textarea id="twitter_msg_text" name="twitter_msg" cols="50" rows="3">{$formData.twitter_msg}</textarea><input type="button" value="自動取得" id="twitter_get_btn" ><br><div id="twitter_counter"></div><span class="hint">文末にURLが追加されるため、文字数が制限されています。</span></td>
+          </tr>
+          <tr>
+            <th>twitter:リンク先</th>
+            <td><select name="twitter_link_url">{html_options options=$pageLinks selected=$formData.twitter_link_url}</select></td>
+          </tr>
+          {/if}
+          {if $module_installed.api_facebook}
+          <tr>
+            <th style="width:150px">{'/modules/api_facebook/label/post_to_wall'|translate}{* facebookに送信する *}</th>
+            <td><select name="facebook_page_id"><option value="">送信しない</option>{html_options options=$arrFacebook_id selected=$formData.facebook_page_id}</select></td>
+          </tr>
+          <tr>
+            <th>facebook:メッセージ</th>
+            <td><textarea id="fb_msg_text" name="fb_msg" cols="50" rows="3">{$formData.fb_msg}</textarea><br><span class="hint">この記事へのリンクに対するコメントです。不要な場合は空欄にします。</span></td>
+          </tr>
+          <tr>
+            <th>facebook:リンク先</th>
+            <td><select name="fb_link_url">{html_options options=$pageLinks selected=$formData.fb_link_url}<option value="">リンクを添付しない</option></select></td>
+          </tr>
+          {/if}
+        </table>
+        {/if}
+
+        {* OGP関連の設定 *}
+        <!--OGP関連の設定-->
+        <table>
+        <thead><tr><th colspan="2">Open Graph Protocol設定</th></tr></thead>
+         <tr>
+            <th>Title</th>
+            <td><input type="text" name="og_title" id="ogp_title" value="{$ogp_data.og_title}" size="50"/><input type="hidden" name="ogp_id" value="{$ogp_data.ogp_id}" /><input type="button" id="ogp_auto_btn" value="自動取得"></td>
+         </tr>
+         <tr>
+            <th>Description</th>
+            <td><textarea name="og_description" id="ogp_description" rows="3" cols="50">{$ogp_data.og_description}</textarea></td>
+         </tr>
+         <tr>
+            <th>Image</th>
+            <td><input type="button" id="ogp_prev_btn" value=" < " /><input type="button" id="ogp_next_btn" value=" > " />
+                <select id="ogp_img_src" name="og_image" >
+                </select>
+                <input type="button" id="ogp_reload_btn" value="更新" >
+                <div id="ogp_image_preview" style="margin:10px;"></div>
+            </td>
+         </tr>
+        </table>
+        <!--OGP関連の設定ここまで-->
+
+
+
+      </div>
+    </div><!--//detail_setting2-->
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <div class="clear"></div>
+
+    {editTagsBox docmeta=$docmeta}{/editTagsBox}
+
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" id=$topics_id data=$formData}
+
+  {else}
+    {rcms_include file="management/lang_open_date_box.html" id=$topics_id data=$formData}
+
+  {/if}{* is_primary *}
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/topics/item/$topics_id", $docmeta.lang) link="/management/topics/topics_edit/topics_id=$topics_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment last_comment=$formData.last_update_comment}
+
+    </form>
+</div>
+</div>
+{if $sw_html ne ''}
+<script type="text/javascript">
+<!--
+
+{if $module_installed.api_twitter}
+{literal}
+
+/**
+* twitter関連の関数群
+*/
+
+j$(document).ready(initTwitter());
+
+/*-- twitter用 イニシャライザ --*/
+function initTwitter(){
+    j$("#twitter_msg_text").keyup(function(){twitterCountChar()});
+    j$("#twitter_get_btn").click(function(){twitterSuggest()});
+    twitterCountChar();
+}
+
+/*-- URL付与を考慮した最大入力可能文字数 --*/
+function twitterMaxLen(){
+    return {/literal}{$twitter_max_chars}{literal};
+}
+
+/*-- 文字数のカウント --*/
+function twitterCountChar(){
+    var counter = twitterMaxLen() - j$("#twitter_msg_text").val().length;
+    if(counter <= 0){
+        j$("#twitter_counter").html("<font color='#ff0000'>Over："+(Math.abs(counter))+"</font>");
+    }else{
+        j$("#twitter_counter").html(counter);
+    }
+
+}
+
+/*-- メッセージの自動入力 --*/
+function twitterSuggest(){
+    var subject = j$("#subject").val();
+    var description = j$("#page_description").val();
+    var msg;
+
+    if(!description){ //Descriptionが空なら本文から抽出
+        msg = subject +":\n"+ makeDescription(twitterMaxLen()-subject.length,true);
+    }else{
+        msg = subject +":\n"+ description;
+    }
+
+    if(msg.length > twitterMaxLen()){ //最大文字数までで切る。
+        msg = msg.substring(0,twitterMaxLen()-1)+"…";
+    }
+
+    j$("#twitter_msg_text").val(msg);
+    twitterCountChar();
+}
+{/literal}
+{/if}
+{literal}
+
+/* 適当な長さの概要を本文から作成
+*  limitで指定した文字数以内で、区切りのいい(と思われる)文章を返します。
+*/
+
+function makeDescription(limit,cut){
+    var content = CKEDITOR.instances["contents[0]"].getData(); //CKEditorからHTMLを取得
+    content = content.replace(/<\/?[^>]+>|&.{2,5}|\s;/gi, "");//HTMLタグを削除
+    var regexp = /[^.。．\s]+.|。|．/igm; //文章ごとの配列を作成
+    var content_arr = new Array();
+    content_arr = regexp.exec(content);
+    var tmp;
+    while(tmp = regexp.exec(content)){
+        content_arr.push(tmp[0]);
+    }
+    var msg = content_arr[0];
+    var i;
+    for(i=1; i < content_arr.length;i++){ //文章の配列から文字数を超過しないようにメッセージを作成
+        if((msg.length + content_arr[i].length) < limit){
+            msg += content_arr[i];
+        }else{
+            break;
+        }
+    }
+    if(cut){
+        return msg.substring(0,limit);
+    }else{
+        return msg;
+    }
+}
+
+
+/**
+* OGP関連の関数群
+*/
+(function(j$){
+
+    j$(document).ready(initOgp());
+
+    /*-- OGP用 イニシャライザ --*/
+    function initOgp(){
+        j$("#ogp_auto_btn").click(function(){ogpAuto()});
+        j$("#ogp_prev_btn").click(function(){ogpPrevImage()});
+        j$("#ogp_next_btn").click(function(){ogpNextImage()});
+        j$("#ogp_img_src").change(function(){ogpSetImage()});
+        j$("#ogp_reload_btn").click(function(){ogpGetImageSrc()});
+        ogpGetImageSrc();
+    }
+
+    function ogpAuto(){
+        j$("#ogp_title").val(j$("#subject").val());
+        var msg = j$("#page_description").val();
+        if(msg.length < 1){
+            msg = makeDescription(150,false);
+        }
+        j$("#ogp_description").text(msg);
+    }
+
+    function ogpGetTitle(){
+        j$("#ogp_descriptsion").val(j$("#subject").val());
+    }
+
+    function ogpGetDescription(){
+
+    }
+
+    /*-- CKEditorで挿入されたIMGタグからソースを抽出してオプションタグに入れる --*/
+    function ogpGetImageSrc(){
+        var selected = j$("select#ogp_img_src").val(); //選択中の画像のパスを一時退避
+        var current_img = "{/literal}{$ogp_data.og_image}{literal}";
+        var default_img = "{/literal}{$ogp_default_image}{literal}";
+        j$(".ogp_img_src_option").remove();
+        if(current_img){
+            j$('#ogp_img_src').append(j$('<option value="'+current_img+'" class="ogp_img_src_option">以前指定した画像</option>'));
+        }
+        if(default_img){
+            j$('#ogp_img_src').append(j$('<option value="'+default_img+'" class="ogp_img_src_option">デフォルトの画像</option>'));
+        }
+
+        var content = CKEDITOR.instances["contents[0]"].getData(); //CKEditorからHTMLを取得
+        var regexp = /\/files\/user\/\S+\.jpg|\.jpeg|\.gif|\.png/igm;
+        var tmp = new Array();
+        while(tmp = regexp.exec(content)){
+            j$('#ogp_img_src').append(j$('<option value="'+tmp[0]+'" class="ogp_img_src_option">'+tmp[0]+'</option>'));
+        }
+        if(selected){ //選択中の画像がリフレッシュ後にも存在した場合、その画像を選択しておく
+            var check_flag = 0;
+            for(i=0;i<j$("select#ogp_img_src option").size();i++){
+                if(j$(".ogp_img_src_option:eq("+i+")").val() == selected){check_flag++;}
+            }
+            if(check_flag>=1){j$("#ogp_img_src").val(selected);}
+        }
+        ogpSetImage();
+    }
+
+    /*-- 前の画像を選択する --*/
+    function ogpPrevImage(){
+        var last = j$("select#ogp_img_src option").size();
+        var prev = j$(".ogp_img_src_option:selected").index() -1;
+        if( prev < 0){ prev = last-1;}
+        if( 0 <= prev && prev < last){
+            j$("#ogp_img_src").val(j$(".ogp_img_src_option:eq("+prev+")").val());
+            ogpSetImage();
+        }
+    }
+
+    /*-- 次の画像を選択する --*/
+    function ogpNextImage(){
+        var last = j$("select#ogp_img_src option").size();
+        var next = j$(".ogp_img_src_option:selected").index() +1;
+        if( next > last-1){ next = 0;}
+        if( 0 <= next && next < last){
+            j$("#ogp_img_src").val(j$(".ogp_img_src_option:eq("+next+")").val());
+            ogpSetImage();
+        }
+    }
+
+    /*-- 画像を表示する --*/
+    function ogpSetImage(){
+        var src = j$("select#ogp_img_src").val();
+        if(src){
+            j$("div#ogp_image_preview").html('<img class="ogp_image_view" src="{/literal}{$ogp_site_url}{literal}' + src + '" style="max-width:130px; max-height:130px;" />');
+        }
+    }
+}(jQuery));
+{/literal}
+
+
+{if $formData.pdf_url ne '' || $formData.link_url ne ''}
+{literal}
+setTimeout("display('write_text');",1000);
+setTimeout("display('write_link');",1000);
+setTimeout("display('conf_primary_btn');",1000);
+{/literal}
+{/if}
+//-->
+</script>
+{/if}
+{rcms_include file="management/footer.html"}

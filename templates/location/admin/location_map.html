@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+{literal}
+<style type="text/css"><!--
+body {background-color:#EEE;}
+--></style>
+{/literal}
+<script type="text/javascript" src="{if $ssl_flg}https://maps-api-ssl.google.com{else}http://maps.google.com{/if}/maps/api/js?sensor=false&language={$mylang}"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+var gmap_x = {$gmap_x};
+var gmap_y = {$gmap_y};
+var gmap_zoom = {$gmap_zoom};
+var gmap_type = '{$gmap_type}';
+var default_set = {$default_set};
+var messages = ['{'/modules/location/msg/here_is_current_setting'|translate}',//現在の設定場所です。
+               '{'/modules/location/msg/please_point_the_location'|translate}'//登録場所を指定してください。
+               ];//(現在の設定場所です。,)
+
+{literal}
+var map      = null;
+var geocoder = null;
+var marker   = null;
+function onLoad() {
+    var position = new google.maps.LatLng(gmap_y,gmap_x);// 初期緯度経度
+    var myOptions = {
+      zoom: gmap_zoom,
+      center: position,
+      mapTypeId: gmap_type,
+      scrollwheel: false
+    }
+    map = new google.maps.Map(document.getElementById("map"), myOptions);
+    if (default_set) {
+        marker = new google.maps.Marker({
+            position: position,
+            map: map
+        });
+        document.getElementById("message").innerHTML = messages[0];
+    }
+    else {
+        document.getElementById("message").innerHTML = messages[1];
+    }
+    google.maps.event.addListener(map, 'click', function(location) {
+        placeMarker(location,messages[0]);
+    });
+
+    google.maps.event.addListener(map, 'zoom_changed', function(){
+        window.parent.document.getElementById('gmap_zoom{/literal}{$repeatCnt}{literal}').value = map.getZoom();
+    });
+
+    google.maps.event.addListener(map, 'maptypeid_changed', function(){
+        window.parent.document.getElementById('gmap_type{/literal}{$repeatCnt}{literal}').value = map.getMapTypeId();
+    });
+
+    geocoder = new google.maps.Geocoder();
+    document.searchForm.onsubmit = showAddress;
+} /* onLoad */
+
+function showAddress() {
+    var address = document.searchForm.address.value;
+    if (geocoder) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            var latlng = results[0].geometry.location;
+            map.setCenter(latlng);
+            if(marker != null){ marker.setMap();}//古いマーカーを消去
+            marker = new google.maps.Marker({ map: map, position: latlng});
+            var infowindow = new google.maps.InfoWindow({content: address,position:latlng});
+            infowindow.open(map,marker);
+            parent.document.getElementById('gmap_y{/literal}{$repeatCnt}{literal}').value = String(latlng.lat());
+            parent.document.getElementById('gmap_x{/literal}{$repeatCnt}{literal}').value = String(latlng.lng());
+            parent.document.getElementById('gmap_type{/literal}{$repeatCnt}{literal}').value = map.getMapTypeId();
+
+        } else {
+            alert(address + " \u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002");
+        }
+      });
+    }
+    return false;
+}
+function placeMarker(location,messages) {
+    if(marker != null){ marker.setMap();}//古いマーカーを消去
+    marker = new google.maps.Marker({
+        position: location.latLng, 
+        map: map
+    });
+
+    document.getElementById("message").innerHTML = messages;
+    window.parent.document.getElementById('gmap_y{/literal}{$repeatCnt}{literal}').value = location.latLng.lat();
+    window.parent.document.getElementById('gmap_x{/literal}{$repeatCnt}{literal}').value = location.latLng.lng();
+    window.parent.document.getElementById('gmap_zoom{/literal}{$repeatCnt}{literal}').value = map.getZoom();
+    window.parent.document.getElementById('gmap_type{/literal}{$repeatCnt}{literal}').value = map.getMapTypeId();
+
+
+}
+{/literal}
+//]]>
+</script>
+</head>
+<body onload="onLoad()">
+<form name="searchForm" style="margin:0;">
+  {'/label/address'|translate}<input type="text" size="30" name="address" value="" />
+  <input type="button" value="{'/label/search_btn'|translate}" onclick="showAddress()" />
+</form>
+<div id="map" style="width: 485px; height: 375px"><span style="font-size:18pt;">{'/modules/location/msg/ie8_error_alert'|translate}</div></span>
+<div id="message"></div>
+</body>
+</html>

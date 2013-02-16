@@ -1,0 +1,126 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>動画のアップロード</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_search/">{$module_nm}</a>
+動画のアップロード
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+  <div class="list_main">
+
+    <script type="text/javascript">
+      {literal}
+      function logoutYouTube() {
+        new Ajax.Request('/direct/api_youtube/logout/', {
+          onComplete: function() {
+            location.href = '/management/api_youtube/api_youtube_upload/';
+          }
+        });
+      }
+      {/literal}
+    </script>
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    {if $status == 'LOGGING_IN'} {* 1. AuthSub認証リンクを表示 *}
+      <h3>YouTubeにログイン</h3>
+      <button id="login_youtube">ログイン</button>
+{literal}
+<script type="text/javascript">
+j$(document).ready(function(){
+    j$("#login_youtube").click(openWindow);
+});
+
+function openWindow(){
+    window.open("{/literal}{$auth_url}{literal}?callback_url={/literal}{$callback_url}{literal}", "RCMS","width=500,height=500,resizable=yes,scrollbars=yes");
+return false;
+}
+</script>
+{/literal}
+    {elseif $status == 'LOGGED_IN'} {* 2. メタデータ送信フォームを表示 *}
+      <h3>アップロード (Step 1 / 2)</h3>
+      <p style="text-align:right"><a href="javascript:logoutYouTube()">YouTubeからログアウト</a></p>
+      <p>はじめに動画のメタデータ (タイトル等) を入力してください。</p>
+      <form action="/management/{$mt}/{$ct}/" method="post">
+        <table style="width:100%">
+          <tr>
+            <th>タイトル</th><td><input type="text" name="meta[title]" value="{$meta.title|escape}"/></td>
+          </tr>
+          <tr>
+            <th>説明</th><td><textarea name="meta[description]" style="width: 98%">{$meta.description|escape}</textarea></td>
+          </tr>
+          <tr>
+            <th>YouTube カテゴリ</th>
+            <td>
+              <select name="meta[category]">
+                <option value="">---</option>
+                {html_options options=$categories selected=$meta.category}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>タグ</th><td><input type="text" name="meta[tags]" value="{$meta.tags|escape}"/></td>
+          </tr>
+        </table>
+        {if $auth[$mt].insert}
+          {buttonbox}
+            <button type="submit">次へ</button>
+          {/buttonbox}
+        {/if}
+      </form>
+    {elseif $status == 'METADATA_SENT'} {* 3. 動画送信フォームを表示 *}
+      <h3>アップロード (Step 2 / 2)</h3>
+      <p style="text-align:right"><a href="javascript:logoutYouTube()">YouTubeからログアウト</a></p>
+      <form action="{$token.url}?nexturl={$next|escape:'url'}" method="post" enctype="multipart/form-data">
+        <table style="width:100%">
+          <tr>
+            <th>タイトル</th><td>{$meta.title|escape}</td>
+          </tr>
+          <tr>
+            <th>説明</th><td>{$meta.description|escape|nl2br}</td>
+          </tr>
+          <tr>
+            <th>カテゴリ</th><td>{$categories[$meta.category]}</td>
+          </tr>
+          <tr>
+            <th>タグ</th><td>{$meta.tags|escape}</td>
+          </tr>
+          <tr>
+            <th style="font-weight:bold">動画ファイル</th>
+            <td>
+              <input type="file" name="file"/>
+              <input type="hidden" name="token" value="{$token.token}"/>
+            </td>
+          </tr>
+        </table>
+        {if $auth[$mt].insert}
+          {buttonbox}
+            <button type="submit">アップロード</button>
+          {/buttonbox}
+        {/if}
+      </form>
+    {elseif $status == 'VIDEO_SENT'} {* 4. 動画送信完了画面を表示 *}
+      <h3>アップロード</h3>
+      <p style="text-align:right"><a href="javascript:logoutYouTube()">YouTubeからログアウト</a></p>
+      <p>アップロードされた動画の詳細は<a href="/management/{$mt}/{$mt}_myvideos/">マイ動画</a>でご確認ください。</p>
+      <p>※アップロードされた動画は、実際に公開されるまでにしばらく時間がかかることがあります。</p>
+    {elseif $status == 'UPLOAD_ERROR'} {* 動画送信失敗画面 *}
+    {else} {* エラー *}
+      {*<p>Bad Request</p>*}
+    {/if}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

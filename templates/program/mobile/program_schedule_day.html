@@ -1,0 +1,78 @@
+{module name="calendar_list"}
+<h2 class="module_title"><span>日次スケジュール</span></h2>
+<div class="module_contents">
+
+{if $this_month == 12}
+    {assign var="aft_year" value=$next_year}
+    {assign var="bef_year" value=$this_year}
+{elseif $this_month == 1}
+    {assign var="aft_year" value=$this_year}
+    {assign var="bef_year" value=$pre_year}
+{else}
+    {assign var="aft_year" value=$this_year}
+    {assign var="bef_year" value=$this_year}
+{/if}
+
+
+<p class="weeklyIndex"><a href="{$smarty.const.ROOT_URL}/{$page_sysnm}/day={$prev_day}{if $smarty.request.category}&category={$smarty.request.category}{/if}">&lt;&lt;前の日</a>
+<span>{$this_year}年{$this_month}月{$this_day}日</span>
+<a href="{$smarty.const.ROOT_URL}/{$page_sysnm}/day={$next_day}{if $smarty.request.category}&category={$smarty.request.category}{/if}">次の日&gt;&gt;</a></p>
+{*一日スケジュール本体*}
+{if $arrHeader}
+<div>
+<table cellspacing="0"  width="100%" class="dayly_calendar">
+{strip}
+  <tr>{*クラス名を表示する段*}
+    <th width="{$time_cell_width}%">&nbsp</th>
+  {foreach from=$arrHeader.class_list item=class_name name = child_category}
+    <th width="{$column_width}%" align="center">
+      <span>{$class_name}</span>
+    </th>
+  {/foreach}
+  </tr>{*クラス名表示段ここまで*}
+  {*最上段ここまで*}
+  {foreach from = $time_axis item = val key = time}
+  <tr>
+  {*時間軸の部分*}
+    {if $daily_schedule.$today.time.$time}
+      {foreach from=$daily_schedule.$today.time.$time.programs item=item}
+        <th class="time">{$item.program_nm}</th>
+      {/foreach}
+    {else}
+        <th class="time">&nbsp</th>
+    {/if}
+  {*時間軸の部分ここまで*}
+  {*スケジュール部分*}
+    {foreach from=$arrHeader.id_list item=class_id name = schedule_body}
+      {if $daily_schedule.$today.$class_id.$time}
+        <td rowspan = "{$daily_schedule.$today.$class_id.$time.length}"
+        {if ($daily_schedule.$today.$class_id.$time.programs.0.accept_flg == 2) || ($daily_schedule.$today.$class_id.$time.programs.0.accept_flg == -1)}
+          class="reserved"
+        {/if}>
+        {if $daily_schedule.$today.$class_id.$time.programs}
+          {foreach from=$daily_schedule.$today.$class_id.$time.programs item=program}
+            <div>
+            {$program.program_nm}{if $program.program_subnm}({$program.program_subnm}){/if}<br>
+            {$program.from_time}～{$program.to_time}<span>&nbsp</span>
+            {$program.teacher}<br>
+            {$program.comment|mbtruncate:30:"...":true}
+            <span {if ($program.accept_flg == $smarty.const.RESERVE_ACCEPT_ON)||($program.accept_flg == $smarty.const.RESERVE_ACCEPT_LITTLE)}class="available"{/if}>{$program.accept_condition}</span>
+            </div>
+          {/foreach}
+        {/if}
+        </td>
+      {/if}
+    {/foreach}
+  {*スケジュール部分ここまで*}
+  </tr>
+  {/foreach}
+{/strip}
+</table>
+
+{/if}
+
+<div class="relation_link"><a href="{$smarty.const.ROOT_URL}/program_schedule_calendar/ym={$this_year}{$this_month}">月間スケジュール</a></div>
+<div class="relation_link"><a href="{$smarty.const.ROOT_URL}/program_schedule_week/week={$today}">週間スケジュール</a></div>
+</div>
+</div>
+{/module}

@@ -1,0 +1,85 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/bbs/label/bbs_category_edit'|translate}{*掲示板カテゴリ編集*}</h2>
+<ul>
+{if $auth.bbs.insert}
+<li class="add"><a href="/management/bbs/bbs_detail_category_edit/bbs_header_id={$bbs_header_id}"><span>{'/label/add_btn'|translate}{*追加する*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs'|translate}</a>
+<a href="/management/bbs/bbs_list/pageID={$pageID}">{'/modules/bbs/label/bbs_list'|translate}</a>
+<a href="/management/bbs/bbs_detail_category_list/bbs_header_id={$bbs_header_id}">{'/modules/bbs/label/bbs_detail_category_list'|translate}</a>
+{'/modules/bbs/label/bbs_detail_category_edit'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{if $formData.name}{$formData.name|escape}{else}{'/label/create_new'|translate}{*新規作成*}{/if}</h3>
+<ul class="minitabs">
+  <li><a href="/management/bbs/bbs_edit/bbs_header_id={$bbs_header_id}">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_list/bbs_header_id={$bbs_header_id}">{'/modules/bbs/label/post'|translate}{*投稿記事*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_category_list/bbs_header_id={$bbs_header_id}" class="active">{'/modules/bbs/label/classification_labels'|translate}{*分類ラベル*}</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/bbs/bbs_detail_category_edit/" method="post">
+    <input type="hidden" name="bbs_header_id" value="{$bbs_header_id}" />
+    <input type="hidden" name="bbs_detail_category_id" value="{$bbs_detail_category_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+      <table width="100%">
+        <tr>
+          <th>{'/label/title'|translate}{*タイトル*}</th>
+          <td>
+            <input type="text" name="name" size="30" maxlength="50" value="{$formData.name|escape}" />
+            <span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint2">{'/msg/less_than_letters'|translate:30}{* 30文字以内 *}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/sort_order_desc'|translate}{*説明*}</th>
+          <td>
+            <input type="text" name="order_no" size="30" maxlength="50" value="{$formData.order_no|escape}" />
+          </td>
+        </tr>
+      </table>
+
+    {buttonbox}
+      {if $formData.bbs_detail_category_id == "" && $auth.bbs.insert}
+        <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}{* 新規作成する *}</button>
+      {/if}
+      {if $formData.bbs_detail_category_id != "" && $auth.bbs.update}
+        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{* 更新する *}</button>
+      {/if}
+      {if $formData.bbs_detail_category_id != "" && $auth.bbs.delete}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+      {/if}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

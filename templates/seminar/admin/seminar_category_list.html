@@ -1,0 +1,85 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/label/categorieslist'|translate}</h2>
+<ul>
+{rcms_auth target="insert:/seminar/category/"}
+    <li class="add"><a href="/management/seminar/seminar_category_edit/"><span>{'/label/add_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/seminar/seminar_list/">{'/modules/seminar'|translate}</a>
+<a href="/management/seminar/seminar_list/">{'/modules/seminar/label/seminar_list'|translate}</a>
+{'/modules/seminar/label/seminar_category_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> セミナー >> セミナー一覧 >> セミナーカテゴリ設定*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="seminar/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 承認待ち一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="POST" action="/management/seminar/seminar_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+{pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'seminar_category_id[]');"></th>
+      <th width="35">{'/label/sort'|translate}{*並び順*}</th>
+      <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+      <th>{'/label/last_updated_time'|translate}</th>{*更新日時*}
+      </tr>
+{foreach from=$seminar_category_list item=row}
+    {assign var=category_id value=$row.seminar_category_id}
+
+    <tr>
+        <td><input type="checkbox" name="seminar_category_id[]" value="{$row.seminar_category_id}" {rcms_auth not=true target="delete:/seminar/category/$category_id"}disabled="disabled"{/rcms_auth} /></td>
+        <td align="center">{$row.order_no|escape}</td>
+        <td>
+            <a href="/management/seminar/seminar_category_edit/seminar_category_id={$row.seminar_category_id}">{$row.category_nm}</a>
+            {rcms_include
+                file="common/admin/language_status.html" 
+                meta=$docmetas[$category_id] 
+                link="/management/seminar/seminar_category_edit/seminar_category_id=$category_id"
+            }   
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+{/foreach}
+    </table>
+{pager info=$pageInfo}
+
+{buttonbox}
+  <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+  <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+{/buttonbox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

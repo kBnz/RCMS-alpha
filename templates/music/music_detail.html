@@ -1,0 +1,74 @@
+<script src="/js/swfobject.js" type="text/javascript"></script>
+{module name="music_detail"}
+<h2 class="module_title"><span>{$musicData.music_name}</span></h2>
+
+<div class="module_contents">
+
+<div class="music_contents">楽曲アーティスト名称：{$musicData.music_artist_name}</div>
+{if $musicData.music_photo_url != ""}
+  <div id="music_img" style="display:none;">
+  <br>
+  {if $musicData.music_photo_url != ""}
+  <img src="{$musicData.music_photo_url}"><br>
+  {/if}
+  <a href="javascript:void(0);" onclick="display('music_img');display('music_img_s');return false;">画像を小さくする</a>
+  </div>
+  <div id="music_img_s">
+  <br>
+  {if $musicData.music_photo_s_url != ""}
+  <img src="{$musicData.music_photo_s_url}"><br>
+  {/if}
+  <a href="javascript:void(0);" onclick="display('music_img');display('music_img_s');return false;">画像を大きくする</a>
+  </div>
+{/if}
+
+
+{if $musicData.genre_nm != ""}
+  <div class="music_contents">ジャンル：{$musicData.genre_nm}</div>
+{/if}
+{if $musicData.feeling_nm != ""}
+  <div class="music_contents">フィーリング：{$musicData.feeling_nm}</div>
+{/if}
+{if $musicData.license_nm != ""}
+  <div class="music_contents">ライセンス：{$musicData.license_nm}</div>
+{/if}
+{if $musicData.lyrics != ""}
+  <div class="music_contents">作詞：{$musicData.lyrics}</div>
+{/if}
+{if $musicData.composition != ""}
+  <div class="music_contents">作曲：{$musicData.composition}</div>
+{/if}
+{if $musicData.arrange != ""}
+  <div class="music_contents">アレンジ：{$musicData.arrange}</div>
+{/if}
+
+{if $musicData.music_url != ""}
+{*
+            <div id="controller{$musicData.music_id}"></div>
+<script type="text/javascript">
+<!--
+    var so = new SWFObject("/images/modules/music/controller.swf","swf{$musicData.music_id}", "80", "19", "8", "#ffffff");
+    so.addParam('allowScriptAccess','sameDomain');
+    so.addVariable("CID", "{$musicData.music_id}");
+    so.addVariable("CPATH", "{$musicData.music_url}");
+    so.addVariable("COUNTUP", "#");
+    so.write("controller{$musicData.music_id}");
+//-->
+</script>
+*}
+    <a href="{$musicData.music_url}" target="_blank">曲の再生</a>
+  {if $musicData.length_munite != "" || $musicData.length_second != ""}
+    （{if $musicData.length_munite}{$musicData.length_munite}分{/if}{if $musicData.length_second}{$musicData.length_second}秒{/if}）
+  {/if}
+<br>
+{/if}
+
+{if $musicData.comment != ""}
+  <div class="music_contents">コメント：{$musicData.comment|escape|nl2br}</div>
+{/if}
+
+<div class="music_contents">登録日：{$musicData.ymd_str}</div>
+
+<div class="relation_link"><a href="/music_list/" class="small_text">楽曲一覧へ</a></div>
+</div>
+{/module}

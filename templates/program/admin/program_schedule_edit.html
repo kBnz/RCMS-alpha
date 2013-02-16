@@ -1,0 +1,397 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{*
+<script language="javascript" type="text/javascript" src="/js/yui/yahoo/yahoo.js"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/dom/dom.js"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/event/event.js"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/calendar/calendar.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/yui/calendar/assets/calendar.css" />
+*}
+{head_include file="common/calendar_scripts.html"}
+
+<script type="text/javascript">
+{literal}
+YAHOO.namespace("cal");
+
+// 日付を選択したときの処理。
+var selectHandler = function(type, args, obj) {
+    var elm = document.getElementById('copy_button');
+    var arrDate = obj._selectedDates;
+    if (arrDate.length > 0){
+        elm.style.color = "#000000";
+    }
+};
+
+var deselectHandler = function(type, args, obj) {
+    var elm = document.getElementById('copy_button');
+    var arrDate = obj._selectedDates;
+    if (arrDate.length == 0){
+        elm.style.color = "#DCDCDC";
+    }
+};
+
+//Common setting
+var setCommonSetting = function(obj){
+        //close, start_weekday
+        obj.cfg.setProperty("CLOSE", true);
+        obj.cfg.setProperty("START_WEEKDAY", 1);
+        // Date labels for Japanese locale
+        obj.cfg.setProperty("MONTHS_SHORT",   ["1\u6708", "2\u6708", "3\u6708", "4\u6708", "5\u6708", "6\u6708", "7\u6708", "8\u6708", "9\u6708", "10\u6708", "11\u6708", "12\u6708"]);
+        obj.cfg.setProperty("MONTHS_LONG",    ["1\u6708", "2\u6708", "3\u6708", "4\u6708", "5\u6708", "6\u6708", "7\u6708", "8\u6708", "9\u6708", "10\u6708", "11\u6708", "12\u6708"]);
+        obj.cfg.setProperty("WEEKDAYS_1CHAR", ["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+        obj.cfg.setProperty("WEEKDAYS_SHORT", ["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+        obj.cfg.setProperty("WEEKDAYS_MEDIUM",["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+        obj.cfg.setProperty("WEEKDAYS_LONG",  ["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+}
+
+var MultiCal;
+function showMultiCal(){
+    if (!MultiCal){
+        MultiCal = new YAHOO.widget.Calendar("MultiCal","MultiCalContainer");
+        //Config of MultiCalendar
+        setCommonSetting(MultiCal);
+        MultiCal.cfg.setProperty("MULTI_SELECT", true);
+        MultiCal.cfg.setProperty("title", "スケジュール入力");
+ {/literal}
+        {if $curr_page}MultiCal.cfg.setProperty("pagedate", "{$curr_page}");{/if}
+{literal}
+        //setting of handlers
+        MultiCal.selectEvent.subscribe(selectHandler, MultiCal, true);
+        MultiCal.deselectEvent.subscribe(deselectHandler, MultiCal, true);
+        MultiCal.render();
+    }else{
+        MultiCal.show();
+    }
+}
+
+//Calendar for accept start
+function handleSelect_s(type,args,obj) {
+    var dates = args[0];
+    var date = dates[0];
+    var year = date[0], month = date[1], day = date[2];
+    var txtDate1 = document.getElementById("accept_start_date");
+    txtDate1.value = year + "/" + month + "/" + day;
+}
+
+var CalAcceptStart;
+function showCalAcceptStart(){
+    if (!CalAcceptStart){
+        CalAcceptStart = new YAHOO.widget.Calendar("CalAcceptStart","CalAcceptStartContainer");
+        setCommonSetting(CalAcceptStart);
+        CalAcceptStart.cfg.setProperty("title", "予約開始日");
+{/literal}
+{if $field_data.accept_start}
+        CalAcceptStart.cfg.setProperty("pagedate", "{$field_data.Arr_accept_start.1}/{$field_data.Arr_accept_start.0}");
+        CalAcceptStart.cfg.setProperty("selected", "{$field_data.Arr_accept_start.1}/{$field_data.Arr_accept_start.2}/{$field_data.Arr_accept_start.0}");
+{/if}
+{literal}
+        // setting of handlers
+        CalAcceptStart.selectEvent.subscribe(handleSelect_s, CalAcceptStart, true);
+        CalAcceptStart.render();
+    }else{
+        CalAcceptStart.show();
+    }
+}
+
+//Calendar for accept end
+function handleSelect_e(type,args,obj) {
+    var dates2 = args[0];
+    var date2 = dates2[0];
+    var year2 = date2[0], month2 = date2[1], day2 = date2[2];
+    var txtDate2 = document.getElementById("accept_end_date");
+    txtDate2.value = year2 + "/" + month2 + "/" + day2;
+}
+var CalAcceptEnd;
+function showCalAcceptEnd(){
+    if (!CalAcceptEnd){
+        CalAcceptEnd = new YAHOO.widget.Calendar("CalAcceptEnd","CalAcceptEndContainer");
+        setCommonSetting(CalAcceptEnd);
+        CalAcceptEnd.cfg.setProperty("title", "予約終了日");
+{/literal}
+{if $field_data.dead_line}
+        CalAcceptEnd.cfg.setProperty("pagedate","{$field_data.Arr_dead_line.1}/{$field_data.Arr_dead_line.0}");
+        CalAcceptEnd.cfg.setProperty("selected","{$field_data.Arr_dead_line.1}/{$field_data.Arr_dead_line.2}/{$field_data.Arr_dead_line.0}");
+{/if}
+{literal}
+        //setting of handlers
+        CalAcceptEnd.selectEvent.subscribe(handleSelect_e, CalAcceptEnd, true);
+        CalAcceptEnd.render();
+    }else{
+        CalAcceptEnd.show();
+    }
+}
+
+function onclicksetlimit(){
+  var element = document.program_schedule_form;
+    if(element["accept_limit_type"][0].checked) {
+        element["accept_limit"].disabled = true;
+    }
+    if(element["accept_limit_type"][1].checked){
+        element["accept_limit"].disabled = false;
+    }
+}
+
+function showClassResult() {
+    var request = '';
+    var n = document.getElementById('category_select').selectedIndex;
+    if (isNaN(n)){
+    }else{
+        request = request + '&category_id=' + document.getElementById('category_select').options[n].value;
+{/literal}
+    document.getElementById('reply_message').src = '/direct/program/searchClass/'+request;
+{literal}
+    }
+}
+
+function classView(){
+  if(document.getElementById('class_choice').style.display == "none"){
+    document.getElementById('class_choice').style.display = "block";
+    document.getElementById('classView_open').style.display = "none";
+    document.getElementById('classView_close').style.display = "block";
+  }else{
+    document.getElementById('class_choice').style.display = "none";
+    document.getElementById('classView_open').style.display = "block";
+    document.getElementById('classView_close').style.display = "none";
+  }
+}
+
+var hide = function(obj){
+    if (obj){
+        obj.hide();
+    }
+}
+{/literal}
+//-->
+</script>
+
+
+<div class="list_right_bt">
+<h2>スケジュール編集</h2>
+{if $auth.program.insert}
+<ul>
+<li class="add"><a href="/management/program/program_schedule_edit/"><span>スケジュール追加</span></a></li>
+</ul>
+{/if}
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+<a href="/management/program/program_schedule_list/">スケジュール一覧</a>
+スケジュール編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<!--クラス一覧とスケジュール一覧を切り替えるタブナビ-->
+<ul class="minitabs">
+  <li><a href="/management/program/program_list/">クラス一覧</a></li>
+  <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+  <li><a href="/management/program/program_schedule_list/" class="active">スケジュール一覧</a></li>
+  <li><a href="/management/program/program_reserve_list/" >予約一覧</a></li>
+</ul>
+
+{*一覧表示部分*}
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="program_schedule_form" id="program_schedule_form" method="POST"
+    action="/management/program/program_schedule_edit/program_id={$program_id}{if $ym}&ym={$ym}{/if}">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $program_id}UPDATE{else}INSERT{/if}" />
+    {if $reserve_num}<input type="hidden" name="reserve_num" value="{$reserve_num}" />{/if}
+
+<h3>スケジュール情報</h3>
+
+  <table width="100%">
+    <tr>
+      <th width="90">クラス名</th>
+      <td>
+        {if $program_nm}
+          <div>{$program_nm}</div>
+          <div id="classView_open"><a href="javascript:void(0);" onclick="classView();return false;">変更する</a></div>
+          <div id="classView_close" style="display:none;"><a href="javascript:void(0);" onclick="classView();return false;">閉じる</a></div>
+        {/if}
+        {*クラスの選択項目*}
+        <div id="class_choice" {if $program_nm}style="display:none;"{/if}>
+          {*クラスの選択*}
+          カテゴリ/区分：
+          <select name="program_category_id" id="category_select" onchange="showClassResult()">{*カテゴリのセレクトオプション*}
+            {html_options options=$searchCategory selected=$program_category_id}
+          </select>
+          <br />
+          <iframe src="" width="0" height="0" id="reply_message" frameborder="0" style="background: #eee;"></iframe>
+          クラス：
+          <select id="select_program" name="program_id">{html_options options=$program_list selected=$program_id}</select>
+          <br />
+        </div>
+        {*クラスの選択項目ここまで*}
+      </td>
+    </tr>
+    <tr>
+      <th width="90">実施日</th>
+      <td>
+        {if $field_data.on_day}
+          <div><a href="/management/program/program_schedule_daily/day={$field_data.on_day}">{$field_data.on_day|replace:"-":"/"}</a></div>
+          <input type="hidden" name="on_day" value="{$field_data.on_day}" />
+        {/if}
+        <input type="button" value="選択用カレンダー" onclick="showMultiCal()"/><span class="hint">（複数日選択できます。）</span>
+        <div id="MultiCalContainer"></div>
+      </td>
+    </tr>
+    {if $field_data.update_ymdhi}
+      <tr>
+        <th width="90">更新日時</th>
+        <td>{$field_data.update_ymdhi|pg_dateformat:"%Y/%m/%d %H:%M:%S"}</td>
+      </tr>
+    {/if}
+    <tr>
+      <th>開始時刻</th>
+      <td>{if $field_data.from_time}現在の設定 &nbsp {$field_data.from_time}<br />{/if}
+        <select name="f_hour" id="f_hour">
+          {html_options options=$hours_options selected=$select_f_hour}
+        </select>時
+        <select name="f_minute" id="f_minute">
+          {html_options options=$minutes_options selected=$select_f_minute}
+        </select>分
+        <input type="hidden" name="from_time" value="{$field_data.from_time}" />
+      </td>
+    </tr>
+    <tr>
+      <th>終了時刻</th>
+      <td>
+        {if $field_data.to_time}現在の設定 &nbsp {$field_data.to_time}<br />{/if}
+        <select name="t_hour" id="t_hour">
+          {html_options options=$hours_options selected=$select_t_hour}
+        </select>時
+        <select name="t_minute" id="t_minute">
+          {html_options options=$minutes_options selected=$select_t_minute}
+        </select>分
+        <input type="hidden" name="to_time" value="{$field_data.to_time}" />
+      </td>
+    </tr>
+    <tr>
+      <th>担当者</th>
+      <td>
+        {if $field_data.teacher}現在の設定 &nbsp {$field_data.teacher}<br />{/if}
+        <input type="text" name="teacher" value="{$field_data.teacher}" />
+      </td>
+    </tr>
+    <tr>
+      <th>コメント</th>
+      <td>
+        {if $field_data.comment}現在の設定 &nbsp {$field_data.comment}<br />{/if}
+        <textarea name="comment" cols="30" rows="5">{if $field_data.comment}{$field_data.comment}{/if}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <th>公開・非公開</th>
+      <td>
+        <input type="radio" name="open_flg" value="1" {if $field_data.open_flg != 0}checked="checked"{/if} />公開 &nbsp
+        <input type="radio" name="open_flg" value="0" {if $field_data.open_flg == 0}checked="checked"{/if} />非公開
+      </td>
+    </tr>
+    <tr>
+      <th>予約受付</th>
+      <td>
+        <input type="radio" name="accept_flg" value="1" {if $field_data.accept_flg == 1 }checked="checked"{/if} />予約受付中 &nbsp
+        <input type="radio" name="accept_flg" value="2" {if $field_data.accept_flg == 2 }checked="checked"{/if} />予約受付終了
+        <input type="radio" name="accept_flg" value="0" {if $field_data.accept_flg == 0 }checked="checked"{/if} />予約受付なし
+      {if $accept_change_msg}<div style="color: green;">{$accept_change_msg}</div>{/if}
+      </td>
+    </tr>
+    <tr>
+      <th>予約申し込み数の上限</th>
+        <td>
+        {if $field_data.accept_limit == 0}現在の設定 &nbsp 上限はありません。{if $reserve_num}<span>(現在の予約数：{$reserve_num})</span>{/if}<br />
+          <input type="radio" name="accept_limit_type" value="limit_off" checked="checked" onchange="onclicksetlimit();" />上限なし<br />
+          <input type="radio" name="accept_limit_type" value="limit_on" onchange="onclicksetlimit();" />上限あり
+          <input type="text" name="accept_limit"  value="" disabled = "true" />
+        {else}
+          現在の設定 &nbsp 上限は {$field_data.accept_limit} です。{if $reserve_num}<span>(現在の予約数：{$reserve_num})</span>{/if}<br />
+          <input type="radio" name="accept_limit_type" value="limit_off" onchange="onclicksetlimit();" />上限なし<br />
+          <input type="radio" name="accept_limit_type" value="limit_on" checked="checked" onchange="onclicksetlimit();" />上限あり
+          <input type="text" name="accept_limit"  value="{$field_data.accept_limit}" />
+        {/if}
+        </td>
+    </tr>
+    <tr>
+      <th>予約申し込みの期間</th>
+      <td>現在の設定は {if $field_data.accept_start}{$field_data.accept_start}から{/if} {if $field_data.dead_line}{$field_data.dead_line}まで{/if}です。<br />
+        <input type="text" name="accept_start" value="{$field_data.accept_start}" autocomplete="off" id="accept_start_date"/>
+        <input type="button" value="...." onclick="showCalAcceptStart();" /><span class="hint">(例 2006/05/01)</span><br /><div id="CalAcceptStartContainer"></div>
+              ～
+        <input type="text" name="dead_line" value="{$field_data.dead_line}" autocomplete="off" id="accept_end_date" />
+        <input type="button" value="...." onclick="showCalAcceptEnd();" /><span class="hint">(例 2006/05/08)</span><br /><div id="CalAcceptEndContainer"></div>
+       </td>
+    </tr>
+  </table>
+
+    {buttonbox}
+      {if $program_schedule_id}
+        <button type="submit">更新する</button>
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+      <button type="button" onclick="insert_schedule(MultiCal)" id="copy_button" style="color:#DCDCDC;">複製する</button>
+      {if $program_schedule_id}
+        <input type="hidden" name="program_schedule_id" value="{$program_schedule_id}" />
+      {/if}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f){
+  if(confirm("削除してもよろしいですか？")){
+      f.MODE.value='DELETE';
+      f.submit();
+  }
+}
+function insert_schedule(cal){
+    if(document.getElementById('select_program').options[document.getElementById('select_program').selectedIndex].value == "") {
+        alert('クラスを選択してください。');
+        return ;
+    }
+    if(!cal) {
+        alert('実施日を選択してください。');
+        return ;
+    }
+
+    var arrDate = cal._selectedDates;
+    if(arrDate.length == 0) {
+        alert('実施日を選択してください。');
+        return ;
+    }
+    else if(document.getElementById('f_hour').options[document.getElementById('f_hour').selectedIndex].value == "" ||
+    document.getElementById('f_minute').options[document.getElementById('f_minute').selectedIndex].value == "" ||
+    document.getElementById('t_hour').options[document.getElementById('t_hour').selectedIndex].value == "" ||
+    document.getElementById('t_minute').options[document.getElementById('t_minute').selectedIndex].value == "") {
+        alert('開始時刻と終了時刻を選択してください。');
+        return ;
+    }
+
+
+    if(arrDate.length != 0){
+        for(i=0; i<arrDate.length; i++){
+            var d = document.createElement("input");
+            d.type = "hidden";
+            d.name = "selected_date[]";
+            dd = arrDate[i];
+            if (dd[1] < 10) { dd[1] = "0" + dd[1]; }
+            if (dd[2] < 10) { dd[2] = "0" + dd[2]; }
+            d.value = dd[0]+"-"+dd[1]+"-"+dd[2];
+            document.program_schedule_form.appendChild(d);
+        }
+        document.program_schedule_form.MODE.value='INSERT';
+        document.program_schedule_form.submit();
+    }
+}
+{/literal}
+-->
+</script>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,43 @@
+{if $photoInfo}
+{module name="photo_info"}
+<h2 class="module_title"><span>{'/label/image_info'|translate}{*画像情報*}</span></h2>
+<div class="module_contents">
+<strong>{'/label/filming_date'|translate}{*撮影日*}</strong>： {$photoInfo.ymd_str}<br>
+{if $photoInfo.offerer_flg}{'/label/image_supplier'|translate}{*画像の提供者*}:  {$photoInfo.offerer_name}<br>{/if}
+
+{foreach from=$gamerugbyList item=row name=gamerugbyList}
+  {if $smarty.foreach.gamerugbyList.first}
+<h3>【{'/label/game'|translate}{*試合*}】</h3>
+<ul class="gamerugby">
+  {/if}
+  <li>
+    {$row.game_type} <a class="link" href="/gamerugby_detail/id={$row.game_id}">{'/label/detail'|translate}{*詳細*}</a><a class="link" href="/photo_list/type=gamerugby&search_id={$row.game_id}">{'/label/image'|translate}{*画像*}</a>
+    <p claas="result">{$row.score_detail_arr.Self_Total}-{$row.score_detail_arr.Opp_Total} vs.{$row.team_nm}<span class="place">{$row.opponent_grade}({$row.place})</span></p>
+  </li>
+  {if $smarty.foreach.gamerugbyList.last}
+</ul>
+  {/if}
+{/foreach}
+
+{foreach from=$memberList item=row name=memberList}
+  {if $smarty.foreach.memberList.first}
+<h3>【{'/label/member'|translate}{*メンバー*}】</h3><ul class="member">
+  {/if}
+<li>{$row.disp_name}{*{$row.name1}{$row.name2}*} {if $row.grade}({$row.grade}){/if}<a class="link" href="/member_detail/id={$row.member_id}">{'/label/detail'|translate}{*詳細*}</a><a class="link" href="/photo_list/type=member&search_id={$row.member_id}">{'/label/image'|translate}{*画像*}</a></li>
+  {if $smarty.foreach.memberList.last}
+</ul>
+  {/if}
+{/foreach}
+
+{foreach from=$topicsList item=row name=topicsList}
+  {if $smarty.foreach.topicsList.first}
+<h3>【{'/label/report'|translate}{*レポート*}】</h3><ul class="topics">
+  {/if}
+<li><a href="/topics_detail/id={$row.topics_id}">{$row.subject}({$row.ymd_str})</a></li>
+  {if $smarty.foreach.topicsList.last}
+</ul>
+  {/if}
+{/foreach}
+</div>
+{/module}
+{/if}

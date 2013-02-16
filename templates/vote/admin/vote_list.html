@@ -1,0 +1,94 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/vote/label/vote_list'|translate}{* 投票一覧 *}</h2>
+<ul>
+{if $rauth->canInsert('/vote/item/')}
+<li class="add"><a href="/management/vote/vote_edit/"><span>{'/label/create_vote_btn'|translate}{*投票項目追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote'|translate}</a>
+{'/modules/vote/label/vote_list'|translate}{* アンケート一覧 *}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> >> アンケート一覧   *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}{* 承認待ち一覧 *}
+
+<form action="/management/vote/vote_list/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+  
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+{if $auth.vote.delete}
+      <th style="width:25px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'vote_header_id[]');" /></th>
+{/if}
+      <th>{'/label/activation_status'|translate}{*運用*}</th>
+      <th>{'/label/id'|translate}{*投票ID*}</th>
+      <th>{'/modules/vote/label/vote_name'|translate}{*投票項目名*}</th>
+      <th>{'/label/module'|translate}{*コンテンツ*}</th>
+      <th>{'/modules/vote/label/vote_cnt'|translate}{*投票数*}</th>
+      <th>{'/label/last_updated_time'|translate}{*最終更新日時*}</th>
+    </tr>
+  {foreach item=item key=key name=header_list from=$header_list}
+    {assign var=vote_header_id value=$item.vote_header_id}
+
+    <tr>
+    {if $auth.comment.update || $auth.comment.delete}
+      <td><input type="checkbox" name="vote_header_id[]" value="{$item.vote_header_id}"  /></td>
+    {/if}
+      <td>
+        {if $item.status eq $smarty.const.VOTE_STATUS_RUN}
+          <img src="/images/management/check.gif" border="0" title="{'/label/activate'|translate}{*運用中*}" />
+        {elseif $item.status eq $smarty.const.VOTE_STATUS_STOP}
+          <img src="/images/management/batu.gif" border="0" title="{'/label/pause'|translate}{*休止中*}" />
+        {/if}
+      </td>
+      <td>{$item.vote_header_id}</td>
+      <td>
+          <a href="/management/vote/vote_edit/vote_header_id={$item.vote_header_id}">{$item.title}</a>
+         {rcms_include file="common/admin/language_status.html" meta=$docmetas[$vote_header_id] link="/management/vote/vote_edit/vote_header_id=$vote_header_id"}
+      </td>
+      <td class="cnt"><a href="/management/vote/vote_module_list/vote_header_id={$vote_header_id}">{$item.module_cnt}{'/label/item'|translate}{*件*}</a></td>
+      <td class="cnt"><a href="/management/vote/vote_item_list/vote_header_id={$vote_header_id}">{$item.answer_cnt}{'/label/item'|translate}{*件*}</a></td>
+      <td>{$item.update_ymdhi|pg_dateformat}</td>
+    </tr>
+  {/foreach}
+  </table>
+  {pager info=$pageInfo}
+  {buttonbox}
+    {if $auth.vote.update}
+      <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+      <button type="submit" onclick="this.form.MODE.value='RUN'">{'/label/activate_btn'|translate}{*運用中にする*}</button>
+      <button type="submit" onclick="this.form.MODE.value='STOP'">{'/label/pause_btn'|translate}{*休止中にする*}</button>
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/if}
+  {/buttonbox}
+  </form>
+</div>
+</div>
+
+{literal}
+<script type="text/javascript">
+function confirmDelete(f) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+    }
+}
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

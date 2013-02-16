@@ -1,0 +1,32 @@
+{if $commentList|@count > 0}
+{module name="comment_small_list2"}
+<h2 class="module_title"><span>{'/modules/comment/label/comment_small_list'|translate}{*コメント一覧*}</span></h2>
+<div class="module_contents">
+<ul>
+{foreach item=itemList from=$commentList name=commentdata}
+<li>{$itemList.create_date} [
+{if $itemList.open_flg == 2}
+<img src="/images/management/sankaku.gif"><a href="/management/comment/comment_write_edit/comment_id={$itemList.comment_id}&comment_header_id={$itemList.comment_header_id}&module_id={$itemList.module_id}">{if $itemList.module_title  ne ''}{$itemList.module_title}{else}{$itemList.module_name}{/if}({'/label/applying'|translate}{*申請中*})</a>
+{else}
+<a href="/{$itemList.module_type}_detail{if $itemList.topics_group_id ne ''}{$itemList.topics_group_id}{/if}/id={$itemList.module_id}#comment_form">{if $itemList.module_title  ne ''}{$itemList.module_title}{else}{$itemList.module_name}{/if}</a>
+{/if}
+]<br>
+{$itemList.note|strip_tags|escape}<br>
+by
+{if $itemList.mail != ""}
+<a href="mailto:{$itemList.mail|escape}">{$itemList.name|escape}</a>
+{else}
+{$itemList.name|escape}
+{/if}
+
+{if $use_footprint}
+<br/>
+{rcms_include file="comment/comment_footprint.html" comment_footprint_module='comment' comment_footprint_id=$itemList.comment_id}
+{/if}
+
+</li>
+{/foreach}
+</ul>
+</div>
+{/module}
+{/if}

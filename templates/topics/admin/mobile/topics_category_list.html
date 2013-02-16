@@ -1,0 +1,31 @@
+{*携帯版は2012/03/09現在、使用してませんが一応svnには残しておきます*}
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+<hr class="for_mng"/>
+<h2 class="for_mng">{'/modules/topics/label/topics_category_list'|translate}</h2>{* 記事カテゴリ一覧 *}
+
+{if $rauth->canInsert("/topics/category/[@topics_group_id=$topics_group_id]")}
+<a href="/management/topics/topics_category_edit/topics_group_id={$topics_group_id}"><span>{'/modules/topics/label/new_category'|translate}</span></a><br />
+{/if}
+<a href="/management/topics/topics_group_edit/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_group_edit'|translate}</a><br />{* 記事グループ編集 *}
+<a href="/management/topics/topics_list/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_list'|translate}</a><br />{* 記事一覧 *}
+<a href="/management/topics/topics_edit/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_edit'|translate}</a><br />{* 記事編集 *}
+<a href="/management/topics/topics_category_list/topics_group_id={$topics_group_id}" class="active">{'/modules/topics/label/topics_category_list'|translate}</a><br />{* 記事カテゴリ一覧 *}
+<hr class="for_mng"/>
+
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+
+  {$page_links}
+  {foreach from=$topics_category_list item=row}
+    {assign var=category_id value=$row.topics_category_id}
+        {$category_id}:
+        <a href="/management/topics/topics_category_edit/topics_category_id={$category_id}">{$row.category_nm}</a>:{$row.memo|escape|nl2br}<br /><br />
+  {/foreach}
+  {$page_links}
+
+
+{rcms_include file="management/mobile/footer.html"}

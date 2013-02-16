@@ -1,0 +1,100 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+function confirmDelete(f) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</h2>
+<ul>
+{if $auth.bbs.insert}
+<li class="add"><a href="/management/bbs/bbs_edit/"><span>{'/modules/bbs/label/add_bbs'|translate}{*掲示板追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/bbs_list/" target="_blank"><span>{'/label/view_page'|translate}{*ページを表示*}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs'|translate}</a>
+{'/modules/bbs/label/bbs_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 掲示板 >> 掲示板一覧  *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/bbs/bbs_list/">
+    <fieldset class="search_box">
+      <label for="s_category_id">{'/label/category'|translate}{*カテゴリ*}</label><select name="s_category_id" id="s_category_id">{html_options options=$categoryList selected=$s_category_id}</select>
+      <label for="s_forum_text">{'/label/title_and_content'|translate}{*タイトル・内容*}</label><input type="text" id="s_forum_text" name="s_forum_text" size="30" value="{$s_forum_text}" />
+	  &nbsp;&nbsp;<input type="submit" value="{'/label/search'|translate}{*検索*}" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/bbs/bbs_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="s_category_id" value="{$s_category_id|escape}" />
+    <input type="hidden" name="s_forum_text" value="{$s_forum_text|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.bbs.update || $auth.bbs.delete}
+        <th style="width:20px"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'bbs_header_id[]');" /></th>
+{/if}
+        <th style="width:20px">{'/label/publish'|translate}{*公開*}</th>
+        <th style="width:50px">{'/label/post_count'|translate|sort_link:bbs_cnt:$sort_url:$sort:$desc}{*投稿件数*}</th>
+        <th>{'/label/title'|translate|sort_link:forum_title:$sort_url:$sort:$desc}{*タイトル*}</th>
+        <th style="width:140px">{'/label/category_name'|translate|sort_link:category_id:$sort_url:$sort:$desc}{*カテゴリ名*}</th>
+        <th>{'/label/sort'|translate|sort_link:grade:$sort_url:$sort:$desc}{*並び順*}</th>
+        <th style="width:140px">{'/label/last_updated_time'|translate|sort_link:update_ymdhi:$sort_url:$sort:$desc}{*最終更新日時*}</th>
+      </tr>
+      {foreach item=bbs_data from=$bbs_list}
+      <tr>
+{if $auth.bbs.update || $auth.bbs.delete}
+        <td><input type="checkbox" name="bbs_header_id[]" value="{$bbs_data.bbs_header_id}" /></td>
+{/if}
+        <td>{$bbs_data.open_flg|rcms_publicimg}</td>
+        <td style="text-align:right;"><a href="/management/bbs/bbs_detail_list/bbs_header_id={$bbs_data.bbs_header_id}&pageID={$pageInfo.pageNo}">{$bbs_data.bbs_cnt}{'/label/item'|translate}{*件*}</a></td>
+        <td><a href="/management/bbs/bbs_edit/bbs_header_id={$bbs_data.bbs_header_id}&pageID={$pageInfo.pageNo}">{$bbs_data.forum_title}</a></td>
+        <td>{$bbs_data.category_name|escape}</td>
+        <td>{$bbs_data.grade|escape}</td>
+        <td>{$bbs_data.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}</td>
+      </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+  {if $auth.bbs.update || $auth.bbs.delete}
+    {buttonbox}
+      <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+      {if $auth.bbs.update}
+        <button type="submit" onclick="this.form.MODE.value='OPEN'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='CLOSE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+      {/if}
+      {if $auth.bbs.delete}
+        <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}{* 削除する *}</button>
+      {/if}
+    {/buttonbox}
+  {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

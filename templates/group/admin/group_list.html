@@ -1,0 +1,66 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2 class="group">{'/modules/group/label/group_list'|translate}{*グループ一覧*}</h2>
+<ul>
+{if $auth.group.insert}
+<li class="add"><a href="/management/group/group_edit/"><span>{'/label/create_new_group_btn'|translate}{*グループ追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/group/group_list/">{'/modules/group'|translate}</a>
+{'/modules/group/label/group_list'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> グループ >> グループ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{if $smarty.const.SECURE_LEVEL eq 'HIGH'}
+<span style="color:red;">
+{'/modules/group/msg/explain_about_cant_use_modules'|translate}{*現在、このサイトでは、ヘッダフッタ・外部HTML・外部データの設定・デザインのCSS編集・モバイル設定のヘッダフッタ編集・テンプレート編集・メールひな形編集・外部ストレージにはアクセスできないようになっています。ご了承ください。*}</span><br>
+{/if}
+<ul class="minitabs">
+  <li><a href="/management/group/group_list/" class="active">{'/modules/group/label/group_list'|translate}{*グループ一覧*}</a></li>
+  <li><a href="/management/group/group_default_edit/">{'/modules/group/label/group_default_edit'|translate}{*初期グループ設定*}</a></li>
+</ul>
+
+<div class="clear"></div>
+
+  {if $auth.group.select}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">ID</th>
+        <th scope="col">{'/label/group_name'|translate}{*グループ名*}</th>
+        <th scope="col">{'/label/basic_settings'|translate}{*基本設定*}</th>
+        <th scope="col">{'/label/member_management'|translate}{*メンバー管理*}</th>
+        <th scope="col">{'/label/user_type'|translate}{*ユーザー種別*}</th>
+        <th scope="col">{'/modules/group/label/admin_version'|translate}{*管理画面*}</th>
+        <th scope="col">{'/label/member_information'|translate}{*メンバー情報*}<br />{'/label/viewing_limit'|translate}{*閲覧制限*}</th>
+      </tr>
+      {foreach item="group_data" from=$group_list name="row"}
+      <tr>
+        <td>{$group_data.enableflg|rcms_publicimg}</td>
+        <td>{$group_data.group_id}</td>
+        <td>{$group_data.group_nm}</td>
+        <td><a href="/management/group/group_edit/group_id={$group_data.group_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></td>
+        <td><a href="/management/group/group_member/group_id={$group_data.group_id}">{'/label/member_management'|translate}{*メンバー管理*}</a>({$group_data.cnt})</td>
+        <td>{if $group_data.super_flg eq 1}{'/label/super_user'|translate}{*スーパーユーザー*}{elseif  $group_data.super_flg eq -1}{'/label/login_user'|translate}{*ログインユーザー*}{else}{'/label/contents_edit_user'|translate}{*コンテンツ編集ユーザー*}{/if}</td>
+        <td>{if $group_data.admin_disp_type ne '1'}{'/label/regular_version'|translate}{*通常版*}({'/label/high_spec'|translate}{*高機能*}){else}{'/label/simple_version'|translate}{*簡易版*}{/if}</td>
+        <td><a href="/management/group/group_secure_member/group_id={$group_data.group_id}">{if $group_data.secure_policy == $smarty.const.GROUP_POLICY_ALLOW}{'/label/no_limit'|translate}{*制限しない*}{else}{'/label/limited'|translate}{*制限あり*}{if $group_data.secure_special}({'/modules/group/label/part_permit'|translate}{*一部可*}){/if}{/if}</a></td>
+      </tr>
+      {/foreach}
+    </table>
+
+  {else}
+    {'/msg/not_allowed_to_select'|translate}{*権限がないため閲覧することができません。*}
+  {/if}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

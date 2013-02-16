@@ -1,0 +1,21 @@
+{module name="manual_newlist"}
+<h2 class="module_title"><span>{'/modules/manual/label/manual_list'|translate}{* マニュアル一覧 *}</span></h2>
+<div class="module_contents">
+  <table class="list">
+    <tr>
+      <th>{'/label/update_time'|translate}{* 更新日時 *}</th>
+      <th>{'/label/category'|translate}{* カテゴリ *}</th>
+      <th>{'/modules/manual'|translate}{* マニュアル *}</th>
+      <th>{'/modules/manual/label/manual_title'|translate}{* タイトル *}</th>
+    </tr>
+{foreach from=$manualList item=row}
+    <tr>
+      <td>{$row.update_ymdhi|pg_dateformat}</td>
+      <td>{$row.category_nm|escape}</td>
+      <td>{$row.manual_title|escape}</td>
+      <td><a href="/{$link_page_sysnm}/id={$row.manual_header_id}">{$row.contents_title|escape}</a></td>
+    </tr>
+{/foreach}
+  </table>
+</div>
+{/module}

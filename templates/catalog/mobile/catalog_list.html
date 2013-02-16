@@ -1,0 +1,15 @@
+<h2>{'/modules/catalog'|translate}{* カタログ *}</h2>
+{foreach from=$catalogList item=row}
+▼{$row.subject}<br/>
+        {foreach from=$user_profile_list[$row.contents_type].profile item=item key=key name=catalog_item}
+            {if $row.$key}
+                {$row.$key|nl2br}<br/>
+            {/if}
+        {/foreach}
+    {if $row.detail_flg eq 1}<div style="text-align:right;font-size:small;"><a href="/catalog_detail/id={$row.catalog_id}">{'/label/detail'|translate}{* 詳細 *}</a></div>{/if}
+    <hr/>
+    <br/>
+{/foreach}
+
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+<hr/>

@@ -1,0 +1,73 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+    <h2>{'/modules/invoice/label/invoice_client_list'|translate}</h2>
+    <ul>
+        <li class="add"><a href="/management/invoice/invoice_client_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+    </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/invoice/invoice_client_list/">{'/modules/invoice'|translate}</a>
+{'/modules/invoice/label/invoice_client_list'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+    {rcms_include file="invoice/admin/minitabs.html" page_type=$ct}
+    <div class="list_main">
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+        <form action="/management/invoice/invoice_client_list/" method="post">
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" />
+
+            <fieldset class="search_box">
+                {'/label/name'|translate}：<span style="margin-right:20px"><input type="text" name="client_name" id="client_name" value="{$client_name}" autocomplete="off" size="50" /></span>
+                <p><input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" /></p>
+            </fieldset>
+
+            {pager info=$pageInfo}
+            <table width="100%" border="0">
+            <tr>
+                <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'invoice_client_id[]');" /></th>
+                <th>{'/label/name'|translate}</th>
+                <th style="width:150px">{'/label/updatetime'|translate}</th>
+            </tr>
+
+            {foreach from=$result_list key=year item=row}
+            <tr>
+                <td><input type="checkbox" name="invoice_client_id[]" value="{$row.invoice_client_id}" {rcms_auth not=true target="update:/invoice/client/$invoice_client_id || delete:/invoice/client/$invoice_client_id"}disabled="disabled"{/rcms_auth} /></td>
+                <td><a href="/management/invoice/invoice_client_edit/id={$row.invoice_client_id}">{$row.client_name|escape}</td>
+                <td>{$row.update_ymdhi|pg_dateformat}</td>
+            </tr>
+            {/foreach}
+
+            </table>
+            {pager info=$pageInfo}
+
+            {buttonbox}
+            <p>{'/label/withselected'|translate}</p>
+            <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+            {/buttonbox}
+        </form>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+{/literal}
+</script>
+
+{rcms_include file="management/footer.html"}

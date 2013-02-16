@@ -1,0 +1,75 @@
+<h2><img src="/files/user/mobile/index_download.gif" style="margin: 0 0 5px 0;" width="100%" /></h2>
+
+<h2>▼待ちうけFlash</h2>
+
+<br />
+<div style="text-align:center;">
+
+{$chargeInfo.name}<br />
+
+{if $chargeInfo.thumbnail_url}
+<img src="{$chargeInfo.thumbnail_url}"><br />
+{/if}
+
+ﾌｧｲﾙｻｲｽﾞ：{$chargeInfo.file_size}bytes<br />
+
+情報料：{$chargeInfo.price}<br />
+
+{$arrMobilePacketAlert[$chargeInfo.mobile_type]}
+
+</div>
+
+<br />
+
+<div>
+{if $chargeInfo.mobile_type == 'DoCoMo'}
+◆iﾓｰﾄﾞﾊﾟｽﾜｰﾄﾞ認証後、「ﾀﾞｳﾝﾛｰﾄﾞ」をｸﾘｯｸすると課金されます。<br />
+{/if}
+◆ｺﾝﾃﾝﾂ購入後は7日間は再ﾀﾞｳﾝﾛｰﾄﾞ可能です。<br />
+◆ｺﾝﾃﾝﾂの保存方法はお使いの端末によって異なります。詳しくはお手元の取扱説明書をご参照ください。<br />
+◆ｺﾝﾃﾝﾂを画面ﾒﾓへ保存することをお薦めいたします。<br />
+◆電波状況の良い場所でﾀﾞｳﾝﾛｰﾄﾞしてください。
+</div>
+
+<br />
+
+<div>
+<a href="/tos/">○利用規約（必読）</a><br />
+<a href="/rule/">○特定商取引法に基づく表記</a>
+</div>
+</div>
+
+<br />
+
+<div style="text-align:center;font-size:large;">
+{if $chargeInfo.mobile_type == 'SoftBank'}
+  {if !$canRedownload}
+    <a href="http://JPHONE/CONFON?sid={$chargeInfo.sb_sid}&nl={$chargeInfo.sb_nl}&cl={$chargeInfo.sb_cl}">【承諾して購入する】</a>
+  {else}
+    <a href="{$chargeInfo.redownload_url}">【再ダウンロード】</a>
+  {/if}
+{elseif $chargeInfo.mobile_type == 'DoCoMo'}
+<form method="post" action="http://docomo.ne.jp/cp/regbuyst">
+<input type="hidden" name="cid" value="{$chargeInfo.docomo_site_id}">
+<input type="hidden" name="pid" value="{$chargeInfo.docomo_pid}">
+<input type="hidden" name="kind" value="{$chargeInfo.docomo_kind}">
+<input type="hidden" name="rl" value="{$chargeInfo.docomo_rl}">
+<input type="hidden" name="nl" value="{$chargeInfo.docomo_nl}">
+<input type="hidden" name="mmcid" value="{$chargeInfo.docomo_mmcid}">
+<input type="hidden" name="mmrl" value="{$chargeInfo.docomo_mmrl}">
+<input type="submit" value="【承諾して購入する】">
+</form>
+{elseif $chargeInfo.mobile_type == 'AU'}
+  {if $canRedownload}
+    <a href="{$chargeInfo.redownload_url}">【再ダウンロード】</a>
+  {else}
+    <a href="{$chargeInfo.url}">【承諾して購入する】</a>
+  {/if}
+{/if}
+</div>
+
+<br />
+
+<div style="text-align:right;">
+<a href="/charge_download_list/">戻る</a>
+</div>

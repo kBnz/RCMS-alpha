@@ -1,0 +1,77 @@
+{rcms_include file="management/header.html"}
+
+{headblock}
+{literal}
+<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css" />
+{/literal}
+{/headblock}
+
+{literal}
+<script type="text/javascript">
+(function($) {
+    $(function() {
+
+        $("#select_sc_list_cat_config").rcmsDropdown();
+        $("#lang_selector").rcmsDropdown({isSelectbox:true});
+
+    });
+})(jQuery);
+</script>
+{/literal}
+<div id="top_fixed">
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">自由HTML</a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_category_list/">カテゴリ設定</a>
+            <a class="navigation_node" >{$formData.category_nm|escape}</a>
+        </div>
+    </div>
+</div>
+
+
+<form action="/management/staticcontents/staticcontents_category_edit/" method="post">
+    <div id="main_contents">
+
+        <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+        <input name="static_category_id" type="hidden" value="{$formData.static_category_id}" />
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+        <div id="tool_bar" class="rcms_ui_toolbar">
+            <ul>
+                <li class="menu_left_list">
+                    {if $static_category_id}
+                        {lang_selector_v2_dropdown
+                            meta=$docmeta link="/management/staticcontents/staticcontents_category_edit/static_category_id=$static_category_i"
+                        }
+                    {/if}
+                </li>
+            </ul>
+        </div>
+
+
+        <table class="edit_table">
+            <tr>
+                <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+                <td><input size="25" maxlength="50" name="category_nm" type="text" value="{$formData.category_nm|escape}" /></td>
+            </tr>
+        </table>
+
+    </div><!--#main_contents-->
+
+    <div id="bottom_fixed">
+        {rcms_include   
+            file="common/admin/shonin_message.html" 
+            docmeta=$docmeta
+            link="/management/staticcontents/staticcontents_category_edit/static_category_id=$static_category_id"
+        }   
+    
+        {editActionBox docmeta=$docmeta}{/editActionBox}
+    </div><!--#bottom_fixed-->
+</form>
+
+{rcms_include file="management/footer.html"}

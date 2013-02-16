@@ -1,0 +1,47 @@
+<h2>{$topicsData.subject}</h2>
+{if !$topicsData.no_use_ymd}
+<div style="text-align:right;font-size:small;">{$topicsData.ymd_str}</div>
+{/if}
+{if not $pageInfo.use_multi_page}
+  {$topicsData.contents}
+{else}
+  {rcms_include file="topics/mobile/pager.html"}
+<br />
+  <h3>{$topicsData.dividedCaptions[$pageInfo.currentOffset]|escape}</h3>
+  {$topicsData.dividedContents[$pageInfo.currentOffset]}
+<br />
+<br />
+  {rcms_include file="topics/mobile/pager.html"}
+{/if}
+
+{*拡張項目*}
+{rcms_include file="topics/topics_extensions.html" ext_columns=$topicsData.ext_columns extensions=$topicsData.extensions }
+
+<br/>
+{if $topicsData.swf_url}
+<div style="font-size:small;">※{'/modules/topics/msg/you_cant_open_flash_file'|translate}{* この記事にはスライドショーが添付されていますが、モバイルからは閲覧できません。 *}</div>
+{/if}
+{if $topicsData.files}
+<div style="font-size:small;">※{'/modules/topics/msg/you_cant_open_pdf_file'|translate}{* この記事にはファイルが添付されていますが、モバイルからは閲覧できません。 *}<br/>
+<ul>
+{foreach from=$topicsData.files item=row name=files}
+  <li>{$row.title|escape}{if $row.extension}.{$row.extension}{else}.pdf{/if}</li>
+{/foreach}
+</ul>
+</div>
+{/if}
+
+{if $topics_link_id.back.id != "" || $topics_link_id.next.id != ""}
+<div style="text-align:right;font-size:small;">
+{if $topics_link_id.back.id != ""}
+<a href="/topics_detail{if $topics_group_id}{$topics_group_id}{/if}/id={$topics_link_id.back.id}" class="small_text">&laquo;前へ</a>
+{/if}
+{if $topics_link_id.back.id != "" && $topics_link_id.next.id != ""}|{/if}
+{if $topics_link_id.next.id != ""}
+<a href="/topics_detail{if $topics_group_id}{$topics_group_id}{/if}/id={$topics_link_id.next.id}" class="small_text">次へ&raquo;</a>
+{/if}
+<br>
+
+<br/><a href="/topics_list{if $topics_group_id}{$topics_group_id}{/if}/" >{'/modules/topics/label/topics_list_user_page_name'|translate}{* トピックス一覧 *}</a></div>
+{/if}
+<hr/>

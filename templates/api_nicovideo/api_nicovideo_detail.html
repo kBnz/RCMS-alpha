@@ -1,0 +1,24 @@
+{module name="api_nicovideo_detail"}
+<h2 class="module_title"><span>ニコニコ動画詳細</span></h2>
+<div class="module_contents">
+
+  {if $item.web}
+    <h3>{$item.web->title}</h3>
+    <script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/{$item.web->video_id}?w=420&&h=340&&n=1"></script>
+    <p>{$item.web->description|nl2br}</p>
+    <p><a href="{$item.web->watch_url}" onclick="window.open(href); return false;">ニコニコ動画上で見る</a></p>
+  {elseif $item.db && $item.db.open_flg}
+    <h3>{$item.db.name}</h3>
+    <p>該当IDのデータはニコニコ動画に存在しません。</p>
+  {else}
+    <p>該当IDのデータはニコニコ動画に存在しません。</p>
+  {/if}
+
+  {if $item.db.note && $item.db.open_flg}
+    <dl>
+      <dt>コメント&nbsp;：&nbsp;</dt><dd>{$item.db.note}</dd>
+    </dl>
+  {/if}
+
+</div>
+{/module}

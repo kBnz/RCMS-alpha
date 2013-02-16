@@ -1,0 +1,128 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">/*<![CDATA[*/
+/* 色関係 */
+function changeColor(id) {
+  $('swatch' + id).style.color = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+}
+
+var color_picker_current_id = null;
+function showColorPicker(id) {
+  color_picker_current_id = id;
+  var wnd = window.open(
+                '/js/colorpicker/colorpicker.php?callback=callback_color_picker',
+                'color_picker', 'status=no,modal=yes,width=350,height=250'
+            );
+
+  // 現在の色を渡す
+  wnd.dialogArguments = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+  return wnd;
+}
+
+function callback_color_picker(wnd) {
+  $('swatch' + color_picker_current_id).style.color
+      = $('code' + color_picker_current_id).value
+      = wnd.returnValue;
+}
+/*]]>*/</script>
+{/literal}
+<div id="main_contents">
+  <div class="list_right_bt">
+    <h2>{'/modules/design/label/official_template_settings'|translate}{*公式テンプレート設定*}</h2>
+  </div>  <!-- div.list_right_bt -->
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design/label/design_list'|translate}</a>
+{'/modules/design/label/official_template_settings'|translate}
+{/pankuzu}
+{* 【ぱんくず】デザイン >> デザイン >> デザイン一覧 >> 公式テンプレート設定  *}
+
+<div class="clear"></div>
+
+  <div class="main_contents">
+    <div class="list_main">
+      {rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <form action="/management/design/design_official/design_id={$design_id}" method="post">
+        <table width="100%">
+          <tr>
+            <th>{'/label/design_name'|translate}{*デザイン名*}</th><td>{$design.design_nm}{if $apply_design_flg} <strong style="color:#F00">({'/label/using_now'|translate}{*適用中です*})</strong>{/if}</td>
+          </tr>
+          {if $design.thumbnail}
+          <tr>
+            <th>{'/label/thumbnail'|translate}{*サムネイル*}</th><td><img src="/images/css/{$design.thumbnail}.jpg" /></td>
+          </tr>
+          {/if}
+          <tr><th>{'/label/base_color'|translate}{*ベースカラー*}</th><td><span id="swatch1">■</span><input type="text" id="code1" name="code1" value="{$design_code1}" onkeyup="changeColor(1)" />
+          {if $design.code1}<input type="button" value="{'/label/setting'|translate}{*設定*}" onclick="showColorPicker(1)" />※{'/label/sample_color'|translate}{*サンプルカラー*}<span style="color:{$design.code1}">■</span>{$design.code1}<br>
+          {if $design.comment_code1}<span class="hint">{$design.comment_code1}</span>{/if}{else}[{'/label/unused'|translate}]{*未使用*}{/if}</td></tr>
+          <tr><th>{'/label/sub_color'|translate}1{*サブカラー*}</th><td><span id="swatch2">■</span><input type="text" id="code2" name="code2" value="{$design_code2}" onkeyup="changeColor(2)" />
+          {if $design.code2}<input type="button" value="{'/label/setting'|translate}{*設定*}" onclick="showColorPicker(2)" />※{'/label/sample_color'|translate}{*サンプルカラー*}<span style="color:{$design.code2}">■</span>{$design.code2}<br>
+          {if $design.comment_code2}<span class="hint">{$design.comment_code2}</span>{/if}{else}[{'/label/unused'|translate}]{*未使用*}{/if}</td></tr>
+          <tr><th>{'/label/sub_color'|translate}2{*サブカラー*}</th><td><span id="swatch3">■</span><input type="text" id="code3" name="code3" value="{$design_code3}" onkeyup="changeColor(3)" />
+          {if $design.code3}<input type="button" value="{'/label/setting'|translate}{*設定*}" onclick="showColorPicker(3)" />※{'/label/sample_color'|translate}{*サンプルカラー*}<span style="color:{$design.code3}">■</span>{$design.code3}<br>
+          {if $design.comment_code3}<span class="hint">{$design.comment_code3}</span>{/if}{else}[{'/label/unused'|translate}]{*未使用*}{/if}</td></tr>
+          <tr><th>{'/label/sub_color'|translate}3{*サブカラー*}</th><td><span id="swatch5">■</span><input type="text" id="code5" name="code5" value="{$design_code5}" onkeyup="changeColor(5)" />
+          {if $design.code5}<input type="button" value="{'/label/setting'|translate}{*設定*}" onclick="showColorPicker(5)" />※{'/label/sample_color'|translate}{*サンプルカラー*}<span style="color:{$design.code5}">■</span>{$design.code5}<br>
+          {if $design.comment_code5}<span class="hint">{$design.comment_code5}</span>{/if}{else}[{'/label/unused'|translate}]{*未使用*}{/if}</td></tr>
+          <tr><th>{'/label/accent_color'|translate}{*アクセントカラー*}</th><td><span id="swatch4">■</span><input type="text" id="code4" name="code4" value="{$design_code4}" onkeyup="changeColor(4)" />
+          {if $design.code4}<input type="button" value="{'/label/setting'|translate}{*設定*}" onclick="showColorPicker(4)" />※{'/label/sample_color'|translate}{*サンプルカラー*}<span style="color:{$design.code4}">■</span>{$design.code4}<br>
+          {if $design.comment_code4}<span class="hint">{$design.comment_code4}</span>{/if}{else}[{'/label/unused'|translate}]{*未使用*}{/if}</td></tr>
+          {if $design.header_image_flg}
+          <tr>
+            <th>{'/label/header_image'|translate}{*ヘッダ画像*}</th>
+            <td>{'/modules/design/msg/you_can_change_header_image_for_this_template'|translate}{*このテンプレートは、ヘッダ画像を指定することができます。*}&nbsp;&nbsp;&nbsp;<input type="button" value="{'/msg/change_header_image'|translate}{*ヘッダ画像を指定する*}" onclick="window.open('/direct/design/changeHeaderImage/', 'cHI', 'width=400,height=650');" /></td>
+          </tr>
+          <tr>
+            <th>{'/label/resize_header_image'|translate}{*ヘッダ画像リサイズ*}</th>
+            <td><input type="checkbox" id="header_image_resize_flg" name="header_image_resize_flg" value="1" {if $header_image_resize_flg}checked{/if} />{'/msg/resize_header_image_to_design'|translate}{*ヘッダ画像をデザインに合わせてリサイズする*}</td>
+          </tr>
+          {/if}
+          {if $design.header_footer}
+          <tr>
+            <th>{'/label/headerfooter'|translate}{*ヘッダ・フッタ*}</th>
+            <td>
+              {'/msg/confirm_rewrite_current_headerfooter'|translate}{*このテンプレート専用のヘッダ・フッタ設定があります。専用のヘッダ・フッタに書き換えますか？*}&nbsp;&nbsp;&nbsp;
+              <input type="radio" id="rewriteHF_true" name="rewriteHF" value="1" onclick="return confirm('{'/msg/re_confirm_rewrite_current_headerfooter'|translate}{*編集したヘッダ・フッタが書き換えられてしまいますがよろしいですか？*}')" /><label for="rewriteHF_true">{'/label/yes'|translate}{*はい*}</label>／
+              <input type="radio" id="rewriteHF_false" name="rewriteHF" value="0" checked="checked" /><label for="rewriteHF_false">{'/label/no'|translate}{*いいえ*}</label>
+            </td>
+          </tr>
+          {/if}
+          <tr>
+            <th>{'/label/category'|translate}{*カテゴリ*}</th><td>{$design.tag}</td>
+          </tr>
+          {if $design.comment}
+          <tr>
+            <th>{'/label/memo'|translate}{*備考*}</th><td>{$design.comment}</td>
+          </tr>
+          {/if}
+        </table>
+       <script type="text/javascript">for (var i = 1; i <= 5; i++) if ($('code' + i)) $('swatch' + i).style.color = $F('code' + i);</script>
+
+        <p><a href="javascript:void $('CssCode').toggle();">{'/msg/display_and_not_display_with_label'|translate:CSS}{*CSSを表示／非表示*}</a></p>
+        <pre style="background-color: #eeeeee; height: 30em; display: none; overflow: scroll;" id="CssCode">{$design.css}</pre>
+
+        {if $auth.design.update}
+          <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+          <input type="hidden" name="MODE" value="UPDATE" />
+          <input type="hidden" name="exec" value="このデザインを適用する" />
+
+          {buttonbox}
+            <button type="button" onclick="window.open('{$smarty.const.ROOT_URL}/?design_test_mode=1&preview_design_id=official:{$design.design_id}', '_top');return false;">{'/label/preview'|translate}{*プレビューする*}</button>
+            <button type="submit">{'/label/apply'|translate}{*適用する*}</button>
+          {/buttonbox}
+        {/if}
+
+      </form>
+
+    </div>  <!-- div.list_main -->
+  </div>  <!-- div.contents_table -->
+
+</div>  <!-- div.main_contents -->
+
+{rcms_include file="management/footer.html"}

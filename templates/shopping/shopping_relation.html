@@ -1,0 +1,16 @@
+{module name="shopping_list"}
+<h2 class="module_title"><span>商品関連情報</span></h2>
+<div class="module_contents">
+{if $shoppingRelationList}
+{foreach from=$shoppingRelationList item=row key=name}
+  <h3>{$name}</h3>
+  <ul>
+  {foreach from=$row item=item key=key name=shoppingRelation}
+      <li>[{$item.module_type}] <a href="/{$item.link}">{$item.title}</a></li>
+  {/foreach}
+  </ul>
+{/foreach}
+{/if}
+<div class="clr"></div>
+</div>
+{/module}

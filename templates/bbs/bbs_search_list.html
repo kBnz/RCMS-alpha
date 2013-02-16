@@ -1,0 +1,31 @@
+{module name="bbs_search_list"}
+<h2 class="module_title"><span>{'/modules/bbs/label/bbs_search'|translate}{*掲示板検索*}</span></h2>
+<div class="module_contents">
+<form action="/bbs_search/" method="GET">
+  <select name="s_category_id"><option value="">{'/label/all_categories'|translate}{*すべてのカテゴリ*}</option>{html_options options=$categoryList selected=$s_category_id}</select>
+  <input type="text" name="s_keyword" value="{$s_keyword|escape}" />
+  <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+</form>
+{if $bbs_item_list}
+<br>
+<span style="font-size:80%;float:right;">
+    {if $s_keyword|escape && $s_category_id != ""}{'/msg/search_category_and_keyword_is'|translate:$s_keyword|escape:$categoryList.$s_category_id}{*$s_keyword,カテゴリ {$categoryList.$s_category_id} で検索*}{/if}
+    {if $s_keyword|escape && $s_category_id == ""}{'/msg/search_word_is'|translate:$s_keyword|escape}{*$s_keywordで検索*}{/if}
+    {if $s_keyword|escape =="" && $s_category_id != ""}{'/msg/search_category_is'|translate:$categoryList.$s_category_id}{*カテゴリ {$categoryList.$s_category_id} で検索*}{/if}
+    {'/label/pagination/summary'|translate:$resultSummary.totalCnt:$resultSummary.start:$resultSummary.resultCnt}{*a件中 b-c件目*}
+</span>
+<br>
+{foreach from=$bbs_item_list item=row name=bbs_item_list}
+<div class="searchItem">
+  <p class="title"><a href="/bbs_show/MODE=view&id={$row.seq}&bbs_header_id={$row.bbs_header_id}">{$row.title|escape}</a> (<span style="font-size:90%">{$row.name|escape}</span>){if $row.new}<span style="color : #CC0000;font-size:70%;font-weight:bold;">NEW!</span>{/if}</p>
+  <p class="digest">{$row.digest.note}</p>
+  <p class="addLink">{$row.create_date|pg_dateformat:"%Y/%m/%e  %H:%M:%S"} [<a href="/bbs_show/bbs_header_id={$row.bbs_header_id}">{$row.forum_title}</a>]</p>
+</div>
+{/foreach}
+<p class="page_links">{$resultSummary.pageLink}</p>
+{elseif $s_keyword|escape}
+<br>
+<p>{'/msg/no_data_match'|translate}{*条件に一致するものは見つかりませんでした*}</p>
+{/if}
+</div>
+{/module}

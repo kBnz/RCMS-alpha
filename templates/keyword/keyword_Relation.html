@@ -1,0 +1,15 @@
+{if $RelationKeyword|@count>0}
+{module name="keyword_relation"}
+<h2 class="module_title"><span>{'/modules/keyword/label/related_keyword'|translate}{*関連キーワード*}</span></h2>
+<div class="module_contents">
+<ul class="module-list">
+{foreach item=itemList from=$RelationKeyword name=mydata}
+  <li class="module-list-item">
+    <a href="/keyword_detail/id={$itemList.keyword_id}">{$itemList.keyword}</a><br>
+    {$itemList.description|strip_tags:false|mbtruncate:80}
+  </li>
+{/foreach}
+</ul>
+</div>
+{/module}
+{/if}

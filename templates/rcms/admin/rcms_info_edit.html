@@ -1,0 +1,137 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+
+function write_text () {
+    Element.show($('write_text'));
+    Element.hide($('write_link'));
+    document.topics_edit.link_flg.value = 0;
+}
+function write_link () {
+    Element.show($('write_link'));
+    Element.hide($('write_text'));
+    document.topics_edit.link_flg.value = 1;
+}
+function confirmDelete() {
+    if(confirm("削除してもよろしいですか？")){
+        document.topics_edit.MODE.value='DELETE';
+        document.topics_edit.submit();
+    }
+}
+</script>
+{/literal}
+
+
+<div class="list_right_bt">
+<h2>お知らせ編集</h2>
+<ul>
+<li class="add"><a href="/management/rcms/rcms_info_edit/"><span>お知らせ追加</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_info_list/">お知らせ一覧</a>
+お知らせ編集
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+
+  <form name="topics_edit" id="topics_edit" action="/management/rcms/rcms_info_edit/" method="POST">
+    <input type="hidden" name="rcms_info_id" value="{$rcms_info_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table style="width:100%">
+      <tr>
+        <th>日付<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="ymd" id="ymd" value="{$formData.ymd|escape}" autocomplete="off" />
+          <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="ymd-pop"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>タイトル<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="title" value="{$formData.title|escape}" size="80" />
+          <input type="checkbox" name="no_contents" id="no_contents" value="1" {if $formData.no_contents}checked="checked"{/if} />タイトルのみ
+        </td>
+      </tr>
+      {if $smarty.const.OEM_ID eq "1" || $smarty.const.OEM_ID eq "10001"}
+      <tr>
+        <th>OEM ID<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="oem_id_list" value="{$formData.oem_id_list|escape}" size="80" />
+          <br />
+          <span class="hint">OEM ID(半角数字)をカンマ区切りで入力してください。指定したOEMサイトとその配下のサイトにのみ、お知らせを投稿します。お知らせ先を限定しない場合は0を設定してください。</span>
+        </td>
+      </tr>
+      {/if}
+      <tr>
+        <th>SITE ID<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="site_id_list" value="{$formData.site_id_list|escape}" size="80" />
+          <br />
+          <span class="hint">SITE ID(半角数字)をカンマ区切りで入力してください。指定したサイトにのみ、お知らせを投稿します。お知らせ先を限定しない場合は0を設定してください。</span>
+        </td>
+      </tr>
+    </table>
+
+    <div class="kiji_hensyu_center">
+      <div id="write_text" {if $formData.link_url ne ''}style="display:none;"{/if}>
+  <a href="javascript:void(0)" onclick="write_link();return false;">&gt;&gt;外部リンクにする</a>
+        {$sw_html}
+      </div>
+      <div id="write_link" {if $formData.link_url eq ''}style="display:none;"{/if}>
+  <a href="javascript:void(0)" onclick="write_text();return false;">&gt;&gt;テキストで書く</a>
+  <table>
+    <tr>
+      <td>リンク</td>
+      <td><input type="text" name="link_url" value="{$formData.link_url}" size="100" /></td>
+    </tr>
+  </table>
+      </div>
+   </div>
+
+  <!--公開設定-->
+  {rcms_include file="management/open_date_box.html" id=$topics_id data=$formData}
+
+  <div class="btn_box_bottom">
+     <ul class="bt_orange">
+{if $formData.rcms_info_id != ""}
+     <li><a href="javascript:void(0)" onclick="SPAW_updateInput(contents_obj);document.topics_edit.MODE.value='UPDATE';document.topics_edit.upBtn.click();return false;"><span>更新する</span></a></li>
+{/if}
+{if $formData.rcms_info_id == ""}
+     <li><a href="javascript:void(0)" onclick="SPAW_updateInput(contents_obj);document.topics_edit.MODE.value='INSERT';document.topics_edit.inBtn.click();return false;"><span>追加する</span></a></li>
+{/if}
+{if $formData.rcms_info_id != ""}
+     <li><a href="javascript:void(0)" onclick="confirmDelete(); return false;"><span>削除する</span></a></li>
+{/if}
+     </ul>
+
+     <!--spaw submit対応 消さないで-->
+     <div style="display:none">
+       <input type="submit" name="upBtn" />
+       <input type="submit" name="inBtn" />
+     </div>
+
+     <div class="clear"></div>
+  </div>
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

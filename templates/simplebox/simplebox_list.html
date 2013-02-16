@@ -1,0 +1,28 @@
+{module name="simplebox_list"}
+<h2 class="module_title"><span>閲覧可能な付箋一覧</span></h2>
+<div class="module_contents">
+  <table style="width:98%">
+    <thead>
+      <th>ページ</th>
+      <th>投稿者</th>
+      <th>内容</th>
+      <th>更新日時</th>
+      <th>状態</th>
+    </thead>
+    <tbody>
+      {foreach from=$simpleboxList item=item}
+      <tr>
+        <td><a href="{$item.path}{if $item.query}?{$item.query}{/if}">{$item.path}{if $item.query}?{$item.query}{/if}</a></td>
+        <td>{$item.author_name|escape}</td>
+        <td>{$item.content|mbtruncate|escape}</td>
+        <td>{$item.update_ymdhi|pg_dateformat:"%m/%d %H:%M"}</td>
+        <td>{if $item.is_hidden}非表示{else}表示{/if}</td>
+      </tr>
+      {foreachelse}
+      <tr><td colspan="3">閲覧可能な付箋は存在しません。</td></tr>
+      {/foreach }
+    </tbody>
+  </table>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+</div>
+{/module}

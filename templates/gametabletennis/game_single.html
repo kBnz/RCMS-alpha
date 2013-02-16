@@ -1,0 +1,56 @@
+{* $i ... 0 -> シングルス, 1 -> ダブルス *}
+{section name=i start=0 loop=2}{assign var="i" value=$smarty.section.i.index}
+
+{if $singleList[$i]}
+<h3>{$arrTabletennisGameType[$i]}</h3>
+<table cellspacing="0" cellpadding="0" class="score_table">
+  {foreach from=$singleList[$i] item=row}
+  <tr>
+    <td class="round">{$row.round}</td>
+    <th class="self_team" style="background-color:{$smarty.const.TEAMCOLOR_tabletennis};">
+      {* $j は $i = 0(シングルス) なら 1 のみ、$i = 1(ダブルス) なら 1, 2 *}
+      {section name=j start=1 loop=$i+2}{assign var="j" value=$smarty.section.j.index}
+        {if $row.members.self[1][$j].member_id != "" && $row.members.self[1][$j].member_id != -1}
+          <a href="/member_detail/id={$row.members.self[1][$j].member_id}">{$row.members.self[1][$j].name}</a>
+        {else}
+          {$row.members.self[1][$j].name}
+        {/if}
+        {if $row.members.self[1][$j].info != ""}({$row.members.self[1][$j].info}){/if}
+        {if !$smarty.section.j.last}<br />{/if}
+      {/section}
+    </th>
+    <td class="total">
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_NORMAL}
+        {$row.Self_Won}
+      {/if}
+    </td>
+    <td>
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_BY_DEFAULT}
+        不戦勝
+      {elseif $row.win_by_default == $smarty.const.GAME_TABLETENNIS_LOSE_BY_DEFAULT}
+        不戦敗
+      {else}
+      <table cellspacing="0" cellpadding="0" class="detail">
+        {foreach from=$row.games item=game}
+          <tr><td>{$game.self}</td><td>-</td><td>{$game.opp}</td></tr>
+        {/foreach}
+      </table>
+      {/if}
+    </td>
+    <td class="total">
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_NORMAL}
+        {$row.Opp_Won}
+      {/if}
+    </td>
+    <th class="opp_team">
+      {section name=j start=1 loop=$i+2}{assign var="j" value=$smarty.section.j.index}
+        {$row.members.opp[1][$j].name}{if $row.members.opp[1][$j].info != ""}({$row.members.opp[1][$j].info}){/if}
+        {if !$smarty.section.j.last}<br />{/if}
+      {/section}
+    </th>
+  </tr>
+  {/foreach}
+</table>
+{/if}
+
+{/section}

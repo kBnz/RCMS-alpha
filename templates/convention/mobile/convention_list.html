@@ -1,0 +1,7 @@
+<h2>大会情報</h2>
+{foreach  item=convention_data from=$convention_list}
+▼{$convention_data.season}<br/>
+<a href="/convention_detail/id={$convention_data.convention_id}">{$convention_data.convention_name}</a><br/><br/>
+{/foreach}
+<hr/>
+

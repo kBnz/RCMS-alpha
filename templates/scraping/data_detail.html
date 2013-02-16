@@ -1,0 +1,10 @@
+{module name="data_detail"}
+<h2 class="module_title"><span>{'/modules/jobs/label/jobs_list'|translate}{* 採用情報一覧 *}</span></h2>
+<div class="module_contents">
+{if $list|@count>0}
+{foreach from=$list item=row}
+    {$row.0}
+{/foreach}
+{/if}
+</div>
+{/module}

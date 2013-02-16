@@ -1,0 +1,21 @@
+{if $ErrorMsg!=""}
+	<center>{$ErrorMsg}</center>
+{else}
+	{if $data|@count>0}
+		{section name=idx loop=$data}
+			<p><img src={$data[idx].img} width=48 height=48 align=left>
+			<font size=-1>
+			<a href={$data[idx].home}>{$data[idx].author}</a><br/>
+			<dd>
+			{$data[idx].title} 
+			<a href={$data[idx].status}>
+			({$data[idx].time})
+			</a>
+			</dd>
+			<br clear="left">
+			</font></p><hr />
+		{/section}
+	{else}
+		ツイートがありません
+	{/if}
+{/if}

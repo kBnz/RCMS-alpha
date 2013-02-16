@@ -1,0 +1,15 @@
+{$from_name}(email:{$from_mail})さんからのメールです。
+
+このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+
+●紹介されたアドレス
+{$intro_url}
+
+●{$from_name}さんからの記事の紹介文
+{$contents}
+
+
+□{$smarty.const.SITE_TITLE}□
+{$smarty.const.ROOT_URL}/
+
+※このメールに返信しても送信者にはメールは届きません。ご注意ください。

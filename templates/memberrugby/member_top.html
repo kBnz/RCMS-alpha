@@ -1,0 +1,19 @@
+{if $memberList.0.member_id}
+{module name="member_list"}
+<h2 class="module_title"><span>部員紹介</span></h2>
+<div class="module_contents">
+{if $memberList.0.image_s_exist}
+<a href="/member_detail/id={$memberList.0.member_id}">
+<img src="{$smarty.const.MEMBER_PHOTO_S_URL}/{$memberList.0.member_id}.jpg" alt="{$memberList.0.disp_name}" width="50" border="0" align="left" hspace="3"></a>
+{elseif $exists_noimage}
+<a href="/member_detail/id={$memberList.0.member_id}">
+<img src="/files/member/noimage_s.jpg" alt="no image" width="50" border="0" align="left" hspace="3"></a>
+{/if}
+名前: <a href="/member_detail/id={$memberList.0.member_id}">{$memberList.0.disp_name}</a><br>
+学年: {if $memberList.0.grade}<a href="/member_list/grade={$memberList.0.grade}">{$memberList.0.grade}年</a>{/if}<br>
+ポジション: {$memberList.0.position}<br />
+出身校: {if $memberList.0.hs_sname ne ''}{$memberList.0.hs_sname}{else}{$memberList.0.hs_name}{/if}<br>
+<div class="relation_link"><a href="/member_list/" class="small_text">他の選手を見る</a></div>
+</div>
+{/module}
+{/if}

@@ -1,0 +1,18 @@
+<h2>{'/modules/member/label/member_deactivate'|translate}{*メンバーの退会*}</h2>
+    {if $Login_member_id}{* ログインしている時 *}
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+    {'/msg/logout_automatically_when_you_deactivate_your_account'|translate}{*退会の処理が完了すると自動的にログアウトします。*}
+    <form method="post" action="/{$page_sysnm}/" >
+        <input type="submit" name="subflg" value="{'/modules/member/label/deactivate_btn'|translate}">{* 退会する *}
+        <input type="hidden" name="MODE" value="DELETE">
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="Return_URL" value="{$smarty.server.PHP_SELF}?after_logout=1">
+    </form>
+    {elseif $delete_ok_flg == '1'}
+    {'/msg/your_account_has_been_deactivated'|translate}{*退会の処理が完了しました。ご利用ありがとうございました。*}
+    {else}
+    {'/msg/please_login_before_deactivating_your_account'|translate}{*退会するには、まずログインを行ってください。*}
+    {/if}
+<hr/>
+

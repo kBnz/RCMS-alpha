@@ -1,0 +1,24 @@
+<link href="/css/error.css" rel="stylesheet" type="text/css" />
+<div id="site">
+    <div id="list">
+        <div id="list-header"></div>
+        <div id="list-conetnts">
+            <h2>{'/label/error_occurred'|translate}{*エラーが発生いたしました。*}</h2>
+            <p class="des">
+            {'/modules/page/msg/about_error_occured'|translate}{*申し訳ございません。エラーが発生いたしました。考えられる要因は以下になります。*}<br/>
+            {'/msg/please_access_this_site_after_a_while'|translate}{*暫く時間をおいてから再度、アクセスしてみてください。*}<br />
+{if $smarty.const.OEM_ID eq 1}
+            {'/msg/when_situation_is_not_improved'|translate:'http://www.diverta.co.jp/inquiry_detail/id=1'}{*状況が改善されない場合は<a href="http://www.diverta.co.jp/inquiry_detail/id=1">こちら</a>までご連絡いただければ幸いです。*}
+{/if}
+            </p>
+            <ul>
+                <li>{'/msg/too_many_accesses'|translate}{*アクセスが集中しており、サーバに負荷がかかっている。*}</li>
+                <li>{'/msg/error_by_out_assumption'|translate}{*想定外の操作により、システムエラーが発生した。*}</li>
+                <li>{'/msg/about_temporary_errors_urgent_maintenance'|translate}{*緊急臨時メンテナンスによる、一時的なエラーが発生している。*}</li>
+            </ul>
+
+            <p style="margin-top: 10px;">{$message|escape|nl2br}<br></p>
+        </div>
+        <div id="list-footer"></div>
+    </div>
+</div>

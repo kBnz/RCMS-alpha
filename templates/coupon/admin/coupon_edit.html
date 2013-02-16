@@ -1,0 +1,129 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<script type="text/javascript">
+<!--
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+-->
+</script>
+{/literal}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{'/modules/coupon/label/coupon_edit'|translate}{*クーポン編集*}</h2>
+<ul>
+{if $auth.coupon.insert}
+  <li class="add"><a href="/management/coupon/coupon_edit/"><span>{'/modules/coupon/label/create_new_coupon_btn'|translate}{*クーポン追加*}</span></a></li>
+{/if}
+  <li class="normal"><a href="/management/coupon/coupon_history/coupon_id={$coupon_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="view"><a href="/coupon_detail/id={$coupon_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/coupon/coupon_list/">{'/modules/coupon'|translate}</a>
+<a href="/management/coupon/coupon_list/">{'/modules/coupon/label/coupon_list'|translate}</a>
+{'/modules/coupon/label/coupon_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> クーポン >> クーポン一覧 >> クーポン編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{* 関連情報 *}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{'/label/items'|translate}{* 件 *}</a>　<a href="/coupon_detail/id={$coupon_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html"}
+  {rcms_include file="management/errors_box.html"}
+  <form name="coupon_edit" id="coupon_edit" action="/management/coupon/coupon_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="coupon_id" value="{$coupon_id}" />
+    <input type="hidden" name="item_order" value="{$data.item_order}" />
+    <input type="hidden" name="order_string" id="order_string" value="{$data.order_string}"/>
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <h3>{'/label/coupon_info'|translate}{*クーポン情報*}</h3>
+    <table width="100%">
+      <tr>
+          <th>{'/label/coupon_name'|translate}{*クーポン名*}<span class="required">※</span></th>
+          <td><input type="text" name="coupon_nm" value="{$data.coupon_nm|escape}" size="50" /></td>
+      </tr>
+      <tr>
+          <th>{'/modules/coupon/label/display_coupon_pc'|translate}{*パソコン版クーポン表示*}</th>
+          <td>{html_radios name=pc_disp_flg options=$disp_options selected=$data.pc_disp_flg}</td>
+      </tr>
+      <tr>
+          <th>{'/modules/coupon/label/display_coupon_mobile'|translate}{*モバイル版クーポン表示*}</th>
+          <td>{html_radios name=mobile_disp_flg options=$disp_options selected=$data.mobile_disp_flg}</td>
+      </tr>
+      <tr>
+          <th>{'/modules/coupon/label/coupon_contents'|translate}{*クーポン内容*}</th>
+          <td><textarea name="contents" cols="50" rows="5">{$data.contents|escape}</textarea></td>
+      </tr>
+      <tr>
+          <th>{'/modules/coupon/label/notes_body'|translate}{*注意事項文*}</th>
+          <td><textarea name="alert" cols="50" rows="5">{$data.alert|escape}</textarea></td>
+      </tr>
+      <tr>
+          <th>{'/modules/coupon/label/display_coupon_expiration'|translate}{*クーポン有効期限表示*}</th>
+          <td>
+            <input type="radio" name="exp_disp_flg" id="exp_disp_flg_off" value="0" onclick="display('exp_update_flg_opt', 'none');" {if $data.exp_disp_flg != '1'}checked="checked"{/if}/><label for="exp_disp_flg_off">{$disp_contact_options[0]}{*非表示*}</label>
+            <input type="radio" name="exp_disp_flg" id="exp_disp_flg_on" value="1" onclick="display('exp_update_flg_opt', '');" {if $data.exp_disp_flg == '1'}checked="checked"{/if} style="margin-left: 10px;" /><label for="exp_disp_flg_on">{$disp_contact_options[1]}{*表示*}</label>
+            <div id="exp_update_flg_opt" style="margin: 10px 0 0 10px; {if $data.exp_disp_flg != '1'}display:none;{/if}">
+              <p class="hint">{'/modules/coupon/msg/choose_the_coupon_expiration_date_update_method'|translate}{*クーポン有効期限更新の方法を選んでください。*}</p>
+
+              <input type="radio" name="exp_update_flg" id="exp_update_flg_auto" value="0" onclick="display('exp_update_kkn_opt', 'none');" {if $data.exp_update_flg != '1'}checked="checked"{/if}/><label for="exp_disp_flg_auto">{$update_options[0]}{*自動更新*}</label>
+              <input type="radio" name="exp_update_flg" id="exp_disp_flg_manu" value="1" onclick="display('exp_update_kkn_opt', '');" {if $data.exp_update_flg == '1'}checked="checked"{/if} style="margin-left: 10px;" /><label for="exp_update_flg_manu">{$update_options[1]}{*期間更新*}</label>
+
+                <div id="exp_update_kkn_opt" style="margin: 10px 0 0 10px; {if $data.exp_update_flg != '1'}display:none;{/if}">
+                  <p class="hint">{'/modules/coupon/msg/specify_the_period_of_the_coupon_expiration_date'|translate}{*クーポン有効期限の期間を指定してください。*}({'/label/date_example'|translate}{*例 2008-03-13*}) </p>
+{'/label/start_date'|translate}{*開始日*}<input name="exp_from_date" type="text" value="{$data.exp_from_date}" size="16" autocomplete="off" />～
+{'/label/end_date'|translate}{*終了日*}<input name="exp_to_date" type="text" value="{$data.exp_to_date}" size="16" autocomplete="off" />
+                </div>
+            </div>
+          </td>
+      </tr>
+      <tr>
+          <th>{'/modules/coupon/label/display_input_area_to_make_contact'|translate}{*連絡先記入欄の表示*}</th>
+          <td>{html_radios name=disp_contact_flg options=$disp_contact_options selected=$data.disp_contact_flg}</td>
+      </tr>
+    </table>
+
+      <a id="relation_data" name="relation_data"></a>
+      {rcms_include file="management/relation_edit.html"}
+
+      <div class="clear"></div>
+
+      {rcms_include file="management/open_date_box.html" id=$coupon_id data=$data}
+
+    {buttonbox}
+    {if $coupon_id}
+        {if $auth.coupon.update}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        {if $auth.coupon.delete}
+            <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+        {/if}
+    {else}
+        {if $auth.coupon.insert}
+            <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}{*追加する*}</button>
+        {/if}
+    {/if}
+    {/buttonbox}
+  </form>
+</div><!--//list_main-->
+</div><!--//main_contents-->
+</div>
+
+{rcms_include file="management/footer.html"}

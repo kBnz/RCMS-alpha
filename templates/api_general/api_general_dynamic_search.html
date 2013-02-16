@@ -1,0 +1,28 @@
+{if $items|@count > 0}
+{module name="api_general_dynamic_search"}
+<h2 class="module_title"><span>{$source.name}</span></h2>
+<div class="module_contents">
+  {* 検索結果 *}
+  {if $error}
+    <p>{$error}</p>
+  {else}
+
+    <dl>
+      {foreach from=$items item=item}
+          {if $item->isFindable()}
+          <dt><a href="/api_general_detail/xid={$source.id}%3A{$item->getId()}">{$item->getName()}</a></dt>
+          {elseif $item->getUrl()}
+            <dt><a href="{$item->getUrl()}" onclick="return !window.open(href)">{$item->getName()}</a></dt>
+          {else}
+            <dt>{$item->getName()}</dt>
+          {/if}
+          <dd>{$item->getSummary()|mbtruncate:100|escape}</dd>
+        </tr>
+      {/foreach}
+    </dl>
+
+    <div>{$source.credit}</div>
+  {/if}
+</div>
+{/module}
+{/if}

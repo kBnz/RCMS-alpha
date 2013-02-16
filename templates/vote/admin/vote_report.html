@@ -1,0 +1,153 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<link href="/css/survey/survey.css" rel="stylesheet" type="text/css" media="screen,print">
+
+<div class="list_right_bt">
+<h2>{'/modules/vote/label/vote_report'|translate}{*投票結果*}</h2>
+</div>
+
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote/label/vote_list'|translate}</a>
+{'/modules/vote/label/vote_report'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 投票 >> 投票一覧 >> 投票結果 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.title|escape}</h3>
+<ul class="minitabs">
+    <li><a href="/management/vote/vote_edit/vote_header_id={$header.vote_header_id}" >{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/vote/vote_module_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</a></li>
+    <li><a href="/management/vote/vote_item_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_item_list'|translate}{*回答一覧*}</a></li>
+    <li><a href="/management/vote/vote_report/vote_header_id={$header.vote_header_id}" class="active">{'/modules/vote/label/vote_report'|translate}{*投票結果*}</a></li>
+</ul>
+
+<div class="list_main" style="margin-top:10px">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<h3 class="list_main_tit">{'/modules/vote/label/vote_report'|translate}{'/label/total'|translate}{*投票結果合計*}</h3>
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+<tr>
+<th>{'/modules/vote/label/vote_report'|translate}{'/label/total'|translate}{*投票結果合計*}</th>
+<td>
+    <table>
+    <tr>
+      <th style="width:80px"> {'/modules/vote/label/choice_item'|translate}{*選択肢*}</th>
+      <th> {'/modules/vote/label/vote_cnt'|translate}{*投票数*}</th>
+    </tr>
+    {foreach from=$arrQuestion item=question_nm key=question}
+      <tr>
+        <td>{$question_nm}</th>
+        <td>{if $arrQuestionsAnalyzedData.$question !='0'}{$arrQuestionsAnalyzedData.$question}{else}0{/if}{*件*}</td>
+      </tr>
+    {/foreach}
+    <tr>
+       <td>{'/label/total'|translate}{*合計*}</td>
+       <td>{$arrQuestionsData.total_cnt}{'/label/item'|translate}{*件*}</td>
+    </tr>
+    </table>
+</td>
+</tr>
+</table>
+
+{if $arrContentsAnalyzedData}
+<h3 class="list_main_tit">{'/label/contents'|translate}{'/modules/vote/label/vote_report'|translate}{*コンテンツ投票結果*}</h3>
+<table>
+<tr>
+    <th>{$arrContentsData.module_nm}・{$arrContentsData.contents_title}</th>
+    <td>
+    <table>
+        <tr>
+          <th style="width:80px"> {'/modules/vote/label/choice_item'|translate}{*選択肢*}</th>
+          <th> {'/modules/vote/label/vote_cnt'|translate}{*投票数*}</th>
+        </tr>
+        {foreach from=$arrQuestion item=question_nm key=question}
+          <tr>
+            <td>{$question_nm}</th>
+            <td>{if $arrContentsAnalyzedData.$question !='0'}{$arrContentsAnalyzedData.$question}{else}0{/if}{'/label/item'|translate}{*件*}</td>
+          </tr>
+        {/foreach}
+        <tr>
+           <td>{'/label/total'|translate}{*合計*}</td>
+           <td>{$arrContentsData.total_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+    </table>
+    </td>
+</tr>
+</table>
+{/if}
+
+<h3 class="list_main_tit">{'/modules/survey/label/user_attribute'|translate}{*回答ユーザの属性*}</h3>
+<table>
+    <tr>
+        <th>{'/label/sex'|translate}{*性別*}</th>
+        <td>
+            <table>
+            {foreach from=$sex_options item=sex key=key}
+            {if $arrUserInfo.sex.cnt.$key != 0}
+            <tr>
+                <th>{$sex}</th>
+                <td>{$arrUserInfo.sex.cnt.$key}{'/label/item'|translate}{*件*}</td>
+            </tr>
+            {/if}
+            {/foreach}
+            <tr>
+                <th>{'label/no_answer'|translate}{*未回答*}</th>
+                <td>{$arrUserInfo.sex.cnt.unanswerd}{'/label/item'|translate}{*件*}</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <th>{'/label/age_category'|translate}{*年齢層*}</th>
+        <td>
+            <table>
+            {foreach from=$age_options item=age key=key}
+            {if $arrUserInfo.age.cnt.$key != 0}
+            <tr>
+                <th>{$age}</th>
+                <td>{$arrUserInfo.age.cnt.$key}{'/label/item'|translate}{*件*}</td>
+            </tr>
+            {/if}
+            {/foreach}
+            <tr>
+                <th>{'label/no_answer'|translate}{*未回答*}</th>
+                <td>{$arrUserInfo.age.cnt.unanswerd}{'/label/item'|translate}{*件*}</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th>{'/label/prefecture'|translate}{*都道府県*}</th>
+        <td>
+            <table>
+            {foreach from=$tdfk_options item=area key=key}
+            {if $arrUserInfo.area.cnt.$key != 0}
+            <tr>
+                <th>{$area}</th>
+                <td>{$arrUserInfo.area.cnt.$key}{'/label/item'|translate}{*件*}</td>
+            </tr>
+            {/if}
+            {/foreach}
+            <tr>
+                <th>{'label/no_answer'|translate}{*未回答*}</th>
+                <td>{$arrUserInfo.area.cnt.unanswerd}{'/label/item'|translate}{*件*}</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

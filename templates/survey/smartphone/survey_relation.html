@@ -1,0 +1,39 @@
+{if $user_survey_relation|@count > 0}
+<h2>[emoji:085]{'/modules/survey/label/survey_relation'|translate}{* アンケート一覧 *}</h2>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<ul data-role="listview" data-split-icon="search">
+{foreach item=item key=key from=$user_survey_relation}
+    {* ﾀｰｹﾞｯﾄか？ *}
+    {if $item.is_target == 1}
+    {* 受付中 または 実施後で集計公開中 *}
+        {if $item.valid_date == "now" || ($item.valid_date == "after" && $item.public_total == "0")}
+            <li>
+            {if $item.valid_date == "now"}
+                <a href="/survey_answer/id={$item.survey_id}">
+            {/if}
+            {$item.title|escape}
+            {if $item.valid_date == "now"}
+              {* 回答済み ＆ 二重回答不可の場合はﾘﾝｸを表示しない *}
+                {if $item.answered && $item.dup_flg == $smarty.const.SURVEY_DUPLICATE_NG}
+                    [{'/modules/survey/msg/unable_to_answer_twice'|translate}{*二重回答できません*}]
+                {else}
+                    [{'/modules/survey/msg/on_survey'|translate}{*アンケート実施中です*}]
+                {/if}
+            {elseif $item.valid_date == "after"}
+                [{'/modules/survey/msg/survey_is_over'|translate}{*アンケート終了しました*}]
+            {/if}
+            {if $item.answered}※{'/modules/survey/label/answered'|translate}{*回答済*}{/if}
+            {if $item.valid_date == "now"}
+            </a>
+            {/if}
+            {if $item.public_total == '0'}
+                <a href="/survey_report/id={$item.survey_id}">{'/label/reseach_result'|translate}{*集計結果*}</a>
+            {/if}
+            </li>
+        {/if}
+    {/if}
+{/foreach}
+</ul>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<hr/>
+

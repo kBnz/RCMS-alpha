@@ -1,0 +1,147 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">/*<![CDATA[*/
+/* 色関係 */
+function changeColor(id) {
+  $('swatch' + id).style.color = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+}
+
+var color_picker_current_id = null;
+function showColorPicker(id) {
+  color_picker_current_id = id;
+  var wnd = window.open(
+                '/js/colorpicker/colorpicker.php?callback=callback_color_picker',
+                'color_picker', 'status=no,modal=yes,width=350,height=250'
+            );
+
+  // 現在の色を渡す
+  wnd.dialogArguments = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+  return wnd;
+}
+
+function callback_color_picker(wnd) {
+  $('swatch' + color_picker_current_id).style.color
+      = $('code' + color_picker_current_id).value
+      = wnd.returnValue;
+}
+/*]]>*/</script>
+{/literal}
+
+
+<div id="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_right_bt">
+  <h2>公式テンプレート編集</h2>
+</div>  <!-- div.list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_design_list/">公式デザイン一覧</a>
+<a href="/management/rcms/rcms_design_edit/design_id={$design.id}">公式テンプレート編集</a>
+{/pankuzu}
+<div class="clear"></div>
+
+  <div class="main_contents">
+    <div class="list_main">
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <form action="/management/rcms/rcms_design_edit/design_id={$design.id}" method="post" ENCTYPE="multipart/form-data">
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="design[photo_file]" value="{$design.photo_file}" />
+        <table width="100%">
+          <tr>
+            <th>デザイン名</th><td><input type="text" name="design[design_nm]" value="{$design.design_nm}" size="40"></td>
+          </tr>
+          {if $design.thumbnail}
+          <tr>
+            <th>サムネイル</th><td><img src="/images/css/{$design.thumbnail}.jpg" /></td>
+          </tr>
+          {/if}
+          <tr><th>ベースカラー</th><td><span id="swatch1">■</span><input type="text" id="code1" name="design[code1]" value="{$design.code1}" onkeyup="changeColor(1)" /><input type="button" value="設定" onclick="showColorPicker(1)" /></td></tr>
+          <tr><th>サブカラー１</th><td><span id="swatch2">■</span><input type="text" id="code2" name="design[code2]" value="{$design.code2}" onkeyup="changeColor(2)" /><input type="button" value="設定" onclick="showColorPicker(2)" /></td></tr>
+          <tr><th>サブカラー２</th><td><span id="swatch3">■</span><input type="text" id="code3" name="design[code3]" value="{$design.code3}" onkeyup="changeColor(3)" /><input type="button" value="設定" onclick="showColorPicker(3)" /></td></tr>
+          <tr><th>サブカラー３</th><td><span id="swatch5">■</span><input type="text" id="code5" name="design[code5]" value="{$design.code5}" onkeyup="changeColor(5)" /><input type="button" value="設定" onclick="showColorPicker(5)" /></td></tr>
+          <tr><th>アクセントカラー</th><td><span id="swatch4">■</span><input type="text" id="code4" name="design[code4]" value="{$design.code4}" onkeyup="changeColor(4)" /><input type="button" value="設定" onclick="showColorPicker(4)" /></td></tr>
+          <script type="text/javascript">for (var i = 1; i <= 5; i++) if ($('code' + i)) $('swatch' + i).style.color = $F('code' + i);</script>
+          <tr>
+            <th>ヘッダ画像指定</th>
+            <td><input type="checkbox" name="design[header_image_flg]" value="1" {if $design.header_image_flg eq '1'}checked="checked"{/if}>指定できるようにする</td>
+          </tr>
+          <tr>
+            <th>タグ</th><td><input type="text" name="design[tag]" value="{$design.tag}" size="70"></td>
+          </tr>
+          <tr>
+            <th>CSS</th><td><textarea name="design[css]" rows="50" cols="70">{$design.css}</textarea></td>
+          </tr>
+          <tr>
+            <th>専用ヘッダ・フッタ</th>
+            <td>
+              <textarea name="design[header_footer]" rows="10" cols="70">{$design.header_footer}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <th>ヘッダのリサイズ</th>
+            <td>
+              幅:<input type="text" name="design[header_image_resize_width]" value="{$design.header_image_resize_width}" size="10">px<br>
+              <span class="hint">id:containerの幅から縮める場合はマイナス(例:-10)、その幅に固定する場合は通所の数字(例:760)で入力してください。</span>
+            </td>
+          </tr>
+          <tr>
+            <th>サイト上下100%設定</th>
+            <td>
+              <input type="checkbox" name="design[site_width_100_flg]" value="1" {if $design.site_width_100_flg}checked{/if}>上下を100%設定にする<br>
+              <span class="hint">id:header id:navi id:footerの幅が100%になり、サイト幅がid:contentsに適用されます。</span>
+            </td>
+          </tr>
+          <tr>
+            <th>備考</th><td><textarea name="design[comment]" rows="3" cols="70">{$design.comment}</textarea></td>
+          </tr>
+          <tr>
+            <th>comment_code1</th><td><textarea name="design[comment_code1]" rows="3" cols="70">{$design.comment_code1}</textarea></td>
+          </tr>
+          <tr>
+            <th>comment_code2</th><td><textarea name="design[comment_code2]" rows="3" cols="70">{$design.comment_code2}</textarea></td>
+          </tr>
+          <tr>
+            <th>comment_code3</th><td><textarea name="design[comment_code3]" rows="3" cols="70">{$design.comment_code3}</textarea></td>
+          </tr>
+          <tr>
+            <th>comment_code4</th><td><textarea name="design[comment_code4]" rows="3" cols="70">{$design.comment_code4}</textarea></td>
+          </tr>
+          <tr>
+            <th>comment_code5</th><td><textarea name="design[comment_code5]" rows="3" cols="70">{$design.comment_code5}</textarea></td>
+          </tr>
+          <tr>
+            <th>order_no</th><td><input type="text" name="design[order_no]" value="{$design.order_no}" /></td>
+          </tr>
+          <tr>
+            <th>公開する</th>
+            <td><input type="checkbox" name="design[open_flg]" value="1" {if $design.open_flg eq '1'}checked="checked"{/if} /></td>
+          </tr>
+          <tr>
+           <th>画像</th><td>{if $design.photo_url}<img src="{$design.photo_url}" />{/if}</td>
+          </tr>
+        </table>
+
+        <pre style="background-color: #eeeeee; height: 30em; display: none; overflow: scroll;" id="CssCode">{$design.css}</pre>
+
+        {if $auth.rcms.update && ($smarty.const.OEM_ID <= 2 || $smarty.const.OEM_ID == 10001)}
+        <p style="display:none"><input type="hidden" name="DG_CODE" value="{$DG_CODE}" /><input type="submit" id="formSubmit" name="design[exec]" value="更新する" /></p>
+        <div class="btn_box_bottom">
+          <ul class="bt_orange">
+            <li id="bt_orange_big"><a href="javascript:$('formSubmit').click();"><span>更新する</span></a></li>
+          </ul>
+        </div>  <!-- div.btn_box_bottom -->
+        {/if}
+
+      </form>
+
+    </div>  <!-- div.list_main -->
+  </div>  <!-- div.contents_table -->
+
+</div>  <!-- div.main_contents -->
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,8 @@
+<h2>{'/modules/keyword/label/keyword_list'|translate}{*キーワード一覧*}</h2>
+<ul>
+{foreach item=itemList from=$keyword_list roop=roopb}
+<li><a href="/keyword_detail/id={$itemList.keyword_id}">{$itemList.keyword}</a> [{$itemList.japanese_syllabary}]</li>
+{/foreach}
+</ul>
+{$page_links}<br/>
+<hr/>

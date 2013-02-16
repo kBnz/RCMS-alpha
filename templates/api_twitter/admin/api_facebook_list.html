@@ -1,0 +1,55 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>{$module_nm}facebookアプリ一覧</h2>
+<ul>
+{if $rauth->canInsert("/api_twitter/item/")}
+    <li class="add"><a href="/management/api_facebook/api_facebook_edit/"><span>{'/modules/api_facebook/label/add_new_facebook_app'|translate}</span></a></li>{* facebookアプリを新規追加 *}
+{/if}
+</ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_facebook/api_facebook_list/">{$module_nm}</a>
+{$module_nm}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+
+  <div class="list_main">
+
+    <p>サイト内で利用している{$module_nm}アプリの一覧です。</p>
+
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>{'/modules/api_facebook/label/app_id'|translate}{*アプリのID*}</th>
+          <th>{$module_nm}</th>
+          <th>管理者</th>
+          <th>キャンバスページのURL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$list item=item}
+        <tr>
+          <td><a href="/management/api_facebook/api_facebook_edit/id={$item.facebook_id}">{$item.app_id}</a></td>
+          <td><a href="http://www.facebook.com/apps/application.php?id={$item.app_id}" target="_blank">{$item.app_id}のプロフィールページ</a></td>
+          <td>{$item.admin_nm}</td>
+          <td>{$item.canvas_url}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

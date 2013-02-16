@@ -1,0 +1,407 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+    
+     // var が無いのは外部windowから呼び出せるようにするためです (window.placeChecker = ... と同じ)
+    placeChecker = new Checker({notifier : document.getElementById('subInfo'),
+                                idInput  : document.game_edit.place_id,
+                                nmInput  : document.game_edit.place});                    
+});
+
+var tmp_member_name;
+var tmp_member_id;
+var showing_no = '';
+
+function inputMemberInfo(order_no) {
+    if(showing_no != '') {
+      document.getElementById('inputArea['+showing_no+']').style.visibility = "hidden";
+    }
+    showing_no = order_no;
+    tmp_member_name = document.getElementById('member_name['+order_no+']').value;
+    tmp_member_id = document.getElementById('member_id['+order_no+']').value;
+    var element = document.getElementById('member_name['+order_no+']');
+    document.getElementById('inputFrame['+order_no+']').src = '/js/infoInput.php?order='+order_no+'&type=gamemember';
+    document.getElementById('inputArea['+order_no+']').style.visibility = "visible";
+    document.getElementById('inputArea['+order_no+']').style.display = "";
+}
+
+function chkMemId(order_no) {
+    if(tmp_member_name != document.getElementById('member_name['+order_no+']').value
+    && tmp_member_id == document.getElementById('member_id['+order_no+']').value
+    && document.getElementById('member_name['+order_no+']').value != "") {
+    // 名前が変わっているがidが変わっていない場合は手で入力したとみなす
+        document.getElementById('member_id['+order_no+']').value = "";
+        document.getElementById('subInfo['+order_no+']').style.display = "inline";
+    }
+    else if(document.getElementById('member_name['+order_no+']').value == "") {
+        document.getElementById('subInfo['+order_no+']').style.display = "none";
+    }
+}
+
+function writeWithKeybourd(order_no) {
+    document.getElementById('member_id['+order_no+']').value = "";
+    document.getElementById('inputArea['+order_no+']').style.visibility = "hidden";
+    if(document.getElementById('member_name['+order_no+']').value != "") {
+        document.getElementById('subInfo['+order_no+']').style.display = "inline";
+    }
+    else {
+        document.getElementById('subInfo['+order_no+']').style.display = "none";
+    }
+}
+
+function placeInput(){
+    window.open('/direct/page/locationInput/jsObject=placeChecker&type=gamejyudou_place','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameTypeInput(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type&type=gamejyudou_game_type','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameType2Input(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type2&type=gamejyudou_game_type2','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function teamInput() {
+    window.open('/js/teamInput.php?type=jyudou','','width=400,height=250,scrollbars=1,resizable=yes');
+}
+
+function oppmembercl() {
+    var self_mem = document.game_edit.self_mem.value;
+    var opp_mem = document.game_edit.self_mem.value;
+    for(i = self_mem ; i < Number(opp_mem) + Number(self_mem) + 1; i++) {
+        element = document.getElementById('member_grade[' + i + ']');
+        if(element){element.value = '';}
+        element = document.getElementById('member_name[' + i + ']');
+        if(element){element.value = '';}
+    }
+}
+
+function game_copy() {
+    document.game_edit.MODE.value='COPY';
+    document.game_edit.submit();
+}
+
+function add_self_mem() {
+    document.game_edit.MODE.value='ADD_SELF_MEM';
+    document.game_edit.submit();
+}
+
+function add_opp_mem() {
+    document.game_edit.MODE.value='ADD_OPP_MEM';
+    document.game_edit.submit();
+}
+
+function confirmDelete(f){
+  if(confirm("削除してもよろしいですか？")){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+function str_move(outf,oute,inf,ine) {
+  document.forms[outf].elements[oute].value = document.forms[inf].elements[ine].value;
+}
+
+function Checker(option) {
+    var notifier = option.notifier; // [object HTMLSpanElement]
+    var idInput  = option.idInput;  // [object HTMLInputElement]
+    var nmInput  = option.nmInput;  // [object HTMLInputElement]
+
+    var idInputValue = idInput.value;
+    var nmInputValue = ((idInputValue == "" || idInputValue == -1) ? "" : nmInput.value);
+
+    nmInput.onblur = check;
+    check();
+
+    // called from locationInput.php
+    this.reset = function (option) {
+        nmInputValue = nmInput.value = option.location_nm;
+        idInputValue = idInput.value = option.location_id;
+        notifier.innerHTML = ((idInputValue == "" || idInputValue == -1) ? "(登録外)" : "");
+        if ((idInputValue == "" || idInputValue == -1)) nmInputValue = "";
+    }
+
+    function check (e) {
+        if (nmInputValue != nmInput.value) {
+            notifier.innerHTML = "(登録外)";
+            idInput.value = -1;
+        } else {
+            notifier.innerHTML = "";
+            idInput.value = idInputValue;
+        }
+    }
+}
+</script>
+{/literal}
+
+<style>
+<!--
+{literal}
+table.tokuten{
+  background-color: #CCCCCC;
+}
+table.tokuten td{
+  border: solid #FFFFFF 1px;
+  background: #D5D5D5;
+}
+#member_self{
+  float:left;
+}
+
+#member_opp {
+  float:left;
+  padding-left:5px;
+}
+tr.member_row td{
+  height: 2.25em;
+}
+{/literal}
+-->
+</style>
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>＃{$module_nm}を編集</h2>
+<ul>
+  {if $auth.gamejyudou.insert}
+  <li class="add"><a href="/management/gamejyudou/gamejyudou_edit/"><span>試合追加</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/gamejyudou/gamejyudou_history/game_id={$game_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=gamejyudou&id={$game_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/gamejyudou_detail/id={$game_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/gamejyudou/gamejyudou_list/">{$module_nm}</a>
+<a href="/management/gamejyudou/gamejyudou_edit/{if $game_id != ""}&game_id={$game_id}{/if}">{$module_nm}を編集</a>
+{/pankuzu}
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>　<a href="/gamejyudou_detail/id={$game_id}">総アクセス数:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="game_edit" id="gamejyudou_edit" action="/management/gamejyudou/gamejyudou_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="self_mem" value="{$self_mem}" />
+    <input type="hidden" name="opp_mem" value="{$opp_mem}" />
+    <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+    {section name=cnt start=0 loop=$self_mem}
+    <input type="hidden" name="member_id[{$smarty.section.cnt.index}]" id="member_id[{$smarty.section.cnt.index}]" value="{$data_self[cnt].member_id}" />
+    {/section}
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <br style="clear: both;">
+
+      <h3>試合情報</h3>
+      {if $game_id == '' && $copyArr|@count > 0}
+      <table width="100%">
+        <tr><td><select name="copy_id">{html_options options=$copyArr selected=$copy_id}</select>の以下の内容を<input type="submit" name="copy" value="コピーする" onclick="game_copy()" /><br />
+        <input type="checkbox" id="copy_game_detail" name="copy_game_detail" {if $copy_id == "" || $copy_game_detail != ""}checked="checked"{/if} /><label for="copy_game_detail">試合詳細</label>
+        <input type="checkbox" id="copy_self_member" name="copy_self_member" {if $copy_id == "" || $copy_self_member != ""}checked="checked"{/if} /><label for="copy_self_member">自メンバー</label>
+        <input type="checkbox" id="copy_opp_member" name="copy_opp_member" {if $copy_id == "" || $copy_opp_member != ""}checked="checked"{/if}><label for="copy_opp_member">相手メンバー</label></td></tr>
+      </table>
+      {/if}
+      <table width="100%">
+        <tr>
+          <th>シーズン<span class="required">※</span></th>
+          <td><select name="season" id="season">{rcms_seasonOptions selected=$data.season}</select></td>
+        </tr>
+        <tr>
+          <th>日付<span class="required">※</span></th>
+          <td>
+            <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+          </td>
+        </tr>
+        <tr>
+          <th>試合開始時間<span class="required">※</span></th>
+          <td><input type="text" name="ko_time" value="{$data.ko_time|escape}" onBlur="changeHankaku(this, 'time')" /></td>
+        </tr>
+        <tr>
+          <th>試合会場<span class="required">※</span></th>
+          <td><input type="text" name="place" value="{$data.place|escape}" /><a href="javascript:void(0);" onclick="placeInput()">選択</a><span id="subInfo"></span></td>
+        </tr>
+        <tr>
+          <th>試合形式<span class="required">※</span></th>
+          <td><input type="text" name="game_type" value="{$data.game_type|escape}" /><a href="javascript:void(0);" onclick="gameTypeInput()">選択</a> <input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked="checked"{/if} />公式戦</td>
+        </tr>
+        <tr>
+          <th>トーナメント</th>
+          <td><input type="text" name="game_type2" value="{$data.game_type2|escape}" /><a href="javascript:void(0);" onclick="gameType2Input()">選択</a></td>
+        </tr>
+        <tr>
+          <th>対戦相手<span class="required">※</span></th>
+          <td>
+            {$smarty.const.SELF_TEAM_SNM}<input type="text" name="team_grade" value="{$data.team_grade|escape}" size="4" />
+            vs
+            <select name="team_type" id="team_type" onchange=" onChangeTeamType(this.value, 'jyudou')">{html_options options=$arrTeamjyudouType selected=$data.team_type}</select>
+            <select name="opponent" id="opponent">
+              <option value="">------</option>
+              {html_options options=$opponent_arr selected=$data.opponent}
+            </select>
+            <input type="text" name="opponent_grade" value="{$data.opponent_grade|escape}" size="4" />
+            <p><a href="javascript:;" onclick="teamInput()">&gt;&gt;対戦相手をチームリストに登録</a></p>
+            <p>※２つめの入力欄にはＡ、Ｂ、ＯＢ等のチームの種類を入力してください。</p>
+          </td>
+        </tr>
+        <tr>
+            <th>試合結果</th>
+            <td>
+            <table cellpadding="0" cellspacing="5" class="not_list_main tokuten">
+              <tr style="text-algin:center">
+                  <td colspan="3" style="text-align:center">自チーム</td>
+                <td style="text-align:center">決め技</td>
+                <td style="text-align:center">相手チーム</td>
+              </tr>
+              <tr>
+                  <td>先鋒</td>
+                <td><select name="Self_1S"  id="Self_1S">{html_options options=$arrGamejudge selected=$data.Self_1S}</select></td>
+                  <td><input type="text" name="member_0" value="{$data_self[0].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza1" value="{$data.waza1|escape}" /></td>
+                  <td><input type="text" name="member_7" value="{$data_opp[7].member_name}" readonly /></td>
+        </tr>
+        <tr>
+                  <td>次鋒</td>
+                <td><select name="Self_2S"  id="Self_2S">{html_options options=$arrGamejudge selected=$data.Self_2S}</select></td>
+                  <td><input type="text" name="member_1" value="{$data_self[1].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza2" value="{$data.waza2|escape}" /></td>
+                  <td><input type="text" name="member_8" value="{$data_opp[8].member_name}" readonly /></td>
+        </tr>
+        <tr>
+                  <td>五将</td>
+                <td><select name="Self_3S"  id="Self_3S">{html_options options=$arrGamejudge selected=$data.Self_3S}</select></td>
+                  <td><input type="text" name="member_2" value="{$data_self[2].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza3" value="{$data.waza3|escape}" /></td>
+                  <td><input type="text" name="member_9" value="{$data_opp[9].member_name}" readonly /></td>
+        </tr>
+        <tr>
+                  <td>中堅</td>
+                <td><select name="Self_4S"  id="Self_4S">{html_options options=$arrGamejudge selected=$data.Self_4S}</select></td>
+                  <td><input type="text" name="member_3" value="{$data_self[3].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza4" value="{$data.waza4|escape}" /></td>
+                  <td><input type="text" name="member_10" value="{$data_opp[10].member_name}" readonly /></td>
+              </tr>
+        <tr>
+                  <td>三将</td>
+                <td><select name="Self_5S"  id="Self_5S">{html_options options=$arrGamejudge selected=$data.Self_5S}</select></td>
+                  <td><input type="text" name="member_4" value="{$data_self[4].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza5" value="{$data.waza5|escape}" /></td>
+                  <td><input type="text" name="member_11" value="{$data_opp[11].member_name}" readonly /></td>
+              </tr>
+        <tr>
+                  <td>副将</td>
+                <td><select name="Self_6S"  id="Self_6S">{html_options options=$arrGamejudge selected=$data.Self_6S}</select></td>
+                  <td><input type="text" name="member_5" value="{$data_self[5].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza6" value="{$data.waza6|escape}" /></td>
+                  <td><input type="text" name="member_12" value="{$data_opp[12].member_name}" readonly /></td>
+              </tr>
+        <tr>
+                  <td>大将</td>
+                <td><select name="Self_7S"  id="Self_7S">{html_options options=$arrGamejudge selected=$data.Self_7S}</select></td>
+                  <td><input type="text" name="member_6" value="{$data_self[6].member_name}" readonly /></td>
+          <td style="text-align:center"><input type="text" name="waza7" value="{$data.waza7|escape}" /></td>
+                  <td><input type="text" name="member_13" value="{$data_opp[13].member_name}" readonly /></td>
+              </tr>
+              <tr>
+                  <td style="text-align:center" colspan="2">合計</td>
+                  <td style="text-align:center" ><input type="text" name="Self_Total" value="{$data.Self_Total}" /></td>
+                  <td style="text-align:center">-</td>
+                  <td style="text-align:center" ><input type="text" name="Opp_Total" value="{$data.Opp_Total}" /></td>
+              </tr>
+            </table>
+            </td>
+        </tr>
+        <tr>
+          <th>コメント</th>
+          <td><textarea name="game_comment" rows="7" cols="50">{$data.game_comment|escape}</textarea></td>
+        </tr>
+        <tr>
+          <th>ステータス<span class="required">※</span></th>
+          <td>{html_radios name="game_status" options=$arrGameStatus selected=$data.game_status}</td>
+        </tr>
+      </table>
+      <br style="clear: both;">
+
+      <h3>自チームメンバー情報</h3>
+      <div id="member_self">
+      <br />
+        <table>
+          <tr>
+            <th>POS</th>
+            <th>学年</th>
+            <th>名前</th>
+          </tr>
+{section name="loopname" loop=$self_mem}
+          <tr class="member_row">
+            <td>
+            {$arrPositionAlljyudou[loopname.iteration]}
+            </td>
+            <td>
+              <input type="text" name="member_grade[{$smarty.section.loopname.index}]" id="member_grade[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_grade}" size="3" />
+            </td>
+            <td>
+              <input type="text" name="member_name[{$smarty.section.loopname.index}]" id="member_name[{$smarty.section.loopname.index}]" value="{$data_self[loopname].member_name}" size="20" onBlur="chkMemId({$smarty.section.loopname.index})" onKeyup="writeWithKeybourd({$smarty.section.loopname.index})"  onchange="str_move('game_edit','member_{$smarty.section.loopname.index}','game_edit','member_name[{$smarty.section.loopname.index}]')" />
+              <input type="button" value="..." onclick="inputMemberInfo({$smarty.section.loopname.index});" />
+              <span id="subInfo[{$smarty.section.loopname.index}]" style="display:{if ($data_self[loopname].member_id == -1 && $data_self[loopname].member_name != "") || ($data_self[loopname].member_id == "" && $data_self[loopname].member_name != "")}inline{else}none{/if}">(登録外)</span>
+              <div id="inputArea[{$smarty.section.loopname.index}]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+                  <iframe name="inputFrame" id="inputFrame[{$smarty.section.loopname.index}]" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+              </div>
+            </td>
+          </tr>
+{/section}
+        </table>
+      </div>
+      <div id="member_opp">
+      <a href="javascript:;" onclick="oppmembercl()">相手選手情報をクリア</a>
+        <table>
+          <tr>
+            <th>POS</th>
+            <th>学年</th>
+            <th>名前</th>
+          </tr>
+{section name="loopname2" start=$self_mem loop=14 }
+          <tr class="member_row">
+            <td>
+            {$arrPositionAlljyudou[loopname2.iteration]}
+            </td>
+            <td>
+              <input type="text" name="member_grade[{$smarty.section.loopname2.index}]" id="member_grade[{$smarty.section.loopname2.index}]" value="{$data_opp[loopname2].member_grade}" size="3" />
+            </td>
+            <td>
+              <input type="text" name="member_name[{$smarty.section.loopname2.index}]" id="member_name[{$smarty.section.loopname2.index}]" value="{$data_opp[loopname2].member_name}" size="20" onchange="str_move('game_edit','member_{$smarty.section.loopname2.index}','game_edit','member_name[{$smarty.section.loopname2.index}]')" />
+            </td>
+          </tr>
+{/section}
+        </table>
+      </div>
+
+      <br style="clear: both;">
+
+      {rcms_include file="management/open_date_box.html" id=$game_id data=$data}
+
+    {buttonbox}
+      {if $auth.gamejyudou.update}
+        <button type="submit">更新する</button>
+      {/if}
+      {if $auth.gamejyudou.delete && $game_id != ''}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,30 @@
+{module name="bbs_list"}
+<h2 class="module_title"><span>{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</span></h2>
+<div class="module_contents">
+<form method="post" action="/bbs_list/">
+  <div class="search_box">
+    {'/label/title'|translate}{*タイトル*}・{'/label/explanation'|translate}{*説明*}:<input type="text" name="s_forum_text" value="{$s_forum_text}" size="20">
+    <input type="submit" value="{'/label/search'|translate}{*検索*}">
+  </div>
+{if $categoryInfo}
+  <p class="categoryPath">{$categoryInfo.name}</p>
+{/if}
+  <p class="page_links">{$page_links}</p>
+
+{if $bbs_list}
+  <table class="bbs_table" width="100%">
+    <tr>
+      <th>{'/label/title'|translate}{*タイトル*}</th>
+      <th>{'/label/explanation'|translate}{*説明*}</th>
+    </tr>
+  {foreach from=$bbs_list item=row}
+    <tr>
+      <td><a href="/bbs_show/bbs_header_id={$row.bbs_header_id}">{$row.forum_title}</a>{if $row.new == '1'}<span style="color:#CC0000; font-size: 80%; font-weight:bold;">NEW!</span>{/if}</td>
+      <td>{$row.forum_explanation|nl2br}</td>
+    </tr>
+  {/foreach}
+  </table>
+{/if}
+</form>
+</div>
+{/module}

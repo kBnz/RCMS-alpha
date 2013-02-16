@@ -1,0 +1,165 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{if $this_month == 12}
+  {assign var="aft_year" value=$next_year}
+  {assign var="bef_year" value=$this_year}
+{elseif $this_month == 1}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$pre_year}
+{else}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$this_year}
+{/if}
+
+<div class="list_right_bt">
+<h2>{'/modules/calendar/label/calendar_list'|translate}{* カレンダー *}</h2>
+<ul>
+{if $rauth->canInsert("/calendar/item/")}
+    <li class="add"><a href="/management/calendar/calendar_edit/"><span>{'/modules/calendar/add_new_schedule_btn'|translate}{* 予定追加 *}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/calendar_list/year={$this_year}&month={$this_month}" target="_blank"><span>{'/label/view_page'|translate}{* プレビュー *}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/calendar/calendar_list/">{'/modules/calendar/label/calendar_list'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カレンダー *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+<!-- 承認待ち一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="calendar_list">
+  <table border="0" cellspacing="2" cellpadding="0" class="navi">
+    <tr class="header">
+      <th colspan="12">
+        <span>{$this_year}</span>[{'/label/this_month'|translate}{* 今月 *}：<a href="/management/calendar/calendar_list/">{$curr_year}/{$curr_month}</a>]
+      </th>
+    </tr>
+    <tr class="month">
+      <td>{if $this_month=="01"}<span>{'/label/january'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}01">{'/label/january'|translate}</a>{/if}</td>{* １月 *}
+      <td>{if $this_month=="02"}<span>{'/label/february'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}02">{'/label/february'|translate}</a>{/if}</td>{* ２月 *}
+      <td>{if $this_month=="03"}<span>{'/label/march'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}03">{'/label/march'|translate}</a>{/if}</td>{* ３月 *}
+      <td>{if $this_month=="04"}<span>{'/label/april'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}04">{'/label/april'|translate}</a>{/if}</td>{* ４月 *}
+      <td>{if $this_month=="05"}<span>{'/label/may'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}05">{'/label/may'|translate}</a>{/if}</td>{* ５月 *}
+      <td>{if $this_month=="06"}<span>{'/label/june'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}06">{'/label/june'|translate}</a>{/if}</td>{* ６月 *}
+      <td>{if $this_month=="07"}<span>{'/label/july'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}07">{'/label/july'|translate}</a>{/if}</td>{* ７月 *}
+      <td>{if $this_month=="08"}<span>{'/label/august'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}08">{'/label/august'|translate}</a>{/if}</td>{* ８月 *}
+      <td>{if $this_month=="09"}<span>{'/label/september'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}09">{'/label/september'|translate}</a>{/if}</td>{* ９月 *}
+      <td>{if $this_month=="10"}<span>{'/label/october'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}10">{'/label/october'|translate}</a>{/if}</td>{* １０月 *}
+      <td>{if $this_month=="11"}<span>{'/label/november'|translate}</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}11">{'/label/november'|translate}</a>{/if}</td>{* １１月 *}
+      <td>{if $this_month=="12"}<span>{'/label/december'|translate}'</span>{else}<a href="/management/calendar/calendar_list/ym={$this_year}12">{'/label/december'|translate}</a>{/if}</td>{* １２月 *}
+    </tr>
+    <tr class="jump">
+      <td colspan="12">
+        <form name="calendar_list_form" method="POST" action="/management/calendar/calendar_list/">
+          <select name="s_category">{html_options options=$arrCategory selected=$s_category}</select>&nbsp;&nbsp;
+
+          <select name="year" style="width:60px;">{html_options options=$arrYear selected=$year}</select>/
+          <select name="month" style="width:50px;">{html_options options=$arrMonth selected=$month}</select>
+          <input type="submit" name="subflg" value="{'/label/display_btn'|translate}{* 移動する *}" />
+        </form>
+      </td>
+    </tr>
+  </table>
+
+  <table border="0" cellspacing="1" cellpadding="0" class="monthCal">
+    <tr class="header">
+      <th colspan="7">
+        <span class="pre"><a href="/management/calendar/calendar_list/ym={$bef_year}{$pre_month}">&lt;&lt;</a></span>
+        <span class="this">{$this_year}/{$this_month}</span>
+        <span class="next"><a href="/management/calendar/calendar_list/ym={$aft_year}{$next_month}">&gt;&gt;</a></span>
+      </th>
+    </tr>
+    <tr class="daysHeader">
+      <td class="Sun">{'/label/sunday_short'|translate}{* 日 *}</td>
+      <td class="Mon">{'/label/monday_short'|translate}{* 月 *}</td>
+      <td class="Tue">{'/label/tuesday_short'|translate}{* 火 *}</td>
+      <td class="Wed">{'/label/wednesday_short'|translate}{* 水 *}</td>
+      <td class="Thu">{'/label/thursday_short'|translate}{* 木 *}</td>
+      <td class="Fri">{'/label/friday_short'|translate}{* 金 *}</td>
+      <td class="Sat">{'/label/saturday_short'|translate}{* 土 *}</td>
+    </tr>
+
+{* 月間カレンダー本体 *}
+{foreach item=cal_line from=$cal_data.days}
+    <tr class="days">
+    {* 週毎の段 *}
+    {foreach key=key item=item from=$cal_line}
+        {* 日毎のデータ *}
+{strip}
+        <td class="{$item.day_type}">
+          <div class="head"><span>{$item.day}</span>{if $rauth->canInsert("/calendar/item/")}<a href="/management/calendar/calendar_edit/date={$item.date}">{'/modules/calendar/add_new_schedule_btn'|translate}{* 予定追加 *}</a>{/if}</div>
+          <br style="clear:both" />
+          {* イベントデータ *}
+          {foreach key=event_key item=event_item from=$item.event_data name=event_item_nm}
+            {assign var=event_id value=$event_item.event_id}
+            {if $smarty.foreach.event_item_nm.first}<ul>{/if}
+            <li>
+            <a class="small" href="/management/calendar/calendar_edit/event_id={$event_item.event_id}">{if $event_item.event_recurrence_id}<img src="/images/modules/calendar/recurrence_icon_bold.gif"/>{/if}{$event_item.event_txt|mbtruncate:17:"..."}<br />
+              {$event_item.cal_from_time}{if !($event_item.cal_from_time == '' && $event_item.cal_to_time == '')}～{/if}
+              {$event_item.cal_to_time}
+            </a>
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$event_id] link="/management/calendar/calendar_edit/event_id=$event_id"}
+            </li>
+
+            {* この印だと伝わりにくそうです。あとでアイコンを作ってもらおう。日をまたがる予定にだけアイコンをつければいいとおもう。}
+            {if $event_item.fromflg == 't' && $event_item.toflg == 't'}
+                <->
+            {elseif $event_item.fromflg == 't' && $event_item.toflg == 'f'}
+                <-
+            {elseif $event_item.fromflg == 'f' && $event_item.toflg == 't'}
+                ->
+            {elseif $event_item.fromflg == 'f' && $event_item.toflg == 'f'}
+                -
+            {/if}
+            {*}
+
+            {if $smarty.foreach.event_item_nm.last}</ul>{/if}
+          {/foreach}
+        </td>
+{/strip}
+    {/foreach}
+    </tr>
+{/foreach}
+  </table>
+
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+
+
+      <th align="center" colspan="3"><div align="center" style="font-size:120%;font-weight:bold;">{'/modules/calendar/label/schedule_of_yyyymm'|translate:$this_year:$this_month}{* YYYY年MM月の予定 *}</div></th>
+    </tr>
+{* 関連情報 *}
+{if $cal_data.relations}
+  {foreach item=rel_item from=$cal_data.relations}
+    <tr>
+      <td>
+    {$rel_item.ymd}<br />
+      </td>
+      <td>
+    {$rel_item.cont_name}<br />
+      </td>
+      <td>
+    {$rel_item.table_titleval}<br />
+      </td>
+    </tr>
+  {/foreach}
+{else}
+    <tr>
+      <td colspan="3" align="center">{'/modules/calendar/msg/no_schedule_in_yyyymm'|translate:$this_year:$this_month}{* YYYY年MM月の予定は登録されていません *}</td>
+    </tr>
+{/if}
+  </table>
+</div><!--//calendar_list-->
+</div><!--//list_main-->
+</div>
+
+{rcms_include file="management/footer.html"}

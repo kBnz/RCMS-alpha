@@ -1,0 +1,76 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>マイ動画</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_search/">{$module_nm}</a>
+マイ動画
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+  <div class="list_main">
+
+    <script type="text/javascript">
+      {literal}
+      function logoutYouTube() {
+        new Ajax.Request('/direct/api_youtube/logout/', {
+          onComplete: function() {
+            location.href = '/management/api_youtube/api_youtube_myvideos/';
+          }
+        });
+      }
+      {/literal}
+    </script>
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    {if $status == 'LOGGING_IN'} {* 1. AuthSub認証リンクを表示 *}
+      <h3>YouTubeにログイン</h3>
+      <button id="login_youtube">ログイン</button>
+{literal}
+<script type="text/javascript">
+j$(document).ready(function(){
+    j$("#login_youtube").click(openWindow);
+});
+
+function openWindow(){
+    window.open("{/literal}{$auth_url}{literal}?callback_url={/literal}{$callback_url}{literal}", "RCMS","width=500,height=500,resizable=yes,scrollbars=yes");
+return false;
+}
+</script>
+{/literal}
+
+    {elseif $status == 'VIEW'} {* 2. ユーザーがアップロードした動画の一覧を表示する *}
+      <p style="text-align:right"><a href="javascript:logoutYouTube()">YouTubeからログアウト</a></p>
+      <table width="100%">
+        <tr>
+          <th>サムネイル</th><th>タイトル</th><th>時間</th><th>詳細</th><th>状態</th>
+        </tr>
+        {foreach from=$items item=item}
+          {assign var="state" value=$item->getVideoState()}
+          <tr>
+            <td><a href="/management/{$mt}/{$mt}_edit/external_id={$item->getVideoId()}"><img src="http://img.youtube.com/vi/{$item->getVideoId()}/2.jpg"/></a></td>
+            <td><a href="/management/{$mt}/{$mt}_edit/external_id={$item->getVideoId()}">{$item->getVideoTitle()|truncate}</a></td>
+            <td>{$item->getVideoDuration()|date_format:"%M:%S"}</td>
+            <td>{$item->getVideoDescription()|truncate}</td>
+            <td>{if $state}{$state->getName()}<br/>{$state->getText()}{else}有効{/if}</td>
+          </tr>
+        {/foreach}
+      </table>
+    {else} {* エラー *}
+      <p>Bad Request</p>
+    {/if}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

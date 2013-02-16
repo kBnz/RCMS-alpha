@@ -1,0 +1,68 @@
+{if $Login_member_id}
+<h2>{'/label/have_logged_in'|translate}{*ログイン中*}</h2>
+<a id="login{$contents_id}"></a>
+{'/msg/current_login_user_is'|translate:$smarty.session.disp_name}{*現在、{$smarty.session.disp_name}さんがﾛｸﾞｲﾝ中です。*}<br/><br/>
+
+{if $login_code == '2'}
+<div style="color:red">{'/modules/login/msg/current_login_account_not_have_and_logout'|translate}{*現在ログインしているIDでは閲覧する権限がありません。ログアウトして、違うIDでログインをしてください。*}</div>
+<br/>
+{/if}
+
+<form action="/direct/login/logout/" method="post">
+<input type="hidden" name="Retrun_URL" value="{$Retrun_URL|escape}" />
+<input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL|escape}" />
+<input type="hidden" name="Retrun_a_name" value="login{$contents_id}" />
+<input type="hidden" name="_lang" value="{$mylang}">
+<input type="submit" value="{'/label/logout'|translate}{*ログアウト*}"/>
+</form>
+<br/>
+<hr/>
+
+{else}
+{* 未ログインのとき *}
+<h2>{'/label/login'|translate}{*ログイン*}</h2>
+<a id="login{$contents_id}"></a>
+
+{if $login_code == '1'}
+  <span style="color:red">{'/modules/login/msg/cant_login_because_of_wrong_info_error'|translate}{*入力が正しくないためﾛｸﾞｲﾝできませんでした。<br/>入力内容を確認してください。*}</span>
+{elseif $login_code == '2'}
+  <span style="color:red">{'/modules/login/msg/must_login_before_display_page'|translate}{*この情報はログインしてご覧ください。*}</span>
+{/if}
+
+{if !$is_SmartPhone}
+<h2>{'/label/easy_login'|translate}{*簡単ﾛｸﾞｲﾝ*}</h2>
+<form action="/direct/login/login/" method="post" utn="utn">
+<input type="hidden" name="Retrun_URL" value="{$Retrun_URL|escape}" />
+<input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL|escape}" />
+<input type="hidden" name="Retrun_a_name" value="login{$contents_id}" />
+<input type="hidden" name="_lang" value="{$mylang}">
+<input type="submit" value="{'/label/easy_login'|translate}{*簡単ﾛｸﾞｲﾝ*}"/>
+</form>
+
+{'/modules/login/msg/about_easy_login_setting'|translate}{*簡単ﾛｸﾞｲﾝは一度、ﾛｸﾞｲﾝをすると自動的に設定されます。解除をする場合にはﾛｸﾞｱｳﾄをしてください。*}
+
+<hr/>
+{/if}
+
+<form method="post" action="/direct/login/login/" utn="utn">
+  <input type="hidden" name="Retrun_URL" value="{$Retrun_URL|escape}" />
+  <input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL|escape}" />
+  <input type="hidden" name="Retrun_a_name" value="login{$contents_id}" />
+  <input type="hidden" name="subflg" value="1" />
+  <input type="hidden" name="_lang" value="{$mylang}">
+  <label for="login_input_email" >{'/label/mail_address'|translate}{*メールアドレス*}</label><br />
+  <input type="text" id="login_input_email" name="email" value="" {istyle type="en"} />
+  <br/>
+  <label for="login_input_password" >{'/label/password'|translate}{*パスワード*}</label><br />
+  <input type="text" id="login_input_password" name="password" value="" {istyle type="en"} />
+  <br/>
+  <input type="submit" value="{'/label/login'|translate}{*ログイン*}" />
+</form>
+
+{*
+<p>パスワードを忘れた場合は、<a href="/management/login/reminder/">こちら</a></p>
+*}
+
+<hr/>
+
+{/if}

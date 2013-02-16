@@ -1,0 +1,225 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="javascript" type="text/javascript" src="/js/treemenu/TreeMenu.js"></script>
+<script type="text/javascript">
+<!--
+var currentFolderName = "{$folders.current.name}";
+{literal}
+function editFolder() {
+    document.fileserver_list_folder.action = "/management/fileserver/fileserver_folder_edit/";
+    document.fileserver_list_folder.submit();
+}
+function deleteFolder() {
+    var msg = '「' + currentFolderName + '」を削除してよろしいですか？';
+    if (confirm(msg)) {
+        document.fileserver_list_folder.MODE.value = "FOLDER_DELETE";
+        document.fileserver_list_folder.submit();
+    }
+}
+function moveFolder() {
+    document.fileserver_list_folder.action = "/management/fileserver/fileserver_folder_move_sel/";
+    document.fileserver_list_folder.submit();
+}
+
+function isCheckedFile() {
+    // ファイルが選択されているかチェック
+    var cb = document.fileserver_list_file["file_id[]"];
+    if (cb.length) {
+        for(var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                return true;
+            }
+        }
+    }
+    else {
+        return true;
+    }
+    return false;
+}
+
+function gotoGomibako() {
+    if (!isCheckedFile()) {
+        alert('削除するファイルを選択してください。');
+        return;
+    }
+    var msg = '選択したファイルをゴミ箱へいどうします。\nよろしいですか？';
+    if (confirm(msg)) {
+        var a = document.fileserver_list_file.action;
+        document.fileserver_list_file.MODE.value = 'FILE_GOMIBAKO';
+        document.fileserver_list_file.submit();
+    }
+}
+function moveFile() {
+    if (!isCheckedFile()) {
+        alert('移動するファイルを選択してください。');
+        return;
+    }
+    document.fileserver_list_file.action = '/management/fileserver/fileserver_file_move_sel/';
+    document.fileserver_list_file.submit();
+}
+
+function changeOrder() {
+    document.fileserver_list_file.MODE.value = "CHANGE_ORDER";
+    document.fileserver_list_file.submit();
+}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>ファイル管理</h2>
+<ul>
+{assign var=myAuth value=$folders.current.auth.myAuth}
+
+{if (($folders.current.auth.myAuth.C && $auth.fileserver.insert)||($folders.current.auth_flg == 0))}
+<li class="add"><a href="/management/fileserver/fileserver_folder_edit/MODE=NEW&parent_id={$folders.current.folder_id}"><span>フォルダ追加</span></a></li>
+{/if}
+{if (($folders.current.auth.myAuth.C && $auth.fileserver.insert)||($folders.current.auth_flg == 0))}
+<li class="add"><a href="/management/fileserver/fileserver_file_create/folder_id={$folders.current.folder_id}"><span>ファイル追加</span></a></li>
+{/if}
+{*}<li class="normal"><a href="/management/fileserver/fileserver_file_list/"><span>ファイル検索</span></a></li>{*}
+<li class="normal"><a href="/management/fileserver/fileserver_gomibako_list/"><span>ゴミ箱</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/fileserver/fileserver_list/{if $folder_id}&folder_id={$folder_id}{/if}">ファイル管理</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="fileserver/admin/minitabs.html" page_type=$ct }
+
+<div id="fileserver_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!--フォルダツリー-->
+<h3>フォルダ一覧</h3>
+<div id="folderTree" width="100%">{$folderTree}</div>
+<p style="margin-top:5px;">
+<form name="fileserver_list_folder" action="/management/fileserver/fileserver_list/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="folder_id" value="{$folder_id}" />
+  <input type="hidden" name="MODE" value="" />
+  現在選択中のフォルダを
+  <input type="button" onclick="editFolder()" value="詳細確認・設定する" />
+  <input type="button" {if ($myAuth.D && $auth.fileserver.delete || $auth.fileserver_admin.delete) && $folders.current.canDelete}onclick="deleteFolder()"{else}disabled="disabled"{/if} value="削除する" />
+  <input type="button" {if ($myAuth.U && $auth.fileserver.update || $auth.fileserver_admin.update) && $folders.current.canMove}onclick="moveFolder()"{else}disabled="disabled"{/if} value="移動する" />
+  <p class="hint">ルートフォルダは削除・移動できません。配下にフォルダ、ファイルがあるフォルダは削除できません。</p>
+</form>
+</p>
+
+
+<h3>アクセス権限</h3>
+<div id="access_control">
+{if $formData.auth_flg ne '1'}
+  アクセス制限の設定はありません
+</div>
+{else if $formData.auth_flg eq '1'}
+{foreach from=$groupList name=groupList_nm item=group_nm key=group_id}
+  {if $smarty.foreach.groupList_nm.first}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="150px">グループ名</th>
+        <th>権限</th>
+      </tr>
+  {/if}
+  <tr>
+    <td>{$group_nm}</td>
+    <td>
+      {assign var=vName value='group_'|cat:$group_id}
+      {assign var=aType value=$formData.$vName}
+  {if $aType != 'R' && $aType != 'CRUD'}アクセス不可
+  {elseif $aType == 'R'}閲覧
+  {elseif $aType == 'CRUD'}閲覧・作成・更新・削除
+  {/if}
+    </td>
+  </tr>
+  {if $smarty.foreach.groupList_nm.last}
+    </table>
+  {/if}
+{/foreach}
+{/if}
+
+
+<h3>保存ファイル</h3>
+{if $folders.current.auth.myAuth.R && $auth.fileserver.select || $auth.fileserver_admin.select}
+  {foreach from=$files item=item name=files_nm}
+    {if $smarty.foreach.files_nm.first}
+    <form name="fileserver_list_file" action="/management/fileserver/fileserver_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="folder_id" value="{$folder_id}" />
+      <input type="hidden" name="MODE" value="" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'file_id[]')" /></th>
+        <th colspan="2">タイトル／ファイル名</th>
+        <th>ファイル更新日</th>
+        <th>更新者</th>
+        <th>DL数</th>
+        <th>表示順</th>
+      </tr>
+    {/if}
+      <tr>
+        <td><input type="checkbox" name="file_id[]" value="{$item.file_id}" /></td>
+        <td><span class="title">{$item.title}</span>{$item.name}</td>
+        <td style="width: 140px; white-space:nowrap">
+          <a href="/direct/fileserver/fileserver_download/file_id={$item.file_id}">ダウンロード</a> | <a href="/management/fileserver/fileserver_file_update/file_id={$item.file_id}">更新</a> | <a href="/management/fileserver/fileserver_file_edit/file_id={$item.file_id}">詳細</a>
+        </td>
+        <td width="120px" style="white-space:nowrap">{$item.upload_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}</td>
+        <td width="70px" style="white-space:nowrap">{$item.upload_member_name}</td>
+        <td width="50px" style="white-space:nowrap">{if $item.cnt > 0}<a href="/management/fileserver/fileserver_download_history/s_file_id={$item.file_id}">{$item.cnt}</a>{else}{$item.cnt}{/if}</td>
+        <td><input type="text" name="order_no[{$item.file_id}]" value="{$item.order_no|escape}" style="width: 30px" /></td>
+      </tr>
+    {if $smarty.foreach.files_nm.last}
+    </table>
+    チェックしたファイルを
+    <input type="button" onclick="moveFile()" value="移動する" />
+  {*  <input type="button" onclick="" value="コピーする" /> *}
+      <input type="button" onclick="gotoGomibako();" value="ゴミ箱へ" />
+      <input type="button" onclick="changeOrder();" value="表示順を変更する" />
+    </form>
+    {/if}
+  {/foreach}
+{else}
+  <p style="margin-top:10px">権限がないため閲覧することができません。</p>
+{/if}
+</div>
+</div>
+<br>
+<div class="hint">Windows XP Service Pack 2のInternet Explorer6でファイルをダウンロードする際に「開く」を選択すると、エラーになる場合があります。<br>
+「保存」をしてから、開くようにお願いいたします。<br>
+Windows XP Service Pack 2の機能の詳細は、次のマイクロソフト株式会社のホームページをご覧ください。<br>
+<br>
+マイクロソフト株式会社<br>
+<a href="http://www.microsoft.com/japan/windowsxp/sp2/" target="_blank">Windows XP Service Pack 2 セキュリティ強化機能搭載</a>（新しいウィンドウで表示）<br>
+</div>
+{literal}
+<style type="text/css">
+.branchbottom {
+    background: url(/images/modules/fileserver/branchbottom.gif) no-repeat left center ;
+    padding-left: 22px;
+}
+.branch {
+    background: url(/images/modules/fileserver/branch.gif) no-repeat left center ;
+    padding-left: 22px;
+}
+div#folderTree {
+  font-size: 15px;
+  padding: 10px;
+  border: 1px #777 solid;
+}
+div#folderTree div {
+  margin-bottom: 10px;
+}
+span.title {
+  font-weight: bold;
+  display: block;
+}
+</style>
+
+{/literal}
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,27 @@
+{assign var=prev_y value=$this_year}
+{assign var=prev_m value=$this_month-1}
+{if $prev_m < 1}
+  {assign var=prev_y value=$prev_y-1}
+  {assign var=prev_m value=12}
+{/if}
+{assign var=next_y value=$this_year}
+{assign var=next_m value=$this_month+1}
+{if $next_m > 12}
+  {assign var=next_y value=$next_y+1}
+  {assign var=next_m value=1}
+{/if}
+<h2>[emoji:176]{'/modules/calendar'|translate}{* カレンダー *}</h2>
+<div style="text-align:center;font-size:small;">
+<a href="/{$link_page_sysnm}/date={$this_year-1}-{$this_month}">&lt;&lt;</a>{'/label/yyyy'|translate:$this_year}{* N年 *}<a class="next" href="/{$link_page_sysnm}/date={$this_year+1}-{$this_month}">&gt;&gt;</a><br/>
+<a href="/{$link_page_sysnm}/date={$prev_y}-{$prev_m}">&lt;&lt;</a>{'/label/mm'|translate:$this_month}{* N月 *}<a class="next" href="/{$link_page_sysnm}/date={$next_y}-{$next_m}">&gt;&gt;</a>
+</div>
+
+{foreach from=$topics_calendar_list item=row name=cal}
+{if $row.cnt > 0}
+{assign var="varMonth" value=$row.time|date_format:'%m'}
+{assign var="varDate"  value=$row.time|date_format:'%d'}
+<a href="/{$link_page_sysnm}/date={$row.time|date_format:'%Y-%m-%d'}">{'/label/mmdd'|translate:$varMonth:$varDate}{* N月N日 *}({$row.cnt})</a><br/>
+{/if}
+
+{/foreach}
+<hr/>

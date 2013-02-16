@@ -1,0 +1,158 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+>><a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}{* ブログ一覧 *}</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'/modules/blog/label/blog_settings'|translate}{* 基本設定 *}</h2>
+{if $auth.blog.insert}<a href="/management/blog/blog_item_edit/blog_id={$formData.blog_id}">{'/modules/blog/label/add_new_entry_btn'|translate}{* 記事追加 *}</a><br/>{/if}
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+▼{'/modules/blog/label/email_address_for_post_from_mobile'|translate}{* 投稿用メールアドレス *}<br/>
+{if $ReceiveMail.site_mail_email}
+<form name="topics_post_from_mobile" id="topics_post_from_mobile" action="/management/blog/blog_edit/" method="POST">
+    <input type="hidden" name="MODE" value="UP_MAIL" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="blog_id" value="{$formData.blog_id}" />
+    <input type="hidden" name="site_mail_id" value="{$ReceiveMail.site_mail_id}" />
+    <input type="hidden" name="site_mail_email" value="{$ReceiveMail.site_mail_email}" />
+    <input type="hidden" name="receive_type" value="{$ReceiveMail.receive_type}" />
+    <input type="hidden" name="default_member_id" value="{$ReceiveMail.default_member_id}" />
+    <input type="hidden" name="site_mail_theme" value="{$ReceiveMail.site_mail_theme}" />
+    {foreach from=$ReceiveMail.receive_group_ids item=row}
+    <input type="hidden" name="receive_group_ids[]" value="{$row}" />
+    {/foreach}
+    <a href="mailto:{$ReceiveMail.site_mail_email}">{$ReceiveMail.site_mail_email}</a><br/>
+    {'/msg/cant_use_emoji'|translate}{* 絵文字はご利用できません。 *}<br/>
+    <input type="submit" value ="{'/modules/blog/label/change_emal_adress_for_post_from_mobile'|translate}{* 再発行する *}" />
+</form>
+{else}
+{'/msg/please_get_on_the_management_screen_of_pc'|translate}{* PCの管理画面で発行してください *}<br/>
+{/if}
+<br/>
+
+  <form name="blog_edit" action="/management/blog/blog_edit/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="blog_id" value="{$formData.blog_id}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="theme_order" id="theme_order" />
+    <input type="hidden" name="use_summary_flg" value="{$formData.use_summary_flg}" />
+    <input type="hidden" name="order_no" value="{$formData.order_no}" />
+
+    {if $formData.blog_id == ""}
+      {'/modules/blog/msg/add_new_blog'|translate}{* ﾌﾞﾛｸﾞを新規作成します。 *}<br/>
+    {/if}
+
+      {if ($formData.blog_id == "" && $auth.blog.insert) ||
+          ($formData.blog_id != "" && $auth.blog.update && $myRole == "owner") ||
+          ($formData.blog_id != "" && $auth.blog_admin.update)}
+        {* 新規作成 or オーナー or ブログ管理者権限有り*}
+▼{'/modules/blog/label/blog_title'|translate}{* ﾌﾞﾛｸﾞﾀｲﾄﾙ *}<br/>
+<input name="title" type="text" value="{$formData.title|escape}" /><br/>※{'/label/required'|translate}{* 必須 *}・{'/modules/blog/msg/required_40'|translate}{* 40文字以内 *}<br/>
+▼{'/modules/blog/label/brief_exp'|translate}{* 一言ﾒｯｾｰｼﾞ *}<br/>
+<input name="message" type="text" value="{$formData.message|escape}" /><br/>※{'/modules/blog/msg/required_60'|translate}{* 60文字以内 *}<br/>
+▼{'/modules/blog/label/outside_blog_url'|translate}{* 外部ﾌﾞﾛｸﾞURL *}<br/>
+<input name="gaibu_url" type="text" value="{$formData.gaibu_url|escape}" {istyle type="en"} /><br/>
+▼{'/label/publish_settings'|translate}{* 公開設定 *}<br/>
+{html_radios name=open_flg options=$itemOpenOptions selected=$formData.open_flg}<br/>
+▼{'/modules/blog/label/comment_option'|translate}{* コメント受付 *}<br/>
+{html_radios name=default_comment_flg options=$blogCommentOptions selected=$formData.default_comment_flg}<br/>
+▼{'/modules/blog/label/receive_trackback'|translate}{* トラックバック受付 *}<br/>
+{html_radios name=default_trackback_flg options=$blogTrackbackOptions selected=$formData.default_trackback_flg}<br/>
+      {else}
+▼{'/modules/blog/label/blog_title'|translate}{* ﾌﾞﾛｸﾞﾀｲﾄﾙ *}<br/>
+{$formData.title}<br/>
+▼{'/modules/blog/label/brief_exp'|translate}{* 一言ﾒｯｾｰｼﾞ *}<br/>
+{$formData.message}<br/>
+{'/modules/blog/label/message_for_comment'|translate}{* コメント入力後のメッセージ *}<br/>
+{$formData.comment_thank}<br/>
+{'/label/publish_settings'|translate}{* 公開設定 *}<br/>
+{$itemOpenOptions[$formData.open_flg]}<br/>
+      {/if}
+
+
+
+{buttonbox}
+  {if $formData.blog_id == ""}
+    {if $rauth->canInsert("/blog/blog/")}
+        <input type="hidden" name="MODE" value="INSERT" />
+        <input type="submit" value ="{'/label/add_btn'|translate}{* 追加する *}" />
+    {/if}
+  {else}
+    {if $docmeta.is_waiting}
+    {* これは承認待ちブログ *}
+        {if $rauth->canUpdate("/blog/blog/"|cat:$formData.blog_id, $docmeta.lang)}
+            {if $rauth->unlimitedUpdate("/blog/blog/"|cat:$formData.blog_id, $docmeta.lang)}
+            {* 許可する権限がある *}
+                <input type="hidden" name="MODE" value="ACCEPT" />
+                <input type="submit" value ="{'/label/accept'|translate}{* 承認する *}" />
+            {elseif $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+                <input type="hidden" name="MODE" value="UPDATE" />
+                <input type="submit" value ="{'/label/update_btn'|translate}{* 更新する *}" />
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <input type="hidden" name="MODE" value="UPDATE" />
+            <input type="submit" value ="{'/label/update_btn'|translate}" />
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+    {else}
+    {* これは通常ブログ *}
+        {if $docmeta.has_waiting}
+            {* 承認待ちブログがある場合は何もできない *}
+            {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+            <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+        {else}
+            {* 通常ブログに対する更新処理 *}
+            {if $rauth->canUpdate("/blog/blog/"|cat:$formData.blog_id, $docmeta.lang)}
+                <input type="hidden" name="MODE" value="UPDATE" />
+                <input type="submit" value ="{'/label/update_btn'|translate}{* 更新する *}" />
+            {/if}
+        {/if}
+    {/if}
+  {/if}
+{/buttonbox}
+
+</form>
+  {buttonbox}
+    {if $formData.blog_id != ""}
+      {if $docmeta.is_waiting}
+      {* これは承認待ちブログ *}
+        {if $rauth->canUpdate("/blog/blog/"|cat:$formData.blog_id, $docmeta.lang)}
+          {if $rauth->unlimitedUpdate("/blog/blog/"|cat:$formData.blog_id, $docmeta.lang)}
+          {* 許可する権限がある *}
+          <form name="blog_reject" id="blog_reject" action="/management/blog/blog_edit/" method="POST">
+          <input type="hidden" name="blog_id" value="{$formData.blog_id}" />
+          <input type="hidden" name="MODE" value="REJECT" />
+          <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+          <input type="submit" value ="{'/label/reject'|translate}{* 拒否する *}" />
+          </form>
+          {/if}
+        {/if}
+      {else}
+      {* これは通常ブログ記事 *}
+        {if !$docmeta.has_waiting}
+          {if $rauth->canDelete("/blog/blog/"|cat:$formData.blog_id, $docmeta.lang)}
+            {* 携帯ではformタグの入れ子は出来ないようなので *}
+            <form name="blog_item_delete" id="blog_item_delete" action="/management/blog/blog_edit/" method="POST">
+            <input type="hidden" name="blog_id" value="{$formData.blog_id}" />
+            <input type="hidden" name="MODE" value="DELETE" />
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="submit" value ="{'/label/delete_btn'|translate}{* 削除する *}" />
+            </form>
+          {/if}
+        {/if}
+      {/if}
+    {/if}
+  {/buttonbox}
+
+
+{rcms_include file="management/mobile/footer.html"}

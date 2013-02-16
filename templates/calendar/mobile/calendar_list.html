@@ -1,0 +1,79 @@
+<h2>[emoji:176]{$this_year}年{$this_month}月</h2>
+{* ｶﾚﾝﾀﾞｰの見出*}
+<div style="text-align:center;font-size:small;">
+<a href="/{$page_sysnm}/?year={$pre_year}&month={$pre_month}">&lt;&lt;{$pre_month}月</a>|
+{$this_year}年{$this_month}月|
+<a href="/{$page_sysnm}/?year={$next_year}&month={$next_month}">{$next_month}月&gt;&gt;</a>
+</div>
+<br/>
+
+{* 月間ｶﾚﾝﾀﾞｰ本体 *}
+{foreach item=cal_line from=$cal_data.days name="cal_line_nm"}
+  {* 週毎の段 *}
+  {foreach key=key item=item from=$cal_line}
+    {* 日毎のﾃﾞｰﾀ *}
+{strip}
+      {*日付部分*}
+      {if $item.holiday_flg}
+        <span style="color:red;">{$item.month}月{$item.day}日({$item.jweek}){$item.date_nm}</span><br/>
+      {elseif $item.week eq 'Sun'}
+        <span style="color:red;">{$item.month}月{$item.day}日({$item.jweek}){$item.date_nm}</span><br/>
+      {elseif $item.week eq 'Sat'}
+        <span style="color:blue;">{$item.month}月{$item.day}日({$item.jweek}){$item.date_nm}</span><br/>
+      {else}
+        {$item.month}月{$item.day}日({$item.jweek}){$item.date_nm}<br/>
+      {/if}
+      {*内容部分*}
+        {* ｲﾍﾞﾝﾄﾃﾞｰﾀ *}
+        {foreach key=event_key item=event_item from=$item.event_data name=event_data_nm}
+          　<a href="/calendar_detail/id={$event_item.event_id}">{$event_item.event_txt|mbtruncate:60:"..."}</a>
+          {if $event_item.cal_from_time}<br/>{/if}{$event_item.cal_from_time}{if ($event_item.cal_from_time != '' && $event_item.cal_to_time != '')}から{/if}{$event_item.cal_to_time}<br/>
+        {/foreach}
+        {* 関連情報 *}
+        {foreach key=game_key item=rItem from=$item.relations name=relations_nm}
+          　<a href="/{$rItem.link}">{$rItem.table_titleval}</a><br/>
+        {/foreach}
+
+{/strip}
+  {/foreach}
+  <hr/>
+{/foreach}
+
+<br/>
+
+{* カテゴリーの絞り込み*}
+{if $arrCategory|@count > 0}
+<form method="POST" action="/calendar_list/">
+  <select name="s_category">{html_options options=$arrCategory selected=$s_category}</select>
+  <input type="hidden" name="year"  value="{$this_year}" />
+  <input type="hidden" name="month" value="{$this_month}" />
+  <input type="submit" name="subflg" value="絞り込む" />
+</form>
+{/if}
+
+<br/>
+{* 月の移動ﾅﾋﾞ *}
+<div style="text-align:center;font-size:small;">
+<a href="/{$page_sysnm}/?year={$this_year}&month=1">1月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=2">2月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=3">3月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=4">4月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=5">5月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=6">6月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=7">7月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=8">8月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=9">9月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=10">10月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=11">11月</a>|
+<a href="/{$page_sysnm}/?year={$this_year}&month=12">12月</a>
+<br/>
+
+{* 年の移動ﾅﾋﾞ *}
+<a href="/{$page_sysnm}/?year={$this_year-1}&month={$this_month}">&lt;&lt;{$this_year-1}年</a>|
+<a href="/{$page_sysnm}/?year={$this_year+1}&month={$this_month}">{$this_year+1}年&gt;&gt;</a>
+</div>
+<br/>
+<div style="text-align:right;font-size:small;">
+<a href="/{$page_sysnm}/">今月のｶﾚﾝﾀﾞｰへ</a>
+</div>
+<hr/>

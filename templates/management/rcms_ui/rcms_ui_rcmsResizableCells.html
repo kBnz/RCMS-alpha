@@ -1,0 +1,268 @@
+{literal}
+<script type="text/javascript">
+
+/**
+* リスト-エディタの制御
+*
+* @param @require   cell1           String    cell1の対象となる要素へのセレクタ
+* @param @require   cell2           String    cell2の対象となる要素へのセレクタ
+* @param @require   handle          String    ハンドルの対象となる要素へのセレクタ
+* @param            cell1MinWidth   Int       セル1の最小幅
+* @param            cell1MinHeight  Int       セル1の最小高さ
+* @param            cell1MaxWidth   Int       セル1の最大幅
+* @param            cell1MaxHeight  Int       セル1の最大高さ
+* @param            cell2MinWidth   Int       セル2の最小幅
+* @param            cell2MinHeight  Int       セル2の最小高さ
+* @param            cell2MaxWidth   Int       セル2の最大幅
+* @param            cell2MaxHeight  Int       セル2の最大高さ
+* @param            position        String    親要素のposition指定
+* @param            direction       String    セルの方向  horizon or vertical
+* @param            mouseDown       function  ハンドルをクリックしたときに呼び出される関数
+* @param            onMoving        function  ハンドルをドラッグしているときに呼び出される関数
+* @param            mouseUp         function  ハンドルを離したときに呼び出される関数
+* @param            switchBtn       String    ここで登録された要素はセルの最大最小を切り替えるスイッチになる
+* @param            duration        Int       switchBtnをクリックしたときのアニメーションの完了するまでの時間
+*
+* @対象要素 <div>タグ *全体を包含するクラス"#wrapper"は必ず大きさを指定すること
+* @使用例
+* <div id="wrapper">
+*     <div id="handler"></div>                          <!--ハンドルの中身は不要-->
+*     <div id="header"><span>header</span></div>
+*     <div id="container"><span>footer</span></div>
+* </div>
+*
+* $("#wrapper").rcmsResizableCells({
+*     cell1          : "#header",
+*     cell2          : "#container",
+*     handle         : "#handler",
+*     direction      : "vertical",
+*     cell1MinHeight : 170,
+*     cell1MaxHeight : 250,
+*     mouseDown      : function(){},
+*     onMoving       : function(){},
+*     mouseUp        : function(){},
+*     switchBtn      : "#mySwitch",
+*     duration       : 500
+* });
+*
+**/
+
+(function($){
+
+    $.fn.rcmsResizableCells = function(options){
+
+        // 引数を宣言
+        var options=$.extend({
+            cell1          : "",
+            cell2          : "",
+            handle         : "",
+            cell1MinWidth  : 10,
+            cell1MinHeight : 10,
+            cell1MaxWidth  : 99999,
+            cell1MaxHeight : 99999,
+            cell2MinWidth  : 10,
+            cell2MinHeight : 10,
+            cell2MaxWidth  : 99999,
+            cell2MaxHeight : 99999,
+            position       : "absolute",
+            direction      : "horizon",
+            mouseDown      : function(){},
+            onMoving       : function(){},
+            mouseUp        : function(){},
+            switchBtn      : "",
+            duration       : 300,
+            initPosition   : "",
+        },options);
+
+        // 変数の宣言
+        var cell1,cell2,handle,supportArea,switchBtn;
+        var maxH1,maxW1,maxH2,maxW2;
+        var minH1,minW1,minH2,minW2;
+        var target = this;
+        var defaultCss = {
+            "position"          : "absolute",
+            "-moz-box-sizing"   : "border-box",
+            "-webkit-box-sizing": "border-box",
+            "-ms-box-sizing"    : "border-box",
+            "box-sizing"        : "border-box"
+        }; //box-sizing属性をborder-boxに
+        var handleHorizonCss = {
+            "position"          : "absolute",
+            "-moz-box-sizing"   : "border-box",
+            "-webkit-box-sizing": "border-box",
+            "-ms-box-sizing"    : "border-box",
+            "box-sizing"        : "border-box",
+            "height"            : "100%",
+            "width"             : "5px",
+            "cursor"            : "span-resize",
+            "z-index"           : 100
+        };
+        var handleVerticalCss = {
+            "position"          : "absolute",
+            "-moz-box-sizing"   : "border-box",
+            "-webkit-box-sizing": "border-box",
+            "-ms-box-sizing"    : "border-box",
+            "box-sizing"        : "border-box",
+            "height"            : "5px",
+            "width"             : "100%",
+            "cursor"            : "row-resize",
+            "z-index"           : 100
+        };
+
+        // 対象要素の内寸を返す関数
+        var targetHeight = function(){return target.innerHeight();};
+        var targetWidth  = function(){return target.innerWidth();};
+
+        // ドラッグ中の描画処理
+        function resizeCells() {
+            if(options.direction == "horizon"){
+                var l,w2;
+                l  = handle.position().left;
+                l  = l > minW1 ? l : minW1;
+                l  = l > maxW1 ? maxW1 : l;
+                l  = targetWidth()-l < minW2 ? targetWidth()- minW2 : l;
+                l  = targetWidth()-l > maxW2 ? targetWidth()- maxW2 : l;
+                w2 = targetWidth()-l > minW2 ? targetWidth()-l : minW2;
+                cell1.css({"left":"0px","top":"0px"});
+                cell1.width( l );
+                cell1.height( "100%" );
+                cell2.css({"left": l+"px","top":"0px"});
+                cell2.width( w2 );
+                cell2.height( "100%" );
+                handle.css("left",l+"px");
+            }else{
+                var t,h2;
+                t  = handle.position().top;
+                t  = t > minH1 ? t : minH1;
+                t  = t > maxH1 ? maxH1 : t;
+                t  = targetHeight()-t < minH2 ? targetHeight()- minH2 : t;
+                t  = targetHeight()-t > maxH2 ? targetHeight()- maxH2 : t;
+                h2 = targetHeight()-t > minH2 ? targetHeight()-t : minH2;
+                cell1.css({"left":"0px","top":"0px"});
+                cell1.width( "100%" );
+                cell1.height( t );
+                cell2.css({"left": "0px","top": t+"px"});
+                cell2.width( "100%" );
+                cell2.height( h2 );
+                handle.css("top",t+"px");
+            }
+            options.onMoving();
+        }
+
+        // ドラッグ前の処理
+        function onStartResizeCells(){
+            supportArea.width( targetWidth() ).height( targetHeight() ).show();
+            resizeCells();
+            options.mouseDown();
+        };
+
+        // ドラッグ後の処理
+        function onStopResizeCells(){
+            supportArea.hide();
+            resizeCells();
+            options.mouseUp();
+        };
+
+        // アニメーション
+        function drawAnimate(position) {
+            handle.animate(
+                position,
+                {
+                    duration : options.duration,
+                    step     : resizeCells,         // アニメーションの段階ごとにresizeCells()を呼び出して描画
+                    complete : onStopResizeCells
+                }
+            );
+        };
+
+        // セルの最大と最小を切り替える
+        function switchSize() {
+            // ハンドルを最大値まで引っ張る、既に最大値の場合は最小値まで縮む
+            if(options.direction == "horizon"){
+                // セルが横の場合はハンドルの左端を登録
+                var handlePos = handle.position().left;
+                if (handlePos < maxW1) {
+                    drawAnimate({left:maxW1});
+                } else {
+                    drawAnimate({left:minW1});
+                }
+            } else {
+                // セルが縦の場合はハンドルの上端を登録
+                var handlePos = handle.position().top;
+                if (handlePos < maxH1) {
+                    drawAnimate({top:maxH1});
+                } else {
+                    drawAnimate({top:minH1});
+                }
+            }
+        };
+
+        function init(){
+            
+            // 要素を設定
+            cell1     = $(options.cell1,target);
+            cell2     = $(options.cell2,target);
+            handle    = $(options.handle,target);
+            switchBtn = $(options.switchBtn, target);
+
+            // バリテーションチェック
+            if(!cell1.size() || !cell2.size() || !handle.size()){
+                return false;
+            }
+
+            // CSSを設定
+            target.css("position",options.position);
+            cell1.css(defaultCss);
+            cell2.css(defaultCss);
+            if (options.direction == "horizon") {
+                handle.css(handleHorizonCss);
+            } else {
+                handle.css(handleVerticalCss);
+            }
+
+            // ハンドルの下にサポート領域を追加（他の要素にイベントを横取りされないようにする）
+            handle.after("<div class='rcms_ui_resizable_cols_support_area'/>");
+            supportArea = $(".rcms_ui_resizable_cols_support_area",target);
+            supportArea.css( defaultCss ).css( {zIndex:handle.css("z-index")-1,cursor:"col-resize"} ).hide();
+
+            // 最大値,最小値の設定
+            minW1 = options.cell1MinWidth;
+            minW2 = options.cell2MinWidth;
+            minH1 = options.cell1MinHeight;
+            minH2 = options.cell2MinHeight;
+            maxH1 = minH1 > options.cell1MaxHeight ? 99999 : options.cell1MaxHeight; // 最小値より小さな値は不可
+            maxW1 = minW1 > options.cell1MaxWidth ? 99999 : options.cell1MaxWidth;
+            maxH2 = maxH1!=99999 && minH2 > options.cell2MaxHeight ? 99999 : options.cell2MaxHeight; // 最大値の同時指定は不可
+            maxW2 = maxW1!=99999 && minW2 > options.cell2MaxWidth ? 99999 : options.cell2MaxWidth;
+
+            // イベントの登録
+            var axis = options.direction == "horizon" ? "x" : "y";
+            handle.draggable({axis:axis,start:onStartResizeCells,stop:onStopResizeCells,drag:resizeCells});
+            handle.bind("mousedown.rcmsResizableCells",onStartResizeCells);
+            handle.bind("click.rcmsResizableCells",onStopResizeCells);
+            $(window).bind("resize.rcmsResizableCells",onStopResizeCells);
+            switchBtn.bind("click.rcmsResizableCells",switchSize);
+
+            // ハンドルの位置を初期値に移動
+            if(options.direction == "horizon"){
+                var initPos = options.initPosition ? options.initPosition : maxW1;
+                handle.css("left", initPos+"px");
+            }else{
+                var initPos = options.initPosition ? options.initPosition : maxH1;
+                handle.css("top", initPos+"px");
+            }
+
+            // 初期描画
+            resizeCells();
+        };
+
+        // メインシーケンス
+        return this.each(function(){
+            init();
+        });
+    };
+})(jQuery);
+
+</script>
+
+{/literal}

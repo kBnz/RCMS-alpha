@@ -1,0 +1,62 @@
+<h2>ﾌﾟﾛﾌｨｰﾙ</h2>
+
+{if $memberInfo.image_s_exist}
+        <img src="{$smarty.const.MEMBER_PHOTO_URL}/{$memberInfo.member_id}.jpg" alt="{$memberInfo.name1} {$memberInfo.name2}" /><br/>
+{elseif $exists_noimage}
+        <img src="/files/member/noimage.jpg" alt="noimage" /><br/>
+{/if}
+
+<dl>
+<dt>氏名</dt><dd>{$memberInfo.name1} {$memberInfo.name2}<br/></dd>
+<dt>かな</dt><dd>{$memberInfo.namekana1} {$memberInfo.namekana2}<br/></dd>
+{if $memberInfo.grade ne ''}
+<dt>学年</dt><dd>
+		  {if $memberInfo.grade != ""}
+		    {assign var="grade" value=$memberInfo.grade}
+		    {$arrGrade[$grade]}
+		  {/if}
+<br/></dd>
+{/if}
+{if $memberInfo.univ_short_nm ne '' || $memberInfo.univ_name ne ''}
+<dt>出身大学</dt><dd>{if $memberInfo.univ_short_nm ne '' }{$memberInfo.univ_short_nm}{else}{$memberInfo.univ_name}{/if}<br/></dd>
+{/if}
+{if $memberInfo.school ne ''}
+<dt>学部</dt><dd>{$memberInfo.school}<br/></dd>
+{/if}
+{if $memberInfo.hs_sname ne '' || $memberInfo.hs_name ne ''}
+<dt>出身高校</dt><dd>{if $memberInfo.hs_sname ne '' }{$memberInfo.hs_sname}{else}{$memberInfo.hs_name}{/if}<br/></dd>
+{/if}
+{if $memberInfo.jrhigh_school ne ''}
+<dt>出身中学校</dt><dd>{$memberInfo.jrhigh_school}<br/></dd>
+{/if}
+{if $memberInfo.elementary_school ne ''}
+<dt>出身小学校</dt><dd>{$memberInfo.elementary_school}<br/></dd>
+{/if}
+{if $memberInfo.position ne ''}
+<dt>ﾎﾟｼﾞｼｮﾝ</dt><dd>
+   {$memberInfo.position}
+<br/></dd>
+{/if}
+{if $memberInfo.height ne ''}
+<dt>身長</dt><dd>{if $memberInfo.height eq '0'}?{elseif $memberInfo.height > 0}{$memberInfo.height}cm{/if}<br/></dd>
+{/if}
+{if $memberInfo.weight ne ''}
+<dt>体重</dt><dd>{if $memberInfo.weight eq '0'}?{elseif $memberInfo.weight > 0}{$memberInfo.weight}kg{/if}<br/></dd>
+{/if}
+</dl>
+
+<br/>
+{if $memberInfo.contact_open_flg == "1" && $memberInfo.email2 ne '' }
+<a href="/member_mail/id={$memberInfo.member_id}">ﾒｰﾙを送る</a><br/>
+{/if}
+
+{if $memberInfo.subData|@count > 0}
+<h2>ｺﾒﾝﾄ</h2>
+<dl>
+{section name=mydata loop=$memberInfo.subData}
+<dt STYLE="font-weight:bold;">▼{$memberInfo.subData[mydata].title}</dt>
+<dd>{$memberInfo.subData[mydata].comment}</dd>
+{/section}
+</dl>
+{/if}
+<hr/>

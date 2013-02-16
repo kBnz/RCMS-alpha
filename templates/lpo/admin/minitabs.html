@@ -1,0 +1,10 @@
+<ul class="minitabs">
+  <li><a href="/management/lpo/lpo_list/" {if $ct eq 'lpo_list'}class="active"{/if}>{'/modules/lpo/label/lpo_list'|translate}</a></li>
+{if $lpo_header_id}
+  <li><a href="/management/lpo/lpo_edit/lpo_header_id={$lpo_header_id}" {if $ct eq 'lpo_edit'}class="active"{/if}>{'/modules/lpo/label/lpo_edit'|translate}</a></li>
+  <li><a href="/management/lpo/lpo_page_list/lpo_header_id={$lpo_header_id}" {if $ct eq 'lpo_page_list'}class="active"{/if}>{'/modules/lpo/label/lpo_page_list'|translate}</a></li>
+  <li><a href="/management/lpo/lpo_page_edit/lpo_header_id={$lpo_header_id}" {if $ct eq 'lpo_page_edit'}class="active"{/if}>{'/modules/lpo/label/lpo_page_edit'|translate}</a></li>
+{/if}
+</ul>
+<div class="clear"></div>
+

@@ -1,0 +1,93 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+    <h2>{'/modules/batch/label/batch_list'|translate}{*バッチ一覧*}</h2>
+    <ul>{*ボタンなど*}</ul>
+</div>
+{pankuzu}
+    <a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+    <a href="/management/batch/batch_list/">{'/modules/batch'|translate}</a>
+    {'/modules/batch/label/batch_list'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+    <div class="list_main">
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form method="get" action="/management/batch/batch_list/">
+        <fieldset class="search_box">
+            <select name="module_type">{html_options options=$arrModuleList selected=$module_type}</select>
+            <select name="status">{html_options options=$arrBatchStatus selected=$status}</select>
+            <select name="batch_type">{html_options options=$arrBatchType selected=$batch_type}</select>
+            <input type="submit" value="{'/label/search_btn'|translate}" />{* 検索 *}
+        </fieldset>
+    </form>
+
+    {if $batch_list|@count > 0}
+    <form method="POST" action="/management/batch/batch_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="contents_type" value="{$contents_type|escape}" />
+    <input type="hidden" name="opflg" value="{$opflg|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+        <tr>
+            {*}<th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'batch_id[]');" /></th>{*}
+            <th>{'/label/module'|translate}</th>
+            <th>{'/label/name'|translate}</th>
+            <th>{'/label/type'|translate}</th>
+            <th>{'/label/status'|translate}</th>
+            <th>{'/modules/batch/label/run_date'|translate}</th>
+            <th>{'/modules/batch/label/last_do_ymdhi'|translate}</th>
+        </tr>
+        {foreach from=$batch_list item=row}
+        {assign var=batch_id value=$row.batch_id}
+        <tr>
+            {*}<td><input type="checkbox" name="batch_id[]" value="{$row.batch_id}" {rcms_auth not=true target="update:/batch/item/$batch_id || delete:/batch/item/$batch_id"}disabled="disabled"{/rcms_auth} /></td>{*}
+            <td>{$contName[$row.mt]}</td>
+            <td>{$row.ct}</td>
+            <td>{$arrBatchType[$row.batch_type]}</td>
+            <td>{$arrBatchStatus[$row.status]}</td>
+            <td>{$row.do_datetime|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+            <td>{$row.last_do_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+        </tr>
+        {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+<!--
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="submit" onclick="this.form.MODE.value='public'">{'/label/publish_btn'|translate}</button>{* 公開にする *}
+      <button type="submit" onclick="this.form.MODE.value='private'">{'/label/unpublish_btn'|translate}</button>{* 非公開にする *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+    {/buttonbox}
+-->
+
+    </form>
+    {else}
+    {'/label/not_found'|translate}
+    {/if}
+
+    </div>
+
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,321 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+function control_option_form(id,value) {
+        if(value == "" 
+            || value == "{/literal}{$smarty.const.INQUIRY_TEXT_FORMAT}{literal}" 
+            || value == "{/literal}{$smarty.const.INQUIRY_TEXT_AREA_FORMAT}{literal}" 
+            || value == "{/literal}{$smarty.const.INQUIRY_DATE_FORMAT}{literal}") {
+             $(id).style.display = "none";
+        }else if (value == "{/literal}{$smarty.const.INQUIRY_FILE_FORMAT}{literal}") {
+             $(id).style.display = "block";
+             j$(".form_option_hint").html("{/literal}{'/label/uploadable_ext_setting'|translate}{literal}");
+        }else {
+             $(id).style.display = "block";
+             j$(".form_option_hint").html("{/literal}{'/label/options_setting'|translate}{literal}");
+        }
+}
+
+function display_ext(obj){
+
+        var elms = document.getElementsByClassName(obj);
+        for( var j=0; j<elms.length; j++ ) {
+                if (elms[j].style.display == "none") {
+                        elms[j].style.display = "";
+                }
+                else {
+                        elms[j].style.display = "none";
+                }
+        }
+}
+
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/inquiry/label/inquiry_disp_edit'|translate}{*表示設定*}</h2>
+
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry/label/inquiry_list'|translate}</a>
+{'/modules/inquiry/label/inquiry_disp_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 問い合わせ一覧 >> 表示設定 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.inquiry_name}</h3>
+{rcms_include file="inquiry/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/inquiry/inquiry_disp_edit/inquiry_id=$inquiry_id"}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $inquiry_id}        
+        {lang_selector meta=$docmeta link="/management/inquiry/inquiry_disp_edit/inquiry_id=$inquiry_id"}
+{/if}   
+
+    <form name="inquiry_disp_edit_form" id="inquiry_disp_edit_form" action="/management/inquiry/inquiry_disp_edit/" method="POST">
+        <input type="hidden" name="iq_pageID" value="{$iq_pageID}" />
+        <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="categoryCnt" value="{$categoryCnt}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+        <h3>{'/modules/inquiry/label/inquiry_items'|translate}</h3>
+
+        <p class="hint">{'/msg/form_option_edit'|translate}</p>
+        {*選択形式の場合は、[キー]::[値](改行)の形式で入力してください。例）1::りんご(改行)2::にんじん(改行)4d::水*}
+        <p class="hint">{'/msg/form_file_extention_edit'|translate}</p>
+        {*拡張子設定の場合は、[値]（改行）の形式で入力してください。例）jpg(改行)png(改行)gif*}
+        <p class="hint">{'/modules/inquiry/msg/inquiry_id_css_design'|translate}</p>
+        {*IDの値はテンプレート上の&lt;div&gt;のidに対応しています。cssのデザインをする時参考にして下さい。*}
+        
+        <table width="100%">
+            <tr>
+                <th>{'/label/title'|translate}{*タイトル*}</th>
+                <th>{'/label/required_attributes'|translate}{*必須属性*}</th>
+                <th>{'/label/answer_type'|translate}{*回答形式*}</th>
+                <th>{'/label/sort_order_desc'|translate}{*並び順(大きい方が上)*}</th>
+                <th>ID</th>
+            </tr>
+            {foreach from=$data.user_profile item=val key=key name="user_profile"}
+                {if $key != 'message'}{*messageは最後に表示*}
+                    
+                    {if $smarty.foreach.user_profile.iteration >= 14 && $inquiry_profile_options.$key.name=='' && $link_disp_flg!=1 && $docmeta.is_primary}
+                    <tr>
+                        <td colspan="5"><a href="javascript:void(0)" onclick="display_ext('ext_cols');return false;" >{'/modules/inquiry/label/msg_add_inquiry_items'|translate}</a></td>
+                    </tr>
+                    {assign var=link_disp_flg value=1}
+                    {/if}
+                    
+                    <tr{if $smarty.foreach.user_profile.iteration >= 14 && $inquiry_profile_options.$key.name==''} class="ext_cols" style="display:none;" {/if}>
+                        
+                        {if $inquiry_profile_options.$key.free}
+                            {if $docmeta.is_primary}
+                                <td valign="top" width="150"><input type="text" name="{$key}" value="{$inquiry_profile_options.$key.name|escape}" /></td>
+                            {else}
+                                {if $inquiry_profile_options.$key.name}
+                                    <td valign="top" width="150"><input type="text" name="{$key}" value="{$inquiry_profile_options.$key.name|escape}" /></td>
+                                {/if}
+                            {/if}
+                        {else}
+                            <td valign="top" width="150">{$inquiry_profile_options.$key.name}</td>
+                        {/if}
+                        
+                        {if $docmeta.is_primary}
+                            <td valign="top" width="150">
+                                <select name="user_profile[{$key}]">
+                                {html_options options=$profile_use_options selected=$data.user_profile.$key}
+                                </select>
+                            </td>
+                        {else}
+                            <td valign="top" width="150">
+                                {if $inquiry_profile_options.$key.name}
+                                    {assign var="selected_value" value=$data.user_profile[$key]} 
+                                    {$profile_use_options[$selected_value]}
+                                    {if $key != "name" && $key != "email"}
+                                        <input type="hidden" name="user_profile[{$key}]" value="{$val}" />
+                                    {/if}
+                                {/if}
+                            </td>
+                        {/if}
+                        
+                        {if $docmeta.is_primary}
+                            <td width="250">
+                                {if $key == "name" || $key == "email"}
+                                    {$form_type_options[1]}
+                                {else}
+                                <select name="form_type[{$key}]" onchange="control_option_form('form_option_{$key}',this.value)">
+                                    <option value="">{'/label/no_select'|translate}</option>{* 選択無し *}
+                                    {html_options options=$form_type_options selected=$data.form_type.$key}
+                                </select>
+                                <div id="form_option_{$key}" {if $data.form_type.$key == "" || $data.form_type.$key == $smarty.const.INQUIRY_TEXT_FORMAT || $data.form_type.$key == $smarty.const.INQUIRY_TEXT_AREA_FORMAT || $data.form_type.$key == $smarty.const.INQUIRY_DATE_FORMAT} style="display:none"{/if}>
+                                    {if $data.form_type.$key == $smarty.const.INQUIRY_FILE_FORMAT}
+                                        <span class="form_option_hint">{'/label/uploadable_ext_setting'|translate}{*ファイル拡張子の設定*}</span>
+                                    {else}
+                                        <span class="form_option_hint">{'/label/options_setting'|translate}{*選択項目の設定*}</span>
+                                    {/if}
+                                    <textarea name="form_type_option[{$key}]" cols="20" rows="2">{$data.form_type_option.$key|escape}</textarea>
+                                </div>
+                                {/if}
+                            </td>
+                        {else}
+                            <td class="btn" width="250">
+                                {if $inquiry_profile_options.$key.name}
+                                    {if $key == "name" || $key == "email"}
+                                        {$form_type_options[1]}
+                                    {else}
+                                        {assign var="selected_value" value=$data.form_type[$key]}
+                                        <input type="hidden" name="form_type[{$key}]" value="{$data.form_type[$key]}">
+                                        {$form_type_options[$selected_value]}<br />
+                                        <div id="form_option_{$key}" {if $data.form_type.$key == "" || $data.form_type.$key == $smarty.const.INQUIRY_TEXT_FORMAT || $data.form_type.$key == $smarty.const.INQUIRY_TEXT_AREA_FORMAT || $data.form_type.$key == $smarty.const.INQUIRY_DATE_FORMAT} style="display:none"{/if}>
+                                            {if $data.form_type.$key == $smarty.const.INQUIRY_FILE_FORMAT}
+                                                <span class="form_option_hint">{'/label/uploadable_ext_setting'|translate}{*ファイル拡張子の設定*}</span>
+                                            {else}
+                                                <span class="form_option_hint">{'/label/options_setting'|translate}{*選択項目の設定*}</span>
+                                            {/if}
+                                            <textarea name="form_type_option[{$key}]" cols="20" rows="2">{$data.form_type_option.$key|escape}</textarea>
+                                        </div>
+                                    {/if}
+                                {/if}
+                            </td>
+                        {/if}
+                        
+                        <td valign="top" width="150">
+                        {if $docmeta.is_primary}
+                            <input type="text" name="grade[{$key}]" size="3" value="{$data.grade.$key|escape}" />
+                        {else}
+                            {$data.grade.$key|escape}
+                            {if $key != "name" && $key != "email" && $key != "message" && $inquiry_profile_options.$key.name}
+                            <input type="hidden" name="grade[{$key}]" value="{$data.grade.$key|escape}" />
+                            {/if}
+                        {/if}
+                        </td>
+                        <td valign="top" width="150">{$key}</td>
+                    </tr>
+                {/if}
+            {/foreach}
+            {*messageを表示ここから*}
+            {assign var=key value=message}
+            {assign var=val value=$data.user_profile.message}
+            <tr>
+                <td width="150">{$inquiry_profile_options.$key.name}</td>
+                {if $docmeta.is_primary}
+                        <td width="150">
+                            <select name="user_profile[{$key}]">
+                            {html_options options=$profile_use_options selected=$data.user_profile.$key}
+                            </select>
+                     </td>
+                {else}
+                     <td width="150">{assign var="selected_value" value=$data.form_type[$key]}{$form_type_options[$selected_value]}</td>
+                {/if}
+                <td width="250">{$form_type_options[2]}</td>                                            
+
+                <td width="150">{if $docmeta.is_primary}<input type="text" size="3" name="grade[{$key}]" value="{$data.grade.$key|escape}" />{else}{$data.grade.$key|escape}{/if}</td>
+                <td valign="top" width="150">{$key}</td>
+            </tr>
+            {*messageを表示ここまで*}
+        </table>
+
+
+        <h3 style="margin-top:30px">{'/label/category_edit'|translate}{*カテゴリ編集*}</h3>
+        <table width="100%">
+            <tr>
+                <th>ID</th>
+                <th>{'/label/category'|translate}{*カテゴリ*}</th>
+                <th>{'/label/delivering_mail_address'|translate}{*配送先メールアドレス*}</th>
+                <th>{'/label/sort'|translate}{*並び*}</th>
+                <th width="30">{'/label/delete'|translate}{*削除*}</th>
+            </tr>
+            {section name="loopname" loop=$categoryCnt}
+                <tr {if $smarty.section.loopname.last}style="background-color:#99ffcc;"{/if}>
+                    <td>
+                        {$data_category[loopname].inquiry_category_id}{if $data_category[loopname].inquiry_category_id == ""}{'/label/add_new'|translate}{*新規追加*}{/if}
+                    </td>
+                    <td>
+                        <input type="hidden" name="inquiry_category_id[{$smarty.section.loopname.index}]" value="{$data_category[loopname].inquiry_category_id}" />
+                        {if $docmeta.is_primary}
+                                <input type="text" name="inquiry_category_name[{$smarty.section.loopname.index}]" size="60" value="{$data_category[loopname].inquiry_category_name|escape}" />
+                        {else}
+                                {if $data_category[loopname].inquiry_category_name}
+                                        <input type="text" name="inquiry_category_name[{$smarty.section.loopname.index}]" size="60" value="{$data_category[loopname].inquiry_category_name|escape}" />
+                                {/if}
+                        {/if}
+
+                    </td>
+                    <td>
+                        {if $docmeta.is_primary}
+                                <textarea name="inquiry_category_email[{$smarty.section.loopname.index}]" cols="15" rows="2">{$data_category[loopname].inquiry_category_email|escape}</textarea>
+                        {else}
+                                <input type="hidden" name="inquiry_category_email[{$smarty.section.loopname.index}]" value="{$data_category[loopname].inquiry_category_email}" />
+                        {/if}
+                    </td>
+                    <td>
+                        {if $docmeta.is_primary}
+                                <input type="text" name="order_no[{$smarty.section.loopname.index}]" size="3" value="{$data_category[loopname].order_no}" />
+                        {else}
+                                <input type="hidden" name="order_no[{$smarty.section.loopname.index}]" value="{$data_category[loopname].order_no}" />
+                        {/if}
+                    </td>
+                    <td align="center">
+                        {if $data_category[loopname].inquiry_category_id == ""}
+                            &nbsp;
+                        {else}
+                                {if $docmeta.is_primary}
+                                        <input type="checkbox" name="inquiry_category_del[{$smarty.section.loopname.index}]" />
+                                {else}
+                                            &nbsp;
+                                {/if}
+                        {/if}
+                    </td>
+                </tr>
+            {/section}
+        </table>
+
+{buttonbox}
+        {if $inquiry_id != ""}
+                {if $docmeta.is_waiting}
+                {* これは承認待ちドキュメント *}
+                        {if $rauth->canUpdate("/inquiry/display/$inquiry_id", $docmeta.lang)}
+                                {if $rauth->unlimitedUpdate("/inquiry/item/$inquiry_id", $docmeta.lang)}
+                                {* 許可する権限がある *}
+                                        <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>
+                                        <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>
+                                {elseif $docmeta.own}
+                                {* 自分が作成したので再修正できる *}
+                                        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                                {else}
+                                        {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                                {/if}
+                        {else}
+                                {if $docmeta.own}
+                                {* 自分が作成したので再修正できる *}
+                                        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                                {else}
+                                        {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                                {/if}
+                        {/if}
+                {else}
+                {* これは通常ドキュメント *}
+                        {if $docmeta.has_waiting}
+                        {* 承認待ちドキュメントがある場合は何もできない *}
+                        {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+                        <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+                        {else}
+                        {* 通常ドキュメントに対する更新処理 *}
+                                {if $rauth->canUpdate("/inquiry/display/$inquiry_id", $docmeta.lang)}
+                                        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                                {/if}
+                                {if $rauth->canDelete("/inquiry/display/$inquiry_id", $docmeta.lang)}
+                                {* 削除権限がある *}
+                                        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+                                {/if}
+                        {/if}
+                {/if}
+        {/if}
+{/buttonbox}
+
+    </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

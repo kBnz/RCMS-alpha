@@ -1,0 +1,5 @@
+下記のURLから進んでください。
+{$link}
+
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/

@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+左サイド固定−右メインフリー用
+------------------------------------------------------------ */
+body {
+	text-align:[site_align];
+}
+
+.mng_line {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#container {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#header {
+}
+
+#navi {
+}
+
+#footpath {
+	[footpath_width]
+}
+
+#contents {
+	[contents_width]
+}
+
+#top_contents {
+}
+
+#main_contents {
+	width:100%;
+	float:right;
+	margin-left:-[left_width][left_width2]; 
+}
+
+/* メインコンテンツ下のブロック */
+#sub_module3,
+#main_module,
+#sub_module4 {
+	margin-left:[left_width+margin][left_width2];
+}
+
+#side_contents_left {
+	width:[left_width][left_width2];
+	float:right;
+}
+
+#side_contents_right {
+}
+
+#bottom_contents {
+}
+
+#bottom_contents {
+	clear:right;
+}
+
+#footer {
+	clear:right;
+}

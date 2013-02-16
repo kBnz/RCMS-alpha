@@ -1,0 +1,84 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>>>
+<a href="/management/coupon/coupon_list/">{$module_nm}</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$module_nm}編集</h2>
+{if $auth.coupon.insert}
+<a href="/management/{$mt}/{$mt}_edit/">>>{$module_nm}追加</a><br />
+{/if}
+
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+  <form name="coupon_edit" id="coupon_edit" action="/management/coupon/coupon_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="coupon_id" value="{$coupon_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+    <h3 class="for_mng">クーポン情報</h3>
+
+▼クーポン名<span style="color:red;">※</span><br />
+<input type="text" name="coupon_nm" value="{$data.coupon_nm|escape}" /><br />
+▼パソコン版クーポン表示<br />
+{html_radios name=pc_disp_flg options=$disp_options selected=$data.pc_disp_flg}<br />
+▼モバイル版クーポン表示<br />
+{html_radios name=mobile_disp_flg options=$disp_options selected=$data.mobile_disp_flg}<br />
+
+▼クーポン内容<br />
+<input type="text" name="contents" value="{$data.contents|escape}" /><br />
+▼注意事項文１<br />
+<input type="text" name="alert" value="{$data.alert|escape}" /><br />
+▼クーポン有効期限表示<br />
+<input type="radio" name="exp_disp_flg" id="exp_disp_flg_off" value="0" {if $data.exp_disp_flg != '1'}checked="checked"{/if}/>
+<label for="exp_disp_flg_off">非表示</label><br />
+<input type="radio" name="exp_disp_flg" id="exp_disp_flg_on" value="1" {if $data.exp_disp_flg == '1'}checked="checked"{/if} style="margin-left: 10px;" />
+<label for="exp_disp_flg_on">表示</label><br />
+
+<p class="hint">クーポン有効期限更新の方法を選んでください。</p>
+<input type="radio" name="exp_update_flg" id="exp_update_flg_auto" value="0" {if $data.exp_update_flg != '1'}checked="checked"{/if}/>
+<label for="exp_disp_flg_auto">自動更新</label><br />
+<input type="radio" name="exp_update_flg" id="exp_disp_flg_manu" value="1" {if $data.exp_update_flg == '1'}checked="checked"{/if} style="margin-left: 10px;" />
+<label for="exp_update_flg_manu">期間更新</label><br />
+
+<p class="hint">クーポン有効期限の期間を指定してください。(例 2008-03-13) </p>
+開始日<input name="exp_from_date" type="text" value="{$data.exp_from_date}" size="16" autocomplete="off" {istyle type="n"} />～<br />
+終了日<input name="exp_to_date" type="text" value="{$data.exp_to_date}" size="16" autocomplete="off" {istyle type="n"} /><br />
+
+
+▼連絡先記入欄の表示<br />
+{html_radios name=disp_contact_flg options=$disp_contact_options selected=$data.disp_contact_flg}
+
+<br />
+
+<!--公開設定-->
+{rcms_include file="management/mobile/open_date_box.html" id=$topics_id data=$formData}
+
+
+{if !$coupon_id}
+  {if $auth.coupon.insert}
+      <input type="hidden" name="MODE" value="INSERT" />
+      <input type="submit" value ="{'/label/add_btn'|translate}" />
+  {/if}
+{else}
+  {if $auth.coupon.update}
+      <input type="hidden" name="MODE" value="UPDATE" />
+      <input type="submit" value ="{'/label/update_btn'|translate}" />
+  {/if}
+  {if $auth.coupon.delete}
+     </form>
+     <form name="coupon_edit_delete" id="coupon_edit_delete" action="/management/coupon/coupon_edit/" method="POST">
+      <input type="hidden" name="coupon_id" value="{$coupon_id}" />
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="DELETE" />
+      <input type="submit" value ="{'/label/delete_btn'|translate}" />
+  {/if}
+
+{/if}
+  </form>
+
+
+{rcms_include file="management/mobile/footer.html"}

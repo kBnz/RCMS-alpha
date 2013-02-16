@@ -1,0 +1,26 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+{if $auth.link.insert}
+<li class="add"><a href="/management/link/link_edit/"><span>{'/modules/link/label/create_new_link_btn'|translate}{*リンク追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/link/link_list/">{'/modules/link'|translate}</a>
+<a href="/management/link/link_list/">{'/modules/link/label/link_list'|translate}</a>
+<a href="/management/link/link_edit/link_id={$link_id}">{'/modules/link/label/link_edit'|translate}{*リンク編集*}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> リンク >> リンク一覧 >> リンク編集 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/link/link_edit/link_id=$link_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

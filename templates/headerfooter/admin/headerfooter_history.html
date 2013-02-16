@@ -1,0 +1,21 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{* 更新履歴一覧 *}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/headerfooter/headerfooter_list/">{'/modules/headerfooter'|translate}</a>
+<a href="/management/headerfooter/headerfooter_list/">{'/modules/headerfooter/label/headerfooter_list'|translate}</a>
+<a href="/management/headerfooter/headerfooter_edit/page_type={$page_type}&region_id={$region_id}">{'/modules/headerfooter/label/headerfooter_edit'|translate}</a>
+<a href="/management/headerfooter/headerfooter_history/page_type={$page_type}&region_id={$region_id}&headerfooter_id={$headerfooter_id}">{'/label/update_history_list'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】 デザイン >> ヘッダーフッタ >> ヘッダフッタ一覧 >> ヘッダフッタ編集 >> 更新履歴一覧 *}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/headerfooter/headerfooter_edit/page_type=$page_type&region_id=$region_id" page_links=$page_links}
+
+</div>
+{rcms_include file="management/footer.html"}

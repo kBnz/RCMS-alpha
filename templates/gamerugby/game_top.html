@@ -1,0 +1,60 @@
+{module name="game_top"}
+<h2 class="module_title"><span>{'/label/list_of_each_game_type'|translate}{*試合形式別一覧*}</span></h2>
+<div class="module_contents">
+  <table class="list">
+    <tr align="center">
+      <th>{'/label/tournament'|translate}{*トーナメント*}／{'/modules/game/label/game_type'|translate}{*試合タイプ*}</th>
+      <th>{'/modules/game/label/recent_game_schedule'|translate}{*最近の試合予定*}</th>
+      <th>{'/label/latest_game_results'|translate}{*最新試合結果*}</th>
+    </tr>
+{section name=mydata loop=$gameTopList}
+    <tr valign="middle" align="center">
+      <td>
+        <a href="/gamerugby_typelist/game_type={$smarty.section.mydata.index}">{$gameTopList[mydata].game_type}</a>
+      </td>
+{if $gameTopList[mydata].near_game.game_id == '' && $gameTopList[mydata].last_game.game_id == ''}
+      <td colspan="2">{'/msg/no_schedule_of_games'|translate}{*試合の予定はありません*}</td>
+{else}
+      <td>
+{if $gameTopList[mydata].near_game.game_id}
+<a href="/gamerugby_detail/id={$gameTopList[mydata].near_game.game_id}">
+{$gameTopList[mydata].near_game.ymd}<br>
+{$gameTopList[mydata].near_game.team_grade}
+vs {$gameTopList[mydata].near_game.team_nm}{$gameTopList[mydata].near_game.opponent_grade}<br>
+{$gameTopList[mydata].near_game.place}
+</a>
+{/if}
+</td>
+<td>
+{if $gameTopList[mydata].last_game.game_id}
+<a href="/gamerugby_detail/id={$gameTopList[mydata].last_game.game_id}">
+{$gameTopList[mydata].last_game.ymd}<br>
+{$gameTopList[mydata].last_game.team_grade}
+{if $gameTopList[mydata].last_game.score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameTopList[mydata].last_game.score_detail_arr.Self_Total}-
+{$gameTopList[mydata].last_game.score_detail_arr.Opp_Total}
+{if $gameTopList[mydata].last_game.score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{$gameTopList[mydata].last_game.team_nm}{$gameTopList[mydata].last_game.opponent_grade}<br>
+{$gameTopList[mydata].last_game.place}
+{/if}
+</a>
+      </td>
+{/if}
+    </tr>
+{/section}
+  </table>
+※{'/modules/game/msg/game_data_will_be_added'|translate}{*試合の予定が決まり次第、順次追加します。*}
+</div>
+{/module}

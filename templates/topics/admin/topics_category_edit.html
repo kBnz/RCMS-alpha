@@ -1,0 +1,95 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$topics_group_nm} {'/modules/topics/label/topics_category_edit'|translate}</h2>{* 記事カテゴリ編集 *}
+<ul>
+{if $rauth->canInsert("/topics/category/[@topics_group_id=$topics_group_id]")}
+<li class="add"><a href="/management/topics/topics_category_edit/topics_group_id={$topics_group_id}"><span>{'/label/add_category_btn'|translate}</span></a></li>{* カテゴリ追加 *}
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics/label/topics_group_list'|translate}</a>
+<a href="/management/topics/topics_category_list/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_category_list'|translate}</a>
+{'/modules/topics/label/topics_category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> 記事カテゴリ一覧 >> 記事カテゴリ編集*}
+
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/topics/topics_category_edit/topics_category_id=$topics_category_id"}
+
+{rcms_include file="topics/admin/minitabs.html" page_type=$ct}
+
+
+<h3 class="title">{if $cateInfo.topics_category_id != ""}{$cateInfo.category_nm|escape}{else}カテゴリ新規作成{/if}</h3>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/topics/topics_category_edit/{if $topics_category_id}topics_category_id={$topics_category_id}{/if}" method="POST">
+    <input type="hidden" name="topics_group_id" value="{$topics_group_id}">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    {if $topics_category_id}
+    <input type="hidden" name="topics_category_id" value="{$topics_category_id}">
+    {/if}
+
+    {if $cateInfo.topics_category_id}
+      {lang_selector meta=$docmeta link='/management/topics/topics_category_edit/topics_category_id='|cat:$cateInfo.topics_category_id}
+    {/if}
+
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/label/category_name'|translate}<span class="required">{'/label/required'|translate}</span></th>{* カテゴリ名 必須 *}
+        <td>
+
+          {if !$docmeta.is_primary && $primaryRow.category_nm!=''}
+          <span class="step">{$primaryRow.category_nm|escape}</span>({'/label/primary_language_translation'|translate})<br />
+          {/if}
+          <input type="text" name="category_nm" value="{if $docmeta.is_primary}{$formData.category_nm|escape}{else}{if $formData.category_nm != $primaryRow.category_nm}{$formData.category_nm|escape}{/if}{/if}" style="width: 400px" />
+
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/parent_category'|translate}<span class="required">{'/label/required'|translate}</span></th>{* 親カテゴリ名 必須 *}
+        <td>
+          {if $docmeta.is_primary}
+            <select name="parent_id">{html_options options=$category_parent_options selected=$formData.parent_id}</select>
+          {else}
+            {$category_parent_options[$cateInfo.parent_id]}
+          {/if}
+        </td>
+      </tr>
+      {if $docmeta.is_primary}
+      <tr>
+        <th>{'/label/sort'|translate}{*並び順*}</th>
+        <td>
+          <input type="text" name="category_weight" value="{$formData.category_weight}" size="4" />
+          <p class="hint">{'/msg/data_order'|translate}{*並び順は数字の大きい順に並びます。*}</p>
+        </td>
+      </tr>
+      {/if}
+      <tr>
+        <th>{'/label/memo'|translate}</th>{* メモ *}
+        <td>
+          <textarea name="memo" style="height: 150px; width: 400px">{$formData.memo}</textarea>
+          <p class="hint">{'/modules/topics/msg/describe_purpose'|translate}</p>{* 用途などを記入しておくと便利です。 *}
+        </td>
+      </tr>
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div><!--//list_main-->
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,22 @@
+{if $smarty.const.PAGE_MODIFY_MODE eq 1}{* 直接編集モードの場合 *}
+    {if ($edit_templateedit_id && $auth.page.select) || ($edit_templateedit_id && $auth.templateedit.select)}{* コンテンツ編集しか出せない場合は全部出さない *}
+
+<div id="subBox">
+  <div class="subBox_contents">
+
+    {if $edit_templateedit_id && $auth.page.select}
+    <a href="/management/page/page_edit/page_page_id={$edit_page_id}">{'/modules/page'|translate}{*ページ設定*}</a>
+    {/if}
+    {if $edit_url}
+    ｜<a href="{$edit_url}">{'/label/contents_edit'|translate}{*コンテンツ編集*}</a>
+    {/if}
+    {if $edit_templateedit_id && $auth.templateedit.select}
+    ｜<a href="/management/templateedit/templateedit_edit/templateedit_id={$edit_templateedit_id}">{'/modules/templateedit'|translate}{*テンプレート編集*}</a>
+    {/if}
+    <div class="clearFloat"><br></div>
+
+  </div>
+</div>
+
+    {/if}
+{/if}

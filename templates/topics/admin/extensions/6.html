@@ -1,0 +1,4 @@
+{if $docmeta.is_primary}{$item.value|wysiwyg:$item.name:"550":"150":$item.options:true}
+{elseif !$toopics_id}{$item.value|wysiwyg:$item.name:"550":"150":$item.options:true}
+{else}{''|wysiwyg:$item.name:"550":"150":$item.options:true}{/if}
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}

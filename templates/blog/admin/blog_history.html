@@ -1,0 +1,26 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+<a href="/management/blog/blog_item_list/blog_id={$blog_id}">{'/modules/blog/label/blog_entry_list'|translate}</a>
+<a href="/management/blog/blog_item_edit/blog_id={$blog_id}&blog_item_id={$blog_item_id}">{'/modules/blog/label/blog_entry_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> ブログ記事一覧 >> ブログ記事編集 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/blog/blog_item_edit/blog_id=$blog_id&blog_item_id=$blog_item_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,13 @@
+<div style="font-size: small;">
+{if $footpath}
+{foreach item="footpath" from=$footpath}
+  {if $footpath.this}
+    &gt;&gt;{$footpath.page_nm}
+  {elseif $footpath.page_sysnm eq 'top'}
+    <a href="/">TOP</a>
+  {else}
+    &gt;&gt;<a href="/{$footpath.page_sysnm}/">{$footpath.page_nm}</a>
+  {/if}
+{/foreach}
+{/if}
+</div>

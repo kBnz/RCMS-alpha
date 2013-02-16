@@ -1,0 +1,26 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{*管理TOP*}</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'/modules/staticcontents/label/staticcontents_category_list'|translate}{*自由HTMLカテゴリ設定*}</h2>
+{rcms_auth target="insert:/staticcontents/category/"}
+    <a href="/management/{$mt}/{$mt}_category_edit/">>>{'/label/add_category_btn'|translate}{*カテゴリ追加*}</a><br />
+{/rcms_auth}
+<a href="/management/{$mt}/{$mt}_list/">{'/modules/staticcontents/label/staticcontents_list'|translate}{*自由HTML一覧*}</a><br />
+<hr class="for_mng"/>
+
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+
+{pager info=$pageInfo}
+{foreach from=$staticcontents_category_list item=row}
+    {assign var=category_id value=$row.static_category_id}
+        <a href="/management/staticcontents/staticcontents_category_edit/static_category_id={$row.static_category_id}">{$row.category_nm}</a><br />
+        {$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}<br /><br />
+{/foreach}
+{pager info=$pageInfo}
+
+{rcms_include file="management/mobile/footer.html"}

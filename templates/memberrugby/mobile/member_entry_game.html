@@ -1,0 +1,11 @@
+{if $entryGameList}
+<h2>最近出場した試合</h2>
+
+<ul>
+{foreach name=entryGame from=$entryGameList item=game}
+<li><a href="/gamerugby_detail/id={$game.table_idval}">{$game.table_titleval}</a></li>
+{/foreach}
+</ul>
+<hr/>
+{/if}
+

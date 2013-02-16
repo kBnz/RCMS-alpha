@@ -1,0 +1,28 @@
+{module name="help_list"}
+<h2 class="module_title"><span>{'/modules/help/label/help_list'|translate}{* Q&A一覧 *}</span></h2>
+<div class="module_contents">
+
+{foreach item=category_item from=$helpCategoryList name=help_category}
+
+	<div class="help_item">
+		{if $category_item.parent_id == ''}
+			<h3>{if $category_item.items}<a href="/help_category/category_id={$category_item.help_category_id}">{$category_item.category_name}</a>{else}{$category_item.category_name}{/if}</h3>
+			<dl>
+		{else}
+			{if $category_item.items}<h4><a href="/help_category/category_id={$category_item.help_category_id}">{$category_item.category_name}</a></h4>{/if}
+			<dl class="child">
+		{/if}
+				{foreach item=help_item from=$category_item.items}
+				<dt>Ｑ．{$help_item.title}</dt>
+				<dd>Ａ．
+{$help_item.contents|strip_tags:false|mbtruncate:100}
+{if $help_item.contents|strip_tags:false|@mb_strlen > 100}<a href="/help_detail/id={$help_item.help_item_id}">{'/label/continue_reading'|translate}{* 続きを読む *}</a>{/if}
+				</dd>
+				{/foreach}
+			</dl>
+	</div>
+{/foreach}
+
+</div>
+{/module}
+

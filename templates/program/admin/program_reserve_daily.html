@@ -1,0 +1,222 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}の予約一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+<a href="/management/program/program_reserve_list/">予約一覧</a>
+一日スケジュール
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$this_year}年{$this_month}月{$this_day}日の予約一覧</h3>
+
+<!--クラス一覧とスケジュール一覧を切り替えるタブナビ-->
+<ul class="minitabs">
+ <li><a href="/management/program/program_list/">クラス一覧</a></li>
+ <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+ <li><a href="/management/program/program_schedule_list/">スケジュール一覧</a></li>
+ <li><a href="/management/program/program_reserve_list/" class="active">予約一覧</a></li>
+</ul>
+
+
+<div class="list_main">
+
+<div class="calendar_list">
+
+{* 一週間の日付 *}
+<table cellspacing="0" class="calendar">
+	<tr valign="bottom">
+		<td class="pre">
+			<a href="/management/program/program_reserve_daily/day={$prev_week}"><span class="arrow">&lt;&lt;</span>前週</a>
+		</td>
+		<td class="this" colspan="5" align="center"><span class="month1">{$this_year}<span>年</span>{$this_month}<span>月</span></span></td>
+		<td class="next"><a href="/management/program/program_reserve_daily/day={$next_week}">次週<span class="arrow">&gt;&gt;</span></a></td>
+	</tr>
+	<tr class="header">
+		<th class="Mon"><span>{$this_week.0}(月)</span><br />
+			<span class="small">{if $today == $week_data.0}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.0}">表示する</a>{/if}</span>
+		</th>
+		<th class="Tue"><span>{$this_week.1}(火)</span><br />
+			<span class="small">{if $today == $week_data.1}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.1}">表示する</a>{/if}</span>
+		</th>
+		<th class="Wed"><span>{$this_week.2}(水)</span><br />
+			<span class="small">{if $today == $week_data.2}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.2}">表示する</a>{/if}</span>
+		</th>
+		<th class="Thu"><span>{$this_week.3}(木)</span><br />
+			<span class="small">{if $today == $week_data.3}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.3}">表示する</a>{/if}</span>
+		</th>
+		<th class="Fri"><span>{$this_week.4}(金)</span><br />
+			<span class="small">{if $today == $week_data.4}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.4}">表示する</a>{/if}</span>
+		</th>
+		<th class="Sat"><span>{$this_week.5}(土)</span><br />
+			<span class="small">{if $today == $week_data.5}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.5}">表示する</a>{/if}</span>
+		</th>
+		<th class="Sun"><span>{$this_week.6}(日)</span><br />
+			<span class="small">{if $today == $week_data.6}表示中{else}<a href="/management/program/program_reserve_daily/day={$week_data.6}">表示する</a>{/if}</span>
+		</th>
+	</tr>
+</table>
+</div>
+
+{*表示する時間帯の選択部分*}
+<form name="time_zone_form" method="POST" action="/management/program/program_reserve_daily/day={$today}">
+<select name="from">
+		<option value="00:00" {if $from == "00:00"}selected{/if}>0時</option>
+		<option value="01:00" {if $from == "01:00"}selected{/if}>1時</option>
+		<option value="02:00" {if $from == "02:00"}selected{/if}>2時</option>
+		<option value="03:00" {if $from == "03:00"}selected{/if}>3時</option>
+		<option value="04:00" {if $from == "04:00"}selected{/if}>4時</option>
+		<option value="05:00" {if $from == "05:00"}selected{/if}>5時</option>
+		<option value="06:00" {if $from == "06:00"}selected{/if}>6時</option>
+		<option value="07:00" {if $from == "07:00"}selected{/if}>7時</option>
+		<option value="08:00" {if $from == "08:00"}selected{/if}>8時</option>
+		<option value="09:00" {if $from == "09:00"}selected{/if}>9時</option>
+		<option value="10:00" {if $from == "10:00"}selected{/if}>10時</option>
+		<option value="11:00" {if $from == "11:00"}selected{/if}>11時</option>
+		<option value="12:00" {if $from == "12:00"}selected{/if}>12時</option>
+		<option value="13:00" {if $from == "13:00"}selected{/if}>13時</option>
+		<option value="14:00" {if $from == "14:00"}selected{/if}>14時</option>
+		<option value="15:00" {if $from == "15:00"}selected{/if}>15時</option>
+		<option value="16:00" {if $from == "16:00"}selected{/if}>16時</option>
+		<option value="17:00" {if $from == "17:00"}selected{/if}>17時</option>
+		<option value="18:00" {if $from == "18:00"}selected{/if}>18時</option>
+		<option value="19:00" {if $from == "19:00"}selected{/if}>19時</option>
+		<option value="20:00" {if $from == "20:00"}selected{/if}>20時</option>
+		<option value="21:00" {if $from == "21:00"}selected{/if}>21時</option>
+		<option value="22:00" {if $from == "22:00"}selected{/if}>22時</option>
+		<option value="23:00" {if $from == "23:00"}selected{/if}>23時</option>
+</select>
+から
+<select name="to">
+		<option value="00:00" {if $to == "00:00"}selected{/if}>0時</option>
+		<option value="01:00" {if $to == "01:00"}selected{/if}>1時</option>
+		<option value="02:00" {if $to == "02:00"}selected{/if}>2時</option>
+		<option value="03:00" {if $to == "03:00"}selected{/if}>3時</option>
+		<option value="04:00" {if $to == "04:00"}selected{/if}>4時</option>
+		<option value="05:00" {if $to == "05:00"}selected{/if}>5時</option>
+		<option value="06:00" {if $to == "06:00"}selected{/if}>6時</option>
+		<option value="07:00" {if $to == "07:00"}selected{/if}>7時</option>
+		<option value="08:00" {if $to == "08:00"}selected{/if}>8時</option>
+		<option value="09:00" {if $to == "09:00"}selected{/if}>9時</option>
+		<option value="10:00" {if $to == "10:00"}selected{/if}>10時</option>
+		<option value="11:00" {if $to == "11:00"}selected{/if}>11時</option>
+		<option value="12:00" {if $to == "12:00"}selected{/if}>12時</option>
+		<option value="13:00" {if $to == "13:00"}selected{/if}>13時</option>
+		<option value="14:00" {if $to == "14:00"}selected{/if}>14時</option>
+		<option value="15:00" {if $to == "15:00"}selected{/if}>15時</option>
+		<option value="16:00" {if $to == "16:00"}selected{/if}>16時</option>
+		<option value="17:00" {if $to == "17:00"}selected{/if}>17時</option>
+		<option value="18:00" {if $to == "18:00"}selected{/if}>18時</option>
+		<option value="19:00" {if $to == "19:00"}selected{/if}>19時</option>
+		<option value="20:00" {if $to == "20:00"}selected{/if}>20時</option>
+		<option value="21:00" {if $to == "21:00"}selected{/if}>21時</option>
+		<option value="22:00" {if $to == "22:00"}selected{/if}>22時</option>
+		<option value="23:00" {if $to == "23:00"}selected{/if}>23時</option>
+</select>
+を
+<input type="submit" value="表示する" />
+</form>
+
+<br />
+<div class="clear"></div>
+
+{*一日スケジュール本体*}
+{if $arrHeader}
+<div>
+<table cellspacing="0" class="time_table">
+{strip}
+	<tr>{*クラス名を表示する段*}
+		<th width="{$time_cell_width}%">&nbsp</th>
+	{foreach from=$arrHeader.class_list item=class_name name = child_category}
+		<th width="{$column_width}%" align="center">
+			<span>{$class_name}</span>
+		</th>
+	{/foreach}
+	</tr>{*クラス名表示段ここまで*}
+	{foreach from = $time_axis item = val key = time}
+	<tr>
+		{*時間軸の部分*}
+		{if $daily_schedule.$today.time.$time}
+			{foreach from=$daily_schedule.$today.time.$time.programs item=item}
+			<td align="right">{$item.program_nm}</td>
+			{/foreach}
+		{else}
+			<td>&nbsp</td>
+		{/if}
+		{*時間軸の部分ここまで*}
+		{*スケジュール部分*}
+		{foreach from=$arrHeader.id_list item=class_id name = schedule_body}
+			{if $daily_schedule.$today.$class_id.$time}
+				<td rowspan="{$daily_schedule.$today.$class_id.$time.length}" align="center">
+				{if $daily_schedule.$today.$class_id.$time.programs}
+					{foreach from=$daily_schedule.$today.$class_id.$time.programs item=program}
+						<div {if ($program.accept_flg == 2) || ($program.accept_flg == -1)} class="reserved" {/if}>
+						<p>{$program.program_nm}</p>
+						<p><span style="margin-right: 10px;">{$program.from_time}～{$program.to_time}</span>{$program.teacher}</p>
+						{$program.comment|strip_tags:false|mbtruncate:30:"...":true}
+						{if ($program.accept_flg == 0)||($program.accept_flg == -1)}
+						{elseif $program.accept_flg ==	$smarty.const.RESERVE_ACCEPT_ON || $program.accept_flg ==  $smarty.const.RESERVE_ACCEPT_LITTLE}<p><a href="/management/program/program_reserve_edit/reserve_header_id={$reserve_header_id}&module_id={$program.program_schedule_id}">予約する</a></p>
+						{elseif $program.accept_flg == 2}<p>予約受付終了</p>
+						{/if}
+						</div>
+						<div>
+						{if $reserve_list[$program.program_schedule_id]}
+							<p><a href="/management/program/program_reserve_edit/reserve_header_id={$reserve_header_id}&reserve_id={$reserve_list[$program.program_schedule_id].reserve_id}">
+							[
+							{foreach from=$user_input_items item=item key=key name=rlist}
+								{$reserve_list[$program.program_schedule_id].$key}{if $key == "name1"}様{/if}
+								{if !$smarty.foreach.rlist.last}
+								/
+								{/if}
+							{/foreach}
+							]
+							</a></p>
+							{if $reserve_list[$program.program_schedule_id].more == 1}
+								<p style="font-size: 85%;">
+								<a href="/management/program/program_reserve_detail/reserve_header_id={$reserve_header_id}&module_id={$program.program_schedule_id}">
+								予約を全部表示する
+								</a>
+								</p>
+							{/if}
+						{/if}
+						</div>
+					{/foreach}
+				{/if}
+				</td>
+			{/if}
+		{/foreach}
+		{*スケジュール部分ここまで*}
+	</tr>
+	{/foreach}
+{/strip}
+</table>
+</div>
+{/if}
+
+</div>
+</div>
+
+<style>
+{literal}
+table.calendar,
+table.time_table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.calendar th,
+table.calendar td,
+table.time_table th,
+table.time_table td {
+	border: 1px solid #666;
+}
+{/literal}
+</style>
+
+{rcms_include file="management/footer.html"}

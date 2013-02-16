@@ -1,0 +1,58 @@
+{module name="magazine_bn_detail"}
+<h2 class="module_title"><span>{'/modules/magazine/label/magazine_bn_detail'|translate}{*メールマガジンバックナンバー詳細*}</span></h2>
+<div class="module_contents">
+{if $magazine_bn.err_str}
+    {$magazine_bn.err_str}
+{else}
+    <table class="list">
+      <tr>
+        <th>{'/label/sending_time'|translate}{*送信日時*}</th>
+        <td>{$magazine_bn.send_ymdhi|pg_dateformat}</td>
+      </tr>
+      <tr>
+        <th>{'/label/subject'|translate}{*件名*}</th>
+        <td>{$magazine_bn.subject|escape}</td>
+      </tr>
+      <tr>
+        <th>{'/label/body'|translate}{*本文*}</th>
+        <td>{if $magazine_bn.mail_type == "0"}{$magazine_bn.body|nl2br}{else}{$magazine_bn.body}{/if}</td>
+      </tr>
+    </table>
+    {foreach from=$magazine_bn.pdf_urls item=pdf_url key=i name=pdf_url}
+        {if $smarty.foreach.pdf_url.first}
+    <div class="pdf_area">
+      <ul>
+        {/if}
+        <li><img src="/images/common/pdficon_small.gif"><a href="{$pdf_url}" target="_blank">{$magazine_bn.pdf_titles.$i}</a></li>
+        {if $smarty.foreach.pdf_url.last}
+      </ul>
+    </div>
+        {/if}
+    {/foreach}
+    {if $magazine_bn.pdf_urls || $magazine_bn.swf_url}
+    <div class="pdf_area">
+      <div class="acrobat_link">
+        {if $magazine_bn.swf_url}
+    <p class="banner"><a href="http://www.adobe.com/shockwave/download/index.cgi?Lang=Japanese&amp;P5_Language=Japanese&amp;P1_Prod_Version=ShockwaveFlash&amp;Lang=Japanese" target="_blank"><img alt="get_adobe_reader" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" height="31" width="88"></a></p>
+    <p><a href="http://www.adobe.com/shockwave/download/index.cgi?Lang=Japanese&amp;P5_Language=Japanese&amp;P1_Prod_Version=ShockwaveFlash&amp;Lang=Japanese" target="_blank">AdobeR Flash Player のダウンロード</a><br>
+   {'/msg/you_need_adove_flash_player'|translate}{* Flashムービーをご覧いただくには、Adobe社のFlash Playerが必要になります。<br>Adobe社ウェブサイトから最新のFlash Player(無料)をダウンロードし、インストールしてください。*}</p>
+        {/if}
+        {if $magazine_bn.pdf_urls}
+    <p class="banner"><a href="http://www.adobe.co.jp/products/acrobat/readermain.html" target="_blank"><img alt="get_adobe_reader" src="/images/common/get_adobe_reader.gif" height="31" width="88"></a></p>
+    <p>
+{'/msg/you_need_acrobat_reader'|translate}
+{*※PDFファイルをご覧いただくには、Adobe Acrobat Reader が必要です。
+<a href="http://www.adobe.co.jp/products/acrobat/readermain.html" target="_blank">Adobe Acrobat Reader のダウンロード（無償）はこちら</a>から<br>
+※PDFファイルのサイズが大きい場合、表示するまで時間がかかることがございます。
+*}</p>
+        {/if}
+      </div>
+    </div>
+    {/if}
+    <div class="relation_link">
+        <p><a href="/magazine_detail/id={$magazine_bn.magazine_id}" class="small_text">{'/modules/magazine/label/detail_and_apply'|translate}</a></p>{*参加申請*}
+        <p><a href="/magazine_bn_list/id={$magazine_bn.magazine_id}{if $pageID}&pageID={$pageID}{/if}" class="small_text">{'/modules/magazine/label/back_number_list'|translate}{*メールマガジンバックナンバー一覧*}</a></p>
+    </div>
+{/if}
+</div>
+{/module}

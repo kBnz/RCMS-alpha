@@ -1,0 +1,153 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+<!--
+function confirmOpen() {
+    document.rcms_list_form.MODE.value = 'OPEN';
+    document.rcms_list_form.submit();
+}
+
+function confirmClose() {
+    if(confirm('本当に退会にしてもよろしいですか？')){
+        document.rcms_list_form.MODE.value = 'CLOSE';
+        document.rcms_list_form.submit();
+    }
+}
+
+function confirmMake() {
+    document.rcms_list_form.MODE.value = 'MAKE';
+    document.rcms_list_form.submit();
+}
+
+//-->
+{/literal}
+</script>
+
+
+<div class="list_right_bt">
+<h2>サイト一覧</h2>
+<ul>
+{if $auth.rcms.insert}
+<li class="add"><a href="/management/rcms/rcms_edit/"><span>サイト追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_list/">サイト一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+
+<form action="/management/rcms/rcms_list/" method="post">
+{if $smarty.const.OEM_ID eq 1 || $smarty.const.OEM_ID eq 10001}
+パートナー：<select name="oem_id">
+<option value="">選択↓</option>
+{html_options options=$arrOemList selected=$smarty.request.oem_id}
+</select><br>
+{/if}
+サイトID：<input type="text" name="search_site_id" value="{$smarty.request.search_site_id}" size="10"><br>
+運営者：<input type="text" name="name" value="{$smarty.request.name}" size="50"><br>
+運営者メールアドレス：<input type="text" name="email"value="{$smarty.request.email}" size="50"><br>
+URL：<input type="text" name="url"value="{$smarty.request.url}" size="50"><br>
+サイト名：<input type="text" name="site_nm"value="{$smarty.request.site_nm}" size="50"><br>
+プラン：<select name="plan">
+<option value="">選択↓</option>
+{html_options options=$arrRCMS_Plan selected=$smarty.request.plan}
+</select><br>
+ステータス：<select name="status">
+<option value="">選択↓</option>
+{html_options options=$arrRCMS_Status selected=$smarty.request.status}
+</select><input type="checkbox" name="include_status99" value="1" {if $smarty.request.include_status99}checked{/if}>退会も含む<br>
+セキュリティチェック：<select name="secure_level">
+<option value="">選択↓</option>
+{html_options options=$arrRCMS_Secure_level selected=$smarty.request.secure_level}
+</select><br>
+提供版：<select name="release_level">
+<option value="">選択↓</option>
+{html_options options=$arrRCMS_Release_level selected=$smarty.request.release_level}
+</select><br>
+DBサーバ：<input type="text" name="db_host"value="{$smarty.request.db_host}" size="15"><br>
+<input type="checkbox" name="display_ip" value="1" {if $smarty.request.display_ip}checked{/if}>IPアドレス表示<br>
+<input type="submit" name="subflg" value="検索">
+</form>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{pager info=$pageInfo}
+
+  <form name="rcms_list_form" method="POST" action="/management/rcms/rcms_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="pageID" value="{$smarty.request.pageID}" />
+    <input type="hidden" name="name" value="{$smarty.request.name}" />
+    <input type="hidden" name="email" value="{$smarty.request.email}" />
+    <input type="hidden" name="url" value="{$smarty.request.url}" />
+    <input type="hidden" name="site_nm" value="{$smarty.request.site_nm}" />
+    <input type="hidden" name="plan" value="{$smarty.request.plan}" />
+    <input type="hidden" name="status" value="{$smarty.request.status}" />
+    <input type="hidden" name="secure_level" value="{$smarty.request.secure_level}" />
+    <input type="hidden" name="release_level" value="{$smarty.request.release_level}" />
+    <input type="hidden" name="db_host" value="{$smarty.request.db_host}" />
+    <input type="hidden" name="display_ip" value="{$smarty.request.display_ip}" />
+{if $smarty.const.OEM_ID eq 1}
+    <input type="hidden" name="oem_id" value="{$smarty.request.oem_id}" />
+{/if}
+<table width="100%">
+<tr>
+<th>{if $auth.rcms.update}<input type="checkbox" onClick="AllChecked(this.checked, this.form, 'site_id[]');" />{/if}</th>
+<th>ID</th>
+{if $smarty.const.OEM_ID eq 1}<th>パートナー</th>{/if}
+<th>サイト名</th>
+<th>URL</th>
+<th>プラン</th>
+<th>提供版</th>
+<th>ステータス</th>
+<th>DBサーバ</th>
+<th>作成日時</th>
+<th>利用者</th>
+<th></th>
+</tr>
+{foreach from=$site_list item=site}
+<tr>
+<td>{if $auth.rcms.update}<input type="checkbox" name="site_id[]" value="{$site.site_id}">{/if}</td>
+<td>{$site.site_id}</td>
+{if $smarty.const.OEM_ID eq 1}<td>{$site.oem_nm}</td>{/if}
+<td>{$site.site_nm}</td>
+<td><a href="{$site.site_url}" target="_blank">{$site.site_url}</a>{if $smarty.request.display_ip}<br>{$site.site_url_ip}{/if}</td>
+<td>{$arrRCMS_Plan[$site.plan]}{if $site.plan eq 20 && $site.free_limit_ymd}あと{$site.trial_limit_day}日{/if}{if $site.cant_login}[ログイン制限]{/if}</td>
+<td>{$arrRCMS_Release_level[$site.release_level]}</td>
+<td>{$arrRCMS_Status[$site.status]}</td>
+<td>{$site.db_host}</td>
+<td>{$site.inst_ymdhi|pg_dateformat}</td>
+<td>{$site.name1} {$site.name2} {$site.company_nm}</td>
+<td>
+    <a href="/management/rcms/rcms_edit/site_id={$site.site_id}">編集</a>|
+    <a href="{$site.site_url}/management/" target="_blank">管理画面</a>
+</td>
+</tr>
+{/foreach}
+</table>
+
+{pager info=$pageInfo}
+
+{buttonbox}
+<p>選択したサイトを一括で</p>
+{if $auth.rcms.update}
+  <button type="button" onclick="confirmOpen()">公開中にする</button>
+  <button type="button" onclick="confirmMake()">構築中にする</button>
+  <button type="button" onclick="confirmClose()">退会にする</button>
+{/if}
+{/buttonbox}
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

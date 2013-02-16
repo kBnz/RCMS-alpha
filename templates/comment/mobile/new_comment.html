@@ -1,0 +1,63 @@
+{if ($view.comment != 'none' || $view.write != 'none') && $id != ""}
+<a id="comment_form"></a>
+<h2>[emoji:190]{'/label/comments'|translate}{*コメント*}</h2>
+{if $view.comment != 'none'}
+
+<input type="hidden" name="deleteId" id="deleteId" value="" />
+{if $ratingAvg ne '' && $rating_flg != "0"}{'/label/everyones_evaluation'|translate}{*みんなの評価*}：{$ratingAvg}<img src="/images/modules/comment/stars-{$ratingAvgImg}.gif"/>{/if}
+{if $rating_flg != "2"}
+{foreach item=itemList from=$commentList name=comments roop=roopb}
+<form name="deleteForm{$smarty.foreach.comments.index}" method="POST" action="/{$page_sysnm}/id={$id}#comment_form">
+<br/>▼{$itemList.note|escape|nl2br}<br/>
+
+{if $itemList.rating ne '' && $rating_flg != "0"}{'/label/evaluation'|translate}{*評価*}:<img src="/images/modules/comment/stars-{$itemList.rating}-0.gif"/>{/if}
+{if $itemList.mail == ""}Posted by {$itemList.name|escape}
+{else}Posted by <a href="mailto:{$itemList.mail}">{$itemList.name|escape}</a>
+{/if}
+ at {$itemList.create_date|replace:"-":"/"}
+<input type="hidden" name="comment_id" value="{$itemList.comment_id|escape}" />
+<input type="hidden" name="action" value="delete" />
+</form>
+{/foreach}
+
+{if $commentList|@count>0}
+<hr/>
+{/if}
+{/if}
+
+{/if}
+
+{if $view.write != 'none'}
+<form action="/{$page_sysnm}/#comment_form" method="POST">
+<input name="action" type="hidden" value="{$commentData.action|escape}" />
+<input name="comment_id" type="hidden" value="{$commentData.comment_id|escape}" />
+<input name="module_id" type="hidden" value="{$commentData.module_id|escape}" />
+<input name="res" type="hidden" value="{$commentData.res|escape}" />
+<input name="node" type="hidden" value="{$commentData.node|escape}" />
+<input name="rootnode" type="hidden" value="{$commentData.rootnode|escape}" />
+<input name="depth" type="hidden" value="{$commentData.depth|escape}" />
+<input name="id" type="hidden" value="{$id|escape}" />
+
+{rcms_include file="management/mobile/messages_box.html"}
+{rcms_include file="management/errors_box.html" errors=$comment_errors}
+
+<dl>
+{if $rating_flg != "2"}
+  <dt>{'/label/name'|translate}{*名前*}:</dt><dd><input maxlength="50" id="text" name="name" type="text" value="{if $commentData.name != ""}{$commentData.name|escape}{else}{$commentData.defaultNm|escape}{/if}" /></dd>
+  <dt>{'/label/mail_address'|translate}{*メールアドレス*}:</dt><dd><input maxlength="255" id="text" name="mail" type="text" value="{$commentData.mail|escape}" {istyle type="en"} /></dd>
+  <dt>{'/label/comments'|translate}{*コメント*}:</dt><dd><textarea rows="" cols="" name="note">{$commentData.note|escape}</textarea></dd>
+{/if}
+</dl>
+
+{if $rating_flg != "2"}
+  ﾊﾟｽﾜｰﾄﾞ:<input size="7" name="delkey" type="password" value="{$commentData.delkey|escape}" />
+{/if}
+    <input type="submit" name="btnSubmit" value="{'/label/write_btn'|translate}{*書込*}" />
+{if $comment_id != ""}
+    <input type="submit" name="btnSubmit" value="{'/label/delete_btn'|translate}{*削除*}" />
+{/if}
+{/if}
+</form>
+
+<hr/>
+{/if}

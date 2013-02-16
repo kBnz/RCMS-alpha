@@ -1,0 +1,12 @@
+{if $items}
+<h2>関連動画</h2>
+
+{foreach from=$items item=item}
+<div style="text-align:center;font-size:small;">
+  <a href="{$item.detail}"><img src="{$item.web->thumbnail_url}"/></a><br/>
+  <a href="{$item.detail}">{$item.db.name}</a><br/>
+  <br/>
+</div>
+{/foreach}
+<hr/>
+{/if}

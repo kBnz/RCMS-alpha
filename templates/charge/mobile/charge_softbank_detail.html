@@ -1,0 +1,11 @@
+{if $chargeInfo}
+{if $module.param.type == 'delete'}
+<div style="text-align: center;font-size:large;">
+<a href="http://JPHONE/CONFOFF?sid={$chargeInfo.sid}&nl={$smarty.const.ROOT_URL}/&cl={$smarty.const.ROOT_URL}/">【月額315円解除】</a>
+</div>
+{else}
+<div style="text-align: center;font-size:large;">
+<a href="http://JPHONE/CONFON?sid={$chargeInfo.sid}&nl={$smarty.const.ROOT_URL}/&cl={$smarty.const.ROOT_URL}/">【月額315円登録】</a>
+</div>
+{/if}
+{/if}

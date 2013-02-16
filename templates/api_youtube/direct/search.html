@@ -1,0 +1,16 @@
+{if $navi}<p>{$navi}</p>{/if}
+<table style="width:100%">
+  <tr>
+    <th>サムネイル</th><th>タイトル</th><th>時間</th><th>詳細</th><th>&nbsp;</th>
+  </tr>
+  {foreach from=$items key=n item=item}
+  <tr>
+    <td><a href="/management/{$mt}/{$mt}_edit/external_id={$item->getVideoId()}"><img src="http://img.youtube.com/vi/{$item->getVideoId()}/2.jpg"/></a></td>
+    <td><a href="/management/{$mt}/{$mt}_edit/external_id={$item->getVideoId()}">{$item->getVideoTitle()|truncate}</a></td>
+    <td>{$item->getVideoDuration()|date_format:"%M:%S"}</td>
+    <td>{$item->getVideoDescription()|truncate}</td>
+    <td><a href="javascript:void 0" onclick="YouTube.capture(this, '{$item->getVideoId()|escape:"javascript"}', '{$item->getVideoTitle()|escape:"javascript"}')">取り込む</a></td>
+  </tr>
+  {/foreach}
+</table>
+{if $navi}<p>{$navi}</p>{/if}

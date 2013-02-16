@@ -1,0 +1,50 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>レストラン一覧</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_gnavi/api_gnavi_search/">{$module_nm}</a>
+レストラン一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_gnavi/api_gnavi_search/">レストラン検索</a></li>
+  <li><a href="/management/api_gnavi/api_gnavi_list/" class="active">レストラン一覧</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+
+    <p>過去に関連させたり、コメントしたりしたことのあるレストランの一覧です。</p>
+
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>店名</th><th>関連</th><th>コメント</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$restaurants item=rest}
+        <tr>
+          <td><a href="{$rest.detail}">{$rest.restaurant_name}</a></td><td>{$rest.nOfRelatedItems}件</td><td>{$rest.notes|default:"なし"|mbtruncate}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+    <p><a href="http://www.gnavi.co.jp/" onclick="return !window.open(this.href)"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" width="90" height="35" alt="グルメ情報検索サイト　ぐるなび" /></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

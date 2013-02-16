@@ -1,0 +1,110 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<style>
+label {
+  padding-left: 5px;
+}
+ul.init_group_id li{
+  line-height: 1.5em;
+}
+</style>
+{/literal}
+
+<div class="list_right_bt">
+<h2 class="member">一括処理</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/shopping/shopping_group_list/">{$module_nm}</a>
+<a href="/management/shopping/shopping_group_list/">グループ一覧</a>
+一括処理
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents shopping_lump">
+
+<ul class="minitabs">
+  <li><a href="/management/shopping/shopping_group_edit/shopping_group_id={$shopping_group_id}">グループ設定</a></li>
+  <li><a href="/management/shopping/shopping_list/shopping_group_id={$shopping_group_id}">商品一覧</a></li>
+  <li><a href="/management/shopping/shopping_edit/shopping_group_id={$shopping_group_id}">商品編集</a></li>
+  <li><a href="/management/shopping/shopping_lump/shopping_group_id={$shopping_group_id}" class="active">一括処理</a></li>
+  <li><a href="/management/shopping/shopping_category_list/shopping_group_id={$shopping_group_id}" >カテゴリ設定</a></li>
+</ul>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{foreach from=$errors key=key item=val name=errors}
+  {if $smarty.foreach.errors.first}<ul style="color: red;">{/if}
+  {if $val|@is_array}
+    {foreach from=$val item=val2}
+      <li>【{$key}】{$val2}</li>
+    {/foreach}
+  {else}
+    <li>{$val}</li>
+  {/if}
+  {if $smarty.foreach.errors.last}</ul>{/if}
+{/foreach}
+
+<form method="post" action="/management/shopping/shopping_lump/" ENCTYPE="multipart/form-data" id="shopping_lump_form">
+
+  {* アップロード *}
+  <div id="blk_upload" style="position:relative; display:block;">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" id="MODE" value="" />
+    <input type="hidden" name="shopping_group_id" value="{$shopping_group_id}" />
+
+    <div class="list_main">
+    <table style="width:100%">
+      <tr>
+        <th>ファイル指定</th>
+        <td>
+          <input type="file" size="50" name="SHOPPING_CSV" />
+          <p><a href="/management/shopping/shopping_upload_sample/">サンプルをダウンロード</a></p>
+            {if $arrDownload}
+              <p>商品の一覧のダウンロード</p>
+              <ul>
+              {foreach from=$arrDownload item=result_num key=offset name=download_list}
+                <li>{strip}<a href="/management/shopping/shopping_download_all/shopping_group_id={$shopping_group_id}&offset={$offset}&total={$download_total}">
+                   {$result_num.start}～{$result_num.end}件をダウンロード</a>{/strip}</li>
+              {/foreach}
+              </ul>
+            {else}
+              <p><a href="/management/shopping/shopping_download_all/shopping_group_id={$shopping_group_id}">商品一覧をダウンロード</a></p>
+            {/if}
+          <p class="hint">商品IDがあれば上書きし、なければ新規に登録します。ダウンロードとアップロードは5000件ずつ行ってください。</p>
+        </td>
+      </tr>
+    </table>
+    {buttonbox}
+      {if $auth.shopping.update}
+        <button type="submit" onclick="this.form.MODE.value='UPLOAD'">送信する</button>
+      {/if}
+    {/buttonbox}
+
+    {if $successful}
+      <table>
+        <tr>
+          <th>インサート件数</th>
+          <td>{$insert_cnt}件</td>
+        </tr>
+      </table>
+    {/if}
+
+    <table>
+      {foreach from=$upList item=row}
+        <tr>
+          <td>{$row.name1}</td>
+          <td>{$row.name2}</td>
+          <td>{$row.email}</td>
+       </tr>
+     {/foreach}
+    </table>
+  </div>
+  </div>
+  {* ここまでアップロード *}
+
+</form>
+</div>
+
+{rcms_include file="management/footer.html"}

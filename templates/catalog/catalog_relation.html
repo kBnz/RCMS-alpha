@@ -1,0 +1,50 @@
+{if $catalogList|@count > 0}
+{module name="catalog_relation"}
+<h2 class="module_title"><span>{'/label/related_info'|translate}{* 関連情報 *}</span></h2>
+<div class="module_contents">
+
+{foreach from=$catalogList item=row key=catalog_key}
+<div class="CatalogItem"{if $row.parent_id ne 0}style="padding-left: 5em"{/if}>
+  <h3>{if $row.detail_flg eq 1}<a href="/catalog_detail{if $catalog_group_id != 1}{$catalog_group_id}{/if}/id={$row.catalog_id}">{/if}
+        {if $row.subject_type ne '1'}
+            {$row.subject}
+        {else}
+            {if $row.subject1_ext eq 'swf'}
+            <div id="subject_flash"></div>
+            <script type="text/javascript" src="/js/swfobject.js"></script>
+            <script type="text/javascript">
+            <!--
+                var so = new SWFObject("{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_1.{$row.subject1_ext}", "subject_flash", "{$row.subject_width}", "{$row.subject_height}", "8", "#000000");
+                so.write("subject_flash");
+            //-->
+            </script>
+
+            {else}
+                {if $row.subject1_ext}
+                <img src="{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_1.{$row.subject1_ext}" 
+                {if $row.subject2_ext}
+                  onMouseOver="this.src='{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_2.{$row.subject2_ext}'" 
+                  onMouseOut="this.src='{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_1.{$row.subject1_ext}'" 
+                {/if}
+                >
+                {/if}
+            {/if}
+        {/if}
+{if $row.detail_flg eq 1}</a>{/if}
+  </h3>
+    {*{if $row.group_nm != ""}<span class="group">[{$row.group_nm}]</span>{/if}*}
+    {foreach from=$user_profile_list[$catalog_key][$row.contents_type].profile item=item key=key name=catalog_item}
+      {if $smarty.foreach.catalog_item.first && $row.$key}
+        {if $item.in_list eq 1}<div class="firstItem_{$user_profile_list[$row.contents_type].layout}">{$row.$key}</div>{/if}
+      {elseif $row.$key}
+        {if $item.in_list eq 1}<div class="item">{$row.$key}</div>{/if}
+      {/if}
+    {/foreach}
+    {if $row.detail_flg eq 1}<span class="detail_lnk"><a href="/catalog_detail{if $catalog_group_id != 1}{$catalog_group_id}{/if}/id={$row.catalog_id}">{'/label/detail'|translate}{* 詳細 *}</a></span>{/if}
+<div class="clr"></div>
+</div>
+{/foreach}
+
+</div>
+{/module}
+{/if}

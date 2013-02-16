@@ -1,0 +1,20 @@
+{module name="link_detail"}
+<h2 class="module_title"><span>{'/modules/link/label/link_detail'|translate}{*リンク詳細*}</span></h2>
+<div class="module_contents">
+
+{if $linkCategoryInfo}
+  <h3>{$linkCategoryInfo.link_category_name}</h3>
+{/if}
+
+{foreach from=$link_list item=row}
+  <div class="link_block">
+    <h4><a href="{$row.link_url}" title="{$row.link_string}" target="_blank">{$row.link_string|escape}</a></h4>
+    {if $row.link_image_type}<a href="{$row.link_url}" title="{$row.link_string}" target="_blank"><img src="{$LINK_SAVE_URL}/i{$row.link_id}{$row.link_image_type}"  alt="{$row.link_string}" align="middle"></a>{/if}
+    <p class="link_url"><a href="{$row.link_url}" title="{$row.link_string}" target="_blank">{$row.link_url}</a></p>
+    <p class="link_info">{$row.link_info|escape}</p>
+  </div>
+{/foreach}
+
+<div class="clearFloat"><br></div>
+</div>
+{/module}

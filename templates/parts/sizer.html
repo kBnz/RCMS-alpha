@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta http-equiv="content-style-type" content="text/css">
+  <meta http-equiv="content-script-type" content="text/javascript">
+  <title>RCMS Parts</title>
+  <link rel="stylesheet" type="text/css" href="{if $css}{$css}{else}/css/parts/default.css{/if}">
+  <style type="text/css">
+  html, body, #parts {ldelim}
+    margin: 0px;
+    padding: 0px;
+  {rdelim}
+  #parts {ldelim}
+    padding: 8px;
+    float: left;
+  {rdelim}
+
+  {if $isColorOptionEnabled}
+  /* 色指定の実装の例 */
+  h2 {ldelim}
+    color: {$color0|default:"#000000"};
+    background-color: {$color1|default:"#FFFFFF"}
+  {rdelim}
+  #parts {ldelim}
+    color: {$color2|default:"#000000"};
+    background-color: {$color3|default:"#FFFFFF"}
+  {rdelim}
+  {/if}
+  </style>
+  <script type="text/javascript" src="/js/parts/Sizer.js"></script>
+  <script type="text/javascript">
+  {literal}
+    function sendToEdit(sizer) {
+      var width  = window.opener.document.getElementById('width');
+      var height = window.opener.document.getElementById('height');
+
+      sizer.send(width, height);
+    }
+
+    window.onload = function() {
+      sizer = new Sizer('parts');
+      document.getElementById('w').innerHTML = '幅： ' + sizer.width + 'px';
+      document.getElementById('h').innerHTML = '高さ： ' + sizer.height + 'px';
+      sendToEdit(sizer);
+      window.close();
+    }
+  {/literal}
+  </script>
+</head>
+
+<body>
+<div id="parts">
+
+{$moduleHTML}
+
+</div>
+
+<p style="clear:left;"><span id="w">幅： 200px</span>&nbsp;&nbsp;&nbsp;<span id="h">高さ： 400px</span></p>
+<p><input type="button" value="幅と高さを自動設定する" onclick="sendToEdit(sizer);" /><input type="button" value="閉じる" onclick="window.close();" /></p>
+</body>
+
+</html>

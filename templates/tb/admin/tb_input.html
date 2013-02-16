@@ -1,0 +1,84 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}{$arrTb_kbn.$tb_kbn}新規送信</h2>
+<ul>
+{if $auth.tb.insert}
+<li class="add"><a href="/management/tb/tb_input/"><span>新規送信</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/tb/tb_list/">{'/modules/tb'|translate}</a>
+新規送信
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/tb/tb_list/tb_kbn={$smarty.const.TB_KBN_RECEIVE}">受信一覧</a></li>
+  <li><a href="/management/tb/tb_list/tb_kbn={$smarty.const.TB_KBN_SEND}">送信一覧</a></li>
+  <li><a href="/management/tb/tb_input/" class="active">新規送信</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/tb/tb_input/" method="POST">
+    <input type="hidden" name="tb_id" value="{$tb_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <table width="100%">
+      <tr>
+        <th>サイト名</th>
+        <td>
+          <input type="text" name="blog_name" style="width:350px" value="{$data.blog_name}">
+          <span class="required">必須</span>
+          <p class="hint">サイト名やブログ名などを入力してください。</p>
+        </td>
+      </tr>
+      <tr>
+        <th style="width:140px">記事タイトル</th>
+        <td>
+          <input type="text" name="title" style="width:350px" value="{$data.title}">
+          <span class="required">必須</span>
+          <p class="hint">ブログやトピックスの記事タイトルを入力してください。</p>
+        </td>
+      </tr>
+      <tr>
+        <th>概要</th>
+        <td>
+          <textarea name="excerpt" style="width:350px;height:80px">{$data.excerpt}</textarea>
+          <p class="hint">記事の抜粋や説明などを入力してください。</p>
+        </td>
+      </tr>
+      <tr>
+        <th>記事のURL</th>
+        <td>
+          <input type="text" name="url" style="width:350px" value="{$data.url}"/>
+          <span class="required">必須</span>
+          <p class="hint">記事のURLを入力してください。</p>
+        </td>
+      </tr>
+      <tr>
+        <th>PingURL</th>
+        <td>
+          <textarea name="ping_urls" style="width:350px;height:80px">{$data.ping_urls}</textarea>
+          <p class="required">必須</p>
+          <p class="hint">通知先のPingURLを入力してください。複数送信する場合は１行に１つずつ入力してください。</p>
+        </td>
+      </tr>
+    </table>
+
+    {buttonbox}
+      <button type="submit">送信する</button>
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

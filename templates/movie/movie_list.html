@@ -1,0 +1,16 @@
+{module name="movie_list"}
+<h2 class="module_title"><span>動画一覧</span></h2>
+<div class="module_contents">
+<p class="page_links">{$page_links}</p>
+{section name=mydata loop=$movieList}
+<p class="subitem_list" style="text-align:center;float:left;width:150px;padding:0px 2px 10px 2px;">
+<a href="/movie_detail/id={$movieList[mydata].movie_id}&type={$type}&search_id={$search_id}&season={$season}">{$movieList[mydata].ymd}</a><br>
+<a href="/movie_detail/id={$movieList[mydata].movie_id}&type={$type}&search_id={$search_id}&season={$season}"><img src="/files/movie/{$movieList[mydata].movie_id}_1.jpg" alt="{$movieList[mydata].movie_name}" width="150" height="100" border="0"></a><br>
+<a href="/movie_detail/id={$movieList[mydata].movie_id}&type={$type}&search_id={$search_id}&season={$season}">{$movieList[mydata].movie_name}</a>
+</p>
+{sectionelse}
+<p>データがありません。</p>
+{/section}
+<p class="page_links clr">{$page_links}</p>
+</div>
+{/module}

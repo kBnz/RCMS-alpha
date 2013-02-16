@@ -1,0 +1,213 @@
+<script language="javascript" type="text/javascript" src="/js/yui/v2.5.2/yahoo/yahoo-min.js" charset="UTF-8"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/v2.5.2/utilities/utilities.js" charset="UTF-8"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/v2.5.2/treeview/treeview-min.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+{literal}
+(function() {
+
+var new_days = 2;
+var treeId = "{/literal}{$contents_id}{literal}";
+
+function updateReader(up) {
+    var params = {};
+    if (up) {
+        params['update'] = 'on';
+    }
+    params['itemCnt'] = '{/literal}{$itemCnt}{literal}';
+    var ajax = new Ajax.Request(
+        "/direct/rss/feeds/",
+        {
+            method: 'get',
+            parameters: $H(params).toQueryString(),
+            onSuccess: refresh
+        }
+    );
+}
+
+function refresh(req) {
+    var data = eval("(" + req.responseText + ")");
+    var model = makeModel(data.categories, data.channels);
+    var yTree = new YAHOO.widget.TreeView("treeDiv" + treeId);
+    paintTree(model, yTree.getRoot());
+    yTree.draw();
+}
+
+function makeModel(cates, channels) {
+    var newTime = new Date(new Date() -  new_days * 24 * 60 * 60 * 1000);
+    var root = [];
+    for (var i in cates) {
+        cates[i].getTitle = function(){return this.category_nm;};
+        cates[i].getChildren = function(){return this.children;};
+        cates[i].children = [];
+        cates[i].isCategory = true;
+        cates[i].isNew = function(){return false;};
+        if (!cates[i].parent_id) {
+            root.push(cates[i]);
+        }
+        else {
+            cates[cates[i].parent_id].children.push(cates[i]);
+        }
+    }
+
+    for (var i = 0 ; i < channels.length ; i++) {
+        var ch = channels[i];
+        ch.getTitle = function(){return this.title;};
+        ch.getChildren = function(){return this.items;};
+        ch.isNew = function(){
+            var items = this.getChildren();
+            for (var i = 0 ; i < items.length ; i++) {
+                if (items[i].isNew()) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        if (ch.contents_type) {
+            cates[ch.contents_type].children.push(ch);
+        }
+        else {
+            root.push(ch);
+        }
+        for (var j = 0 ; j < ch.items.length ; j++) {
+            ch.items[j].getTitle = function(){return this.title;}
+            ch.items[j].date = parseDate(ch.items[j].date);
+            ch.items[j].isNew = function(){
+                if (this.date) {
+                    return this.date > newTime;
+                }
+                return false;
+            };
+        }
+    }
+    return root;
+}
+
+function paintTree(model, parentNode) {
+    for (var i = 0 ; i < model.length ; i++) {
+        var row = model[i];
+        var node = new YAHOO.widget.TextNode(row.getTitle(), parentNode, false);
+        if (row.isCategory) {
+            node.labelStyle = "category";
+        }
+        if (row.isNew()) {
+            node.labelStyle = node.labelStyle + " new_item";
+        }
+        if (row.getChildren) {
+            node.expand();
+            paintTree(row.getChildren(), node);
+        }
+        else {
+            node.href = row.link;
+            node.target = "_blank";
+        }
+    }
+}
+
+function parseDate(s) {
+    var t = Date.parse(s.replace(/-/g, "/"));
+    return !isNaN(t) ? new Date(t) : null;
+}
+
+Event.observe(window, 'load', function() {
+    updateReader();
+    Event.observe($('rssReaderUpdate' + treeId), 'click', function() {
+        updateReader(true);
+    });
+});
+
+})();
+{/literal}
+</script>
+
+{module name="rssReader"}
+<h2 class="module_title"><span>関連サイトの更新情報</span></h2>
+<div class="module_contents">
+[<a href="javascript:void(0)" id="rssReaderUpdate{$contents_id}">更新</a>]
+<div style="overflow:auto;">
+  <div id="treeDiv{$contents_id}"><img src="/images/management/ajax-loader.gif"></div>
+</div>
+</div>
+{/module}
+<style type="text/css">
+{literal}
+.ygtvtn {
+  width:16px; height:22px;
+  background: url(/js/yui/treeview/assets/tn.gif) 0 0 no-repeat;
+}
+.ygtvtm {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/tm.gif) 0 0 no-repeat;
+}
+.ygtvtmh {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/tmh.gif) 0 0 no-repeat;
+}
+.ygtvtp {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/tp.gif) 0 0 no-repeat;
+}
+.ygtvtph {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/tph.gif) 0 0 no-repeat;
+}
+.ygtvln {
+  width:16px; height:22px;
+  background: url(/js/yui/treeview/assets/ln.gif) 0 0 no-repeat;
+}
+.ygtvlm {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/lm.gif) 0 0 no-repeat;
+}
+.ygtvlmh {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/lmh.gif) 0 0 no-repeat;
+}
+.ygtvlp {
+  width:16px; height:22px;
+  cursor:pointer ;
+  background: url(/js/yui/treeview/assets/lp.gif) 0 0 no-repeat;
+}
+.ygtvlph {
+  width:16px; height:22px; cursor:pointer ;
+  background: url(/js/yui/treeview/assets/lph.gif) 0 0 no-repeat;
+}
+.ygtvloading {
+  width:16px; height:22px;
+  background: url(/js/yui/treeview/assets/loading.gif) 0 0 no-repeat;
+}
+.ygtvdepthcell {
+  width:16px; height:22px;
+  background: url(/js/yui/treeview/assets/vline.gif) 0 0 no-repeat;
+}
+.ygtvblankdepthcell { width:16px; height:22px; }
+.ygtvitem { }
+.ygtvchildren {  }
+.ygtvlabel, .ygtvlabel:link, .ygtvlabel:visited, .ygtvlabel:hover {
+  font-size: 1em;
+  letter-spacing: -1px;
+  margin-left:2px;
+  text-decoration: none;
+}
+.category, .category:link, .category:visited, .category:hover {
+  color: black;
+  font-size: 1em;
+  letter-spacing: -1px;
+  margin-left:2px;
+  text-decoration: none;
+}
+.rssReader .new_item {
+  background-image: url(/images/modules/rss/new2.gif);
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 30px;
+}
+.ygtvspacer { height: 10px; width: 10px; margin: 2px; }
+{/literal}
+</style>

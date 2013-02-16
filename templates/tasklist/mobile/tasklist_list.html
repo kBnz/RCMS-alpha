@@ -1,0 +1,43 @@
+
+<h2>{'/modules/tasklist/label/tasklist_list'|translate}{* 課題一覧 *}</h2>
+
+  <form action="/tasklist_list/" method="post">
+    {'/label/representative'|translate}{* 担当者 *}:<input type="text" name="member_name" size="20" value="{$member_name}">
+    <select name="category">{html_options options=$arrCategory selected=$category}</select>
+    <select name="serious_flg">{html_options options=$arrSeriousFlg selected=$serious_flg}</select>
+    <select name="priority_flg">{html_options options=$arrPriorityFlg selected=$priority_flg}</select>
+    <select name="syori_flg">{html_options options=$arrSyoriFlg selected=$syori_flg}</select>
+    <input type="submit" value="{'/label/search_btn'|translate}{* 検索する *}" />
+    <input type="hidden" name="search_flg" value="1" />
+  </form>
+  <p>{$page_links}</p>
+  <table>
+    <tr>
+      <th width="200">{'/label/title'|translate}{* タイトル *}</th>
+      <th width="60">{'/label/representative'|translate}{* 担当者 *}</th>
+      <th width="60">{'/label/inscriber'|translate}{* 記入者 *}</th>
+      <th width="50">{'/label/category'|translate}{* カテゴリ *}</th>
+      <th width="30">{'/modules/tasklist/label/replys'|translate}{* 返信 *}</th>
+      <th width="10">{'/label/deadline'|translate}{* 期限 *}</th>
+      <th width="40">{'/label/importance'|translate}{* 重要度 *}</th>
+      <th width="40">{'/label/priority'|translate}{* 優先度 *}</th>
+      <th width="35">{'/label/status'|translate}{* 状況 *}</th>
+      <th width="90">{'/modules/tasklist/label/inscribe_date'|translate}{* 記入日時 *}</th>
+    </tr>
+{section name=mydata loop=$tasklistList}
+    <tr>
+      <td><a href="/tasklist_detail/id={$tasklistList[mydata].tasklist_id}">{$tasklistList[mydata].cate_title}</a></td>
+      <td>{$tasklistList[mydata].member_name}</td>
+      <td>{$tasklistList[mydata].insert_nm}</td>
+      <td>{$tasklistList[mydata].category}</td>
+      <td>{$tasklistList[mydata].reply_cnt}{'/label/items'|translate}{* 件 *}</td>
+      <td><p {$tasklistList[mydata].color_of_limit_date}>{$tasklistList[mydata].limit_date}</p></td>
+      <td {$tasklistList[mydata].color_of_serious_flg}>{$tasklistList[mydata].serious_flg}</td>
+      <td {$tasklistList[mydata].color_of_priority_flg}>{$tasklistList[mydata].priority_flg}</td>
+      <td>{$tasklistList[mydata].syori_flg}</td>
+      <td>{$tasklistList[mydata].inst_ymdhi|pg_dateformat:"%Y/%m/%d %H:%M"}</td>
+    </tr>
+{/section}
+  </table>
+  <p>{$page_links}</p>
+

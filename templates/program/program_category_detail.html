@@ -1,0 +1,24 @@
+{module name="calendar_list"}
+<h2 class="module_title"><span>プログラムの案内</span></h2>
+<div class="module_contents">
+
+{if $class_data}
+<table border="1" width="90%" cellpading="5" cellspacing="5">
+<tr>
+<th>区分</th><th>クラス名</th><th>時間</th><th>内容</th><th>強度</th><th>難易度</th>
+</tr>
+    {foreach from=$class_data item = programs key = class_nm}
+        {foreach from = $programs item = program name=program_data}
+<tr>
+            {if $smarty.foreach.program_data.first}
+<td rowspan="{$row_span[$class_nm]}">{$class_nm}</td>
+            {/if}
+<td>{$program.program_nm}</td><td>{$program.minutes}</td><td>{$program.content|nl2br}</td><td>{$program.strength}</td><td>{$program.target}</td>
+</tr>
+        {/foreach}
+    {/foreach}
+</table>
+<br style="both:clear">
+{/if}
+</div>
+{/module}

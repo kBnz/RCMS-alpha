@@ -1,0 +1,13 @@
+{module name="bbs_category_list"}
+<h2 class="module_title"><span>{'/modules/bbs/label/bbs_category_list'|translate}{*掲示板カテゴリ一覧*}</span></h2>
+<div class="module_contents">
+{foreach from=$categoryList item=row name=categoryList}
+{if $smarty.foreach.categoryList.first}<ul>{/if}
+<li><a href="/bbs_list/category_id={$row.bbs_category_id}">{$row.name}</a><span class="cnt">({$row.cnt})</span></li>
+{if $smarty.foreach.categoryList.last}
+<li><a href="/bbs_list/">{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</a><span class="cnt">({$totalCnt})</span></li>
+</ul>
+{/if}
+{/foreach}
+</div>
+{/module}

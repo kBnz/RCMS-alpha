@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+{if $mng_menu_noflg eq 1}
+<meta name="robots" content="noindex,nofollow" />
+{/if}
+<title>{$smarty.const.SITE_TITLE} CMS {'/label/login'|translate}{*CMSログイン*}</title>
+<link href="/css/management/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="/js/management/default.v2.3.js"></script>
+{literal}
+<style type="text/css">
+form {
+    margin: 0px;
+}
+
+.login_info {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    padding: 15px;
+    border: 1px solid #cccccc;
+    width: 429px;
+    background: #F1F3F5;
+}
+.rcms_info {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px 15px 5px 15px;
+    border: 1px solid #cccccc;
+    width: 429px;
+    background: #FFCC66;
+}
+
+
+.button {
+    border : solid 1px #cccccc;
+    background: #E9ECEF;
+    color : #666666;
+    font-weight : bold;
+    font-size : 11px;
+    padding: 4px;
+}
+
+.login {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    padding: 15px;
+    border: 1px solid #cccccc;
+    width: 429px;
+    background: #F1F3F5;
+}
+    
+.login p {
+    padding: 0 1em 0 1em;
+    }
+    
+.form-block {
+    border: 1px solid #cccccc;
+    background: #E9ECEF;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+.login-form {
+    text-align: left;
+    float: right;
+    width: 60%;
+}
+
+.login-text {
+    text-align: left;
+    width: 40%;
+    float: left;
+}
+
+.inputlabel {
+    font-weight: bold;
+    text-align: left;
+    }
+.submit_button {
+    padding-top: 15px;
+    text-align: left;
+    }
+
+.inputbox {
+    width: 150px;
+    margin: 0 0 1em 0;
+    border: 1px solid #cccccc;
+    }
+.name {
+    width: 50px;
+    margin: 0 0 1em 0;
+    border: 1px solid #cccccc;
+    }
+
+.clr {
+    clear:both;
+    }
+
+.ctr {
+    text-align: center;
+}
+</style>
+{/literal}
+
+{if $sitedata.site_management_css || $sitedata.oem_management_css}
+<style type="text/css">
+{$sitedata.oem_management_css}
+{$sitedata.site_management_css}
+</style>
+{/if}
+</head>
+<body id="nav_002" class="modify_mode0 task">
+
+<div id="layout">
+<div id="container">
+
+<div id="header">
+<h1>あらゆる要望の応える最強のCMS RCMS</h1>
+<p class="logo"><img src="{$smarty.const.MNG_LOGO_URL|lang_img_path}" alt="{$SITE_TITLE} {'/label/admin_top_page'|translate}{*管理画面*}" /></p>
+<div class="languageSwitcherBox">
+  <select onChange="location.href = '{$smarty.server.PHP_SELF|rcms_replace:'/[?&]+_lang=[A-z]+/i':''|cat:'&_lang='}'+this.value;">{html_options options=$switchLanguages selected=$mylang}</select>
+</div>
+
+</div><!-- header_login -->
+
+<hr />
+
+<div id="content" style="background-color: #fff;padding-top: 4em;width:100%;">
+{if $smarty.const.OEM_ID eq 1}
+<div class="rcms_info">
+{'/modules/login/msg/want_to_know_rcms'|translate}{*RCMSについて知りたい・使ってみたい方は、<a href="http://www.r-cms.jp/" target="_blank">R</a><a href="http://www.r-cms.jp/" target="_blank">CMS</a>トップへ*}
+</div>
+{/if}
+
+<div id="ctr" align="center">
+    <div class="login">
+        <div class="login-form">
+            <img src="/images/management/login_text.gif" alt="Login" />
+            <form action="/direct/login/login/" method="post" name="loginForm" id="loginForm">
+            <input type="hidden" name="Retrun_URL" value="{$Retrun_URL|escape}" />
+            <input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL|escape}" />
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+            <div class="form-block">
+                <div class="inputlabel">{'/label/mail_address'|translate}{*メールアドレス*}({'/label/login_id'|translate}{*ログインID*})</div>
+                <div><input name="email" type="text" class="inputbox" size="15" value="{$email|escape}" /></div>
+                <div class="inputlabel">{'/label/password'|translate}{*パスワード*}</div>
+                <div><input name="password" type="password" class="inputbox" size="15" /></div>
+                <div class="inputlabel"><input name="login_save" id="login_save" type="checkbox" value="1" checked="checked" /><label for="login_save">{'/msg/auto_login_next_time'|translate}{*次回から自動的にログイン*}</label></div>
+                <div class="submit_button"><input type="submit" name="subflg" class="button" value="{'/label/login'|translate}{*ログイン*}" /></div>
+            </div>
+            </form>
+        </div>
+        <div class="login-text">
+
+            <div class="ctr"><img src="/images/management/icon/login.gif" alt="Login" /></div>
+            <p>{'/modules/login/msg/must_login'|translate}{*ここから先はログインが必要です。*}</p>
+            <p id="login_reminder_link">* <a href="/management/login/reminder/">{'/label/confirm_password_btn'|translate}{*パスワードを確認する*}</a></p>
+            {if $Memberregist_permission}
+            <p>* <a href="/management/login/regist/">{'/label/menber_regist_btn'|translate}{*メンバー登録をする*}</a></p>
+            {/if}
+            <p id="login_inquiry_link">* <a href="/inquiry_list/">{'/label/inquiry_formal'|translate}{*お問い合わせ*}</a></p>
+            <p>=> <a href="{$smarty.const.ROOT_URL}/">{'/label/back_to_the_top_page'|translate}{*TOPへ戻る*}</a></p>
+
+{if $module_installed.mixi && $login_isOpenIdEnabled}
+            <br>
+            <form method="post" action="{$smarty.const.ROOT_URL}/direct/mixi/openid/">
+              <p>
+                <input type="hidden" name="openid_identity" value="mixi.jp" >
+                <input type="hidden" name="openid_client" value="/" >
+                <input type="hidden" name="openid_action"  value="mixi Login"  >
+                <input type="image" src="/images/modules/login/mixi_a_150.gif"  >
+              </p>
+            </form>
+{/if}
+
+        </div>
+        <div class="clr"></div>
+    </div>
+
+    <div class="login_info">{$smarty.const.LOGIN_INFO}</div>
+
+{if $is_SmartPhone}
+    <div class="login_info">
+        <a href="/management/login/login/?SmartPhonePCView=0">モバイル版に切り替える</a><br/>
+    </div>
+{/if}
+
+</div>
+{rcms_include file="management/footer.html"}

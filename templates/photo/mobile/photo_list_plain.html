@@ -1,0 +1,17 @@
+<h2>[emoji:068]{'/label/image_list'|translate}{*画像一覧*}</h2>
+<div style="text-align:center;font-size:small;">
+{section name=mydata loop=$photoList}
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}&season={$season}">{$photoList[mydata].title}</a><br/>[{$photoList[mydata].ymd}]<br/>
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}&season={$season}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList[mydata].photo_id}.jpg" alt="{$photoList[mydata].title}"></a><br/>
+<br/>
+{/section}
+</div>
+{$page_links}
+
+{if $using_season}
+  <form action="/{$page_sysnm}/" method="get">
+  {rcms_seasonOptions name=season selected=$season firstOption=true}
+  <input type="submit" value="{'/label/search'|translate}{*検索*}">
+  </form>
+{/if}
+<hr/>

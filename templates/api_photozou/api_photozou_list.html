@@ -1,0 +1,14 @@
+{module name="api_photozou_list"}
+<h2 class="module_title"><span>写真一覧</span></h2>
+<div class="module_contents">
+  <p>このサイトで紹介しているフォト蔵の写真一覧です。</p>
+
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  {foreach from=$photo_list item=photo}
+  <div style="margin:1em;float:left;"><a href="{$photo.detail}"><img src="{$photo.thumbnail_image_url}"></a></div>
+  {/foreach}
+  <div class="clr"></div>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  <div style="text-align:right;"><a href="http://photozou.jp/" onclick="return !window.open(this.href)"><img src="http://photozou.jp/img/photozou_logo.gif" width="120" height="30" alt="写真共有サイト「フォト蔵」は簡単に写真や動画を投稿・共有することができる無料のフォトアルバムです。" /></a></div>
+</div>
+{/module}

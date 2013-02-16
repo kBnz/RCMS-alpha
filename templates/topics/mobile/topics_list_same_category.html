@@ -1,0 +1,10 @@
+{if $topicsList|@count > 0}
+<h2>[emoji:158]{'/modules/topics/label/topics_list_same_category'|translate}</h2>
+
+<ul>
+    {foreach from=$topicsList item=row}
+    <li><a href="/{$link_page_sysnm}/id={$row.topics_id}">{$row.subject}</a></li>{/foreach}
+</ul>
+
+<hr/>
+{/if}

@@ -1,0 +1,75 @@
+{module name="rakuten_search"}
+<script type="text/javascript" src="/js/modules/api_rakuten/Rakuten.js"></script>
+<script type="text/javascript">
+var ra = new Rakuten.Api('{$proxy}');
+Rakuten.pathToDetails = '{$pathToDetails}';
+{literal}
+Event.observe(window, 'load', function() {
+	window.rs = new Rakuten.Search(ra);
+	window.rf = new Rakuten.Form(rs, 'arForm');
+	window.moveTo = function(page) { rs.moveTo(page); };
+
+	rs.restore();
+});
+{/literal}
+</script>
+
+<h2 class="module_title"><span>商品検索</span></h2>
+<div class="module_contents">
+
+    <form id="arForm" action="javascript:void(0)" onsubmit="rf.submit(); return false;">
+      <table style="width:98%">
+        <tr>
+          <th>キーワード</th>
+          <td colspan="3">
+            <input type="text" name="keyword" style="width:15em" />
+            <select name="orFlag">
+              <option value="0">AND検索</option>
+              <option value="1">OR検索</option>
+            </select>
+          </td>
+          <th>取得件数</th>
+          <td>
+            各ページ
+            <select name="hits">
+              <option value="10">10件</option>
+              <option value="20" selected="selected">20件</option>
+              <option value="30">30件</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>ジャンル</th>
+          <td colspan="5" id="arGenre">
+            <input id="arGenreLevel0" type="hidden" name="genreId" value="0" />
+          </td>
+        </tr>
+        <tr>
+          <th>最小価格</th>
+          <td><input type="text" name="minPrice" value="" /></td>
+          <th>最大価格</th>
+          <td><input type="text" name="maxPrice" value="" /></td>
+          <th>並び順</th>
+          <td>
+            <select name="sort">
+              <option value="+affiliateRate">アフィリエイト料率順 (昇順)</option>
+              <option value="-affiliateRate">アフィリエイト料率順 (降順)</option>
+              <option value="+reviewCount">レビュー件数順 (昇順)</option>
+              <option value="-reviewCount" selected="selected">レビュー件数順 (降順)</option>
+              <option value="+itemPrice">価格順 (昇順)</option>
+              <option value="-itemPrice">価格順 (降順)</option>
+              <option value="+updateTimestamp">商品更新日時順 (昇順)</option>
+              <option value="-updateTimestamp">商品更新日時順 (降順)</option>
+              <option value="random">ランダム順</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <p><input type="submit" value="検索" /><input type="hidden" name="shopCode" value="{$smarty.const.RAKUTEN_SHOP_CODE}" /></p>
+    </form>
+
+    <div id="arResults">検索結果はここに表示されます。</div>
+
+	<p><a href="http://webservice.rakuten.co.jp/" onclick="return !window.open(this.href)"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a></p>
+</div>
+{/module}

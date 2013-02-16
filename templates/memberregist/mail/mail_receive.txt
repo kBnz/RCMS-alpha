@@ -1,0 +1,4 @@
+下記のURLから進んでください。
+
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/member_regist/se={$se}

@@ -1,0 +1,33 @@
+<h2>{$couponData.coupon_nm|escape}</h2>
+
+{if $couponData.contents}
+    <p>{$couponData.contents|escape|nl2br}</p>
+    <br/>
+{/if}
+
+{if $couponData.alert}
+    <p>{$couponData.alert|escape|nl2br}</p>
+    <br/>
+{/if}
+
+  <dl>
+    <dt>［住所］</dt>
+    <dd>
+      {if $restaurantData.zip_main || $restaurantData.zip_sub}
+        {$restaurantData.zip_main}&nbsp;-&nbsp;{$restaurantData.zip_sub}
+      {/if}
+        {$restaurantData.tdfk_nm}{$restaurantData.address1|nl2br} {$restaurantData.address2|nl2br}
+    </dd>
+    <dt>［ＴＥＬ］</dt><dd><a href="telto:{$restaurantData.tel|escape}">{$restaurantData.tel|escape}</a></dd>
+
+{if $couponData.exp_disp_flg == "1" && $couponData.exp_update_flg == "1"}
+			<dt>［有効期限］</dt>
+			<dd>{$couponData.exp_from_date|date_format:"%Y"}年{$couponData.exp_from_date|date_format:"%m"}月{$couponData.exp_from_date|date_format:"%d"}日～{$couponData.exp_to_date|date_format:"%Y"}年{$couponData.exp_to_date|date_format:"%m"}月{$couponData.exp_to_date|date_format:"%d"}日まで</dd>
+{/if}
+
+  </dl>
+
+
+
+
+<hr/>

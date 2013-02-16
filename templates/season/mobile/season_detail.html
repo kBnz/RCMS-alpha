@@ -1,0 +1,81 @@
+<h2>{$seasonData[0].wareki}　資料</h2>
+
+年度:{$seasonData[0].wareki}{if $seasonData[0].soubu}[{$seasonData[0].soubu}]{/if}<br/>
+{if $ext_titles.ext_title_01 != ""}{$ext_titles.ext_title_01} {$seasonData[0].ext_01}<br/>{/if}
+{if $ext_titles.ext_title_02 != ""}{$ext_titles.ext_title_02} {$seasonData[0].ext_02}<br/>{/if}
+{if $ext_titles.ext_title_03 != ""}{$ext_titles.ext_title_03} {$seasonData[0].ext_03}<br/>{/if}
+{if $ext_titles.ext_title_04 != ""}{$ext_titles.ext_title_04} {$seasonData[0].ext_04}<br/>{/if}
+{if $ext_titles.ext_title_05 != ""}{$ext_titles.ext_title_05} {$seasonData[0].ext_05}<br/>{/if}
+
+<br/>
+
+{if $memberList|@count > 0}
+<h2>{$highest_grade}年生一覧</h2>
+
+{section name=mydata loop=$memberList}
+<a href="/member_detail/id={$memberList[mydata].member_id}">{$memberList[mydata].disp_name}</a>
+[
+{$memberList[mydata].school}
+/
+{if $memberList[mydata].main_position_nm && $memberList[mydata].sub_position}
+  {$memberList[mydata].main_position_nm}/{$memberList[mydata].sub_position}
+{elseif $memberList[mydata].main_position_nm}
+  {$memberList[mydata].main_position_nm}
+{elseif $memberList[mydata].sub_position}
+  {$memberList[mydata].sub_position}
+{/if}
+/
+{if $memberList[mydata].hs_sname ne ''}{$memberList[mydata].hs_sname}{else}{$memberList[mydata].hs_name}{/if}
+/
+{if $memberList[mydata].height != 0}{$memberList[mydata].height}cm{/if}
+/
+{if $memberList[mydata].weight != 0}{$memberList[mydata].weight}kg{/if}
+]
+<br/>
+{/section}
+
+<br/>
+{/if}
+
+{if $gameList|@count > 0}
+{foreach from=$gameList item=game}
+<h2>{if $gameList|@count > 1}{$game.sports_nm}{/if}公式戦一覧</h2>
+
+<hr/>
+{section name=mydata loop=$game.gamelist}
+{$game.gamelist[mydata].ymd_str}
+
+{$game.gamelist[mydata].game_type} {$game.gamelist[mydata].game_type2}
+<br/>
+{$game.gamelist[mydata].team_nm}
+
+ <a href="/game{$game.sports_key}_detail/id={$game.gamelist[mydata].game_id}">
+
+          {if $game.gamelist[mydata].game_status eq '3'}
+              {if $game.gamelist[mydata].score_detail_arr.vs_result_self eq 'win'}
+              ○
+              {elseif $game.gamelist[mydata].score_detail_arr.vs_result_self eq 'lose'}
+              ●
+              {elseif $game.gamelist[mydata].score_detail_arr.vs_result_self eq 'even'}
+              △
+              {/if}
+          {/if}
+          {$game.gamelist[mydata].score_detail_arr.Self_Total}-{$game.gamelist[mydata].score_detail_arr.Opp_Total}</a>
+<hr/>
+{/section}
+{/foreach}
+{/if}
+
+
+
+{if $topicsList|@count>0}
+<br/>
+<h2>ﾄﾋﾟｯｸｽ一覧</h2>
+{section name=mydata loop=$topicsList}
+{if $topicsList[mydata].contents_type > 0}
+▼<a href="/topics_detail/id={$topicsList[mydata].topics_id}">{$topicsList[mydata].subject}</a>
+<div style="text-align:right;font-size:small;">{$topicsList[mydata].ymd_str}</div><br/>
+{/if}
+{/section}
+<hr/>
+{/if}

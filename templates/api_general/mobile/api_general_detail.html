@@ -1,0 +1,44 @@
+<h2>{$source.name}</h2>
+
+  <table>
+    <tr>
+      <th>データソース</th>
+      <td>{$source.name}</td>
+      <th>外部ID</th>
+      <td>{$item.db.external_id}</td>
+    </tr>
+  </table>
+
+  {* webの情報を表示 *}
+  {if $existsOnWeb}
+    <table>
+      <tr>
+        <th colspan="2">{$item.web->getName()}</th>
+      </tr>
+      <tr>
+        <td colspan="2">{$item.web->getDescription()}</td>
+      </tr>
+      <tr>
+        <td>{if $item.web->getUrl()}<a href="{$item.web->getUrl()}" onclick="window.open(href); return false;">詳細はこちら</a>{/if}</td>
+        <td>{$credit}</td>
+      </tr>
+    </table>
+  {else}
+    <table>
+      <tr>
+        <th>{$item.db.name}</th>
+      </tr>
+      <tr>
+        <td>該当IDのデータは外部データソースに存在しません。</td>
+      </tr>
+    </table>
+  {/if}
+
+  {* dbの情報を表示 *}
+  {if $isCaptured && $item.db.note}
+    <table>
+      <tr><th>コメント</th></tr>
+      <tr><td>{$item.db.note}</td></tr>
+    </table>
+  {/if}
+<hr/>

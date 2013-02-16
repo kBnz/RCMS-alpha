@@ -1,0 +1,30 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'/modules/catalog/label/catalog_category_list'|translate}{* カテゴリ一覧 *}</h2>
+{if $auth.catalog.insert}
+<a href="/management/catalog/catalog_category_edit/{if $catalog_group_id}catalog_group_id={$catalog_group_id}{/if}">>>{'/label/create_new_category_btn'|translate}{* カテゴリ追加 *}</a><br />
+{/if}
+<!--ここにメニューを追加 -->
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog/label/catalog_group_list'|translate}{* グループ一覧 *}</a><br />
+<a href="/management/{$mt}/{$mt}_list/{$mt}_group_id={$catalog_group_id}">{'/modules/catalog/label/group_nm_list'|translate:$catalog_group_nm}{* [グループ名]一覧 *}</a><br />
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+    {$page_links}
+    {foreach from=$catalog_category_list item=row}
+      {if $row.catalog_category_id ne 0}
+        {$row.open_flg|rcms_publicimg}
+        {$row.catalog_category_id}:
+        <a href="/management/catalog/catalog_category_edit/catalog_category_id={$row.catalog_category_id}&catalog_group_id={$catalog_group_id}">{$row.category_nm}</a>
+        :{$row.memo|escape|nl2br}<br /><br />
+      {/if}
+    {/foreach}
+    {$page_links}
+
+{rcms_include file="management/mobile/footer.html"}

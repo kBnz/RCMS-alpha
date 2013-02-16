@@ -1,0 +1,67 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/tag/label/tag_category_edit'|translate}</h2>{*タグカテゴリ編集*}
+  <ul>
+{rcms_auth target="insert:/tag/category/"}
+    <li class="add"><a href="/management/tag/tag_category_edit/pageID={$pageID}"><span>{'/label/add_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+{/rcms_auth}
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/tag/tag_list/">{$module_nm}</a>
+<a href="/management/tag/tag_list/">{'/modules/tag/label/tag_list'|translate}</a>
+<a href="/management/tag/tag_category_list/">{'/modules/tag/label/tag_category_list'|translate}</a>
+{'/modules/tag/label/tag_category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> タグ >>  タグ一覧 >> タグカテゴリ設定 >> タグカテゴリ編集*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="tag/admin/minitabs.html" page_type=$ct}
+
+  <form action="/management/tag/tag_category_edit/" method="post">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="tag_category_id" type="hidden" value="{$formData.tag_category_id}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div class="list_main">
+
+{rcms_include   file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/tag/tag_category_edit/tag_category_id=$tag_category_id"}   
+{if $tag_category_id}    
+    {lang_selector meta=$docmeta link="/management/tag/tag_category_edit/tag_category_id=$tag_category_id"}
+{/if}   
+
+    <table width="100%" border="0">
+      <tr>
+      <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+        <td><input size="25" maxlength="50" name="tag_category_nm" type="text" value="{$formData.tag_category_nm|escape}" /></td>
+      </tr>
+        <tr>
+          <th>{'/label/editing_limit'|translate}</th>{*編集制限*}
+          <td>
+            <input type="radio" name="editable_flg" id="editable_flg_off" value="off" onclick="display('editable_group_list', 'none');" {if $formData.editable_flg != 'on'}checked="checked"{/if}/><label for="editable_flg_off">{'/label/unlimited'|translate}</label>{*制限無し*}
+            <input type="radio" name="editable_flg" id="editable_flg_on" value="on" onclick="display('editable_group_list', '');" {if $formData.editable_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="editable_flg_on">{'/label/limited'|translate}</label>{*制限有り*}
+            <div id="editable_group_list" style="margin: 10px 0 0 10px; {if $formData.editable_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/tag/msg/select_group_editing_this_tag'|translate}</p>{*このタグカテゴリの編集を許可するグループを選択してください。<br />グループは複数選択できます。*}
+              <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.editable_group}</select>
+            </div>
+          </td>
+        </tr>
+
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    </div>
+  </form>
+</div>
+
+{rcms_include file="management/footer.html"}

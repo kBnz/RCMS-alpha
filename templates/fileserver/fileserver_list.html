@@ -1,0 +1,67 @@
+<script type="text/javascript" src="/js/treemenu/TreeMenu.js"></script>
+{module name="fileserver_list"}
+
+<!--フォルダツリー-->
+<h3>フォルダ一覧</h3>
+<div id="folderTree" width="100%">{$folderTree}</div>
+
+<h3>現在のフォルダ：{$folders.current.name}</h3>
+{$folders.current.memo|nl2br}
+<br>
+<br>
+<h3>保存ファイル</h3>
+  {foreach from=$files item=item name=files_nm}
+    {if $smarty.foreach.files_nm.first}
+    <table class="list">
+      <tr>
+        <th>タイトル</th>
+        <th colspan="2">ファイル名</th>
+        <th>ファイル更新日</th>
+        <th>更新者</th>
+      </tr>
+    {/if}
+      <tr>
+        <td>{$item.title}</td>
+        <td>{$item.name}</td>
+        <td style="white-space:nowrap">
+          <a href="/direct/fileserver/fileserver_download/file_id={$item.file_id}">ダウンロード</a> | <a href="/fileserver_detail/file_id={$item.file_id}">詳細</a>
+        </td>
+        <td style="white-space:nowrap">{$item.upload_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}</td>
+        <td style="white-space:nowrap">{$item.upload_member_name}</td>
+      </tr>
+    {if $smarty.foreach.files_nm.last}
+    </table>
+    {/if}
+  {/foreach}
+<br>
+<a href="javascript: void Effect.toggle('fileserver_help{$contents_id}', 'blind')">WindowsXPのInternetExplorer6でエラーになる場合</a>
+<div id="fileserver_help{$contents_id}" style="display:none">
+Windows XP Service Pack 2のInternet Explorer6でファイルをダウンロードする際に「開く」を選択すると、エラーになる場合があります。<br>
+「保存」をしてから、開くようにお願いいたします。<br>
+Windows XP Service Pack 2の機能の詳細は、次のマイクロソフト株式会社のホームページをご覧ください。<br>
+<br>
+マイクロソフト株式会社<br>
+<a href="http://www.microsoft.com/japan/windowsxp/sp2/" target="_blank">Windows XP Service Pack 2 セキュリティ強化機能搭載</a>（新しいウィンドウで表示）<br>
+</div>
+{/module}
+
+{literal}
+<style type="text/css">
+.branchbottom {
+    background: url(/images/modules/fileserver/branchbottom.gif) no-repeat left center ;
+    padding-left: 22px;
+}
+.branch {
+    background: url(/images/modules/fileserver/branch.gif) no-repeat left center ;
+    padding-left: 22px;
+}
+div#folderTree {
+  font-size: 15px;
+  padding: 10px;
+  border: 1px #777 solid;
+}
+div#folderTree div {
+  margin-bottom: 10px;
+}
+</style>
+{/literal}

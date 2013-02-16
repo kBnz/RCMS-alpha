@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2 class="page">{'/modules/page'|translate}</h2>
+<ul>
+{rcms_auth target="insert:/page/item/"}
+  <li class="add"><a href="/management/page/page_layout_edit/"><span>{'/label/add_new'|translate}</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+{'/modules/page/label/page_layout_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form method="post" action="/management/page/page_layout_list/">
+  <input type="hidden" name="MODE" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+  <tr>
+    <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'page_layout_id[]');" /></th>
+    <th>{'/modules/page/label/template'|translate}</th>
+    <th width="130">{'/label/last_updated_time'|translate}{*最終更新日時*}</th>
+  </tr>
+  {foreach from=$page_layout_list item=row}
+  <tr>
+    <td><input type="checkbox" name="page_layout_id[]" value="{$row.page_layout_id}" /></td>
+    <td><a href="/management/page/page_layout_edit/?page_layout_id={$row.page_layout_id}">{$row.page_layout_nm|escape}</a></td>
+    <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+  </tr>
+  {/foreach}
+</table>
+
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+    {/buttonbox}
+
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

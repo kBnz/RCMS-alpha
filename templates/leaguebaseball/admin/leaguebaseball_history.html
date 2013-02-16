@@ -1,0 +1,25 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $auth.leaguebaseball.insert}
+<li class="add"><a href="/management/leaguebaseball/leaguebaseball_edit/"><span>試合追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/leaguebaseball_detail/id={$league_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/leaguebaseball/leaguebaseball_list/">試合一覧</a>
+<a href="/management/leaguebaseball/leaguebaseball_edit/league_id={$league_id}">試合詳細</a>
+<a href="/management/leaguebaseball/leaguebaseball_history/league_id={$league_id}">更新履歴一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/leaguebaseball/leaguebaseball_edit/league_id=$league_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,132 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+/* 色関係 */
+var clr = {
+  current: 0,
+  get: function(id) {
+    return '#' + ($F('color'+id).match(/[0-9a-f]{6}/i) || '000000');
+  },
+  change: function(id) {
+    $('swatch' + id).style.color = clr.get(id);
+  },
+  showPalette: function(id) {
+    clr.current = id;
+    var wnd = window.open(
+      '/js/colorpicker/colorpicker.php?callback=clr.callback',
+      'color_picker',
+      'status=no,modal=yes,width=350,height=250'
+    );
+    wnd.dialogArguments =  clr.get(id);
+  },
+  callback: function(wnd) {
+    $('color'+clr.current).value = wnd.returnValue;
+    clr.change(clr.current);
+    $('color'+clr.current).onchange();
+  }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>ブログパーツ作成</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">コミュニケーション</a>
+<a href="/management/parts/parts_edit/">{$module_nm}</a>
+{$module_nm}作成
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <form action="/management/parts/parts_edit/" id="form">
+    <table style="width:100%;">
+      <tr>
+        <th>モジュール</th>
+        <td>
+          <select id="module">
+            <option selected="selected">↓モジュールを選択してください</option>
+            {html_options options=$modules}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>コンテンツ</th>
+        <td>
+          <select id="contents"></select>
+        </td>
+      </tr>
+      <tr>
+        <th>テンプレート</th>
+        <td>
+          <select id="template"></select>
+        </td>
+      </tr>
+      <tr>
+        <th>GETパラメータ</th>
+        <td><input type="text" id="param" value="" /></td>
+      </tr>
+    </table>
+    <table style="width:100%;">
+{if $isCSSOptionEnabled}
+      <tr>
+        <th>スタイル</th>
+        <td colspan="3">
+          <select id="style">
+            <option selected="selected" value="">デフォルト</option>
+            {html_options options=$styles}
+          </select>
+        </td>
+      </tr>
+{/if}
+{if $isColorOptionEnabled}
+      <tr>
+        <th>タイトル文字色</th>
+        <td><input type="text" id="color0" value="" /><span id="swatch0">■</span><input type="button" value="設定" onclick="clr.showPalette(0);" /></td>
+        <th>タイトル背景色</th>
+        <td><input type="text" id="color1" value="" /><span id="swatch1">■</span><input type="button" value="設定" onclick="clr.showPalette(1);" /></td>
+      </tr>
+      <tr>
+        <th>本体文字色</th>
+        <td><input type="text" id="color2" value="" /><span id="swatch2">■</span><input type="button" value="設定" onclick="clr.showPalette(2);" /></td>
+        <th>本体背景色</th>
+        <td><input type="text" id="color3" value="" /><span id="swatch3">■</span><input type="button" value="設定" onclick="clr.showPalette(3);" /></td>
+      </tr>
+{/if}
+      <tr>
+        <th>幅</th>
+        <td><input type="text" id="width" value="200" /></td>
+        <th>高さ</th>
+        <td><input type="text" id="height" value="400" /><input type="button" value="自動設定" id="size" /></td>
+      </tr>
+    </table>
+    <table style="width:100%;">
+      <tr>
+        <th>プレビュー</th>
+      </tr>
+      <tr>
+        <td>
+          <iframe src="" frameborder="0" width="200" height="400" id="preview">インラインフレーム対応のブラウザでご覧ください。</iframe>
+        </td>
+      </tr>
+      <tr>
+        <th>コード</th>
+      </tr>
+      <tr>
+        <td><textarea wrap="soft" readonly="readonly" style="width:100%; height:5em;" id="code"></textarea></td>
+      </tr>
+    </table>
+  </form>
+  <script type="text/javascript" src="/js/parts/edit.js"></script>
+  <script type="text/javascript">
+    edit.base = '{$smarty.const.ROOT_URL}';
+    edit.base2 = '{$smarty.const.ROOT_SSL_URL}';
+    edit.content = 'contents';
+    edit.initialize();
+  </script>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

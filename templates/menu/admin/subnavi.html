@@ -1,0 +1,153 @@
+{headblock}
+{literal}
+<script type="text/javascript">
+<!--
+j$(function(){
+
+    j$("ul.dropdown li").hover(function(){
+    
+        j$(this).addClass("hover");
+        j$('ul:first',this).css('visibility', 'visible');
+    
+    }, function(){
+    
+        j$(this).removeClass("hover");
+        j$('ul:first',this).css('visibility', 'hidden');
+    
+    });
+
+});
+//-->
+</script>
+{/literal}
+<style type="text/css">
+
+{foreach from=$smarty.session.favoriteMenu key=f_key item=mod name=favoriteManagementMenu}
+ul.subnav2 li.{$f_key} a {ldelim}background: url(/images/management/icon_s/{$f_key}_s.gif) no-repeat center top;{rdelim}
+{/foreach}
+
+{foreach from=$smarty.session.recentManagementMenus key=r_key item=mod name=recentManagementMenu}
+ul.subnav2 li.{$r_key} a {ldelim}background: url(/images/management/icon_s/{$r_key}_s.gif) no-repeat center top;{rdelim}
+{/foreach}
+</style>
+{/headblock}
+
+{if $MNG_TYPE eq 0 && $smarty.const.PAGE_MODIFY_MODE eq 0}
+
+<div id="subBox" {if $smarty.cookies.often_use eq 'no'}style="display:none;"{/if}>
+  <div class="subBox_contents">
+    <p class="close"><a href="javascript:;" onclick="new Effect.Fade('subBox');new Effect.Appear('often_use_mini');setCookie('often_use','no');return false;"><img src="/images/management/close.gif" alt="閉じる"></a></p>
+
+      <div class="often_use">
+        <h3 id="often_use_h3">{if $smarty.cookies.favoriteMenuMode == 'recent'}{'/modules/menu/label/module_used_recently'|translate}{*最近使ったもの*}{else}{'/modules/menu/label/modules_using_often'|translate}{*よく使う機能*}{/if}</h3>
+        <ul class="dropdown subnav2">
+{strip}
+        {foreach from=$smarty.session.favoriteMenu key=f_key item=mod name=favoriteManagementMenu}
+        {if $auth.$f_key.select}<li class="{$f_key} ManagementMenu" {if $smarty.cookies.favoriteMenuMode == 'recent'}style="display:none"{/if}><a href="{$management_menus.$f_key.link}"><span>{$f_key|translate_modules}</span></a>
+
+            {if $f_key eq 'topics' && $auth.topics.insert}<ul>{foreach from=$menu_topics_group_list item=group}<li><a href="/management/topics/topics_edit/topics_group_id={$group.topics_group_id}">{$group.group_nm}</a></li>{/foreach}</ul>
+            {elseif $f_key eq 'blog' && $auth.blog.insert}<ul>{foreach from=$menu_blog_list item=blog}<li><a href="/management/blog/blog_item_edit/blog_id={$blog.blog_id}">{$blog.title}</a></li>{/foreach}</ul>
+            {/if}
+
+        </li>{/if}
+        {/foreach}
+{/strip}
+
+{strip}
+        {foreach from=$smarty.session.recentManagementMenus key=r_key item=mod name=recentManagementMenu}
+        {if $auth.$r_key.select}<li class="{$r_key} ManagementMenu" {if $smarty.cookies.favoriteMenuMode != 'recent'}style="display:none"{/if}><a href="{$management_menus.$r_key.link}"><span>{$r_key|translate_modules}</span></a>
+
+            {if $r_key eq 'topics' && $auth.topics.insert}<ul>{foreach from=$menu_topics_group_list item=group}<li><a href="/management/topics/topics_edit/topics_group_id={$group.topics_group_id}">{$group.group_nm}</a></li>{/foreach}</ul>
+            {elseif $r_key eq 'blog' && $auth.blog.insert}<ul>{foreach from=$menu_blog_list item=blog}<li><a href="/management/blog/blog_item_edit/blog_id={$blog.blog_id}">{$blog.title}</a></li>{/foreach}</ul>
+            {/if}
+
+        </li>{/if}
+        {/foreach}
+{/strip}
+        </ul>
+        <ul class="link">
+          <li {if $smarty.cookies.favoriteMenuMode != 'recent'}style="display:none"{/if} id="favoriteMenuBtn"><img src="/images/management/forum/icon_next.gif"><a href="javascript:void(0);">{'/modules/menu/msg/display_the_modules_using_often'|translate}{*よく使う機能を表示する*}</a></li>
+          <li {if $smarty.cookies.favoriteMenuMode == 'recent'}style="display:none"{/if} id="recentMenuBtn"><img src="/images/management/forum/icon_next.gif"><a href="javascript:void(0);">{'/modules/menu/msg/display_the_modules_used_recently'|translate}{*最近使ったものを表示する*}</a></li>
+          <li><img src="/images/management/forum/icon_next.gif"><a href="javascript:void(0);" onClick="if(confirm('{'/modules/menu/msg/alert_move_to_editing_modules_used_often'|translate}{*よく使う機能編集画面へ移動します。よろしいですか？*}')){ldelim}location.href='/management/menu/menu_favorite_edit/';return false;{rdelim}">{'/label/edit_btn'|translate}{*編集する*}</a></li>
+        </ul>
+      </div>
+
+    <div class="clearFloat"><br></div>
+
+  </div>
+</div>
+
+<div id="often_use_mini" {if $smarty.cookies.often_use ne 'no'}style="display:none;"{/if}>
+<a href="javascript:void(0);" onclick="new Effect.Fade('often_use_mini');new Effect.Appear('subBox');setCookie('often_use','yes');return false;">{'/modules/menu/msg/display_the_modules_used_recently'|translate}{*最近使ったものを表示する*}</a>
+</div>
+
+
+{if $sitedata.plan eq '20' && !($mt eq 'menu' && $ct eq 'payment')}
+<div id="probation">現在、試用版です。{if $sitedata.free_limit_ymd}試用終了まであと{$trial_limit_day}日({$sitedata.free_limit_ymd})です。{/if}{if $smarty.session.super_flg}購入希望は<a href="mailto:{$sitedata.oem_email}?body={$smarty.const.ROOT_URL}/">{$sitedata.oem_email}</a>までサイトURLを明記してメール送信してください。折り返し購入方法をご連絡いたします。{else}スーパーユーザーでログインして購入をしてください。{/if}</div>
+{/if}
+{if $sitedata.status eq '80'}
+<div style="color:red;font-size:10px;">構築されたサイトが利用規約に違反している可能性があります。改善がされない場合は予告なく退会になる場合があります。違反内容が不明な場合には<a href="http://www.diverta.co.jp/inquiry_detail/id=1" traget="_blank">こちら</a>までお問い合わせください。</div>
+{/if}
+{if $sitedata.status eq '70'}
+<div style="color:red;font-size:10px;">ご入金の案内を何度か差し上げておりますが、ご入金が確認できない為、このまま未入金の状態が続きますとサイトの停止を行います。なるべく早めにご入金をいただくか、<a href="mailto:support@diverta.co.jp">support@diverta.co.jp</a>までご連絡をお願いいたします。</div>
+{/if}
+{if $rcms_build_alert}
+{*}
+<div style="color:red;font-size:10px;">「構築中」のまま半年以上経過した場合、サイトデータが削除される場合があります。ある程度、サイトができてきたら「公開中」にしましょう！</div>
+{*}
+{/if}
+
+{if ($mt eq 'menu' && $ct eq 'menu') || ($mt eq 'menu' && $ct eq 'rcms') || ($mt eq 'menu' && $ct eq 'supportforum_mylist') || ($mt eq 'menu' && $ct eq 'supportforum_list') || ($mt eq 'menu' && $ct eq 'supportforum_detail_list')}
+<div class="host">
+
+{if $mt eq 'menu' && $ct eq 'menu'}
+<h2>{'/modules/menu/label/my_page'|translate}{*マイページ*}</h2>
+{else}
+<p class="tab"><a href="/management/menu/menu/">{'/modules/menu/label/my_page'|translate}</a></p>
+{/if}
+
+{if $smarty.const.OEM_ID > 0 && $smarty.session.super_flg eq '1'}
+    {if $mt eq 'menu' && $ct eq 'rcms'}
+    <h2>{'/modules/menu/label/site_registration'|translate}{*契約情報*} [<span {if $sitedata.plan eq 0 || $sitedata.plan eq 20}style="color:red;"{/if}>{$arrRCMS_Plan[$sitedata.plan]}</span>]</h2>
+    {else}
+    <p class="tab"><a href="/management/menu/rcms/">{'/modules/menu/label/site_registration'|translate}</a> [<span {if $sitedata.plan eq 0 || $sitedata.plan eq 20}style="color:red;"{/if}>{$arrRCMS_Plan[$sitedata.plan]}</span>]</p>
+    {/if}
+    {if !$smarty.const.NOUSE_SUPPORT}
+        {if ($mt eq 'menu' && $ct eq 'supportforum_mylist') || ($mt eq 'menu' && $ct eq 'supportforum_list') || ($mt eq 'menu' && $ct eq 'supportforum_detail_list')}
+            <h2><a href="/management/menu/supportforum_mylist/">{'/modules/menu/label/support'|translate}</a></h2>
+        {else}
+            <p class="tab"><a href="/management/menu/supportforum_mylist/">{'/modules/menu/label/support'|translate}</a></p>
+        {/if}
+    {/if}
+{/if}
+
+{if $mt eq 'menu' && $ct eq 'menu'}
+  {if $auth.ownmember.update || $auth.member.update}
+    <div class="rcms_link">
+      <p><a href="/management/member/member_edit/member_id={$smarty.session.member_id}&tab=idinfo">{'/label/change_id_and_password'|translate}{*ID・パスワードを変更する*}</a></p>
+    </div>
+  {/if}
+{/if}
+<div class="clearFloat"><br></div>
+</div>
+
+{/if}
+{else}
+
+{if $sitedata.plan eq '20' && !($mt eq 'menu' && $ct eq 'payment')}
+<div id="probation">現在、試用版です。{if $sitedata.free_limit_ymd}試用終了まであと{$trial_limit_day}日({$sitedata.free_limit_ymd})です。{/if}{if $smarty.session.super_flg}購入希望は<a href="mailto:{$sitedata.oem_email}?body={$smarty.const.ROOT_URL}/">{$sitedata.oem_email}</a>までサイトURLを明記してメール送信してください。折り返し購入方法をご連絡いたします。{else}スーパーユーザーでログインして購入をしてください。{/if}</div>
+{/if}
+{if $sitedata.status eq '80'}
+<div style="color:red;font-size:10px;">構築されたサイトが利用規約に違反している可能性があります。改善がされない場合は予告なく退会になる場合があります。違反内容が不明な場合には<a href="http://www.diverta.co.jp/inquiry_detail/id=1" traget="_blank">こちら</a>までお問い合わせください。</div>
+{/if}
+{if $sitedata.status eq '70'}
+<div style="color:red;font-size:10px;">ご入金の案内を何度か差し上げておりますが、ご入金が確認できない為、このまま未入金の状態が続きますとサイトの停止を行います。なるべく早めにご入金をいただくか、<a href="mailto:support@diverta.co.jp">support@diverta.co.jp</a>までご連絡をお願いいたします。</div>
+{/if}
+{if $rcms_build_alert}
+{*}
+<div style="color:red;font-size:10px;">「構築中」のまま半年以上経過した場合、サイトデータが削除される場合があります。ある程度、サイトができてきたら「公開中」にしましょう！</div>
+{*}
+{/if}
+
+{/if}
+{rcms_include file="menu/admin/direct_page_menu.html"}

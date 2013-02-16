@@ -1,0 +1,52 @@
+{module name="season_google"}
+<h2 class="module_title"><span>サイト内検索</span></h2>
+<div class="module_contents">
+
+<script src="//www.google.com/jsapi" type="text/javascript"></script>
+    <script language="Javascript" type="text/javascript">
+{literal}
+    //<![CDATA[
+
+    google.load("search", "1");
+
+    function OnLoad() {
+
+      // Create a search control
+      var searchControl = new google.search.SearchControl();
+
+      var options = new GsearcherOptions();
+      options.setExpandMode(GSearchControl.EXPAND_MODE_OPEN);
+
+      var siteSearch = new GwebSearch();
+      siteSearch.setUserDefinedClassSuffix("siteSearch");
+      siteSearch.setSiteRestriction("{/literal}{$smarty.const.ROOT_URL}{literal}");
+
+      // Add in a full set of searchers
+      searchControl.addSearcher(siteSearch,options);
+
+      searchControl.setResultSetSize(GSearch.LARGE_RESULTSET);
+      searchControl.setLinkTarget(GSearch.LINK_TARGET_SELF);
+
+      // Tell the searcher to draw itself and tell it where to attach
+      searchControl.draw(document.getElementById("searchControl{/literal}{$contents_id}{literal}"));
+
+{/literal}
+      searchControl.execute("{$keyword|escape}");
+{literal}
+    }
+    google.setOnLoadCallback(OnLoad);
+
+    //]]>
+{/literal}
+    </script>
+    <div id="searchControl{$contents_id}">Loading...</div>
+<style>
+{literal}
+  #searchControl{/literal}{$contents_id}{literal} .gs-webResult .gs-visibleUrl-short { display:none; }
+  #searchControl{/literal}{$contents_id}{literal} .gs-webResult .gs-visibleUrl-long { display:block; }
+  #searchControl{/literal}{$contents_id}{literal} .gsc-search-box { width : 200px; }
+  #searchControl{/literal}{$contents_id}{literal} .gsc-control { width : 100%; }
+{/literal}
+</style>
+</div>
+{/module}

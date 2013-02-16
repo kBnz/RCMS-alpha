@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+{literal}
+<style type="text/css">
+#restaurantData, #restaurantData p { margin: 1em 0px; }
+</style>
+{/literal}
+<div class="list_right_bt">
+  <h2>写真詳細</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_photozou/api_photozou_edit/photo_id={$photo_id}">レストラン詳細</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="main_contents">
+  <div class="list_main">
+
+    {if $rest}
+    <p style="font-weight:bold">{$rest.photo_title}</p>
+      <img src="{$rest.image_url}" /><br />
+      <p><a href="{$rest.url}" onclick="return !window.open(this.href)">詳細情報はコチラ</a></p>
+      <p style="margin-top:3em"><a href="http://photozou.jp/" onclick="return !window.open(this.href)"><img src="http://photozou.jp/img/photozou_logo.gif" width="120" height="30" alt="写真共有サイト「フォト蔵」は簡単に写真や動画を投稿・共有することができる無料のフォトアルバムです。" /></a></p>
+    <form id="agForm" action="/management/api_photozou/api_photozou_edit/photo_id={$photo_id}" method="post">
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <table style="width:100%">
+        <tr>
+          <th>コメント</th>
+        </tr>
+        <tr>
+          <td style="text-align:center"><textarea name="notes" rows="5" style="width:98%">{$rest.local.notes}</textarea></td>
+        </tr>
+      </table>
+
+      {rcms_include file="management/relation_edit.html"}
+
+      {if $auth.api_photozou.update}
+        <input type="hidden" name="mode" value="update" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        {buttonbox}
+          <button type="submit">更新する</button>
+        {/buttonbox}
+      {/if}
+
+    </form>
+
+    {else}
+    <p><strong>指定したIDの写真は、フォト蔵上に存在しません。</strong></p>
+    {/if} {* end of if $rest *}
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,120 @@
+{headblock}
+<script type="text/javascript" src="/js/relationItem.js"></script>
+<script type="text/javascript">google.load('jquery', '1.6')</script>
+<script type="text/javascript">
+var j$ = jQuery.noConflict();
+</script>
+<script type="text/javascript">
+<!--
+{literal}
+function confirm_delete() {
+  // 削除してもよろしいですか？
+  if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+      var a = document.blog_item_edit.action;
+      document.blog_item_edit.submit();
+      document.blog_item_edit.action = a;
+  }
+}
+{/literal}
+//-->
+</script>
+{/headblock}
+
+<h2 class="module_title"><span><a href="/blog_my_top/blog_id={$header.blog_id}">{$header.title|escape}</a>{'/modules/blog/label/blog_entry_edit'|translate}{* ブログ記事編集 *}</span></h2>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="blog_item_edit" id="blog_item_edit" action="/blog_item_edit/" method="POST">
+    <input type="hidden" name="blog_id" value="{$header.blog_id}">
+    <input type="hidden" name="id" value="{$blog_item.blog_item_id}">
+    <input type="hidden" name="MODE" value="">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+
+      <table width="100%">
+        <tr>
+          <th>{'/modules/blog/label/blog_entry_title'|translate}{* ブログ記事タイトル *}</th>
+          <td><input name="subject" type="text" size="60" value="{$blog_item.subject|escape}"><span class="required">{'/label/required'|translate}{* 必須 *}</span><span class="hint">{'/modules/blog/msg/required_40'|translate}{* 40文字以内 *}</span></td>
+        </tr>
+        <tr>
+          <th>{'/label/post_date'|translate}{* 投稿日時 *}</th>
+          <td>
+            {'/label/date'|translate}{* 日付 *}<input name="post_ymd" type="text" size="20" value="{$blog_item.post_ymd|escape}">
+            {'/label/time'|translate}{* 時刻 *}<select style="width:45px" name="post_h">{html_options options=$time_h_options selected=$blog_item.post_h}</select>　:　<select style="width:45px" name="post_m">{html_options options=$time_m_options selected=$blog_item.post_m}</select>
+            <span class="required">{'/label/required'|translate}{* 必須 *}</span><span class="hint">{'/modules/blog/label/date_example'|translate}{* (例 2006/07/22 10:30) *}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/modules/blog/label/blog_theme_name'|translate}{* テーマ *}</th>
+          <td><select name="theme_id" id="theme_id">{html_options options=$arrThemeList selected=$blog_item.theme_id}</select>
+          <a href="javascript:;" onclick="themeInput('{$header.blog_id}','');">&gt;&gt;{'/modules/blog/label/add_new_theme'|translate}{* 新しくテーマを増やす *}</a>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/viewing_limit'|translate}</th>{* 閲覧制限 *}
+          <td>
+            <input type="radio" name="secure_flg" id="secure_flg_off" value="off" onclick="display('secure_group_list', 'none');" {if $blog_item.secure_flg != 'on'}checked="checked"{/if}><label for="secure_flg_off">{'/label/unlimited'|translate}</label>{* 制限なし *}
+            <input type="radio" name="secure_flg" id="secure_flg_on" value="on" onclick="display('secure_group_list', '');" {if $blog_item.secure_flg == 'on'}checked="checked"{/if} style="margin-left: 10px;"><label for="secure_flg_on">{'/label/limited'|translate}</label>{* 制限あり *}
+           <div id="secure_group_list" style="margin: 10px 0 0 10px; {if $blog_item.secure_flg != 'on'}display:none;{/if}">
+                <p class="hint">{'/msg/select_group_for_view'|translate}</p>{* 閲覧を許可するグループを選択してください。(複数選択できます) *}
+                <select name="secure_item_level[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$blog_item.secure_item_level}</select>
+           </div>
+          </td>
+          </tr>
+      </table>
+
+      <table width="100%" style="background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+        <tr>
+          <td align="center">{$sw_html}</td>
+        </tr>
+      </table>
+
+      <h3>{'/label/other_settings'|translate}</h3>{* その他の設定 *}
+      <table width="650">
+        <tr>
+          <th>{'/modules/blog/label/comment_option'|translate}{* コメント受付 *}</th>
+          <td>{html_radios name=comment_flg options=$blogCommentOptions selected=$blog_item.comment_flg}</td>
+        </tr>
+        <tr>
+          <th>{'/label/send_trackback'|translate}{* トラックバック受付 *}</th>
+          <td>{html_radios name=trackback_flg options=$blogTrackbackOptions selected=$blog_item.trackback_flg}</td>
+        </tr>
+        <tr>
+          <th>pingURL</th>
+          <td><textarea name="ping_url" cols="55" rows="3">{$input_ping_url}</textarea><br>
+          ※{'/msg/multiple_ping'|translate}{* 複数pingを送る場合は改行して一行に１URL書いてください。 *}
+          </td>
+        </tr>
+      </table>
+
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" form_id="blog_item_edit" id=$blog_item.blog_item_id data=$blog_item}
+
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+      <div class="btn_box_bottom">
+      <ul class="bt_orange">
+    {if $blog_item.blog_item_id == ""}
+      {if $rauth->canInsert("/blog/item/[@blog_id="|cat:$header.blog_id|cat:"]")}
+        <li id="bt_orange"><a href="javascript:void(0)" onclick="document.blog_item_edit.subflg.click(); return false;"><span>{'/label/add_btn'|translate}{* 新規作成 *}</span></a></li>
+        <input type="submit" name="subflg" onclick="document.blog_item_edit.MODE.value='NEW';" style="display:none;">
+      {/if}
+    {else}
+      {if $rauth->canUpdate("/blog/item/"|cat:$blog_item.blog_item_id, $docmeta.lang)}
+        <li><a href="javascript:void(0)" onclick="document.blog_item_edit.subflg1.click(); return false;"><span>{'/label/update_btn'|translate}{* 更新する *}</span></a></li>
+        <input type="submit" name="subflg1" value="{'/label/update_btn'|translate}" onclick="document.blog_item_edit.MODE.value='UPDATE';" style="display:none;">
+        <li><a href="javascript:void(0)" onclick="document.blog_item_edit.subflg2.click(); return false;"><span>{'/label/cancel_btn'|translate}{* キャンセル *}</span></a></li>
+        <input type="submit" name="subflg2" id="subflg2" value="{'/label/cancel_btn'|translate}" onclick="document.blog_item_edit.MODE.value='CANCEL';" style="display:none;">{* キャンセル *}
+        <!--input type="submit" name="subflg" value="プレビューを確認する" onclick="go_preview();"-->
+      {/if}
+      {if $rauth->canDelete("/blog/item/"|cat:$blog_item.blog_item_id, $docmeta.lang)}
+        <li><a href="javascript:void(0)" onclick="document.blog_item_edit.subflg3.click(); return false;"><span>{'/label/delete_btn'|translate}</span></a></li>{* 削除する *}
+        <input type="button" name="subflg3" value="{'/label/delete_btn'|translate}" onclick="document.blog_item_edit.MODE.value='DELETE';confirm_delete();" style="display:none;"><br>{* 削除する *}
+      {/if}
+    {/if}
+      </ul>
+      </div>
+  </form>
+</div>

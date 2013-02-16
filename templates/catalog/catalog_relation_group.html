@@ -1,0 +1,26 @@
+{if $catalogRelationList|@count > 0}
+{module name="catalog_relation_group"}
+<h2 class="module_title"><span>{'/label/related_info'|translate}{* 関連情報 *}</span></h2>
+<div class="module_contents">
+{foreach from=$catalogRelationList item=row key=name}
+  <h3>{$name}</h3>
+  <ul>
+  {foreach from=$row item=item key=key name=catalogRelation}
+      <li>[{$item.module_type}]
+          {if $item.default_flg eq 1}
+            {if $item.link ne ""}
+              <a href="/{$item.link}">[{$item.title}]</a>
+            {else}
+              {$item.title}
+            {/if}
+          {else}
+            {$item.title}{$item.link}
+          {/if}
+</li>
+  {/foreach}
+  </ul>
+{/foreach}
+<div class="clear"></div>
+</div>
+{/module}
+{/if}

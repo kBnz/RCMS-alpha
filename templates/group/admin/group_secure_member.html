@@ -1,0 +1,105 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<style>
+{literal}
+td.category_nm {
+  font-weight: bold;
+}
+th.module_nm span {
+  margin-left: 15px;
+}
+table.not_list_main {
+  margin-top: 10px;
+}
+
+table.not_list_main .head th {
+
+  font-weight: bold;
+  border-bottom: 1px dashed #222;
+}
+{/literal}
+</style>
+
+<div class="list_right_bt">
+<h2 class="group">{'/modules/group/label/group_secure_member'|translate}{*メンバー情報閲覧制限*}</h2>
+<ul>
+{if $auth.group.insert}
+<li class="add"><a href="/management/group/group_edit/"><span>{'/label/create_new_group_btn'|translate}{*グループ追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/group/group_list/">{'/modules/group'|translate}</a>
+<a href="/management/group/group_list/">{'/modules/group/label/group_list'|translate}</a>
+{'/modules/group/label/group_secure_member'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> グループ >> グループ一覧 >> メンバー情報閲覧制限*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$groupInfo.group_nm|escape}</h3>
+<ul class="minitabs">
+  <li><a href="/management/group/group_edit/group_id={$groupInfo.group_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/group/group_member/group_id={$groupInfo.group_id}">{'/label/menber_registration'|translate}{*メンバー登録*}</a></li>
+  <li><a href="/management/group/group_secure_member/group_id={$groupInfo.group_id}" class="active">{'/label/viewing_limit'|translate}{*閲覧制限*}</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/group/group_secure_member/" method="post">
+    <input type="hidden" name="group_id" value="{$groupInfo.group_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <!--説明-->
+    <p class="hint">
+      {'/modules/group/msg/explaination_about_group_setting'|translate:$groupInfo.group_nm|escape}{*メンバーモジュールの閲覧権限をグループごとに設定できます。［{$groupInfo.group_nm|escape}］グループから閲覧することができるグループを指定する方式です。*}<br />
+      １．{'/modules/group/msg/explaination_about_group_setting_1'|translate}{*基本方針として、閲覧を「制限しない」「制限する」を決めます。*}<br />
+      ２．{'/modules/group/msg/explaination_about_group_setting_2'|translate}{*「制限する」を選択した場合は、例外として許可するグループを選択できます。*}
+    </p>
+
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th style="width:100px">{'/label/basic_policy'|translate}{*基本方針*}</th>
+        <td>
+          <input type="radio" name="secure_policy" id="secure_pocicy_allow"  value="{$smarty.const.GROUP_POLICY_ALLOW}" {if $formData.secure_policy != $smarty.const.GROUP_POLICY_DENY}checked="checked"{/if} /><label for="secure_pocicy_allow">{'/label/no_limit'|translate}{*制限しない*}</label>
+          <input type="radio" name="secure_policy" id="secure_pocicy_deny" value="{$smarty.const.GROUP_POLICY_DENY}" {if $formData.secure_policy == $smarty.const.GROUP_POLICY_DENY}checked="checked"{/if} /><label for="secure_pocicy_deny">{'/label/limited'|translate}{*制限あり*}</label>
+        </td>
+      </tr>
+      <tr id="special_special">
+        <th>{'/label/exception_settings'|translate}{*例外設定*}</th>
+        <td>
+          <p>{'/msg/exception_select_group'|translate}{*例外として許可するグループを選択できます。*}</p>
+          <table class="not_list_main" width="60%" border="0" cellspacing="2" cellpadding="0">
+            <tr class="head">
+              <th scope="col" style="width:20px"><input type="checkbox" name="swt_other_group_id" onClick="AllChecked(this.checked, this.form, 'other_group_id[]');"></th>
+              <th scope="col">{'/label/group_name'|translate}{*グループ名*}</th>
+            </tr>
+          {foreach from=$groupList item=row name=groupList_nm}
+            <tr>
+              <td><input type="checkbox" name="other_group_id[]" id="gid_{$row.group_id}" value="{$row.group_id}" {if $row.group_id|in_array:$formData.other_group_id}checked="checked"{/if} /></td>
+              <td><label for="gid_{$row.group_id}">{$row.group_nm|escape}</label></td>
+            </tr>
+          {/foreach}
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    {if $auth.group.update}
+      {buttonbox}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

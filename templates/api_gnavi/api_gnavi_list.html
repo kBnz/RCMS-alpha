@@ -1,0 +1,14 @@
+{module name="gnavi_list"}
+<h2 class="module_title"><span>ぐるなび情報一覧</span></h2>
+<div class="module_contents">
+  <p>このサイトで紹介しているぐるなび情報の一覧です。</p>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  <ul>
+    {foreach from=$restaurants item=rest}
+      <li><a href="{$rest.detail}">{$rest.restaurant_name}</a></li>
+    {/foreach}
+  </ul>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  <p><a href="http://www.gnavi.co.jp/" onclick="return !window.open(this.href)"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" width="90" height="35" alt="グルメ情報検索サイト　ぐるなび"></a></p>
+</div>
+{/module}

@@ -1,0 +1,17 @@
+{if $relation_module_data}
+<h2>関連</h2>
+  {foreach from=$relation_module_data item=item key=key}
+  [{$item.module_type}]
+          {if $item.default_flg eq 1}
+            {if $item.link ne ""}
+              <a href="/{$item.link}">[{$item.title}]</a>
+            {else}
+              {$item.title}
+            {/if}
+          {else}
+            {$item.title}{$item.link}
+          {/if}
+          <br/>
+  {/foreach}
+<hr/>
+{/if}

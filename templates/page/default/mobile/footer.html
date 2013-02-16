@@ -1,0 +1,17 @@
+{if $is_SmartPhone}
+<address><span style="font-size: medium;"><!--%copyright%--></span></address><br />
+<ul class="tabbar">
+     <li><a class="iicon" href="{$smarty.const.ROOT_URL}/" title="HOME"><em class="ii-house"></em>HOME</a></li>
+     <li><a class="iicon" href="javascript:if(confirm('PC版を閲覧しますか？')){ldelim}location.href='{$smarty.const.ROOT_URL}/?SmartPhonePCView=1';{rdelim}" title="PC版"><em class="ii-display"></em>PC版</a></li>
+{if !$use_edition_text}
+     <li><a class="iicon" href="javascript:if(confirm('このサイトはRCMSで出来ています。\nRCMSの公式サイトをご覧になりますか？')){ldelim}location.href='http://www.r-cms.jp/';{rdelim}" title="RCMS"><em class="ii-gear"></em>RCMS</a></li>
+{/if}
+</ul>
+{else}
+<div style="text-align:right;font-size: small;"><a href="#top">▲</a></div>
+[emoji:038]<a href="/">TOPへ</a>
+<br />
+<hr/>
+<address><span style="font-size: medium;"><!--%copyright%--></span></address><br />
+<span style="font-size: medium;"><!--%edition_text%--></span>
+{/if}

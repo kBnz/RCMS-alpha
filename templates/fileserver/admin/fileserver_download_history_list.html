@@ -1,0 +1,74 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="javascript" type="text/javascript" src="/js/treemenu/TreeMenu.js"></script>
+<script type="text/javascript">
+<!--
+var currentFolderName = "{$folders.current.name}";
+{literal}
+
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}ダウンロード履歴</h2>
+
+
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/fileserver/fileserver_list/{if $folder_id}&folder_id={$folder_id}{/if}">{$module_nm}</a>
+{$module_nm}ダウンロード履歴
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/fileserver/fileserver_list/">{$module_nm}</a></li>
+  <li><a href="/management/fileserver/fileserver_download_history_list/" class="active">ダウンロード履歴</a></li>
+</ul>
+
+<div id="fileserver_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="get" action="/management/fileserver/fileserver_download_history_list/">
+    <fieldset class="search_box">
+      <select name="s_file_id">{html_options options=$arrFileid selected=$s_file_id}</select>
+      <input type="submit" value="検索する" />
+    </fieldset>
+
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="100">{'ダウンロード日時'|sort_link:ymdhi:$sort_url:$sort:$desc}</th>
+        <th width="100">{'フォルダ'|sort_link:folder_nm:$sort_url:$sort:$desc}</th>
+        <th width="100">{'タイトル'|sort_link:title:$sort_url:$sort:$desc}</th>
+        <th width="100">{'ダウンロード者'|sort_link:admin_name:$sort_url:$sort:$desc}</th>
+      </tr>
+    {foreach from=$file_download_list item=row}
+      <tr>
+        <td>{$row.ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+        <td>
+          <a href="/management/fileserver/fileserver_list/folder_id={$row.folder_id}">{$row.folder_nm}</a>
+        </td>
+        <td>
+          <a href="/management/fileserver/fileserver_file_edit/file_id={$row.file_id}">{$row.title}</a>
+        </td>
+        <td>{$row.admin_name}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+
+</div>
+  </form>
+
+</div>
+{rcms_include file="management/footer.html"}
+

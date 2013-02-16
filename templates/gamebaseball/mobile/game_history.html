@@ -1,0 +1,30 @@
+{if $gameList|@count > 0}
+<h2>{if $gameList.0.team_grade ne '' and $gameList.0.official_flg ne '1'}{$gameList.0.team_grade}{/if}{$gameList.0.game_type}　{'/label/game_list'|translate}{*試合情報一覧*}</h2>
+
+{section name=mydata loop=$gameList}
+{$gameList[mydata].ymd_str} {$gameList[mydata].game_type2}<br/>
+{$gameList[mydata].team_nm}{$gameList[mydata].opponent_grade}
+<a href="/gamebaseball_detail/id={$gameList[mydata].game_id}">
+{if $gameList[mydata].game_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].game_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{/if}
+</a><br/>
+{/section}
+<hr/>
+{/if}

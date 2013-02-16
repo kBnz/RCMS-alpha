@@ -1,0 +1,116 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_comment_list'|translate}</h2>{* コメント一覧 *}
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+{'/modules/blog/label/blog_comment_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> コメント一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- コメント一覧 検索 -->
+  <form action="/management/blog/blog_comment_list/" method="POST">
+    <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+
+    <fieldset class="search_box">
+      {'/modules/blog/label/blog_entry_title'|translate}{* ブログ記事タイトル *}<select name="blog_item_id">{html_options options=$blog_item_list selected=$blog_item_id}</select>
+      {'/label/publish_status'|translate}{* 公開状況 *}<select name="open_flg">{html_options options=$blogCommentOpenFlgs selected=$open_flg}</select>
+      <input type="submit" value="{'/label/search'|translate}" />{* 検索 *}
+    </fieldset>
+  </form>
+<!-- //コメント一覧 検索 -->
+
+<!-- コメント一覧 -->
+  <form name="blog_comment" action="/management/blog/blog_comment_list/" method="POST">
+    <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+    <input type="hidden" name="blog_item_id" value="{$blog_item_id}" />
+    <input type="hidden" name="open_flg" value="{$open_flg}" />
+    <input type="hidden" name="MODE" value="" />
+    {pager info=$pageInfo}
+    <table width="100%">
+      <tr>
+        <th>{if $blog_comment_list}<input type="checkbox" onclick="AllChecked(this.checked, this.form, 'comment_id[]');" />{/if}</th>
+        <th>{'/label/publish_status'|translate}</th>{* 公開状況 *}
+        <th>{'/modules/blog/label/name_email_url'|translate}</th>{* 名前/Eメール/URL *}
+        <th>{'/modules/blog/label/blog_entry_title'|translate}</th>{* ブログ記事タイトル *}
+        <th>{'/modules/blog/label/comment_content'|translate}</th>{* コメント内容 *}
+      </tr>
+    {foreach from=$blog_comment_list name=comment_list item=item}
+    {assign var=comment_id value=$item.comment_id}
+      <tr>
+        <td width="15"><input type="checkbox" name="comment_id[]" value="{$item.comment_id}" {if !($rauth->canDelete("/blog/comment/$comment_id")) || !($rauth->canUpdate("/blog/comment/$comment_id")) }disabled="disabled"{/if} /></td>
+        <td width="60">
+          {if $smarty.const.BLOG_COMM_OPEN_ON == $item.open_flg}
+          <img src="/images/management/check.gif" />
+          {elseif $smarty.const.BLOG_COMM_OPEN_OFF == $item.open_flg}
+          <img src="/images/management/batu.gif" />
+          {elseif $smarty.const.BLOG_COMM_OPEN_NON == $item.open_flg}
+          <img src="/images/management/sankaku.gif" />
+          {/if}
+          {$blogCommentOpenFlgs[$item.open_flg]}
+        </td>
+        <td>
+          {$item.name|strip_tags|escape}<br />
+          {if $item.mail}{$item.mail|strip_tags|escape}<br />{/if}
+          {if $item.url}<a href="{$item.url|strip_tags|escape}" target="_blank">{$item.url|strip_tags|escape}</a><br />{/if}</td>
+        <td width="20%">{$blog_item_list[$item.module_id]}</td>
+        <td width="45%">{$item.note|strip_tags|escape|nl2br}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+{if $smarty.foreach.comment_list.total > 0}
+    {buttonbox}
+        <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+        <button type="button" onclick="chengeStatus(this.form, 'OPEN_COMMENT');">{'/label/publish_btn'|translate}</button>{* 公開にする *}
+        <button type="button" onclick="chengeStatus(this.form, 'CLOSE_COMMENT');">{'/label/unpublish_btn'|translate}</button>{* 非公開にする *}
+        <button type="button" onclick="chengeStatus(this.form, 'NON_COMMENT');">{'/label/apply_btn'|translate}</button>{* 申請中にする *}
+        <button type="button" onclick="deleteItem(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+    {/buttonbox}
+{/if}
+
+  </form>
+</div>
+<!-- //コメント一覧 -->
+</div>
+<script type="text/javascript">
+{literal}
+<!--
+function chengeStatus(f, mode) {
+    f.MODE.value = mode;
+    f.submit();
+    f.MODE.value = "";
+}
+function deleteItem(f) {
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+-->
+{/literal}
+</script>
+
+{rcms_include file="management/footer.html"}
+

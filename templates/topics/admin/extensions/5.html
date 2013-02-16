@@ -1,0 +1,5 @@
+{foreach from=$item.options item=chk_item key=chk_key}
+  <input type="checkbox" name="{$item.name}" value="{$chk_key|escape}" {if $item.key && $chk_key|in_array:$item.key}checked="checked"{/if} /><label style="margin-right:10px">{$chk_item|escape}</label>
+{/foreach}
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}
+

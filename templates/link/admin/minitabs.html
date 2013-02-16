@@ -1,0 +1,6 @@
+<ul class="minitabs">
+  <li id="minitab_link_list"><a href="/management/link/link_list/" {if $page_type eq 'link_list'}class="active"{/if}>{'/modules/link/label/link_list'|translate}{*リンク一覧*}</a></li>
+  <li id="minitab_link_edit"><a href="/management/link/link_edit/" {if $page_type eq 'link_edit'}class="active"{/if}>{'/modules/link/label/link_edit'|translate}{*リンク編集*}</a></li>
+  <li id="minitab_link_category_list"><a href="/management/link/link_category_list/" {if $page_type eq 'link_category_list'}class="active"{/if}>{'/label/categorieslist'|translate}{*カテゴリ設定*}</a></li>
+  <li id="minitab_link_order_edit"><a href="/management/link/link_order_edit/" {if $page_type eq 'link_order_edit'}class="active"{/if}>{'/label/sort_setting'|translate}{*表示順設定*}</a></li>
+</ul>

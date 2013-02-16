@@ -1,0 +1,19 @@
+※このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+
+以下の承認依頼があります。確認してください。
+
+■申請日
+
+　{$apply_date|pg_dateformat}
+
+■申請者
+
+　{$apply_member_nm}
+
+■リンク
+
+　{$link}
+
+■更新コメント
+
+　{$comment}

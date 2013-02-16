@@ -1,0 +1,13 @@
+<h2>[emoji:176]{$date_str}</h2>
+
+{if $calendar_module_data}
+
+  {foreach item=item from=$calendar_module_data}
+  [{$item.module_type}]<a href="/{$item.link}">{$item.title}</a><br/>
+  {/foreach}
+{else}
+ｺﾝﾃﾝﾂはありません
+{/if}
+
+<hr/>
+

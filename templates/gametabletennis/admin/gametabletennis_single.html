@@ -1,0 +1,288 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+    }
+}
+
+var showing_no = '';
+var tmp_member_name;
+var tmp_member_id;
+
+function inputMemberInfo(order_no) {
+    if(showing_no != '') {
+        document.getElementById('inputArea['+showing_no+']').style.visibility = "hidden";
+    }
+    showing_no = order_no;
+    tmp_member_name = document.getElementById('member_name['+order_no+']').value;
+    tmp_member_id = document.getElementById('member_id['+order_no+']').value;
+    var element = document.getElementById('member_name['+order_no+']');
+    document.getElementById('inputFrame['+order_no+']').src = '/js/infoInput.php?order='+order_no+'&type=gamemember';
+    document.getElementById('inputArea['+order_no+']').style.visibility = "visible";
+    document.getElementById('inputArea['+order_no+']').style.display = "";
+}
+
+function chkMemId(order_no) {
+    if(tmp_member_name != document.getElementById('member_name['+order_no+']').value
+    && tmp_member_id == document.getElementById('member_id['+order_no+']').value
+    && document.getElementById('member_name['+order_no+']').value != "") {
+    // 名前が変わっているがidが変わっていない場合は手で入力したとみなす
+        document.getElementById('member_id['+order_no+']').value = "";
+        document.getElementById('subInfo['+order_no+']').style.display = "inline";
+    }
+    else if(document.getElementById('member_name['+order_no+']').value == "") {
+        document.getElementById('subInfo['+order_no+']').style.display = "none";
+    }
+}
+
+function writeWithKeybourd(order_no) {
+    document.getElementById('member_id['+order_no+']').value = "";
+    document.getElementById('inputArea['+order_no+']').style.visibility = "hidden";
+    if(document.getElementById('member_name['+order_no+']').value != "") {
+        document.getElementById('subInfo['+order_no+']').style.display = "inline";
+    }
+    else {
+        document.getElementById('subInfo['+order_no+']').style.display = "none";
+    }
+}
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{$module_nm} - {$header.game_name}</h2>
+<ul>
+<li class="add"><a href="/management/gametabletennis/gametabletennis_single/game_id={$game_id}&game_type={$game_type}"><span>{'/modules/game/label/create_new_game_btn'|translate}{*試合追加*}</span></a></li>
+<li class="view"><a href="{$smarty.const.ROOT_URL}/gametabletennis_detail/game_id={$game_id}&show={$smarty.const.GAME_TABLETENNIS_GAME_TYPE_SINGLE}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm} {'/label/list'|translate}</a>
+<a href="/management/gametabletennis/gametabletennis_edit/game_id={$game_id}">{$module_nm} {'/label/edit'|translate}</a>
+<a href="/management/gametabletennis/gametabletennis_single/game_id={$game_id}&game_type={$game_type}">{if $game_type==0}{'/modules/game/label/singles'|translate}{elseif $game_type==1}{'/modules/game/label/doubles'|translate}{/if} {'/label/edit'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 各種ゲーム >> 各種ゲーム一覧 >> 各種ゲーム編集 >> 個人戦編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="gametabletennis/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+<a name="update_form"></a>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+  <form name="game_tabletennis_single" method="POST" action="/management/gametabletennis/gametabletennis_single/">
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="game_tabletennis_single_id" value="{$game_tabletennis_single_id}" />
+    <input type="hidden" name="game_type" value="{$game_type}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $game_tabletennis_single_id}UPDATE{else}INSERT{/if}" />
+    <input type="hidden" name="pageID" value={$pageID} />
+<h3>{if $game_tabletennis_single_id}{'/label/edit'|translate}{*編集*}{else}{'/label/create_new'|translate}{*新規追加*}{/if}</h3>
+
+<table style="width:100%">
+  <tr>
+    <th>{'/label/tournament'|translate}{*トーナメント*}</th>
+    <td><input type="text" name="round" value="{$data.round}"></td>
+  </tr>
+  <tr>
+    <th>{'/label/my_team'|translate} {'/label/player'|translate}{*自チーム 選手*}</th>
+    <td>
+      <input type="hidden" name="member_id[1][1]" id="member_id[1]" value="{$data.members.self[1][1].member_id}" />
+      <input type="text" name="self_name[1][1]" id="member_name[1]" value="{$data.members.self[1][1].name}" onBlur="chkMemId(1)" onKeyup="writeWithKeybourd(1)" />
+      <input type="button" value="..." onclick="inputMemberInfo(1);" />
+      <span id="subInfo[1]" style="display:{if ($data.members.self[1][1].member_id == -1 || $data.members.self[1][1].member_id == "") && $data.members.self[1][1].member_name != ""}inline{else}none{/if}">({'/label/not_registered_data'|translate}{*登録外*})</span>
+      <div id="inputArea[1]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+        <iframe name="inputFrame" id="inputFrame[1]" frameborder="0" marginwidth="0" marginheight="0" src="" scrolling="no" width="400" height="370"></iframe>
+      </div>
+      (<input type="text" name="self_info[1][1]" id="member_grade[1]" value="{$data.members.self[1][1].info}">)
+      {if $game_type == $smarty.const.GAME_TABLETENNIS_DOUBLES}
+        <br />
+        <input type="hidden" name="member_id[1][2]" id="member_id[2]" value="{$data.members.self[1][2].member_id}" />
+        <input type="text" name="self_name[1][2]" id="member_name[2]" value="{$data.members.self[1][2].name}" onBlur="chkMemId(2)" onKeyup="writeWithKeybourd(2)" />
+        <input type="button" value="..." onclick="inputMemberInfo(2);" />
+        <span id="subInfo[2]" style="display:{if ($data.members.self[1][2].member_id == -1 || $data.members.self[1][2].member_id == "") && $data.members.self[1][2].member_name != ""}inline{else}none{/if}">({'/label/not_registered_data'|translate}{*登録外*})</span>
+        <div id="inputArea[2]" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;">
+          <iframe name="inputFrame" id="inputFrame[2]" frameborder="0" marginwidth="0" marginheight="0" src="" scrolling="no" width="400" height="370"></iframe>
+        </div>
+        (<input type="text" name="self_info[1][2]" id="member_grade[2]" value="{$data.members.self[1][2].info}">)
+      {/if}
+    </td>
+  </tr>
+  <tr>
+    <th>{'/label/opponent_team'|translate}{*相手チーム*} {'/label/player'|translate}{*相手チーム 選手*}</th>
+    <td>
+      <input type="text" name="opp_name[1][1]" value="{$data.members.opp[1][1].name}">(<input type="text" name="opp_info[1][1]" value="{$data.members.opp[1][1].info}">)
+      {if $game_type == $smarty.const.GAME_TABLETENNIS_DOUBLES}
+        <br /><input type="text" name="opp_name[1][2]" value="{$data.members.opp[1][2].name}">(<input type="text" name="opp_info[1][2]" value="{$data.members.opp[1][2].info}">)
+      {/if}
+    </td>
+  </tr>
+  <tr>
+    <th>{'/modules/game/label/game_result'|translate}{*試合結果*}</th>
+    <td>
+      <table cellpadding="0" cellspacing="5" class="not_list_main tokuten" id="tabletennis_score_table">
+        <tr>
+          <td><input type="text" name="Self_Won" value="{$data.Self_Won}" size="3" /></td>
+          <td>
+            <table>
+              <tr><td><input type="text" name="Self_Game1" value="{$data.Self_Game1}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game1" value="{$data.Opp_Game1}" size="3" /></td></tr>
+              <tr><td><input type="text" name="Self_Game2" value="{$data.Self_Game2}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game2" value="{$data.Opp_Game2}" size="3" /></td></tr>
+              <tr><td><input type="text" name="Self_Game3" value="{$data.Self_Game3}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game3" value="{$data.Opp_Game3}" size="3" /></td></tr>
+              <tr><td><input type="text" name="Self_Game4" value="{$data.Self_Game4}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game4" value="{$data.Opp_Game4}" size="3" /></td></tr>
+              <tr><td><input type="text" name="Self_Game5" value="{$data.Self_Game5}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game5" value="{$data.Opp_Game5}" size="3" /></td></tr>
+              <tr><td><input type="text" name="Self_Game6" value="{$data.Self_Game6}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game6" value="{$data.Opp_Game6}" size="3" /></td></tr>
+              <tr><td><input type="text" name="Self_Game7" value="{$data.Self_Game7}" size="3" /></td><td>-</td><td><input type="text" name="Opp_Game7" value="{$data.Opp_Game7}" size="3" /></td></tr>
+            </table>
+          </td>
+          <td><input type="text" name="Opp_Won" value="{$data.Opp_Won}" size="3" /></td>
+        </tr>
+      </table>
+      <label>
+    {html_radios name="win_by_default" options=$arrTabletennisNOGAME selected=$data.win_by_default onClick="chg_nogame()" separator="</label><label>"}
+      </label>
+      <script type="text/javascript">
+    <!--
+      {literal}
+      //スコア表の切り替え
+      function chg_nogame(){
+          var i;
+          for(i = 0; i < document.game_tabletennis_single.win_by_default.length; i++){
+              if(document.game_tabletennis_single.win_by_default[i].checked){ break; }
+          }
+          //0以上=試合は行われなかった
+          $A($('tabletennis_score_table').getElementsByTagName('input')).each(function(e){e.disabled=(i==0?false:true)});
+      }
+      Event.observe(window, 'load', function () { chg_nogame(); }, false);
+      {/literal}
+      -->
+      </script>
+    </td>
+  </tr>
+  <tr>
+    <th>{'/label/sort'|translate}{*並び順*}</th>
+    <td><input type="text" name="order_no" value="{$data.order_no}" /></td>
+  </tr>
+</table>
+{buttonbox}
+<button type="submit" value="" />{if $game_tabletennis_single_id}{'/label/update_btn'|translate}{*更新する*}{else}{'/label/add_btn'|translate}{*追加する*}{/if}</button>
+{/buttonbox}
+
+<br>
+<h3>{if $game_type==0}{'/modules/game/label/singles'|translate}{elseif $game_type==1}{'/modules/game/label/doubles'|translate}{/if} {'/label/list'|translate}</h3>
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+{if $auth.gametabletennis.update || $auth.gametabletennis.delete}
+        <th style="width:20px"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'game_tabletennis_single_id_arr[]');" /></th>
+{/if}
+        <th style="width:20px">{'/label/publish_status'|translate}{*公開*}</th>
+        <th>{'/label/tournament'|translate}{*トーナメント*}</th>
+        <th>{'/label/my_team'|translate}{*自チーム*}</th>
+        <th colspan="3">{'/label/score_katakana'|translate}{*スコア*}</th>
+        <th>{'/label/opponent_team'|translate}{*相手チーム*}</th>
+    <th>{'/label/sort'|translate}{*並び順*}</th>
+        <th>{'/label/edit'|translate}{*編集*}</th>
+      </tr>
+  {foreach from=$single_list item=row}
+      <tr{if $row.game_tabletennis_single_id == $game_tabletennis_single_id} id="editing"{/if}>
+        {if $auth.gametabletennis.update || $auth.gametabletennis.delete}
+          <td><input type="checkbox" name="game_tabletennis_single_id_arr[]" value="{$row.game_tabletennis_single_id}"></td>
+        {/if}
+        <td>
+          {if $row.open_flg == 1}
+          <img src="/images/management/check.gif" />
+          {elseif $row.open_flg == 0}
+          <img src="/images/management/batu.gif" />
+          {elseif $row.open_flg == 2}
+          <img src="/images/management/sankaku.gif" />
+          {/if}
+        </td>
+        <td>{$row.round}</td>
+        <td>
+      {$row.members.self[1][1].name}{if $row.members.self[1][1].info != ""}({$row.members.self[1][1].info}){/if}
+      {if $game_type == $smarty.const.GAME_TABLETENNIS_DOUBLES}
+        <br />{$row.members.self[1][2].name}{if $row.members.self[1][2].info != ""}({$row.members.self[1][2].info}){/if}
+      {/if}
+    </td>
+    <td>
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_NORMAL}
+        {$row.Self_Won}
+      {/if}
+    </td>
+    <td>
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_BY_DEFAULT}
+        {'/modules/game/label/no_fight_win'|translate}{*不戦勝*}
+      {elseif $row.win_by_default == $smarty.const.GAME_TABLETENNIS_LOSE_BY_DEFAULT}
+        {'/modules/game/label/no_fight_loss'|translate}{*不戦敗*}
+      {else}
+      <table>
+        {foreach from=$row.games item=game}
+        <tr><td>{$game.self}</td><td>-</td><td>{$game.opp}</td></tr>
+        {/foreach}
+      </table>
+      {/if}
+    </td>
+    <td>
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_NORMAL}
+        {$row.Opp_Won}
+      {/if}
+    </td>
+    <td>
+      {$row.members.opp[1][1].name}{if $row.members.opp[1][1].info != ""}({$row.members.opp[1][1].info}){/if}
+      {if $game_type == $smarty.const.GAME_TABLETENNIS_DOUBLES}
+        <br />{$row.members.opp[1][2].name}{if $row.members.opp[1][2].info != ""}({$row.members.opp[1][2].info}){/if}
+      {/if}
+    </td>
+    <td>
+      <input size="3" name="order_no_arr[{$row.game_tabletennis_single_id}]" type="text" value="{$row.order_no}" />
+    </td>
+    <td>
+      {if $row.game_tabletennis_single_id == $game_tabletennis_single_id}
+        {'/label/editing'|translate}{*編集中*}
+      {else}
+        <a href="/management/gametabletennis/gametabletennis_single/game_id={$game_id}&game_type={$game_type}&game_tabletennis_single_id={$row.game_tabletennis_single_id}&pageID={$pageInfo.pageNo}#update_form">{'/label/edit_btn'|translate}{*編集*}</a>
+      {/if}
+    </td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.gametabletennis.update || $auth.gametabletennis.delete}
+      {buttonbox}
+        <p>{'/label/withselected'|translate}</p>
+        {if $auth.gametabletennis.update}
+          <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{*公開にする*}</button>
+          <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{*非公開にする*}</button>
+        {/if}
+        {if $auth.gametabletennis.delete}
+          <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+        {/if}
+        {if $auth.gametabletennis.update}
+        {* 並び順更新ボタンは右寄せ *}
+        </ul><ul style="float:right;"><button type="submit" onclick="this.form.MODE.value='UPDATE_NO'">{'/label/change_order_btn'|translate}{*並び順を更新*}</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+<style>
+{literal}
+  tr#editing td { background:#DDDDDD; }
+{/literal}
+</style>
+{rcms_include file="management/footer.html"}

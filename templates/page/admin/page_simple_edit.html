@@ -1,0 +1,82 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page/label/page_list'|translate}</a>
+{'/modules/page/label/page_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> ページ設定 >> ページ設定一覧  >> ページ設定編集*}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<form action="/management/page/page_edit/" method="post" name="page_data_form" id="page_data_form">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+
+
+{*  ============================= 基本設定ブロック ============================== *}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/page/page_edit/page_page_id="|cat:$latestRow.page_id}
+
+<div class="list_main">
+{if $rauth->canInsert('/page/item/')}
+    {if $latestRow.page_id == ""}
+    <p>
+    <span style="color:red;">{'/modules/page/msg/please_make_sure_if_page_already_exist'|translate}</span>
+    {*これから作ろうとしているページは既にあるページではないかをご確認ください。<br>例えば、ブログなどはほとんどページの追加を行う必要はありません。*}
+    </p>
+    {/if}
+{/if}
+  <p><span class="required">※</span>{'/label/required'|translate}{*必須*}</p>
+  <input type="hidden" id="contents_id[0]" name="contents_id[0]" value="{$contForm[0].contents_id}" />
+  <input type="hidden" id="weight[0]" name="weight[0]" value="0" />
+  <input type="hidden" id="place[0]" name="place[0]" value="main_module" />
+
+  <h3>{'/modules/page/label/page_settings'|translate}{*基本設定*}</h3>
+
+  <table width ="100%">
+    <tr>
+      <th style="width:150px">{'/label/page_name'|translate}{*ページ名*}<span class="required">※</span></th>
+      <td>
+        <input id="page_nm" name="page_nm" type="text" style="width:300px" value="{$pageForm.page_nm}" /><br>
+        <span class="hint">{'/modules/page/msg/give_a_descriptive_page_name'|translate}{*わかりやすい名称を設定しましょう。*}</span>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/page_system_name'|translate}{*ページシステム名*}(URL)<span class="required">※</span></th>
+      <td>
+          {$smarty.const.ROOT_URL} / <input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm2}"/> /<br>
+          <span class="hint">{'/modules/page/msg/explain_page_system_name'|translate:$smarty.const.ROOT_URL}</span>
+          {*{$smarty.const.ROOT_URL}/[ここの部分になります。]/<br>（漢字などでもOK。ただし、モバイルからの閲覧ができない場合があります。）*}
+      </td>
+    </tr>
+    <input type="hidden" name="page_template" value="1">{* 1段組 *}
+    <input name="sitemap_flg" type="hidden" value="1" />
+    <input name="menu_flg" type="hidden" value="1" />
+    <input name="open_flg" type="hidden" value="1"/>
+    <input name="mobile_flg" type="hidden" value="1"/>
+    <input name="mobile_flg2[0]" type="hidden" value="1"/>
+    <input id="parent_page_id" name="parent_page_id" type="hidden" value="{$pageForm.parent_page_id}" />
+module_type[0]
+contents_type[0]
+template[0]
+  </table>
+
+</div><!--//list_main-->
+{*  ============================= //基本設定ブロック ========================= *}
+
+
+{*  ============================= 送信ボタン ============================= *}
+{buttonbox}
+      {if $rauth->canInsert("/page/item/")}
+        <button type="submit" onclick="submitExec(this.form, 'INSERT')">{'/label/add_btn'|translate}</button>
+      {/if}
+{/buttonbox}
+</form>
+</div>
+{rcms_include file="management/footer.html"}

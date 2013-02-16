@@ -1,0 +1,15 @@
+{if $event_list|@count > 0}
+<h2>周辺のアートイベント</h2>
+
+
+	<ul>
+{foreach from=$event_list item=event}
+	<li><a href="{$event.href}" target="_blank">{$event.name}</a><br>
+	開催期間:[{$event.date_start}-{$event.date_end}]<br>
+	場所:<a href="{$event.place_href}" target="_blank">{$event.place_nm}</a><br>
+	{$event.description}<br>
+	{if $event.src}<img alt="{$event.name}" src="{$event.src}" />{/if}</li> 
+{/foreach}
+	</ul>
+
+{/if}

@@ -1,0 +1,14 @@
+<div class="update_comment">
+<table border="0" cellspacing="2" cellpadding="0">
+{if $last_comment}
+  <tr>
+    <th>{'/label/last_update_comment'|translate}</th>
+    <td>{$last_comment|escape|nl2br}</td>
+  </tr>
+{/if}
+  <tr>
+    <th>{'/label/update_comment'|translate}</th>
+    <td><textarea name="update_comment">{$comment|escape}</textarea></td>
+  </tr>
+</table>
+</div>

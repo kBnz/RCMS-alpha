@@ -1,0 +1,27 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+>><a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}{* ブログ一覧 *}</a>
+
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$header.title|escape} {'/modules/blog/label/blog_entry_list'|translate}</h2>
+{if $auth.blog.insert}<a href="/management/blog/blog_item_edit/blog_id={$header.blog_id}">>>{'/modules/blog/label/add_new_entry_btn'|translate}{* 記事追加 *}</a><br/>{/if}
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+{foreach from=$item_list name=item_nm item=item}
+▼{$item.post_ymdhi|pg_dateformat}<br/>
+{if !$item.gaibu_link}
+            <a href="/management/blog/blog_item_edit/blog_item_id={$item.blog_item_id}">{$item.subject|escape}</a><br/>
+{else}
+            {$item.subject|escape}
+            <a href="{$item.gaibu_link|escape}">{'/modules/blog/msg/goto_outside_blog_entry'|translate}{* 外部の記事へ *}</a><br/>
+{/if}
+<br/>
+{/foreach}
+  {pager info=$pageInfo}
+
+{rcms_include file="management/mobile/footer.html"}

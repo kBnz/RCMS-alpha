@@ -1,0 +1,35 @@
+<h2>[emoji:170]{$data.magazine_name}</h2>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $data.magazine_info}{$data.magazine_info}<br/>{/if}
+■{'/label/publisher'|translate}{*発行者*}<br/>
+{$data.admin_nm}<br/>
+■{'/label/subscriber'|translate}{*購読者*}<br/>
+{$data.reading_cnt}{'/label/member_unit'|translate}{*人*}<br/>
+<br/>
+■{'/label/subscribe_btn'|translate}
+<form name="magazine_detail_form" action="/{$page_sysnm}/id={$data.magazine_id}" method="POST">
+<input type="hidden" name="mode" value="SUBSCRIBE" />
+{'/label/mail_address'|translate}{*メールアドレス*}<br/>
+<input type="text" name="mail_address" value="{$formData.mail_address}" /><br/>
+<input type="submit" value="{'/label/subscribe_btn'|translate}" />{*購読する*}
+</form>
+<br/>
+■{'/label/resign_btn'|translate}
+<form name="magazine_detail_form" action="/{$page_sysnm}/id={$data.magazine_id}" method="POST">
+<input type="hidden" name="mode" value="CANCEL" />
+{'/label/mail_address'|translate}{*メールアドレス*}<br/>
+<input type="text" name="mail_address" value="{$formData.mail_address}" /><br/>
+<input type="submit" value="{'/label/resign_btn'|translate}" />{*退会する*}
+</form>
+<br/>
+
+<div style="text-align:right;font-size:small;">
+{if $data.bn_flg}
+  <p><a href="/magazine_bn_list/id={$data.magazine_id}" class="small_text">{'/modules/magazine/label/back_number_list'|translate}</a></p>{*メルマガバックナンバー一覧*}
+{/if}
+  <p><a href="/magazine_list/" class="small_text">{'/modules/magazine/label/magazine_list_for_user'|translate}</a></p>{*メルマガ一覧*}
+</div>
+<hr/>

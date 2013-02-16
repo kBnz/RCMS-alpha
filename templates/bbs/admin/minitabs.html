@@ -1,0 +1,6 @@
+<ul class="minitabs">
+  <li><a href="/management/bbs/bbs_list/"{if $page_type eq 'bbs_list'} class="active"{/if}>{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</a></li>
+  <li><a href="/management/bbs/bbs_waiting_list/"{if $page_type eq 'bbs_waiting_list'} class="active"{/if}>{'/modules/bbs/label/waiting_list'|translate}{*申請待ち*}</a></li>
+  <li><a href="/management/bbs/bbs_report_list/" {if $page_type eq 'bbs_report_list'} class="active"{/if}>{'/modules/bbs/label/violation_list'|translate}{*違反報告*}</a></li>
+  <li><a href="/management/bbs/bbs_category_list/"{if $page_type eq 'bbs_category_list' || $page_type eq 'bbs_category_edit'} class="active"{/if}>{'/modules/bbs/label/bbs_category'|translate}{*カテゴリ設定*}</a></li>
+</ul>

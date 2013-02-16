@@ -1,0 +1,11 @@
+<h2>サイト一覧</h2>
+
+<div style="text-align:center;">
+{foreach from=$site_list item=site key=key }
+<a href="{$site.site_url}"><span style="font-size:small;">{$site.site_nm}</span></a><br/>
+<br/>
+{/foreach}
+</div>
+<br/>
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo}
+<hr/>

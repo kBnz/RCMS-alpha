@@ -1,0 +1,82 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmSend(f) {
+        f.submit();
+}
+//-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">メンバー管理</a>
+<a href="/management/membermail/membermail_list/">{$module_nm}</a></a>
+{$module_nm}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/membermail/membermail_member_list/">
+    <fieldset class="search_box">
+      メンバー名：<input type="text" name="keyword" value="{$smarty.request.keyword}" />
+
+    <input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" />
+    </fieldset>
+  </form>
+
+{if $auth.membermail.update && $smarty.session.member_mail_admin_flg}
+  <form method="POST" action="/management/membermail/membermail_edit/">
+{/if}
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.membermail.update && $smarty.session.member_mail_admin_flg}
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'to_member_id[]')" /></th>
+{else}
+        <th width="60"></th>
+{/if}
+        <th>メンバー名</th>
+      </tr>
+    {foreach from=$membermail_list item=row}
+      <tr>
+        {if $auth.membermail.update && $smarty.session.member_mail_admin_flg}
+          <td><input type="checkbox" name="to_member_id[]" value="{$row.member_id}"></td>
+        {else}
+          <td width="60">
+            <form method="POST" action="/management/membermail/membermail_edit/">
+            <input type="submit" name="sub_flg" value="メール作成">
+            <input type="hidden" name="to_member_id[]" value="{$row.member_id}">
+            </form>
+          </td>
+        {/if}
+        <td>{$row.disp_name}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+  {if $auth.membermail.update && $smarty.session.member_mail_admin_flg}
+    {buttonbox}
+      <p>選択したメンバーに一括で</p>
+        <button type="button" onclick="confirmSend(this.form);return false;">メール作成</button>
+    {/buttonbox}
+  {/if}
+
+{if $auth.membermail.update && $smarty.session.member_mail_admin_flg}
+  </form>
+{/if}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

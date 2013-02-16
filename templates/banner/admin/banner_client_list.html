@@ -1,0 +1,85 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if(confirm('選択されたバナーを削除します')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>クライアント一覧</h2>
+<ul>
+{if $auth.banner.insert}
+<li class="add"><a href="/management/banner/banner_client_edit/"><span>クライアント追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/banner/banner_contents_list/">{$module_nm}</a>
+クライアント一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/banner/banner_contents_list/">広告枠一覧</a></li>
+  <li><a href="/management/banner/banner_list/">バナー一覧</a></li>
+  <li><a href="/management/banner/banner_client_list/" class="active">クライアント一覧</a></li>
+  <li><a href="/management/banner/banner_summary/">集計結果</a></li>
+  {if $auth.banner.insert}
+  <li><a href="/management/banner/banner_client_edit/wizard=1">広告枠簡単作成</a></li>
+  {/if}
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/banner/banner_client_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="update_id" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.banner.delete}
+          <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'client_id[]');" /></th>
+        {/if}
+        <th>クライアント名称</th>
+        <th>バナー広告数</th>
+        <th>担当者</th>
+        <th>最終更新日時</th>
+      </tr>
+    {foreach item=client_data from=$client_list}
+      <tr>
+        {if $auth.banner.delete}
+          <td><input type="checkbox" name="client_id[]" value="{$client_data.client_id}" /></td>
+        {/if}
+        <td><a href="/management/banner/banner_client_edit/client_id={$client_data.client_id}&pageID={$currentPageID}">{$client_data.client_nm}</a></td>
+        <td>{$client_data.banner_cnt}件</td>
+        <td>{$client_data.manager}</td>
+        <td>{$client_data.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+{if $auth.banner.delete}
+  {buttonbox}
+    <p>選択したバナーを一括で</p>
+    <button type="button" onclick="confirmDelete(this.form);">削除する</button>
+  {/buttonbox}
+{/if}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

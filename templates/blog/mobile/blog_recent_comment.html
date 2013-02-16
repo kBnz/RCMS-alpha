@@ -1,0 +1,8 @@
+{if $blogCommentList}
+<h2>[emoji:190]{'/modules/blog/label/blog_comment_list'|translate}{* コメント *}</h2>
+
+{foreach item=itemList from=$blogCommentList name=commentdata}
+{$itemList.name}/<a href="/blog_detail/id={$itemList.module_id}#comment_form">{$itemList.subject|escape}</a>({$itemList.create_date|pg_dateformat:"%m/%d %H:%M"})<br/>
+{/foreach}
+<hr/>
+{/if}

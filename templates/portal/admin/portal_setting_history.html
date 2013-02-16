@@ -1,0 +1,22 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h3>更新履歴一覧</h3>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/portal/portal_setting_list/">{'/modules/portal'|translate}</a>
+<a href="/management/portal/portal_setting_list/">{$module_nm}一覧</a>
+<a href="/management/portal/portal_setting_edit/portal_setting_id={$portal_setting_id}">{$module_nm}編集</a>
+更新履歴一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/portal/portal_setting_edit/portal_setting_id=$portal_setting_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

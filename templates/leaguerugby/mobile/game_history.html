@@ -1,0 +1,31 @@
+{if $gameList|@count > 0}
+<h2>{if $gameList.0.team_grade ne '' and $gameList.0.official_flg ne '1'}{$gameList.0.team_grade}の{/if}{$gameList.0.league_type}　試合一覧</h2><br>
+
+{section name=mydata loop=$gameList}
+{$gameList[mydata].ymd_str} {$gameList[mydata].league_type2} {$gameList[mydata].team_nm}{$gameList[mydata].team_grade}
+<a href="/leaguerugby_detail/id={$gameList[mydata].league_id}">
+{if $gameList[mydata].league_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].league_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{/if}
+</a>
+{$gameList[mydata].opponent_nm}{$gameList[mydata].opponent_grade}<br/>
+{/section}
+<hr/>
+{/if}
+

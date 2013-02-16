@@ -1,0 +1,13 @@
+<h2>[emoji:079]{'/modules/blog/label/blog_archive'|translate}{* ブログアーカイブ *}</h2>
+
+{foreach from=$archiveList item=item}
+{if $blog_id eq ''}<a href="/blog_top/date={$item.year}-{$item.month}">
+{else}<a href="/blog_my_top/blog_id={$blog_id}&date={$item.year}-{$item.month}">
+{/if}
+  {'/label/yyyymm'|translate:$item.year:$item.month}{* yyyy年mm月 *}（{$item.cnt}）</a><br/>
+{/foreach}
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/">ﾌﾞﾛｸﾞTOPへ</a>
+</div>
+<hr/>
+

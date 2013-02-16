@@ -1,0 +1,30 @@
+{module name="memberrugby_search_position"}
+<h2 class="module_title"><span>ポジション検索</span></h2>
+<div class="module_contents">
+{if $module_installed.gamerugby}
+  {* ラグビーの場合*}
+  <h4>FRONT ROW FW</h4>
+  <p>[<a href="/member_list/position=PR">プロップ</a>|<a href="/member_list/position=HO">フッカー</a>]</p>
+  <h4>2ND ROW FW</h4>
+  <p>[<a href="/member_list/position=LO">ロック</a>]</p>
+  <h4>LOOSE FW</h4>
+  <p>[<a href="/member_list/position=FL">フランカー</a>|<a href="/member_list/position=NO8,No8">ナンバーエイト</a>]</p>
+  <h4>HALF BACKS</h4>
+  <p>[<a href="/member_list/position=SH">スクラムハーフ</a>|<a href="/member_list/position=SO">スタンドオフ</a>]</p>
+  <h4>BACKS</h4>
+  <p>[<a href="/member_list/position=CTB">センター</a>|<a href="/member_list/position=WTB">ウィング</a>|<a href="/member_list/position=FB">フルバック</a>]</p>
+  <h4>スタッフ</h4>
+  <p>[<a href="/member_list/position={'監督,コーチ,部長'|escape:'url'}">監督,コーチ</a>|<a href="/member_list/position={'スタッフ,マネージャー,MGR,主務,副務,トレーナー'|escape:'url'}">スタッフ</a>]</p>
+{else}
+  {* それ以外の場合*}
+  <p>[
+  {foreach from=$arrPosition item=Position name=arrPosition}
+    <a href="/member_list/position={$Position|escape:'url'}">{$Position}</a>
+    {if not $smarty.foreach.arrPosition.last}
+      |
+    {/if}
+  {/foreach}
+  ]</p>
+{/if}
+</div>
+{/module}

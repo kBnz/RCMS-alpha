@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="robots" content="noindex,nofollow"> 
+<title>Preview</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="/css/management/default.css" rel="stylesheet" type="text/css" />
+{* ここからJSを記述 *}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load("jquery", "1.7");
+</script>
+<script type="text/javascript">
+var j$ = jQuery.noConflict();
+</script>
+<script type="text/javascript" src="/js/management/default.v2.4.js"></script>
+
+{literal}
+<style type="text/css">
+body.preview {
+  width:100%;
+  background:#ddd;
+}
+#preview_header {
+  padding: 5px;
+  border-bottom: 2px solid #ccc;
+  background:#ddd;
+}
+#preview_header_text{
+  float:left;
+  font-weight:bold;
+  padding-top:5px;
+  background:#ddd;
+}
+#preview_header_select{
+  float:left;
+  font-weight:bold;
+  padding-top:5px;
+  padding-left:20px;
+}
+#preview_header_btn{
+  float:right;
+}
+#preview_header_btn a{
+   width:68px;
+   height:21px;
+   display:block;
+   background:url("/images/management/close_l.gif") no-repeat;
+}
+#preview_header_btn a:link{
+   background:url("/images/management/close_l.gif") no-repeat;
+}
+#preview_header_btn a:hover{
+   background:url("/images/management/close_l_on.gif") no-repeat;
+}
+
+.facebook_page{
+    width:      100%;
+    margin:     0;
+    padding:    0;
+    text-align: left;
+    overflow:   scroll;
+}
+
+.facebook_tab{
+    width:    520px;
+    position: relative;
+    overflow: scroll;
+    padding-top:      134px;
+    padding-left:     207px;
+    padding-right:    289px;
+    padding-bottom:  100px;
+    background: #fff url("/images/modules/common/facebook_tmp.png") no-repeat;
+}
+
+
+/*  デバイス選択ボタン用  */
+#preview_btn button{
+    background: url("/images/modules/common/device_button_bg.png") no-repeat;
+    height:     40px;
+    width:      150px;
+    font-size:  13px;
+    padding-left:30px;
+    padding-top: 5px;
+    border: 1px solid #aaa;
+    float:left;
+    margin-right:10px;
+    margin-bottom: 10px;
+}
+#preview_btn button:hover{
+    border: 1px solid #888;
+}
+
+#preview_btn button.active{
+    border: 1px solid #666;
+}
+
+
+#preview_btn #btn_pc{
+    background-position: -20px 0px;
+}
+#preview_btn #btn_smartphone{
+    background-position: -20px -40px;
+}
+#preview_btn #btn_mobile{
+    background-position: -20px -80px;
+}
+#preview_btn #btn_fb_liked{
+    background-position: -20px -120px;
+}
+#preview_btn #btn_fb_notyet{
+    background-position: -20px -120px;
+}
+#preview_btn #btn_pc.active{
+    background-position: -20px -160px;
+}
+#preview_btn #btn_smartphone.active{
+    background-position: -20px -200px;
+}
+#preview_btn #btn_mobile.active{
+    background-position: -20px -240px;
+}
+#preview_btn #btn_fb_liked.active{
+    background-position: -20px -280px;
+}
+#preview_btn #btn_fb_notyet.active{
+    background-position: -20px -280px;
+}
+/*  デバイス選択ボタン用ここまで  */
+</style>
+<script type="text/javascript">
+<!--
+var defaultUrl = '{/literal}{$preview_linkList.0.link}{literal}';
+var fbTimer;
+
+j$(document).ready(function() {
+
+    // プレビュー画面をリサイズ
+    function preview_resize() {
+        var height  = j$(window).height() - j$("#preview_header").height() - 35;
+        if(j$("#preview_type").val()=="fb_page"){
+        }else{
+            j$('#container').css("height","0px");
+            j$("#mainview").css("height",height+"px");
+        }
+    }
+
+    function changeMode(){
+        clearInterval(fbTimer);
+        j$('#container').removeClass("facebook_page");
+        j$('#mainview').removeClass("facebook_tab");
+        preview_resize();
+
+        var url = j$('#preview_linkList').val() ? j$('#preview_linkList').val() : defaultUrl;
+        
+        switch(j$("#preview_type").val()){
+            case "btn_mobile":
+                j$('#mainview').attr('src',url+'&mobile_preview=1');
+                j$('#mainview').css("width",'200px');
+                break;
+            case "btn_smartphone":
+                j$('#mainview').attr('src',url+'&mobile_preview=2');
+                j$('#mainview').css("width",'320px');
+                break;
+            case "btn_fb_liked":
+                j$('#mainview').attr('src',url+'&rcms-on-social=facebook&fb_preview=liked');
+                j$('#container').addClass("facebook_page");
+                j$('#mainview').addClass("facebook_tab");
+                fbTimer = setInterval(setCanvasSize,100);
+                break;
+            case "btn_fb_notyet":
+                j$('#mainview').attr('src',url+'&rcms-on-social=facebook&fb_preview=notyet');
+                j$('#container').addClass("facebook_page");
+                j$('#mainview').addClass("facebook_tab");
+                fbTimer = setInterval(setCanvasSize,100);
+                break;
+            default:
+                j$('#mainview').attr('src',url);
+                j$('#mainview').css("width",'100%');
+        }
+        return true;
+    }
+    
+    function setCanvasSize(){
+        if(!j$("#preview_type").val()=="btn_fb_liked" && !j$("#preview_type").val()=="btn_fb_notyet"){
+            clearInterval(fbTimer);
+            preview_resize();
+            return true;
+        }
+        
+        // scrollHeightを取得
+        try{
+            //例外処理をしないと、firefoxが止まってしまう
+            var sh = j$('#mainview').contents().find('html').attr('scrollHeight');
+        }catch(e){
+            var sh = 0;
+        }
+
+        try{
+            var dh = j$('#mainview').contents().height();
+        }catch(e){
+            var dh = 0;
+        }
+        
+        // NaNが入っていると比較できないため、NaNを0に変える
+        sh = isNaN(sh)?0:sh;
+        dh = isNaN(dh)?0:dh;
+        var frameHeight = sh > dh ? sh : dh;
+        
+
+        // scrollWidthを取得
+        try{
+            //例外処理をしないと、firefoxが止まってしまう
+            var sw = j$('#mainview').contents().find('html').attr('scrollWidth');
+        }catch(e){
+            var sw = 0;
+        }
+
+        try{
+            var dw = j$('#mainview').contents().width();
+        }catch(e){
+            var dw = 0;
+        }
+
+        // NaNが入っていると比較できないため、NaNを0に変える
+        sw = isNaN(sw)?0:sw;
+        dw = isNaN(dw)?0:dw;
+        var frameWidth = sw > dw ? sw : dw;
+                
+        var windowHeight  = j$(window).height() - j$("#preview_header").height() - 35;
+
+        // facebookのキャンバスリサイズに挙動をあわせる（横スクロールバーが出ても、スクロールバーの高さ分キャンバスサイズが広がらない）
+        if(frameWidth > 520){
+            frameHeight-=14;
+        }
+        
+        // iframeのサイズが小さすぎる時はpadding_bottomを調整
+        if(frameHeight < 800){
+            var bottom = 800 - frameHeight;
+            j$(".facebook_tab").css({paddingBottom:bottom+"px"});
+        }else{
+            j$(".facebook_tab").css({paddingBottom:"100px"});
+        }
+
+        j$('#container').css({height:windowHeight+"px",width:"100%"});
+        j$('#mainview').css({height:frameHeight+"px",width:"520px"});
+        
+    }
+    
+
+    j$(window).bind("resize", preview_resize);
+
+    {/literal}{if $preview_linkList|@count>1}{literal}
+    j$("#preview_linkList").bind("change", changeMode);
+    {/literal}{/if}{literal}
+
+    j$("#preview_btn button").click(function(){
+        j$("#preview_type").val(j$(this).attr("id"));
+        j$("#preview_btn button").removeClass("active");
+        j$(this).addClass("active");
+        changeMode();
+    });
+    preview_resize();
+});
+//-->
+</script>
+{/literal}
+
+</head>
+
+<body class="preview">
+<div id="preview_header">
+
+
+<div id="preview_header_select">
+<div id="preview_btn">
+<button id="btn_pc" class="active">PC</button>
+<button id="btn_smartphone">Smart Phone</button>
+<button id="btn_mobile">Cell Phone</button>
+{if $module_installed.api_facebook}
+<button id="btn_fb_liked">facebook (Liked)</button>
+<button id="btn_fb_notyet">facebook (Not Yet)</button>
+{/if}
+</div>{*end of id="preview_btn"*}
+<input type="hidden" name="preview_type" id="preview_type" value="pc">
+<br>
+
+{if $preview_linkList|@count>1}
+このコンテンツが表示される可能性のあるページ :
+<select id="preview_linkList" name="preview_linkList">
+{foreach from=$preview_linkList key=key item=item}
+<option value="{$smarty.const.ROOT_SSL_URL}{$item.link}">{$item.title}</option>
+{/foreach}
+</select>
+{elseif $preview_linkList|@count == 1}
+<span>{$preview_linkList.0.title}</span>
+{/if}
+</div>{*end of id="preview_header_select"*}
+
+<div id="preview_header_btn"><a href="javascript:void(0);" onclick="window.close()"><span>閉じる</span></a></div>
+<div class="clearFloat"><br></div>
+</div>
+<div id="container">
+{if $preview_linkList|@count>0}
+<iframe src="{$smarty.const.ROOT_SSL_URL}{$preview_linkList.0.link}" id="mainview" width="100%" {*style="height:600px;"*} frameborder="0"></iframe>
+{else}
+<iframe src="{$smarty.const.ROOT_SSL_URL}{$preview_link}" id="mainview" width="100%" {*style="height:600px;"*} frameborder="0"></iframe>
+{/if}
+</div>
+</body>
+
+</html>
+

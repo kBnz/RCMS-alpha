@@ -1,0 +1,185 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'from_dt', btnId: 'from_dt-btn', boxId: 'from_dt-pop', tableId: 'from_dt-table'});
+    DUI.calendar.PopupWindow({title:"日付", textId: 'to_dt', btnId: 'to_dt-btn', boxId: 'to_dt-pop', tableId: 'to_dt-table'});
+});
+
+var ac_page_sysnm;
+var ac_module_type;
+var ac_id;
+var ac_title;
+
+function changeSpan(span) {
+    document.getElementById('span').value = span;
+    document.intro_list_form.submit();
+}
+
+function changeShow(show) {
+    document.getElementById('show').value = show;
+    document.getElementById('page_sysnm').value = '';
+    document.getElementById('id').value = '';
+    document.intro_list_form.submit();
+}
+
+function changeModuleType(module_type) {
+    document.getElementById('page_sysnm').value = '';
+    document.getElementById('id').value = '';
+    document.intro_list_form.submit();
+}
+
+function showGraphImg(page_sysnm, module_type, id, title) {
+    ac_page_sysnm = page_sysnm;
+    ac_module_type = module_type;
+    ac_id = id;
+    ac_title = title;
+    document.getElementById('dayCont').value = 30;
+    document.getElementById('from_dt').value = '';
+    document.getElementById('to_dt').value = {/literal}'{$today}'{literal};
+    imgShow(30);
+}
+
+function imgShow(dayCount) {
+    if(dayCount > 0) {
+        document.getElementById('graph_img').setAttribute('src', '/direct/intro/intro_graph/module_type='+ac_module_type+'&id='+ac_id+'&page_sysnm='+ac_page_sysnm+'&title='+ac_title+'&dayCount='+dayCount);
+    } else {
+        from_dt = document.getElementById('from_dt').value;
+        to_dt = document.getElementById('to_dt').value;
+        if(from_dt == "" || to_dt == "") {
+            alert("範囲を指定してください");
+        } else {
+        document.getElementById('graph_img').setAttribute('src', '/direct/intro/intro_graph/module_type='+ac_module_type+'&id='+ac_id+'&page_sysnm='+ac_page_sysnm+'&title='+ac_title+'&from_dt='+from_dt+'&to_dt='+to_dt);
+        }
+    }
+    document.getElementById('search_range').style.display = "inline";
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/communication'|translate}</a>
+<a href="/management/intro/intro_list/">{'/modules/intro'|translate}</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<form name="intro_list_form" id="intro_list_form" action="/management/intro/intro_list/" method="POST">
+
+<div class="main_contents">
+
+  {if $selectModuleType == ""}
+  サイト全体の紹介数の推移
+  <input type="button" onclick="showGraphImg('site', '', '', 'サイト全体')" value="表示">
+  <br>
+  {/if}
+
+  <select name="module_type" id="module_type" onChange="changeModuleType(this.value)">{html_options options=$introModuleNmArray selected=$selectModuleType}</select>
+  {if $showMode != "ranking"}
+  <a href="javascript:;" onclick="changeShow('ranking')">ランキング</a>
+  {else}
+  ランキング
+  {/if}
+  ｜
+  {if $showMode != "list"}
+  <a href="javascript:;" onclick="changeShow('list')">一覧</a>
+  {else}
+  一覧
+  {/if}
+  <input type="hidden" name="show" id="show" value="{$showMode}">
+  <input type="hidden" name="span" id="span" value="{$spanMode}">
+  <input type="hidden" name="page_sysnm" id="page_sysnm" value="{$selectPageSysnm}">
+  <input type="hidden" name="id" id="id" value="{$selectModuleId}">
+
+  <div class="list_main">
+
+    {if $spanMode != "oneDay"}
+    <a href="javascript:;" onclick="changeSpan('oneDay')">１日</a>
+    {else}
+    １日
+    {/if}|
+    {if $spanMode != "threeDays"}
+    <a href="javascript:;" onclick="changeSpan('threeDays')">３日</a>
+    {else}
+    ３日
+    {/if}|
+    {if $spanMode != "oneWeek"}
+    <a href="javascript:;" onclick="changeSpan('oneWeek')">１週間</a>
+    {else}
+    １週間
+    {/if}|
+    {if $spanMode != "oneMonth"}
+    <a href="javascript:;" onclick="changeSpan('oneMonth')">１ヶ月</a>
+    {else}
+    １ヶ月
+    {/if}|
+    {if $spanMode != "threeMonths"}
+    <a href="javascript:;" onclick="changeSpan('threeMonths')">３ヶ月</a>
+    {else}
+    ３ヶ月
+    {/if}
+
+    <p class="page_links">{$page_links}</p>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      {foreach  item=rank_data from=$rank_all_data key=key}
+      {if $key != "all" && $key != "page"}
+      <tr><th colspan="3">{$rank_data.module_name}</th></tr>
+      {section name=loopname loop=$rank_data.today}
+      <tr>
+  {if $key != "staticpage"}
+  <td><input type="button" onclick="showGraphImg('{$introModuleKeyArray.$key}', '{$key}', '{$rank_data.today[loopname].id}', '{$rank_data.today[loopname].title}')" value="詳細">
+          {if $rank_data.today[loopname].subinfo != ""}({$rank_data.today[loopname].subinfo}){/if}<a href="/?page_sysnm={$key}_detail&id={$rank_data.today[loopname].id}">{$rank_data.today[loopname].title}</a></td>
+  {else}
+  <td><a href="/?page_sysnm=staticpage&file_name={$rank_data.today[loopname].id}">{$rank_data.today[loopname].title}</a></td>
+  {/if}
+  <td>{$rank_data.today[loopname].cnt}</td>
+  <td>
+    <img src="{imageurl}/modules/accesscount/graph_border.gif" width="{$rank_data.today[loopname].width}px" height="10px">
+  </td>
+      </tr>
+      {sectionelse}
+      <tr><td colspan="3">表示するデータがありません。</td></tr>
+      {/section}
+      {/if}
+      {/foreach}
+      {if !$selectModuleType && !$selectPageSysnm}
+      <tr><th colspan="3">ページ別</th></tr>
+      {section name=loopname loop=$rank_all_data.page.today}
+      <tr>
+  <td><input type="button" onclick="showGraphImg('{$rank_all_data.page.today[loopname].page_sysnm}', '{$rank_all_data.page.today[loopname].module_type}', '0', '{$rank_all_data.page.today[loopname].page_nm}')" value="詳細">
+    <a href="/?page_sysnm={$rank_all_data.page.today[loopname].page_sysnm}">{$rank_all_data.page.today[loopname].page_nm}</a></td>
+  <td>{$rank_all_data.page.today[loopname].cnt}</td>
+  <td>
+    <img src="{imageurl}/modules/accesscount/graph_border.gif" width="{$rank_all_data.page.today[loopname].width}px" height="10px">
+  </td>
+      </tr>
+      {/section}
+      {/if}
+    </table>
+    <p class="page_links">{$page_links}</p>
+    <img id="graph_img" src="">
+    <div id="search_range" style="display:none">
+
+      <fieldset class="search_box">
+        過去
+        <select name="dayCount" id="dayCont" onchange="imgShow(this.value)">{html_options options=$intro_arrDayCount selected=30}</select>日
+
+        <input type="text" name="from_dt" id="from_dt" value="{$from_dt|escape}" autocomplete="off" />
+        <button type="button" id="from_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="from_dt-pop"></div>
+        から
+        <input type="text" name="to_dt" id="to_dt" value="{$to_dt|escape}" autocomplete="off" />
+        <button type="button" id="to_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="to_dt-pop"></div>
+        <input type="button" value="日付を指定" onclick="imgShow(0)">
+      </fieldset>
+
+    </div>
+  </div>
+</div>
+</form>
+{rcms_include file="management/footer.html"}

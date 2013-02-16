@@ -1,0 +1,97 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/comment/label/comment_write_edit'|translate}{*コメント詳細*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/comment/comment_module_list/">{'/modules/comment'|translate}</a>
+<a href="/management/comment/comment_list/comment_header_id={$header.comment_header_id}">{'/modules/comment/label/comment_write_list'|translate}</a>
+{'/modules/comment/label/comment_write_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> コメント >> モジュール一覧 >> コメント一覧 >> コメント詳細 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct comment_header_id=$header.comment_header_id}
+
+<h3 class="title">【{$header.module_type_nm}】{if $content_list.$module_id != ''}<a href="{$content_list.$module_id.link}#comment_form">{$content_list.$module_id.comment_list_title}</a>{else}({'/label/all'|translate}{*すべて*}){/if}</h3>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/comment/comment_edit/" method="POST">
+    <input type="hidden" name="comment_header_id" value="{$comment_header_id}" />
+    <input type="hidden" name="comment_id" value="{$comment_id}" />
+    <input type="hidden" name="module_id" value="{$module_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table width="100%" id="comment_edit_table">
+      <tr id="comment_edit_table_tr_1">
+        <th width="120px" id="comment_edit_table_th_1">{'/label/name'|translate}{*名前*}</th>
+        <td id="comment_edit_table_td_1">{$data.name|escape}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_2">
+        <th id="comment_edit_table_th_2">{'/label/mail_address'|translate}{*メールアドレス*}</th>
+        <td id="comment_edit_table_td_2">{if $data.mail != ""}<a href="mailto:{$data.mail|escape}">{$data.mail|escape}</a>{/if}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_3">
+        <th id="comment_edit_table_th_3">URL</th>
+        <td id="comment_edit_table_td_3">{if $data.url}<a href="{$data.url|escape}" target="_blank">{$data.url|escape}</a>{/if}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_4">
+        <th id="comment_edit_table_th_4">{'/label/comments'|translate}{*コメント*}</th>
+        <td id="comment_edit_table_td_4">{$data.note|escape|nl2br}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_5">
+        <th id="comment_edit_table_th_5">{'/label/evaluation'|translate}{*評価*}</th>
+        <td id="comment_edit_table_td_5">{if $data.rating}{$data.rating}{/if}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_8">
+        <th id="comment_edit_table_th_8">{'/label/other'|translate}{*その他*}</th>
+        <td id="comment_edit_table_td_8">{$data.ext_data|escape}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_6">
+        <th id="comment_edit_table_th_6">{'/label/ip_address'|translate}{*IPアドレス*}</th>
+        <td id="comment_edit_table_td_6">{$data.ip_address|escape}</td>
+      </tr>
+      <tr id="comment_edit_table_tr_7">
+        <th id="comment_edit_table_th_7">{'/label/publish'|translate}{*公開*}・{'/label/unpublish'|translate}{*非公開*}</th>
+        <td id="comment_edit_table_td_7">{html_radios name="open_flg" options=$arrOpFlg selected=$data.open_flg}</td>
+      </tr>
+    </table>
+
+    {buttonbox}
+      {if $auth.comment.update && $comment_id != ''|| $auth.comment.insert && $comment_id == ''}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+      {/if}
+      {if $auth.comment.delete && $comment_id != ''}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

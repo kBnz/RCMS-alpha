@@ -1,0 +1,31 @@
+{module name="blog_calendar"}
+<h2 class="module_title"><span><a href="/{$page_sysnm}/{$get_default}&date={$arrPreBlogDate[0]}-{$arrPreBlogDate[1]}">&lt;&lt;</a>&nbsp;{'/label/yyyymm'|translate:$arrBlogDate[0]:$arrBlogDate[1]}{* yyyy年mm月 *}&nbsp;<a href="/{$page_sysnm}/{$get_default}&date={$arrAftBlogDate[0]}-{$arrAftBlogDate[1]}">&gt;&gt;</a></span></h2>
+<div class="module_contents">
+<table style="width:100%">
+<tr><td>MON</td><td>TUE</td><td>WED</td><td>THU</td><td>FRI</td><td>SAT</td><td>SUN</td></tr>
+<tr>
+{section loop=$spaceDateCount%7 name=space}
+<td>&nbsp;</td>
+{/section}
+{section loop=$monthDateCount name=i}
+{if $blog_list[i].blog_item_id}
+<td>
+<a href="/{$page_sysnm}/{$get_default}&date={$arrBlogDate[0]}-{$arrBlogDate[1]}-{$smarty.section.i.iteration}">{$smarty.section.i.iteration}</a>
+</td>
+{else}
+<td>{$smarty.section.i.iteration}</td>
+{/if}
+{if $smarty.section.i.iteration%7 eq 7-$spaceDateCount}
+</tr>
+<tr>
+{/if}
+{/section}
+{if $remainder != 7}
+{section loop=$remainder name=remainder}
+<td>&nbsp;</td>
+{/section}
+{/if}
+</tr>
+</table>
+</div>
+{/module}

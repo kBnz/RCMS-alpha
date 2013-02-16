@@ -1,0 +1,114 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>動画編集</h2>
+  <ul>
+    {if $auth.$mt.insert}
+    <li class="add"><a href="/management/{$mt}/{$mt}_edit/"><span>動画追加</span></a></li>
+    {/if}
+  </ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+動画編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+  <ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_list/">動画一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_edit/{if $id}xid={$id->xid()}{/if}" class="active">動画編集</a></li>
+  </ul>
+
+  <div class="list_main">
+    {* 外部IDによる検索ボックス *}
+    <form action="/management/{$mt}/{$mt}_edit/" onsubmit="this.xid.value='{$sourceId}:'+$F('_dummy')">
+      <fieldset class="search_box">
+        動画ID:
+        <input type="text" id="_dummy" value="{if $id}{$id->external()}{/if}"/>
+        <input type="submit" value="表示"/><input type="hidden" name="xid" value=""/>
+      </fieldset>
+    </form>
+
+    {if $id}
+      {* Webのデータを表示 *}
+      {if $item.web}
+        <table style="width:100%">
+          <tr>
+            <th colspan="2">{$item.web->title}</th>
+          </tr>
+          <tr>
+            <td><img src="{$item.web->thumbnail_url}"/></td>
+            <td>
+              <p>{$item.web->description}</p>
+              <p><a href="{$item.web->watch_url}" onclick="window.open(href); return false;">ニコニコ動画上で見る</a></p>
+            </td>
+          </tr>
+        </table>
+      {elseif $item.db}
+        <table style="width:100%">
+          <tr>
+            <th>{$item.db.name}</th>
+          </tr>
+          <tr>
+            <td>該当IDのデータは外部データソースに存在しません。</td>
+          </tr>
+        </table>
+      {else}
+        <p>該当IDのデータは外部データソースに存在しません。</p>
+      {/if}
+
+
+      {* dbのデータを表示 *}
+      {if $item.web || $item.db}
+      <form action="/management/{$mt}/{$mt}_edit/xid={$id->xid()}" method="post">
+          <input type="hidden" name="MODE" value="update" />
+          <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+          {rcms_include file="management/messages_box.html" messages=$messages}
+          {rcms_include file="management/errors_box.html" errors=$errors}
+
+          <table style="width:100%">
+            <tr>
+              <th>コメント</th>
+            </tr>
+            <tr>
+              <td style="text-align:center">
+                <textarea name="note" rows="5" style="width:98%">{$item.db.note}</textarea>
+                <input type="hidden" name="name" value="{if $item.web}{$item.web->title}{else}{$item.db.name}{/if}"/>
+              </td>
+            </tr>
+          </table>
+
+          {rcms_include file="management/open_date_box.html" id=$id->internal() data=$item.db}
+          {rcms_include file="management/relation_edit.html"}
+
+          {buttonbox}
+            {if $item.web && !$item.db}
+              {if $auth[$mt].insert}
+                <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+              {/if}
+            {elseif $item.web}
+              {if $auth[$mt].update}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+              {/if}
+              {* 作る
+              {if $auth[$mt].delete}
+              <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+              {/if}
+              *}
+            {/if}
+          {/buttonbox}
+        </form>
+      {/if}
+    {else}
+      <p>対象のデータを指定してください。</p>
+    {/if} {* end of if $id *}
+
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

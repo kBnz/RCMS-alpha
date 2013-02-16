@@ -1,0 +1,20 @@
+{if $catalogRelationList|@count > 0}
+<h2>{'/label/related_info'|translate}{* 関連情報 *}</h2>
+  <ul>
+  {foreach from=$catalogRelationList item=item}
+      <li>[{$item.module_type}]
+          {if $item.default_flg eq 1}
+            {if $item.link ne ""}
+              <a href="/{$item.link}">[{$item.title}]</a>
+            {else}
+              {$item.title}
+            {/if}
+          {else}
+            {$item.title}{$item.link}
+          {/if}
+
+      </li>
+  {/foreach}
+  </ul>
+<hr/>
+{/if}

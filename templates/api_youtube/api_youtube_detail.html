@@ -1,0 +1,29 @@
+{module name="api_youtube_detail"}
+{if $item.web}
+<h2 class="module_title"><span>{$item.web->getVideoTitle()}</span></h2>
+<div class="module_contents">
+
+    <object width="425" height="344">
+      <param name="movie" value="{$item.web->getFlashPlayerUrl()}"></param>
+      <param name="allowFullScreen" value="true"></param>
+      <embed src="{$item.web->getFlashPlayerUrl()}" type="application/x-shockwave-flash" allowfullscreen="true" width="425" height="344"></embed>
+    </object>
+    <p>{$item.web->getVideoDuration()|date_format:"%M:%S"}</p>{* XXX 再生時間が1時間を超えると壊れる *}
+    <p>{$item.web->getVideoDescription()|nl2br}</p>
+    <p><a href="{$item.web->getVideoWatchPageUrl()}" class="dontReplaceEmbedly" onclick="window.open(href); return false;">{'/modules/api_youtube/msg/watch_on_youtube'|translate}{*YouTube上で見る*}</a></p>
+
+  {if $item.db && $item.db.open_flg}
+  <dl>
+    {if $item.db.category}<dt>{'/label/category'|translate}&nbsp;:&nbsp;</dt><dd>{$categories[$item.db.category]}</dd>{/if}
+    {if $item.db.note}<dt>{'/label/comments'|translate}&nbsp;:&nbsp;</dt><dd>{$item.db.note}</dd>{/if}
+  </dl>
+  {/if}
+
+</div>
+{else}
+<h2 class="module_title"><span>{'/modules/api_youtube/label/deleted_video'|translate}{*削除された動画*}</span></h2>
+<div class="module_contents">
+<div style="text-align:center;padding:20px;">{'/modules/api_youtube/msg/this_youtube_video_has_been_deleted'|translate}{*この動画は削除されています。*}</div>
+</div>
+{/if}
+{/module}

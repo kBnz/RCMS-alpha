@@ -1,0 +1,13 @@
+{rcms_include file="management/mobile/header.html"}
+<h1 class="for_mng">{'/modules/login/label/easy_login_setting'|translate}{*簡単ログイン設定*}</h1>
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+<div>{'/modules/login/msg/send_mobile_info_to_easy_login'|translate}{*簡単ログインを利用するには端末情報を送信してください*}</div>
+<form action="/management/login/kantan/" utn="utn" method="post" >
+<input name="setup" type="submit" value="{'/modules/login/label/easy_login_setting_btn'|translate}{*簡単ログインを設定*}" />
+</form>
+<hr class="for_mng"/>
+<form action="/management/login/kantan/" method="post" >
+<input name="cancel" type="submit" value="{'/modules/login/label/make_easy_login_setting_invalidated_btn'|translate}{*簡単ログインを解除*}" />
+</form>
+{rcms_include file="management/mobile/footer.html"}

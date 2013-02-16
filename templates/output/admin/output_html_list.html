@@ -1,0 +1,33 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/output/output_list/">{'/modules/output'|translate}</a>
+{/pankuzu}
+<div class="clear"></div>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="main_contents">
+<div id="output_url_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<h3>HTML出力一覧</h3>
+出力すべきHTMLが全部で<strong>{$page_cnt}</strong>件あります。<br>
+HTMLを<a href="/direct/output/getHTMLfile/">ダウンロード</a>
+<br>
+{foreach from=$page_list item=page}
+<a href="{$page.loc}" target="_blank">{$page.loc}</a>[<a href="/direct/output/getHTML/?url={$page.loc|urlencode}" target="_blank">出力確認</a>]<br>
+{/foreach}
+
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

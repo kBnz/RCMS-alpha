@@ -1,0 +1,23 @@
+{if $commentList|@count>0}
+<h2>[emoji:190]{'/modules/comment/label/comment_small_list'|translate}{*コメント一覧*}</h2>
+{foreach item=itemList from=$commentList name=commentdata}
+□
+{if $itemList.open_flg == 2}
+<a href="/management/comment/comment_edit/comment_id={$itemList.comment_id}&comment_header_id={$itemList.comment_header_id}&module_id={$itemList.module_id}">({'/label/applying'|translate}{*申請中*})</a>
+{else}
+<a href="/{$itemList.module_type}_detail{if $itemList.topics_group_id ne ''}{$itemList.topics_group_id}{/if}/id={$itemList.module_id}#comment_form">{if $itemList.module_title  ne ''}{$itemList.module_title}{else}{$itemList.module_name}{/if}</a>
+{/if}
+[{$itemList.create_date}]
+<br/>
+{$itemList.note|strip_tags|escape}<br/>
+{if $itemList.mail != ""}
+ posted by <a href="mailto:{$itemList.mail|escape}">{$itemList.name|escape}</a>
+{else}
+ posted by {$itemList.name|escape}
+{/if}
+<br/>
+<br/>
+{/foreach}
+
+<hr/>
+{/if}

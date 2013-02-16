@@ -1,0 +1,143 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link href="/css/blog/blog_management.css" rel="stylesheet" type="text/css" media="screen,print">
+
+
+<div class="list_right_bt">
+<h2 class="memberregist">{'/modules/memberregist/label/memberregist_edit'|translate}{*新規メンバー登録設定*}</h2>
+<ul>
+{if $type == 2 || $type == 3}
+<li class="normal"><a href="/management/memberregist/memberregist_invite/"><span>{'/modules/memberregist/label/invite_btn'|translate}{*招待する*}</span></a></li>
+</ul>
+{/if}
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+{'/modules/memberregist/label/memberregist_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 新規メンバー登録設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<!--現在の新規登録メンバー設定の表示-->
+<div class="contents_table">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+</div>
+
+<div class="list_main">
+  <h3>{'/label/current_setting'|translate}{*現在の設定*}</h3>
+  <div class="hint">
+    {'/modules/memberregist/msg/explanation_about_new_member_regist_limited'|translate}
+    {*ページ設定で設定できるメンバーモジュールの「メンバー登録」はここで制限をしても登録できてしまいます。<br>OpenIDを利用可能にした場合も同様です。<br>お気をつけください。*}
+  </div>
+  <p>{$current_regist}</p>
+  {if $type == 3}
+    <table width="80%">
+    <tr>
+    <th align="center">{'/modules/memberregist/label/groups_can_register'|translate}{*新規メンバーを招待できるグループ*}</th>
+    </tr>
+    {foreach from=$group_data item="group"}
+      {if $group.invite == 1}
+        <tr><td align="center"><big>{$group.group_nm}</big></td></tr>
+      {/if}
+    {/foreach}
+    </table>
+  {/if}
+  <br style="clear:both;">
+  {buttonbox}
+    <button type="button" onclick="location.href='/management/memberregist/memberregist_change/'">{'/label/change_settings'|translate}{*設定を変更*}</button>
+    {if $type == 2 || $type == 3}
+    <button type="button" onclick="location.href='/management/memberregist/memberregist_invite/'">{'/modules/memberregist/label/invite_btn'|translate}{*招待する*}</button>
+    {/if}
+  {/buttonbox}
+
+  <br style="clear:both;">
+  <br style="clear:both;">
+  <h3>{'/label/other_settings'|translate}{*その他設定*}</h3>
+  <p><a href="/management/group/group_default_edit/">>>{'/modules/memberregist/label/link_to_group_default_edit'|translate}{*登録されるメンバーの初期の所属グループを設定する*}</a></p>
+  <p><a href="/management/memberregist/memberregist_pwd_setting/">>>{'/modules/memberregist/label/link_to_memberregist_pwd_setting'|translate}{*登録されるメンバーの初期パスワードを設定する*}</a></p>
+  <p><a href="/management/memberregist/memberregist_input_setting/">>>{'/modules/memberregist/label/link_to_memberregist_input_setting'|translate}{*登録されるメンバーの初期入力項目を設定する*}</a></p>
+
+  <br style="clear:both;">
+  <br style="clear:both;">
+  <form method="POST" action="/management/memberregist/memberregist_edit/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+  <h3>{'/label/email_notice'|translate}{*メール通知*}</h3>
+  <textarea name="contact_address" cols="60" rows="6">{$contact_address|escape}</textarea>
+  <div class="hint">
+  {'/modules/memberregist/msg/about_notify_mail'|translate}{*メンバー登録があった場合、このアドレスに通知されます。*}
+  </div>
+  <div>{html_radios name=contact_flg options=$arrMemberregist_contact_flg selected=$contact_flg}</div>
+
+  <br style="clear:both;">
+  <br style="clear:both;">
+  <h3>{'/label/terms_of_service'|translate}</h3>
+  <div>
+    <input type="checkbox" name="use_terms_of_service" value="1" {if $use_terms_of_service}checked="checked"{/if} id="use_terms_of_service" />
+    <label for="use_terms_of_service">{'/modules/memberregist/label/require_agreeing_our_terms_of_service'|translate}</label>
+  </div>
+  <label>URL:</label><input tyep="text" name="terms_url" value="{$terms_url|escape}" size="100"/>
+
+  <br style="clear:both;">
+  <br style="clear:both;">
+  <h3>{'/modules/blog/label/mobile_settings'|translate}{* ケータイ設定 *}</h3>
+    <table width="100%">
+      <tr>
+        <th width="25%">空メール送信先</th>
+        <td width="75%">
+        {if $ReceiveMail && $ReceiveMail.site_mail_email}{$ReceiveMail.site_mail_email}<br>
+        <button type="button" onclick="updateUpMail(this.form);">空メール送信先メールアドレスを再発行する</button>
+        <input type="hidden" name="site_mail_email" value="{$ReceiveMail.site_mail_email}" />
+        {else}
+        <button type="button" onclick="updateUpMail(this.form);">空メール送信先メールメールアドレスを発行する</button>
+        {/if}
+        </td>
+    {if $ReceiveMail && $ReceiveMail.site_mail_email}
+        <td rowspan="2"><img src="{$qrcode_path}"></td>
+    {/if}
+      </tr>
+    {if $ReceiveMail && $ReceiveMail.site_mail_email}
+      <tr>
+        <th>空メール送信先メール設定を削除する</th>
+        <td>
+            <button type="button" onclick="deleteUpMail(this.form);">{'/label/delete_btn'|translate}{* 削除する *}</button>
+        </td>
+      </tr>
+
+    {/if}
+    </table>
+    <input type="hidden" name="site_mail_id" value="{$ReceiveMail.site_mail_id}" />
+
+  {buttonbox}
+  <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+  {/buttonbox}
+  </form>
+
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function updateUpMail(f) {
+    f.MODE.value='UP_MAIL';
+    f.submit();
+}
+function updateUpMail2(f) {
+    f.MODE.value='UP_MAIL2';
+    f.submit();
+}
+function deleteUpMail(f) {
+    f.MODE.value='DEL_MAIL';
+    f.submit();
+}
+{/literal}
+-->
+</script>
+{rcms_include file="management/footer.html"}

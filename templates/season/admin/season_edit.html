@@ -1,0 +1,107 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+  <ul>
+      {if $auth.season.insert}
+      <li class="add"><a href="/management/season/season_edit/"><span>資料追加</span></a></li>
+      {/if}
+      {if $season != ""}
+      <li class="normal"><a href="/management/season/season_history/season={$season}"><span>{'/label/update_history'|translate}</span></a></li>
+      {/if}
+      <li class="normal"><a href="/management/accesscount/accesscount_list/module=season&id={$season}"><span>{'/label/access_analysis'|translate}</span></a></li>
+      <li class="view"><a href="{$smarty.const.ROOT_URL}/season_detail/id={$season}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+  </ul>
+
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/season/season_list/">{$module_nm}</a>
+<a href="/management/season/season_list/">{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="/season_detail/id={$season}">総アクセス数:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+    <div class="list_main">
+    <form action="/management/season/season_edit/" method="POST">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <table width="100%">
+        <tr>
+          <th>シーズン{if $season == ''}<span class="required">※</span>{/if}</th>
+          <td>{if $season == ''}<select name="select_season">{html_options options=$arrYear_graduate checked=$data.select_season}{else}{$data.season}<input type="hidden" name="season" value="{$season}">{/if}</select></td>
+        </tr>
+        <tr>
+          <th>{if $ext_titles.ext_title_01}{$ext_titles.ext_title_01}{else}(項目未設定){/if}</th>
+          <td><input type="text" name="ext_01" value="{$data.ext_01|escape}" size="30" /></td>
+        </tr>
+        <tr>
+          <th>{if $ext_titles.ext_title_02}{$ext_titles.ext_title_02}{else}(項目未設定){/if}</th>
+          <td><input type="text" name="ext_02" value="{$data.ext_02|escape}" size="30" /></td>
+        </tr>
+        <tr>
+          <th>{if $ext_titles.ext_title_03}{$ext_titles.ext_title_03}{else}(項目未設定){/if}</th>
+          <td><input type="text" name="ext_03" value="{$data.ext_03|escape}" size="30" /></td>
+        </tr>
+        <tr>
+          <th>{if $ext_titles.ext_title_04}{$ext_titles.ext_title_04}{else}(項目未設定){/if}</th>
+          <td><input type="text" name="ext_04" value="{$data.ext_04|escape}" size="30" /></td>
+        </tr>
+        <tr>
+          <th>{if $ext_titles.ext_title_05}{$ext_titles.ext_title_05}{else}(項目未設定){/if}</th>
+          <td><input type="text" name="ext_05" value="{$data.ext_05|escape}" size="30" /></td>
+        </tr>
+      </table>
+      
+      {rcms_include file="management/open_date_box.html" id=$season data=$data}
+
+      {buttonbox}
+        {if $season != ''}
+          {if $auth.season.update}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+          {/if}
+          {if $auth.season.delete}
+            <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+          {/if}
+        {else}
+          {if $auth.season.insert}
+            <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+          {/if}
+        {/if}
+      {/buttonbox}
+
+      {rcms_include file="management/update_comment.html" comment=$data.update_comment}
+
+    </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete(f){
+  if(confirm("削除してもよろしいですか？")){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+{/literal}
+-->
+</script>
+{rcms_include file="management/footer.html"}

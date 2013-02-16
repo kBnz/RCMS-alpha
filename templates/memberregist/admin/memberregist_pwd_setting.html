@@ -1,0 +1,72 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link href="/css/blog/blog_management.css" rel="stylesheet" type="text/css" media="screen,print">
+<script type="text/javascript">
+{literal}
+function toggleInputPwd (e) {
+  if (e.value == {/literal}{$smarty.const.MEMBERREGIST_PWD_DEF}{literal}) {
+    $('default_pwd').enable();
+  } else {
+    $('default_pwd').disable();
+  }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_pwd_setting'|translate}{*初期パスワード設定*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist/label/memberregist_edit'|translate}</a>
+{'/modules/memberregist/label/memberregist_pwd_setting'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 新規メンバー登録設定 >> 初期パスワード設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <h3>{'/label/initial_pwd_setting'|translate}{*初期パスワード設定*}</h3>
+
+<form method="post" action="/management/memberregist/memberregist_pwd_setting/" ENCTYPE="multipart/form-data">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+
+  <table style="width:100%">
+    <tr>
+      <th>{'/label/initial_pwd_setting'|translate}{*初期パスワード設定*}</th>
+      <td>
+        <p class="hint">{'/modules/memberregist/msg/explanation_about_init_password'|translate}{*ユーザ登録時の初期パスワードについての設定です*}</p>
+        {html_radios name="default_pwd_setting" options=$arrMemberregistDPS selected=$default_pwd_setting onclick=toggleInputPwd(this) separator="<br />"}
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/initial_password'|translate}{*初期パスワード*}</th>
+      <td>
+        <p class="hint">{'/modules/memberregist/msg/explanation_about_uniformly_password'|translate:$arrMemberregistDPS[$smarty.const.MEMBERREGIST_PWD_DEF]}{*上で{$arrMemberregistDPS[$smarty.const.MEMBERREGIST_PWD_DEF]}を選択した際に一律に設定される初期パスワードです*}</p>
+        <input type="text" name="default_pwd" value="{$default_pwd}" id="default_pwd" {if $default_pwd_setting != $smarty.const.MEMBERREGIST_PWD_DEF}disabled="1"{/if}/>
+      </td>
+    </tr>
+  </table>
+
+  {buttonbox}
+  {if $auth.memberregist.update}
+    <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+  {/if}
+  {/buttonbox}
+
+  <br style="clear:both;">
+  <p><a href="/management/memberregist/memberregist_input_setting/">>>{'/modules/memberregist/label/link_to_memberregist_input_setting'|translate}{*登録されるメンバーの初期入力項目を設定する*}</a></p>
+
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

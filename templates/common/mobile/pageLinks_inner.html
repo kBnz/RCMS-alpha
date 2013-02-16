@@ -1,0 +1,42 @@
+<div style="text-align:center;font-size:small;" class="page_links">
+{if $pageInfo.totalPageCnt > 1}
+  {if $page_num == NULL}
+    {assign var="page_num" value="10"} {*ページの最大表示数、デフォルト値*}
+  {/if}
+
+  {strip}
+  {if $pageInfo.totalCnt != 0}
+    {math equation="x - (x - 1) % y" x=$pageInfo.pageNo y=$page_num assign="start"} {*ページリンクの左端*}
+    {assign var="loop" value=$pageInfo.totalPageCnt+1|min:$start+$page_num}
+
+    {"/label/pagination/summary"|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}<br/>
+
+    {if $pageInfo.pageNo!=1}
+      <a href="{$smarty.server.SCRIPT_URL}?{$pageInfo.param}&pageID=1">{"/label/pagination/first"|translate}</a>　
+      <a href="{$smarty.server.SCRIPT_URL}?{$pageInfo.param}&pageID={$pageInfo.pageNo-1}">{"/label/pagination/prev"|translate}</a>
+    {/if}
+    {if $pageInfo.pageNo!=1 && $pageInfo.pageNo!=$pageInfo.totalPageCnt}
+    　
+    {/if}
+    {if $pageInfo.pageNo!=$pageInfo.totalPageCnt}
+      <a href="{$smarty.server.SCRIPT_URL}?{$pageInfo.param}&pageID={$pageInfo.pageNo+1}">{"/label/pagination/next"|translate}</a>　
+      <a href="{$smarty.server.SCRIPT_URL}?{$pageInfo.param}&pageID={$pageInfo.totalPageCnt}">{"/label/pagination/last"|translate}</a>
+    {/if}
+    <br/>
+    {section name=cnt start=$start loop=$loop}
+      {if $smarty.section.cnt.index != $pageInfo.pageNo}
+        <a href="{$smarty.server.SCRIPT_URL}?{$pageInfo.param}&pageID={$smarty.section.cnt.index}">{$smarty.section.cnt.index}</a>
+      {else}
+        {$smarty.section.cnt.index}
+      {/if}
+      {if not $smarty.section.cnt.last}
+      |
+      {/if}
+    {/section}
+
+  {else}
+    <!--該当するデータがありません。-->
+  {/if}
+  {/strip}
+{/if}
+</div>

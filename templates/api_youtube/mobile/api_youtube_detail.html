@@ -1,0 +1,26 @@
+{if $item.web}
+<h2>{$item.web->getVideoTitle()}</h2>
+
+    <img src="{$item.thumb}" alt="{$item.web->getVideoTitle()}" /><br/>
+    {$item.web->getVideoDuration()|date_format:"%M:%S"}<br/>{* XXX 再生時間が1時間を超えると壊れる *}
+    {$item.web->getVideoDescription()|nl2br}<br/>
+
+<div style="text-align:right;">
+    <a href="{$item.mobile_link}">{'/modules/api_youtube/msg/watch_on_youtube'|translate}{*YouTube上で見る*}</a><br/>
+</div>
+
+  {if $item.db.note ne '' && $item.db.open_flg ne '0'}
+    <dl>
+      <dt>{'/label/comments'|translate}&nbsp;：&nbsp;</dt><dd>{$item.db.note}</dd>
+    </dl>
+  {/if}
+
+{else}
+<h2>{'/modules/api_youtube/label/deleted_video'|translate}{*削除された動画*}</h2>
+<div style="text-align:center;">
+    {'/modules/api_youtube/msg/this_youtube_video_has_been_deleted'|translate}{*この動画は削除されています。*}<br/>
+</div>
+
+{/if}
+
+<hr/>

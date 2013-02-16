@@ -1,0 +1,152 @@
+{capture name=name}
+{if $inquiry_header.user_profile.name == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.name == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+    <span>{'/label/name_formal'|translate}{*お名前*}：</span>
+    <p class="input_form">{$submit_data.name|escape}</p>
+{/if}
+{/capture}
+
+{capture name=email}
+{if $inquiry_header.user_profile.email == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.email == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+    <span>{'/label/mail_address'|translate}{*メールアドレス*}：</span>
+    <p class="input_form">{$submit_data.from_mail|escape}</p>
+{/if}
+{/capture}
+{capture name=message}
+{if $inquiry_header.user_profile.message == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.message == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+    <span>{'/label/message'|translate}{*メッセージ*}：</span>
+    <p class="input_form">{$submit_data.body|escape|nl2br}</p>
+{/if}
+{/capture}
+
+{section name=cnt start=1 loop=$ext_loop_max}
+  {assign var="i" value=$smarty.section.cnt.index|string_format:"%02d"}
+  {assign var="ext_title" value="ext_title_$i"}
+  {assign var="ext" value="ext_$i"}
+  {capture name=$ext_title}
+    {if $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+      {if $inquiry_header.$ext_title ne ''}
+        <span>{$inquiry_header.$ext_title}：</span>
+        <p class="input_form">
+    {if $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_RADIO_BUTTON_FORMAT || $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_SELECT_BOX_FORMAT}
+      {if $submit_data[$ext] != ""}
+        {assign var="selected_value" value=$submit_data[$ext]|escape} 
+        {$inquiry_header.form_type_option.$ext_title[$selected_value]}
+      {else}
+                <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+      {/if}
+    {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_CHECK_BOX_FORMAT}
+      {foreach from=$submit_data[$ext]|escape item=selected_value}
+        {$inquiry_header.form_type_option.$ext_title[$selected_value]}
+      {foreachelse}
+                <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+      {/foreach}
+
+    {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_DATE_FORMAT}
+        {assign var="ext_y" value=$ext|cat:"_y"}
+        {assign var="ext_m" value=$ext|cat:"_m"}
+        {assign var="ext_d" value=$ext|cat:"_d"}
+        {'/label/yyyymmdd'|translate:$submit_data.$ext_y:$submit_data.$ext_m:$submit_data.$ext_d}
+    {else}
+      {$submit_data.$ext|escape}
+    {/if}
+    {if is_array($submit_data.$ext)}
+      {foreach from=$submit_data.$ext item=item}
+        <input type="hidden" name="{$ext}[]" value="{$item|escape}" />
+      {/foreach}
+    {else}
+        {if $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_DATE_FORMAT}
+        <input type="hidden" name="{$ext}" value="{$submit_data.$ext_y|escape}{$submit_data.$ext_m|escape}{$submit_data.$ext_d|escape}" />
+        <input type="hidden" name="{$ext_y}" value="{$submit_data.$ext_y|escape}" />
+        <input type="hidden" name="{$ext_m}" value="{$submit_data.$ext_m|escape}" />
+        <input type="hidden" name="{$ext_d}" value="{$submit_data.$ext_d|escape}" />
+        {else}
+        <input type="hidden" name="{$ext}" value="{$submit_data.$ext|escape}" />
+        {/if}
+    {/if}
+    </p>
+      {/if}
+    {/if}
+  {/capture}
+{/section}
+<h2>[emoji:110]{$inquiry_header.inquiry_name}</h2>
+<div class="module_contents">
+<a name="inquiry{$contents_id}"></a>
+    {rcms_include file="management/errors_box.html" errors=$errors}
+  <form name="inquiry_form" action="/{$page_sysnm}/id={$inquiry_id}&MODE=SEND" method="POST">
+{if $inquiry_isMain}
+    <input type="hidden" name="id" value="{$inquiry_id}" />
+{else}
+     <input type="hidden" name="id" value="{$submit_data.from_id|escape}" />
+     <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+{/if}
+    <input type="hidden" name="MODE" value="SEND" />
+
+  <input type="hidden" name="name" value="{$submit_data.name|escape}">
+  <input type="hidden" name="from_mail" value="{$submit_data.from_mail|escape}">
+  <input type="hidden" name="from_mail2" value="{$submit_data.from_mail2|escape}">
+  <input type="hidden" name="inquiry_category_id" value="{$submit_data.inquiry_category_id|escape}">
+  <input type="hidden" name="body" value="{$submit_data.body|escape}">
+
+    <input type="hidden" name="from_id" value="{$submit_data.from_id|escape}" />
+    <input type="hidden" name="from_module" value="{$submit_data.from_module|escape}" />
+    <input type="hidden" name="from_uri" value="{$submit_data.from_uri|escape}">
+    <input type="hidden" name="DG_CODE" id="DG_CODE{$contents_id}" value="{$DG_CODE}" />
+
+    {* header文言 *}
+    {if $inquiry_header.header_text != ""}
+      <p class="input_form_header">{$inquiry_header.header_text|nl2br|forContentsConvert}</p>
+    {/if}
+
+    {* お問い合わせ項目を重要度の高い順に表示 *}
+    {foreach from=$grades item=value}
+      {$smarty.capture.$value}
+    {/foreach}
+
+    {if $arrInquiry_category|@count>0}
+        <span>{'/modules/inquiry/label/inquiry_types'|translate}{*お問い合わせ種類*}：</span>
+        <p class="input_form">
+        <label for="inquiry_category_id_{$id}">{$arrInquiry_category[$submit_data.inquiry_category_id]}</label>
+        </p>
+    {/if}
+    <p class="input_form">
+    <input type="submit" value="{'/label/send_btn'|translate}{*送信*}" >
+    </p>
+  </form>
+
+    {* footer文言 *}
+    {if $inquiry_header.footer_text != ""}
+      <p class="input_form_footer">{$inquiry_header.footer_text|nl2br|forContentsConvert}</p>
+    {/if}
+</div>
+
+<form name="inquiry_form2" action="/{if $page_sysnm ne 'top'}{$page_sysnm}/{/if}#inquiry{$contents_id}" method="POST">
+    {if $inquiry_isMain}
+    <input type="hidden" name="id" value="{$inquiry_id}" />
+    {else}
+    <input type="hidden" name="id" value="{$submit_data.from_id|escape}" />
+    <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+    {/if}
+    <input type="hidden" name="name" value="{$submit_data.name|escape}">
+    <input type="hidden" name="from_mail" value="{$submit_data.from_mail|escape}">
+    <input type="hidden" name="from_mail2" value="{$submit_data.from_mail2|escape}">
+    <input type="hidden" name="inquiry_category_id" value="{$submit_data.inquiry_category_id|escape}">
+    <input type="hidden" name="body" value="{$submit_data.body|escape}">
+    <input type="hidden" name="from_id" value="{$submit_data.from_id|escape}" />
+    <input type="hidden" name="from_module" value="{$submit_data.from_module|escape}" />
+    <input type="hidden" name="from_uri" value="{$submit_data.from_uri|escape}">
+    <input type="hidden" name="DG_CODE" id="DG_CODE{$contents_id}" value="{$DG_CODE}" />
+
+    {section name=cnt start=1 loop=$ext_loop_max}
+    {assign var="i" value=$smarty.section.cnt.index|string_format:"%02d"}
+    {assign var="ext" value="ext_$i"}
+    {if is_array($submit_data.$ext)}
+    {foreach from=$submit_data.$ext item=item}
+    <input type="hidden" name="{$ext|escape}[]" value="{$item|escape}" />
+    {/foreach}
+    {else}
+    <input type="hidden" name="{$ext|escape}" value="{$submit_data.$ext|escape}" />
+    {/if}
+    {/section}
+    <input type="submit" value="{'/label/modify_btn'|translate}{*修正*}" />
+</form>
+

@@ -1,0 +1,1241 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+<div class="list_right_bt">
+    <h2>{'/modules/invoice/label/invoice_header_edit'|translate}</h2>
+    <ul>
+        {if $auth.invoice.insert}
+        <li class="add"><a href="/management/invoice/invoice_header_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+        {/if}
+        {if $auth.invoice.select && $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+        <li class="add"><a href="/direct/invoice/print_html/id={$id}" target="_blank"><span>{'/label/print_btn'|translate}</span></a></li>
+        {/if}
+    </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/invoice/invoice_header_list/">{'/modules/invoice'|translate}</a>
+<a href="/management/invoice/invoice_header_list/">{'/modules/invoice/label/invoice_header_list'|translate}</a>
+{'/modules/invoice/label/invoice_header_edit'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+    {rcms_include file="invoice/admin/minitabs.html" page_type=$ct}
+
+    <div class="clearFloat"><br /></div>
+
+    <div class="list_main">
+
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+
+        <form action="/management/invoice/invoice_header_edit/" method="post" name="invoice_header_edit" id="invoice_header_edit" enctype="multipart/form-data"> 
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" value="" />
+            <input type="hidden" id="invoice_header_id" name="id" value="{$id}" />
+            <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+            {*更新制御情報*}
+            {foreach item=row key=key from=$formData.detail}<input type="hidden" name="detail[{$key}][invoice_detail_id]" value="{$row.invoice_detail_id}" />{/foreach}
+
+            {if $latestRow.invoice_header_id}
+            {lang_selector meta=$docmeta link='/management/invoice/invoice_header_edit/id='|cat:$id}
+            {/if}
+
+            <h3>{'/modules/invoice/label/invoice_base'|translate}</h3>
+            <table width="100%">
+
+                <tr>
+                    <th width="25%">{'/modules/invoice/label/invoice_base'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td width="75%">
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$INVOICE_BASE_LIST[$formData.invoice_base_id]}
+                        <input id="invoice_base_id" name="invoice_base_id" type="hidden" value="{$formData.invoice_base_id|escape}" />
+                        {else}
+                        <select name="invoice_base_id" id="invoice_base_id" onChange="changeInvoiceBase(this.value);"><option value=""></option>{html_options options=$INVOICE_BASE_LIST selected=$formData.invoice_base_id}</select>
+                        {/if}
+                        <div id="edit_invoice_base" style="display:{if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}{else}none{/if};">
+                        <p><a href="javascript:void(0)" onclick="edit_invoice_base(true);return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+                        </div>
+                        <div id="close_invoice_base" style="display:none;">
+                        <p class="close"><a href="javascript:void(0)" onclick="edit_invoice_base(false);return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="tr_base_zip">
+                    <th>{'/label/postcode'|translate}</th>
+                    <td>
+                        <span id="disp_base_zip">{if $formData.base_zip_main && $formData.base_zip_sub}{$formData.base_zip_main|escape}-{$formData.base_zip_sub|escape}{/if}</span>
+                        <input id="base_zip_main" name="base_zip_main" type="hidden" value="{$formData.base_zip_main|escape}" />
+                        <input id="base_zip_sub"  name="base_zip_sub"  type="hidden" value="{$formData.base_zip_sub|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_base_address1">
+                    <th>{'/label/address'|translate}1（{'/label/municipality'|translate}・{'/label/street_number'|translate}）</th>
+                    <td>
+                        <span id="disp_base_address1">{if $formData.base_address1}{$formData.base_address1|escape}{/if}</span>
+                        <input id="base_address1" name="base_address1" type="hidden" value="{$formData.base_address1|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_base_address2">
+                    <th>{'/label/address'|translate}2（{'/label/building'|translate}）</th>
+                    <td>
+                        <span id="disp_base_address2">{if $formData.base_address2}{$formData.base_address2|escape}{/if}</span>
+                        <input id="base_address2" name="base_address2" type="hidden" value="{$formData.base_address2|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_base_tel">
+                    <th>{'/label/tel'|translate}</th>
+                    <td>
+                        <span id="disp_base_tel">{if $formData.base_tel}{$formData.base_tel|escape}{/if}</span>
+                        <input id="base_tel" name="base_tel" type="hidden" value="{$formData.base_tel|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_base_fax">
+                    <th>{'/label/fax_no'|translate}</th>
+                    <td>
+                        <span id="disp_base_fax">{if $formData.base_fax}{$formData.base_fax|escape}{/if}</span>
+                        <input id="base_fax" name="base_fax" type="hidden" value="{$formData.base_fax|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_base_person_name">
+                    <th>{'/modules/invoice/label/person_name'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.base_person_name|escape}
+                        <input id="base_person_name" name="base_person_name" type="hidden" value="{$formData.base_person_name|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="base_person_name" name="base_person_name" type="text" value="{$formData.base_person_name|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_base_person_dept">
+                    <th>{'/label/department'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.base_person_dept|escape}
+                        <input id="base_person_dept" name="base_person_dept" type="hidden" value="{$formData.base_person_dept|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="base_person_dept" name="base_person_dept" type="text" value="{$formData.base_person_dept|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_base_person_position">
+                    <th>{'/label/official_position'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.base_person_position|escape}
+                        <input id="base_person_position" name="base_person_position" type="hidden" value="{$formData.base_person_position|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="base_person_position" name="base_person_position" type="text" value="{$formData.base_person_position|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_bank_account_nm">
+                    <th>{'/label/bank_account_name'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.bank_account_nm|escape}
+                        <input id="bank_account_nm" name="bank_account_nm" type="hidden" value="{$formData.bank_account_nm|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="bank_account_nm" name="bank_account_nm" type="text" value="{$formData.bank_account_nm|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_bank_account_no">
+                    <th>{'/label/bank_account_number'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$INVOICE_BANK_ACCOUNT_TYPE_LIST[$formData.bank_account_type]}{$formData.bank_account_no|escape}
+                        <input id="bank_account_type" name="bank_account_type" type="hidden" value="{$formData.bank_account_type|escape}" />
+                        <input id="bank_account_no" name="bank_account_no" type="hidden" value="{$formData.bank_account_no|escape}" />
+                        {else}
+                        <select name="bank_account_type" id="bank_account_type"><option value=""></option>{html_options options=$INVOICE_BANK_ACCOUNT_TYPE_LIST selected=$formData.bank_account_type}</select>
+                        <input id="bank_account_no" name="bank_account_no" type="text" value="{$formData.bank_account_no|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_bank">
+                    <th>{'/label/transfer_bank'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {'/label/name'|translate}:{$formData.bank_nm|escape}<input id="bank_nm" name="bank_nm" type="hidden" value="{$formData.bank_nm|escape}" />
+                        <br />
+                        {'/label/bank_code'|translate}:{$formData.bank_cd|escape}<input id="bank_cd" name="bank_cd" type="hidden" value="{$formData.bank_cd|escape}" />
+                        {else}
+                        {'/label/name'|translate}:<input id="bank_nm" name="bank_nm" type="text" value="{$formData.bank_nm|escape}" />
+                        {'/label/bank_code'|translate}:<input id="bank_cd" name="bank_cd" type="text" value="{$formData.bank_cd|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_bank_branch">
+                    <th>{'/label/transfer_bank_branch'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {'/label/name'|translate}:{$formData.bank_branch_nm|escape}<input id="bank_branch_nm" name="bank_branch_nm" type="hidden" value="{$formData.bank_branch_nm|escape}" />
+                        <br />
+                        {'/label/bank_branch_code'|translate}:{$formData.bank_branch_cd|escape}<input id="bank_branch_cd" name="bank_branch_cd" type="hidden" value="{$formData.bank_branch_cd|escape}" />
+                        {else}
+                        {'/label/name'|translate}:<input id="bank_branch_nm" name="bank_branch_nm" type="text" value="{$formData.bank_branch_nm|escape}" />
+                        {'/label/bank_branch_code'|translate}:<input id="bank_branch_cd" name="bank_branch_cd" type="text" value="{$formData.bank_branch_cd|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_base_tax_rate">
+                    <th>{'/label/tax_rate'|translate}</th>
+                    <td>
+                        <span id="disp_base_tax_rate">{if $formData.base_tax_rate}{$formData.base_tax_rate|escape}{/if}%</span>
+                        <input id="base_tax_rate" name="base_tax_rate" type="hidden" value="{$formData.base_tax_rate|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_base_tax_setting">
+                    <th>{'/label/tax_calc_setting'|translate}</th>
+                    <td>
+                        <span id="base_tax_setting">{if $formData.base_tax_setting}{$INVOICE_TAX_SETTING_LIST[$formData.base_tax_setting]}{/if}</span>
+                        <input id="base_tax_setting" name="base_tax_setting" type="hidden" value="{$formData.base_tax_setting|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_logo">
+                    <th>{'/modules/invoice/label/logo_image'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        <img src="{$formData.logo_image_url}?{$smarty.now}" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].height}px" id="logo_image_url" />
+                        {else}
+                            {if $formData.logo_image_url != ''}
+                            <img src="{$formData.logo_image_url}?{$smarty.now}" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].height}px" id="logo_image_url" />
+                            <p><a id="del_logo_image_url" href="javascript:;" onClick="$('hidden_logo_image_url').value='';$('logo_image_url').style.display='none';$('del_logo_image_url').style.display='none';">{'/label/delete'|translate}</a></span></p>
+                            <br>
+                            {else}
+                            <img src="" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].height}px" id="logo_image_url" style="display:none;" /><br />
+                            {/if}
+                            <input type="file" size="65" name="save_logo_image_url" maxlength="100" />
+                        {/if}
+                        <input type="hidden" name="logo_image_url" value="{$formData.logo_image_url}" id="hidden_logo_image_url" />
+                    </td>
+                </tr>
+
+                {section name=stamp_section loop=$smarty.const.INVOICE_STAMPS_COUNT}
+                {assign var="stamp_idx" value=$smarty.section.stamp_section.index+1}
+                {assign var="stamp_image_url" value="stamp"|cat:$stamp_idx|cat:"_image_url"}
+                {assign var="stamp_image_key" value="stamp"|cat:$stamp_idx|cat:"_image"}
+                <tr id="tr_stamp{$stamp_idx}">
+                    <th>{'/modules/invoice/label/stamp_image'|translate}{$stamp_idx}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        <img src="{$formData.$stamp_image_url}?{$smarty.now}" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].height}px" id="{$stamp_image_url}" />
+                        {else}
+                            {if $formData.$stamp_image_url != ''}
+                            <img src="{$formData.$stamp_image_url}?{$smarty.now}" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].height}px" id="{$stamp_image_url}" />
+                            <p><a id="del_{$stamp_image_url}" href="javascript:;" onClick="$('hidden_{$stamp_image_url}').value='';$('{$stamp_image_url}').style.display='none';$('del_{$stamp_image_url}').style.display='none';">{'/label/delete'|translate}</a></span></p>
+                            <br>
+                            {else}
+                            <img src="" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].height}px" id="{$stamp_image_url}" style="display:none;" /><br />
+                            {/if}
+                            <input type="file" size="65" name="save_{$stamp_image_url}" maxlength="100" />
+                        {/if}
+                        <input type="hidden" name="{$stamp_image_url}" value="{$formData.$stamp_image_url}" id="hidden_{$stamp_image_url}" />
+                    </td>
+                </tr>
+                {/section}
+
+            </table>
+            {* 請求元情報の、表示しない項目。登録時の情報を保持し続けるために必要。 *}
+            <input type="hidden" name="invoice_no_rule_nm" value="{$formData.invoice_no_rule_nm}" id="invoice_no_rule_nm" />
+            <input type="hidden" name="invoice_no_rule" value="{$formData.invoice_no_rule}" id="invoice_no_rule" />
+
+            <h3>{'/modules/invoice/label/invoice_client'|translate}</h3>
+            <table width="100%">
+
+                <tr>
+                    <th width="25%">{'/modules/invoice/label/invoice_client'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td width="75%">
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$INVOICE_CLIENT_LIST[$formData.invoice_client_id]}
+                        <input id="invoice_client_id" name="invoice_client_id" type="hidden" value="{$formData.invoice_client_id|escape}" />
+                        {else}
+                        <select name="invoice_client_id" id="invoice_client_id" onChange="changeInvoiceClient(this.value);"><option value=""></option>{html_options options=$INVOICE_CLIENT_LIST selected=$formData.invoice_client_id}</select>
+                        {/if}
+                        <div id="edit_invoice_client" style="display:{if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}{else}none;{/if}">
+                        <p><a href="javascript:void(0)" onclick="edit_invoice_client(true);return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+                        </div>
+                        <div id="close_invoice_client" style="display:none;">
+                        <p class="close"><a href="javascript:void(0)" onclick="edit_invoice_client(false);return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="tr_client_zip">
+                    <th>{'/label/postcode'|translate}</th>
+                    <td>
+                        <span id="disp_client_zip">{if $formData.client_zip_main && $formData.client_zip_sub}{$formData.client_zip_main|escape}-{$formData.client_zip_sub|escape}{/if}</span>
+                        <input id="client_zip_main" name="client_zip_main" type="hidden" value="{$formData.client_zip_main|escape}" />
+                        <input id="client_zip_sub"  name="client_zip_sub"  type="hidden" value="{$formData.client_zip_sub|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_client_address1">
+                    <th>{'/label/address'|translate}1（{'/label/municipality'|translate}・{'/label/street_number'|translate}）</th>
+                    <td>
+                        <span id="disp_client_address1">{if $formData.client_address1}{$formData.client_address1|escape}{/if}</span>
+                        <input id="client_address1" name="client_address1" type="hidden" value="{$formData.client_address1|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_client_address2">
+                    <th>{'/label/address'|translate}2（{'/label/building'|translate}）</th>
+                    <td>
+                        <span id="disp_client_address2">{if $formData.client_address2}{$formData.client_address2|escape}{/if}</span>
+                        <input id="client_address2" name="client_address2" type="hidden" value="{$formData.client_address2|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_client_tax_flg">
+                    <th>{'/label/tax_calc_setting'|translate}</th>
+                    <td>
+                        <span id="disp_client_tax_flg">{if $formData.client_tax_flg}{$INVOICE_TAX_FLG_LIST[$formData.client_tax_flg]}{/if}</span>
+                        <input id="client_tax_flg" name="client_tax_flg" type="hidden" value="{$formData.client_tax_flg|escape}" />
+                    </td>
+                </tr>
+
+                <tr id="tr_client_person_name">
+                    <th>{'/modules/invoice/label/person_name'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.client_person_name|escape}
+                        <input id="client_person_name" name="client_person_name" type="hidden" value="{$formData.client_person_name|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="client_person_name" name="client_person_name" type="text" value="{$formData.client_person_name|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_client_person_dept">
+                    <th>{'/label/department'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.client_person_dept|escape}
+                        <input id="client_person_dept" name="client_person_dept" type="hidden" value="{$formData.client_person_dept|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="client_person_dept" name="client_person_dept" type="text" value="{$formData.client_person_dept|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_client_person_position">
+                    <th>{'/label/official_position'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.client_person_position|escape}
+                        <input id="client_person_position" name="client_person_position" type="hidden" value="{$formData.client_person_position|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="client_person_position" name="client_person_position" type="text" value="{$formData.client_person_position|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_client_person_tel">
+                    <th>{'/label/tel'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.client_person_tel|escape}
+                        <input id="client_person_tel" name="client_person_tel" type="hidden" value="{$formData.client_person_tel|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="client_person_tel" name="client_person_tel" type="text" value="{$formData.client_person_tel|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_client_person_fax">
+                    <th>{'/label/fax_no'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.client_person_fax|escape}
+                        <input id="client_person_fax" name="client_person_fax" type="hidden" value="{$formData.client_person_fax|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="client_person_fax" name="client_person_fax" type="text" value="{$formData.client_person_fax|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_client_person_mail">
+                    <th>{'/label/mail_address'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.client_person_mail|escape}
+                        <input id="client_person_mail" name="client_person_mail" type="hidden" value="{$formData.client_person_mail|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="client_person_mail" name="client_person_mail" type="text" value="{$formData.client_person_mail|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+            </table>
+
+
+            <h3>{'/modules/invoice/label/invoice_header'|translate}</h3>
+            <table width="100%">
+
+                <tr>
+                    <th width="25%">{'/label/subject'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td width="75%">
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.header_title|escape}
+                        <input id="header_title" name="header_title" type="hidden" value="{$formData.header_title|escape}" />
+                        {else}
+                        <input maxlengh="100" size="70" id="header_title" name="header_title" type="text" value="{$formData.header_title|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/modules/invoice/label/print_date'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.print_date|pg_dateformat:'%Y/%m/%d'}
+                        <input type="hidden" id="print_date" name="print_date" value="{$formData.print_date|pg_dateformat:'%Y/%m/%d'}" />
+                        {else}
+                        <input type="text" id="print_date" name="print_date" value="{$formData.print_date|pg_dateformat:'%Y/%m/%d'}" size="16" autocomplete="off" />
+                        <button type="button" id="print_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                        <div class="pop_calendar" id="print_date-pop"></div>
+                        {/if}
+                        ({'/label/year'|translate}/{'/label/month'|translate}/{'/label/day'|translate})
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/modules/invoice/label/receipt_of_money_due_date'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.receive_schedule_date|pg_dateformat:'%Y/%m/%d'}
+                        <input type="hidden" id="receive_schedule_date" name="receive_schedule_date" value="{$formData.receive_schedule_date|pg_dateformat:'%Y/%m/%d'}" />
+                        {else}
+                        <input type="text" id="receive_schedule_date" name="receive_schedule_date" value="{$formData.receive_schedule_date|pg_dateformat:'%Y/%m/%d'}" size="16" autocomplete="off" />
+                        <button type="button" id="receive_schedule_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                        <div class="pop_calendar" id="receive_schedule_date-pop"></div>
+                        {/if}
+                        ({'/label/year'|translate}/{'/label/month'|translate}/{'/label/day'|translate})
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/terms_of_payment'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.pay_condition|escape}
+                        <input id="pay_condition" name="pay_condition" type="hidden" value="{$formData.pay_condition|escape}" />
+                       {else}
+                        <input maxlengh="100" size="70" id="pay_condition" name="pay_condition" type="text" value="{$formData.pay_condition|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/remarks'|translate}</th>
+                    <td>
+                        <textarea rows="5" cols="60" id="remarks" name="remarks">{$formData.remarks|escape}</textarea>
+                  </td>
+                </tr>
+
+            </table>
+
+            <h3>{'/modules/invoice/label/invoice_detail'|translate}</h3>
+
+            <table width="100%">
+
+                <tr id="tr_itemtotal" {if !$formData.itemtotal}style="display:none;"{/if}>
+                    <th width="25%">{'/label/purchase_ammout'|translate}</th>
+                    <td width="75%">
+                        \<span id="calc_itemtotal">{$formData.itemtotal|number_format}</span>
+                    </td>
+                </tr>
+
+                <tr id="tr_discount">
+                    <th width="25%">{'/modules/invoice/label/discount'|translate}</th>
+                    <td width="75%">
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        \{$formData.discount|number_format}
+                        <input id="discount" name="discount" type="hidden" value="{$formData.discount|escape}" />
+                        {else}
+                        \<input id="discount" name="discount" type="text" value="{$formData.discount|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_reverce">
+                    <th>{'/modules/invoice/label/reverce'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        \{$formData.reverce|number_format}
+                        <input id="reverce" name="reverce" type="hidden" value="{$formData.reverce|escape}" />
+                        {else}
+                        \<input id="reverce" name="reverce" type="text" value="{$formData.reverce|escape}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr id="tr_subtotal" {if !$formData.subtotal}style="display:none;"{/if}>
+                    <th>{'/label/subtotal'|translate}</th>
+                    <td>
+                        \<span id="calc_subtotal">{$formData.subtotal|number_format}</span>
+                    </td>
+                </tr>
+
+                <tr id="tr_tax" {if !$formData.tax}style="display:none;"{/if}>
+                    <th>{'/label/consumption_tax'|translate}</th>
+                    <td>
+                        \<span id="calc_tax">{$formData.tax|number_format}</span>
+                    </td>
+                </tr>
+
+                <tr id="tr_total" {if !$formData.total}style="display:none;"{/if}>
+                    <th>{'/label/total'|translate}</th>
+                    <td>
+                        \<span id="calc_total">{$formData.total|number_format}</span>
+                    </td>
+                </tr>
+
+            </table>
+
+            <table width="100%">
+                <tr>
+                    <th width="10%">{'/label/delete'|translate}</th>
+                    <th width="10%">{'/label/article_code'|translate}</th>
+                    <th width="50%">{'/label/title'|translate}</th>
+                    <th width="10%">{'/label/ammount'|translate}</th>
+                    <th width="20%">{'/label/unit_price'|translate}</th>
+                </tr>
+                {section name=detail_section loop=$smarty.const.INVOICE_DETAILS_COUNT}
+                {assign var="detail_idx" value=$smarty.section.detail_section.index}
+                <tr id="tr_detail_{$detail_idx}" style="display:{if $formData.detail[$detail_idx].item_cd || $formData.detail[$detail_idx].item_title || $formData.detail[$detail_idx].quantity || $formData.detail[$detail_idx].price}{else}none{/if};" >
+                {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+
+                    <td><br /></td>
+                    <td>{$formData.detail[$detail_idx].item_cd|escape}<input id="detail_{$detail_idx}_item_cd" name="detail[{$detail_idx}][item_cd]" type="hidden" value="{$formData.detail[$detail_idx].item_cd|escape}" /></td>
+                    <td>{$formData.detail[$detail_idx].item_title|escape}<input id="detail_{$detail_idx}_item_title" name="detail[{$detail_idx}][item_title]" type="hidden" value="{$formData.detail[$detail_idx].item_title|escape}" /></td>
+                    <td>{$formData.detail[$detail_idx].quantity|number_format}<input id="detail_{$detail_idx}_quantity" name="detail[{$detail_idx}][quantity]" type="hidden" value="{$formData.detail[$detail_idx].quantity|escape}" /></td>
+                    <td>\{$formData.detail[$detail_idx].price|number_format}<input id="detail_{$detail_idx}_price" name="detail[{$detail_idx}][price]" type="hidden" value="{$formData.detail[$detail_idx].price|escape}" /></td>
+
+                {else}
+
+                    <td><input type="button" value="{'/label/delete_btn'|translate}" onclick="delDetailRow('{$detail_idx}');" /></td>
+                    <td><input size="10" maxlength="10" id="detail_{$detail_idx}_item_cd" name="detail[{$detail_idx}][item_cd]" type="text" value="{$formData.detail[$detail_idx].item_cd|escape}" /></td>
+                    <td><input size="50" maxlength="100" id="detail_{$detail_idx}_item_title" name="detail[{$detail_idx}][item_title]" type="text" value="{$formData.detail[$detail_idx].item_title|escape}" /></td>
+                    <td><input size="10" maxlength="10" id="detail_{$detail_idx}_quantity" name="detail[{$detail_idx}][quantity]" type="text" value="{$formData.detail[$detail_idx].quantity|escape}" /></td>
+                    <td>\<input size="10" maxlength="20" id="detail_{$detail_idx}_price" name="detail[{$detail_idx}][price]" type="text" value="{$formData.detail[$detail_idx].price|escape}" /></td>
+
+                {/if}
+                </tr>
+                {/section}
+            </table>
+            {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+            {else}
+            <button id="btn_add_detail_row" type="button" onclick="add_detail_row(false);">{'/label/add_new_btn'|translate}</button>
+            <button id="btn_calc_total_row" type="button" onclick="calc_total();">{'/label/calculate_btn'|translate}</button>
+            {/if}
+
+            <h3>{'/label/status'|translate}</h3>
+            <table width="100%">
+
+                <tr>
+                    <th width="25%">{'/modules/invoice/label/invoice_settlement'|translate}</th>
+                    <td width="75%">
+                        <select name="commit_flg" id="commit_flg" onChange="changeCommitStatus(this.value);">{html_options options=$INVOICE_COMMIT_FLG_LIST selected=$formData.commit_flg}</select>
+                        {if $formData.commit_date}({$formData.commit_date|pg_dateformat}){/if}
+                        {if $formData.commit_member_nm}({$formData.commit_member_nm|escape}){/if}
+                        <input type="hidden" name="commit_flg_before" value="{$latestRow.commit_flg}" />
+                  </td>
+                </tr>
+
+                <tr id="tr_invoice_no" style="display:none;">
+                    <th>{'/label/invoice_number'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        {$formData.invoice_no|escape}
+                        <input id="invoice_no" name="invoice_no" type="hidden" value="{$formData.invoice_no|escape}" />
+                        {else}
+                        <input id="invoice_no" name="invoice_no" type="text" value="{$formData.invoice_no|escape}" />
+                        <input type="button"  onClick="getInvoiceNo();" value="{'/label/get_number_btn'|translate}" />
+                        {/if}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/modules/invoice/label/invoice_output'|translate}</th>
+                    <td>
+                        {if $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                        <select name="output_flg" id="output_flg">{html_options options=$INVOICE_OUTPUT_FLG_LIST selected=$formData.output_flg}</select>
+                        {if $formData.output_date}({$formData.output_date|pg_dateformat}){/if}
+                        {if $formData.output_member_nm}({$formData.output_member_nm|escape}){/if}
+                        {else}
+                        {$INVOICE_OUTPUT_FLG_LIST[$smarty.const.INVOICE_OUTPUT_FLG_OFF]}
+                        {/if}
+                        <input type="hidden" name="output_flg_before" value="{$latestRow.output_flg}" />
+                 </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/receipt_of_money_confirmation'|translate}</th>
+                    <td>
+                        {if $formData.output_flg == $smarty.const.INVOICE_OUTPUT_FLG_ON && $id}
+                        <select name="receive_flg" id="receive_flg">{html_options options=$INVOICE_RECEIVE_FLG_LIST selected=$formData.receive_flg}</select>
+                        {if $formData.receive_date}({$formData.receive_date|pg_dateformat}){/if}
+                        {if $formData.receive_member_nm}({$formData.receive_member_nm|escape}){/if}
+                        {else}
+                        {$INVOICE_RECEIVE_FLG_LIST[$smarty.const.INVOICE_RECEIVE_FLG_OFF]}
+                        {/if}
+                        <input type="hidden" name="receive_flg_before" value="{$latestRow.receive_flg}" />
+                  </td>
+                </tr>
+
+                {if $formData.output_flg == $smarty.const.INVOICE_OUTPUT_FLG_ON}
+                <tr>
+                    <th>{'/modules/invoice/label/receive_money'|translate}</th>
+                    <td>
+                        \<input id="receive_money" name="receive_money" type="text" value="{$formData.receive_money|escape}" />
+                  </td>
+                </tr>
+                {/if}
+
+            </table>
+
+            <h3>{'/modules/invoice/label/print_invoice'|translate}</h3>
+            <table width="100%">
+                <tr>
+                    <th width="25%">{'/modules/invoice/label/print_invoice'|translate}</th>
+                    <td width="75%">
+                    {if $auth.invoice.select && $formData.commit_flg == $smarty.const.INVOICE_COMMIT_FLG_ON && $id}
+                    <a href="/direct/invoice/print_html/id={$id}" target="_blank">{'/label/print_btn'|translate}</a>
+                    {else}
+                    {'/modules/invoice/msg/print_cannnot'|translate}
+                    {/if}
+                    </td>
+                </tr>
+            </table>
+
+            {editActionBox docmeta=$docmeta}{/editActionBox}
+            {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+<!--
+var s_invoice_base_id = '{$formData.invoice_base_id}' ? '{$formData.invoice_base_id}' : '0';
+var s_invoice_client_id = '{$formData.invoice_client_id}' ? '{$formData.invoice_client_id}' : '0';
+var detail_cnt = {$smarty.const.INVOICE_DETAILS_COUNT}
+
+{literal}
+function add_detail_row(onload){
+
+    if (!onload){
+        for (i=0; i < detail_cnt; i++) {
+            var objName_1 = '#tr_detail_' + i;
+            if (j$(objName_1).css('display')=='none'){
+                j$(objName_1).slideDown(300, hideRow(objName_1));
+                break;
+            }
+        }
+    }
+
+    var dispRownum = 0;
+    for (i=0; i < detail_cnt; i++) {
+        var objName_1 = '#tr_detail_' + i;
+        if (j$(objName_1).css('display')!='none'){
+            dispRownum++;
+        }
+    }
+
+    if (dispRownum==detail_cnt){
+        j$('#btn_add_detail_row').hide();
+    }
+    return true;
+}
+
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+    }
+}
+
+function hideRow(objName) {
+    try {
+        j$(objName).css("display", "");
+    }
+    // IE6, IE7では例外が発生する
+    catch(e) {
+        // 何もしない
+    }
+}
+
+// 数字フォーマット
+function formatNumber(x) { // 引数の例としては 95839285734.3245
+    var s = "" + x; // 確実に文字列型に変換する。例では "95839285734.3245"
+    var p = s.indexOf("."); // 小数点の位置を0オリジンで求める。例では 11
+    if (p < 0) { // 小数点が見つからなかった時
+        p = s.length; // 仮想的な小数点の位置とする
+    }
+    var r = s.substring(p, s.length); // 小数点の桁と小数点より右側の文字列。例では ".3245"
+    for (var i = 0; i < p; i++) { // (10 ^ i) の位について
+        var c = s.substring(p - 1 - i, p - 1 - i + 1); // (10 ^ i) の位のひとつの桁の数字。例では "4", "3", "7", "5", "8", "2", "9", "3", "8", "5", "9" の順になる。
+        if (c < "0" || c > "9") { // 数字以外のもの(符合など)が見つかった
+            r = s.substring(0, p - i) + r; // 残りを全部付加する
+            break;
+        }
+        if (i > 0 && i % 3 == 0) { // 3 桁ごと、ただし初回は除く
+            r = "," + r; // カンマを付加する
+        }
+        r = c + r; // 数字を一桁追加する。
+    }
+    return r; // 例では "95,839,285,734.3245"
+}
+
+// 請求確定
+function changeCommitStatus(commit_flg){
+
+    var commit_flg = j$('#commit_flg').val();
+
+    if (commit_flg == '{/literal}{$smarty.const.INVOICE_COMMIT_FLG_ON}{literal}'){
+        j$('#tr_invoice_no').slideDown(300, hideRow('#tr_itemtotal'));
+    }else{
+        j$('#tr_invoice_no').hide();
+        j$('#invoice_no').val('');
+    }
+
+}
+
+// 請求書番号取得
+function getInvoiceNo(){
+
+    var commit_flg = j$('#commit_flg').val();
+
+    if (commit_flg == '{/literal}{$smarty.const.INVOICE_COMMIT_FLG_ON}{literal}'){
+
+        var queryString = '';
+        queryString = '?invoice_base_id='+j$('#invoice_base_id').val();
+        queryString = queryString + '&print_date='+j$('#print_date').val();
+
+        var a = new Ajax.Request( 
+            "/direct/invoice/getinvoiceno/", 
+            { 
+                "method": "post", 
+                "parameters": queryString, 
+                onComplete: function(request) { 
+                    eval("var json = " + request.responseText);
+                    if (json.result==true){
+                        j$('#invoice_no').val(json.invoice_no);
+
+                    }
+                }
+            }
+        );
+    }else{
+        j$('#invoice_no').val('');
+
+    }
+
+}
+
+// 計算
+function calc_total(){
+
+    var queryString = '';
+    queryString = '?invoice_base_id='+j$('#invoice_base_id').val();
+    queryString = queryString + '&invoice_client_id='+j$('#invoice_client_id').val();
+    queryString = queryString + '&discount='+j$('#discount').val();
+    queryString = queryString + '&reverce='+j$('#reverce').val();
+
+    var detailqueryString = '';
+    {/literal}{section name=detail_section loop=$smarty.const.INVOICE_DETAILS_COUNT}{literal}
+    if (j$('#detail_{/literal}{$smarty.section.detail_section.index}{literal}_quantity').val() !=''
+    &&  j$('#detail_{/literal}{$smarty.section.detail_section.index}{literal}_price').val() !=''
+    ){
+        detailqueryString = detailqueryString + '&detail[{/literal}{$smarty.section.detail_section.index}{literal}][quantity]='+j$('#detail_{/literal}{$smarty.section.detail_section.index}{literal}_quantity').val();
+        detailqueryString = detailqueryString + '&detail[{/literal}{$smarty.section.detail_section.index}{literal}][price]='+j$('#detail_{/literal}{$smarty.section.detail_section.index}{literal}_price').val();
+    }
+    {/literal}{/section}{literal}
+    if (detailqueryString == ''){
+        return;
+    }
+
+    queryString = queryString + detailqueryString;
+
+    var a = new Ajax.Request( 
+        "/direct/invoice/calctotal/", 
+        { 
+            "method": "post", 
+            "parameters": queryString, 
+            onComplete: function(request) { 
+                eval("var json = " + request.responseText);
+                if (json.result==true){
+
+                    j$('#tr_itemtotal').slideDown(300, hideRow('#tr_itemtotal'));
+                    j$('#calc_itemtotal').html(formatNumber(json.info.itemtotal));
+
+                    j$('#tr_subtotal').slideDown(300, hideRow('#tr_subtotal'));
+                    j$('#calc_subtotal').html(formatNumber(json.info.subtotal));
+
+                    j$('#tr_tax').slideDown(300, hideRow('#tr_tax'));
+                    j$('#calc_tax').html(formatNumber(json.info.tax));
+
+                    j$('#tr_total').slideDown(300, hideRow('#tr_total'));
+                    j$('#calc_total').html(formatNumber(json.info.total));
+
+                }
+            }
+        }
+    );
+}
+
+// 請求元変更イベント
+function changeInvoiceBase(invoice_base_id){
+
+    var queryString = '?invoice_base_id='+invoice_base_id;
+
+    var a = new Ajax.Request( 
+        "/direct/invoice/getbase/", 
+        { 
+            "method": "post", 
+            "parameters": queryString, 
+            onComplete: function(request) { 
+                eval("var json = " + request.responseText);
+                if (json.result==true){
+
+                    // 編集ボタン
+                    j$('#edit_invoice_base').slideDown(300, hideRow('#edit_invoice_base'));
+                    j$('#close_invoice_base').hide();
+
+                    // 支払い条件
+                    j$('#pay_condition').val(json.info.pay_condition);
+
+                    // 郵便番号
+                    j$('#disp_base_zip').html(json.info.zip_main + '-' + json.info.zip_sub);
+                    j$('#base_zip_main').val(json.info.zip_main);
+                    j$('#base_zip_sub').val(json.info.zip_sub);
+
+                    // 住所１
+                    j$('#disp_base_address1').html(json.info.address1);
+                    j$('#base_address1').val(json.info.address1);
+
+                    // 住所２
+                    j$('#disp_base_address2').html(json.info.address2);
+                    j$('#base_address2').val(json.info.address2);
+
+                    // 電話番号
+                    j$('#disp_base_tel').html(json.info.tel);
+                    j$('#base_tel').val(json.info.tel);
+
+                    // FAX番号
+                    j$('#disp_base_fax').html(json.info.fax);
+                    j$('#base_fax').val(json.info.fax);
+
+                    // 担当者
+                    j$('#base_person_name').val(json.info.person_name);
+
+                    // 担当者部署
+                    j$('#base_person_dept').val(json.info.person_dept);
+
+                    // 担当者役職
+                    j$('#base_person_position').val(json.info.person_position);
+
+                    // 銀行口座名義
+                    j$('#bank_account_nm').val(json.info.bank_account_nm);
+
+                    // 銀行口座種類
+                    j$('#bank_account_type').val(json.info.bank_account_type);
+
+                    // 銀行口座番号
+                    j$('#bank_account_no').val(json.info.bank_account_no);
+
+                    // 銀行名
+                    j$('#bank_nm').val(json.info.bank_nm);
+
+                    // 銀行コード
+                    j$('#bank_cd').val(json.info.bank_cd);
+
+                    // 銀行支店名
+                    j$('#bank_branch_nm').val(json.info.bank_branch_nm);
+
+                    // 銀行支店コード
+                    j$('#bank_branch_cd').val(json.info.bank_branch_cd);
+
+                    // 税率
+                    j$('#disp_base_tax_rate').html(json.info.tax_rate + '%');
+                    j$('#base_tax_rate').val(json.info.tax_rate);
+
+                    // 計算方法
+                    j$('#disp_base_tax_setting').html(json.info.tax_setting_disp);
+                    j$('#base_tax_setting').val(json.info.tax_setting);
+
+                    // ロゴ画像
+                    j$('#logo_image_url').attr('src', json.info.logo_image_url);
+                    j$('#logo_image_url').css("display", "");
+                    j$('#hidden_logo_image_url').val(json.info.logo_image_url);
+
+                    // 印鑑画像
+                    {/literal}
+                    {section name=stamp_section loop=$smarty.const.INVOICE_STAMPS_COUNT}
+                    {assign var="stamp_idx" value=$smarty.section.stamp_section.index+1}
+                    {assign var="stamp_image_url" value="stamp"|cat:$stamp_idx|cat:"_image_url"}
+                    {literal}j$('#{/literal}{$stamp_image_url}{literal}').attr('src', json.info.{/literal}{$stamp_image_url}{literal});
+                    j$('#{/literal}{$stamp_image_url}{literal}').css("display", "");
+                    j$('#hidden_{/literal}{$stamp_image_url}{literal}').val(json.info.{/literal}{$stamp_image_url}{literal});
+                    {/literal}
+                    {/section}
+                    {literal}
+
+                    // 請求番号採番ルール（非表示）
+                    j$('#invoice_no_rule_nm').val(json.info.invoice_no_rule_nm);
+                    j$('#invoice_no_rule').val(json.info.invoice_no_rule);
+
+                }else{
+
+                    // 編集ボタン
+                    j$('#edit_invoice_base').hide();
+                    j$('#close_invoice_base').hide();
+
+                    // 支払い条件
+                    j$('#pay_condition').val('');
+
+                    // 郵便番号
+                    j$('#disp_base_zip').html('');
+                    j$('#base_zip_main').val('');
+                    j$('#base_zip_sub').val('');
+
+                    // 住所１
+                    j$('#disp_base_address1').html('');
+                    j$('#base_address1').val('');
+
+                    // 住所２
+                    j$('#disp_base_address2').html('');
+                    j$('#base_address2').val('');
+
+                    // 電話番号
+                    j$('#disp_base_tel').html('');
+                    j$('#base_tel').val('');
+
+                    // FAX番号
+                    j$('#disp_base_fax').html('');
+                    j$('#base_fax').val('');
+
+                    // 担当者
+                    j$('#base_person_name').val('');
+
+                    // 担当者部署
+                    j$('#base_person_dept').val('');
+
+                    // 担当者役職
+                    j$('#base_person_position').val('');
+
+                    // 銀行口座名義
+                    j$('#base_bank_account_nm').val('');
+
+                    // 銀行口座種類
+                    j$('#bank_account_type').val('');
+
+                    // 銀行口座番号
+                    j$('#bank_account_no').val('');
+
+                    // 銀行名
+                    j$('#bank_nm').val('');
+
+                    // 銀行コード
+                    j$('#bank_cd').val('');
+
+                    // 銀行支店名
+                    j$('#bank_branch_nm').val('');
+
+                    // 銀行支店コード
+                    j$('#bank_branch_cd').val('');
+
+                    // 税率
+                    j$('#disp_base_tax_rate').html('');
+                    j$('#base_tax_rate').val('');
+
+                    // 計算方法
+                    j$('#tr_base_tax_setting').hide();
+                    j$('#disp_base_tax_setting').html('');
+                    j$('#base_tax_setting').val('');
+
+                    // ロゴ画像
+                    j$('#logo_image_url').attr('src', '');
+                    j$('#logo_image_url').css("display", "none");
+                    j$('#hidden_logo_image_url').val('');
+
+                    // 印鑑画像
+                    {/literal}
+                    {section name=stamp_section loop=$smarty.const.INVOICE_STAMPS_COUNT}
+                    {assign var="stamp_idx" value=$smarty.section.stamp_section.index+1}
+                    {assign var="stamp_image_url" value="stamp"|cat:$stamp_idx|cat:"_image_url"}
+                    {literal}j$('#{/literal}{$stamp_image_url}{literal}').attr('src', '');
+                    j$('#{/literal}{$stamp_image_url}{literal}').css("display", "none");
+                    j$('#hidden_{/literal}{$stamp_image_url}{literal}').val('');
+                    {/literal}
+                    {/section}
+                    {literal}
+
+                    // 請求番号採番ルール（非表示）
+                    j$('#invoice_no_rule_nm').val('');
+                    j$('#invoice_no_rule').val('');
+
+                }
+            } 
+        } 
+    );
+    return true;
+}
+
+// 請求元情報編集イベント
+function edit_invoice_base(disp){
+    if (disp==true){
+        j$('#tr_base_zip').slideDown(300, hideRow('#tr_base_zip'));
+        j$('#tr_base_address1').slideDown(300, hideRow('#tr_base_address1'));
+        j$('#tr_base_address2').slideDown(300, hideRow('#tr_base_address2'));
+        j$('#tr_base_tel').slideDown(300, hideRow('#tr_base_tel'));
+        j$('#tr_base_fax').slideDown(300, hideRow('#tr_base_fax'));
+        j$('#tr_base_person_name').slideDown(300, hideRow('#tr_base_person_name'));
+        j$('#tr_base_person_dept').slideDown(300, hideRow('#tr_base_person_dept'));
+        j$('#tr_base_person_position').slideDown(300, hideRow('#tr_base_person_position'));
+        j$('#tr_bank_account_nm').slideDown(300, hideRow('#tr_bank_account_nm'));
+        j$('#tr_bank_account_no').slideDown(300, hideRow('#tr_bank_account_no'));
+        j$('#tr_bank').slideDown(300, hideRow('#tr_bank'));
+        j$('#tr_bank_branch').slideDown(300, hideRow('#tr_bank_branch'));
+        j$('#tr_base_tax_rate').slideDown(300, hideRow('#tr_base_tax_rate'));
+        j$('#tr_base_tax_setting').slideDown(300, hideRow('#tr_base_tax_setting'));
+        j$('#tr_logo').slideDown(300, hideRow('#tr_logo'));
+        // 印鑑画像
+        {/literal}
+        {section name=stamp_section loop=$smarty.const.INVOICE_STAMPS_COUNT}
+        {assign var="stamp_idx" value=$smarty.section.stamp_section.index+1}
+        {assign var="stamp_tr" value="tr_stamp"|cat:$stamp_idx}
+        {literal}j$('#{/literal}{$stamp_tr}{literal}').slideDown(300, hideRow('#{/literal}{$stamp_tr}{literal}'));
+        {/literal}
+        {/section}
+        {literal}
+        // 編集ボタン
+        j$('#edit_invoice_base').hide();
+        // 閉じるボタン
+        j$('#close_invoice_base').slideDown(300, hideRow('#close_invoice_base'));
+    }else{
+        j$('#tr_base_zip').hide();
+        j$('#tr_base_address1').hide();
+        j$('#tr_base_address2').hide();
+        j$('#tr_base_tel').hide();
+        j$('#tr_base_fax').hide();
+        j$('#tr_base_person_name').hide();
+        j$('#tr_base_person_dept').hide();
+        j$('#tr_base_person_position').hide();
+        j$('#tr_bank_account_nm').hide();
+        j$('#tr_bank_account_no').hide();
+        j$('#tr_bank').hide();
+        j$('#tr_bank_branch').hide();
+        j$('#tr_base_tax_rate').hide();
+        j$('#tr_base_tax_setting').hide();
+        j$('#tr_logo').hide();
+        // 印鑑画像
+        {/literal}
+        {section name=stamp_section loop=$smarty.const.INVOICE_STAMPS_COUNT}
+        {assign var="stamp_idx" value=$smarty.section.stamp_section.index+1}
+        {assign var="stamp_tr" value="tr_stamp"|cat:$stamp_idx}
+        {literal}j$('#{/literal}{$stamp_tr}{literal}').hide();
+        {/literal}
+        {/section}
+        {literal}
+        // 編集ボタン
+        j$('#edit_invoice_base').slideDown(300, hideRow('#edit_invoice_base'));
+        // 閉じるボタン
+        j$('#close_invoice_base').hide();
+    }
+}
+
+// 請求先変更イベント
+function changeInvoiceClient(invoice_client_id){
+
+    var queryString = '?invoice_client_id='+invoice_client_id;
+
+    var a = new Ajax.Request( 
+        "/direct/invoice/getclient/", 
+        { 
+            "method": "post", 
+            "parameters": queryString, 
+            onComplete: function(request) { 
+                eval("var json = " + request.responseText);
+                if (json.result==true){
+
+                    // 編集ボタン
+                    j$('#edit_invoice_client').slideDown(300, hideRow('#edit_invoice_client'));
+                    j$('#close_invoice_client').hide();
+
+                    // 郵便番号
+                    j$('#disp_client_zip').html(json.info.zip_main + '-' + json.info.zip_sub);
+                    j$('#client_zip_main').val(json.info.zip_main);
+                    j$('#client_zip_sub').val(json.info.zip_sub);
+
+                    // 住所１
+                    j$('#disp_client_address1').html(json.info.address1);
+                    j$('#client_address1').val(json.info.address1);
+
+                    // 住所２
+                    j$('#disp_client_address2').html(json.info.address2);
+                    j$('#client_address2').val(json.info.address2);
+
+                    // 担当者
+                    j$('#client_person_name').val(json.info.person_name);
+
+                    // 担当者部署
+                    j$('#client_person_dept').val(json.info.person_dept);
+
+                    // 担当者役職
+                    j$('#client_person_position').val(json.info.person_position);
+
+                    // 電話番号
+                    j$('#client_person_tel').val(json.info.person_tel);
+
+                    // FAX番号
+                    j$('#client_person_fax').val(json.info.person_fax);
+
+                    // メールアドレス
+                    j$('#client_person_mail').val(json.info.person_mail);
+
+                    // 課税・非課税
+                    j$('#disp_client_tax_flg').html(json.info.tax_flg_disp);
+                    j$('#client_tax_flg').val(json.info.tax_flg);
+
+                }else{
+
+                    // 編集ボタン
+                    j$('#edit_invoice_client').hide();
+                    j$('#close_invoice_client').hide();
+
+                    // 郵便番号
+                    j$('#disp_client_zip').html('');
+                    j$('#client_zip_main').val('');
+                    j$('#client_zip_sub').val('');
+
+                    // 住所１
+                    j$('#disp_client_address1').html('');
+                    j$('#client_address1').val('');
+
+                    // 住所２
+                    j$('#disp_client_address2').html('');
+                    j$('#client_address2').val('');
+
+                    // 担当者
+                    j$('#client_person_name').val('');
+
+                    // 担当者部署
+                    j$('#client_person_dept').val('');
+
+                    // 担当者役職
+                    j$('#client_person_position').val('');
+
+                    // 電話番号
+                    j$('#client_person_tel').val('');
+
+                    // FAX番号
+                    j$('#client_person_fax').val('');
+
+                    // メールアドレス
+                    j$('#client_person_mail').val('');
+
+                    // 課税・非課税
+                    j$('#disp_client_tax_flg').html('');
+                    j$('#client_tax_flg').val('');
+
+                }
+            } 
+        } 
+    );
+    return true;
+}
+
+// 請求先情報編集イベント
+function edit_invoice_client(disp){
+    if (disp==true){
+        j$('#tr_client_zip').slideDown(300, hideRow('#tr_client_zip'));
+        j$('#tr_client_address1').slideDown(300, hideRow('#tr_client_address1'));
+        j$('#tr_client_address2').slideDown(300, hideRow('#tr_client_address2'));
+        j$('#tr_client_person_name').slideDown(300, hideRow('#tr_client_person_name'));
+        j$('#tr_client_person_dept').slideDown(300, hideRow('#tr_client_person_dept'));
+        j$('#tr_client_person_position').slideDown(300, hideRow('#tr_client_person_position'));
+        j$('#tr_client_person_tel').slideDown(300, hideRow('#tr_client_person_tel'));
+        j$('#tr_client_person_fax').slideDown(300, hideRow('#tr_client_person_fax'));
+        j$('#tr_client_person_mail').slideDown(300, hideRow('#tr_client_person_mail'));
+        j$('#tr_client_tax_flg').slideDown(300, hideRow('#tr_client_tax_flg'));
+        // 編集ボタン
+        j$('#edit_invoice_client').hide();
+        // 閉じるボタン
+        j$('#close_invoice_client').slideDown(300, hideRow('#close_invoice_client'));
+    }else{
+        j$('#tr_client_zip').hide();
+        j$('#tr_client_address1').hide();
+        j$('#tr_client_address2').hide();
+        j$('#tr_client_person_name').hide();
+        j$('#tr_client_person_dept').hide();
+        j$('#tr_client_person_position').hide();
+        j$('#tr_client_person_tel').hide();
+        j$('#tr_client_person_fax').hide();
+        j$('#tr_client_person_mail').hide();
+        j$('#tr_client_tax_flg').hide();
+        // 編集ボタン
+        j$('#edit_invoice_client').slideDown(300, hideRow('#edit_invoice_client'));
+        // 閉じるボタン
+        j$('#close_invoice_client').hide();
+    }
+}
+
+// 明細行削除
+function delDetailRow(detail_row){
+    var trObj = '#tr_detail_'+ detail_row;
+    var inputObjCom = '#detail_'+ detail_row +'_';
+    var inputObjItemCd =inputObjCom + 'item_cd';
+    var inputObjItemTitle =inputObjCom + 'item_title';
+    var inputObjQuantity =inputObjCom + 'quantity';
+    var inputObjPrice =inputObjCom + 'price';
+    j$(inputObjItemCd).val('');
+    j$(inputObjItemTitle).val('');
+    j$(inputObjQuantity).val('');
+    j$(inputObjPrice).val('');
+    j$(trObj).css("display", "none");
+}
+
+window.onload = function() {
+{/literal}{if !$formData.invoice_header_id && !$id}{literal}
+    changeInvoiceBase(s_invoice_base_id);
+{/literal}{/if}{literal}
+    edit_invoice_base(false);
+    edit_invoice_client(false);
+    changeCommitStatus({/literal}{$formData.commit_flg}{literal});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'print_date', btnId: 'print_date-btn', boxId: 'print_date-pop', tableId: 'print_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'receive_schedule_date', btnId: 'receive_schedule_date-btn', boxId: 'receive_schedule_date-pop', tableId: 'receive_schedule_date-table'});
+}
+
+
+{/literal}
+-->
+</script>
+{rcms_include file='management/footer.html'}

@@ -1,0 +1,296 @@
+{rcms_include file="management/header.html"}
+
+{*
+{rcms_include file="menu/admin/subnavi.html"}
+*}
+
+{rcms_include file="management/rcms_ui/rcms_ui.html"}
+
+{headblock}
+<link rel="stylesheet" href="/css/management/modules/page2.css">
+{/headblock}
+
+{literal}
+<!-- サンドボックス -->
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#rcms_ui_page_list").rcmsPageSpotlight();
+    $("#main_container").rcmsResizableCells({cell1:"#list_col",cell2:"#edit_col",handle:"#handle_col",cell1MinWidth:250,position:"fixed",direction:"horizon"});
+    $("#list_col").rcmsResizableCells({cell1:"#rcms_ui_page_list",cell2:"#info_detail",handle:"#handle_row",cell1MinHeight:400,direction:"vertical"});
+
+});
+
+
+/**
+* ページリストの検索用プラグイン
+*@todo もう少しコードの抽象化が必要
+*/
+(function($){
+
+    jQuery.fn.rcmsPageSpotlight = function(options){
+
+        // 引数を用意
+        var options=jQuery.extend({
+            id          : "",
+            url         : "",
+            displayName : ""
+        },options);
+        
+        // 対象オブジェクト
+        var target  = this;
+        var textbox = jQuery(".rcms_ui_page_list_search_text",target);
+        var list    = jQuery(".content li",target);
+        var handle  = jQuery(".handle",target);
+        var col1    = jQuery(".col_1",target);
+        var col2    = jQuery(".col_2",target);
+
+        // 初期化
+        var init = function (){
+            textbox.bind("keyup", search);
+            textbox.bind("blur", search);
+            list.bind("mouseover",showDetail);
+            handle.draggable({axis:"x",drag:resizeTableCol,stop:onStopResizeTableCol});
+
+            list.click(function(){
+                console.log("hi!");
+                var id          = $(this).data("page-id");
+                var url         = "/management/page/page_edit/page_page_id="+id+"&iframe_mode=1";
+                var displayName = $(this).data("page-nm");
+                console.log("id:"+id);
+                console.log("url:"+url);
+                console.log("displayName:"+displayName);
+                $("#edit_col").rcmsIframe({"id":id,"url":url,"displayName":displayName});
+            });
+        };
+        
+        // テーブルのカラム幅を変更
+        var resizeTableCol = function(){
+            console.log("hoge");
+            var left = handle.position().left;
+            col2.css("left",left+5);
+        };
+        var onStopResizeTableCol = function(){
+            var left = handle.position().left;
+            col2.css("left",left+5);
+            col1.width(left-5);
+        };
+
+        
+        // 詳細の表示
+        var showDetail = function(){
+            var pageNm      = jQuery(this).attr("data-page-nm");
+            var pageUrl     = jQuery(this).attr("data-page-url");
+            var template    = jQuery(this).attr("data-template");
+            var sitemapFlg  = jQuery(this).attr("data-sitemap-flg");
+            var menuFlg     = jQuery(this).attr("data-menu-flg");
+            var openFlg     = jQuery(this).attr("data-open-flg");
+            var mobileFlg   = jQuery(this).attr("data-mobile-flg");
+            var sslFlg      = jQuery(this).attr("data-ssl-flg");
+            var pageRequire = jQuery(this).attr("data-page-require");
+            
+            jQuery("#info_page_nm").text(pageNm);
+            jQuery("#info_page_url").text(pageUrl);
+            jQuery("#info_template").text(template);
+            jQuery("#info_sitemap_flg").text(sitemapFlg);
+            jQuery("#info_menu_flg").text(menuFlg);
+            jQuery("#info_open_flg").text(openFlg);
+            jQuery("#info_mobile_flg").text(mobileFlg);
+            jQuery("#info_ssl_flg").text(sslFlg);
+            jQuery("#info_page_require").text(pageRequire);
+        };
+        
+        // 検索
+        var search = function(){
+            
+            var needle = textbox.val();
+            console.log(needle);
+            
+            if(needle){
+                list.hide();
+                var re = new RegExp(needle,"i");
+
+                list.each(function(){
+                    
+                    var pageSysnm = jQuery(this).attr("data-page-sysnm"); // 現状.data()より若干高速 今後のバージョンアップでは逆転の可能性あり
+                    var pageNm    = jQuery(this).attr("data-page-nm");
+                    
+                    if( pageSysnm.match(re) || pageNm.match(re)){
+                        var parentId = jQuery(this).show().attr("data-parent-page-id");
+                        while(parentId){
+                            parentId = jQuery(".content li[data-page-id='"+parentId+"']",target.parent()).show().attr("data-parent-page-id");
+                        }
+                    }
+                });
+            }else{
+                list.show();
+            }
+        };
+        
+        // メインシーケンス
+        return this.each(function(){
+            init();
+        });
+    };
+    
+})(jQuery);
+
+</script>
+
+
+
+<!-- サンドボックス -->
+<style type="text/css">
+
+.rcms_ui_loading{
+    background-color:#fff !important;
+    background-image: url("{/literal}{$smarty.const.ROOT_URL}{literal}/images/modules/social/loading_w.gif") !important;
+    background-position: center !important;
+    background-repeat:no-repeat !important;
+}
+
+#rcms_ui_page_list{
+    overflow: hidden;
+}
+
+#main_container{
+    position: absolute;
+    margin: 55px 10px 10px 60px;
+    padding:0;
+}
+
+#edit_col{
+    display: box;
+    -webkit-display: box;
+    -moz-display: box;
+}
+
+#edit_col iframe{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    width:100%;
+    height:100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: 0;
+}
+
+
+</style>
+{/literal}
+
+
+<h3>{'/modules/page'|translate}{*ページ構成*}</h3>
+	
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div id="main_container">
+    <div id="handle_col"></div>
+    <div id="list_col">
+        <div class="rcms_ui_page_list" id="rcms_ui_page_list">
+            <input class="rcms_ui_page_list_search_text" id="search_text" type="text" placeholder="絞り込み" />
+            <div class="header">
+                <div class="col_1">ページ名</div>
+                <div class="handle"></div>
+                <div class="col_2">URL</div>
+            </div>
+            <div class="content">
+            <ul>
+                <li
+                data-page-id           = "{$page_top.page_id}"
+                data-page-nm           = "{'/modules/page/label/top_page'|translate}"
+                data-page-sysnm        = "{$page_top.page_sysnm}"
+                data-page-url          = "/"
+                data-parent-page-id    = "{$page_top.parent_page_id}"
+                data-template          = "{$page_top.template}"
+                data-sitemap-flg       = "{$page_top.sitemap_flg}"
+                data-menu-flg          = "{$page_top.menu_flg}"
+                data-menu-head-sub_flg = "{$page_top.menu_head_sub_flg}"
+                data-menu-footer-flg   = "{$page_top.menu_footer_flg}"
+                data-open-flg          = "{$page_top.open_flg}"
+                data-mobile-flg        = "{$page_top.mobile_flg}"
+                data-ssl-flg           = "{$page_top.ssl_flg}"
+                data-page-require      = "{$page_top.page_require}"
+                data-page-weight       = "{$page_top.page_weight}"
+                data-level             = "{$page_top.level}"
+                data-page-require      = "{$page_top.page_require}"
+                >
+                    <div class="nest_level_1 col_1">
+                        <span class="icon"></span>
+                        {'/modules/page/label/top_page'|translate}
+                    </div>
+                    <div class="col_2">
+                        <span>
+                            <a href="{$smarty.const.ROOT_URL}/" target="_blank">/</a>
+                        </span>
+                    </div>
+                </li>
+                
+                {foreach item="page_data" from=$page_list}
+                    {rcms_include file="page/admin/page_list_child.html" page_data=$page_data nest=0}
+                    {if $page_data.child1}
+                        {foreach item="page_data1" from=$page_data.child}
+                            {rcms_include file="page/admin/page_list_child.html" page_data=$page_data1 nest=1}
+                            {if $page_data1.child2}
+                                {foreach item="page_data2" from=$page_data1.child}
+                                    {rcms_include file="page/admin/page_list_child.html" page_data=$page_data2 nest=2}
+                                    {if $page_data2.child3}
+                                        {foreach item="page_data3" from=$page_data2.child}
+                                            {rcms_include file="page/admin/page_list_child.html" page_data=$page_data3 nest=3}
+                                            {if $page_data3.child4}
+                                                {foreach item="page_data4" from=$page_data3.child}
+                                                    {rcms_include file="page/admin/page_list_child.html" page_data=$page_data4 nest=4}
+                                                    {if $page_data4.child5}
+                                                        {foreach item="page_data5" from=$page_data4.child}
+                                                            {rcms_include file="page/admin/page_list_child.html" page_data=$page_data5 nest=5}
+                                                        {/foreach}
+                                                    {/if}
+                                                {/foreach}
+                                            {/if}
+                                        {/foreach}
+                                    {/if}
+                                {/foreach}
+                            {/if}
+                        {/foreach}
+                    {/if}
+                {/foreach}
+            </ul>
+            </div>
+        </div><!- .rcms_ui_page_list ここまで ->
+        <div id="handle_row"></div>
+        <div id="info_detail">
+            <table>
+                <tr><th>ページ名</th>     <td id="info_page_nm"></td></tr>
+                <tr><th>URL</th>        <td id="info_page_url"></td></tr>
+                <tr><th>構造</th>        <td id="info_template"></td></tr>
+                <tr><th>サイトマップ</th>  <td id="info_sitemap_flg"></td></tr>
+                <tr><th>メニュー</th>     <td id="info_menu_flg"></td></tr>
+                <tr><th>公開状況</th>     <td id="info_open_flg"></td></tr>
+                <tr><th>携帯</th>        <td id="info_mobile_flg"></td></tr>
+                <tr><th>SSL</th>        <td id="info_ssl_flg"></td></tr>
+                <tr><th>閲覧制限</th>     <td id="info_page_require"></td></tr>
+            </table>
+        </div>
+    </div><!- #list_col ここまで ->
+    <div id="edit_col">
+        <iframe />
+    </div>
+</div>
+
+{* 更新する
+{rcms_auth target="update:/page/item/"}
+<div class="buttonbox">
+	<ul id="buttonbox_ul">
+		<li id="edit_action_update_li">
+				<button type="submit">{'/label/update_btn'|translate}</button>
+		</li>
+	</ul>
+</div>
+
+{/rcms_auth}
+*}
+	</form>

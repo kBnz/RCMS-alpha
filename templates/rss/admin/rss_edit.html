@@ -1,0 +1,72 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/rss/rss_edit/">{$module_nm}</a>
+{$module_nm}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/rss/rss_edit/" class="active">RSS一覧</a></li>
+  <li><a href="/management/rss/rss_category_list/">カテゴリ設定</a></li>
+</ul>
+
+<div class="list_main">
+  <form action="/management/rss/rss_edit/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <p class="page_links">{$page_links}</p>
+※表示順は数字の大きい順です。
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.rss.delete}
+          <th>削除</th>
+        {/if}
+        <th>サイト名</th>
+        <th>サイトURL</th>
+        <th>RSSカテゴリ</th>
+        <th>公開・非公開</th>
+        <th>表示順</th>
+      </tr>
+{foreach name="rssloop" item="item" from=$rss_list}
+    {assign var="i" value=$smarty.foreach.rssloop.index}
+      <tr>
+{if $auth.rss.delete}
+        <td>
+            {if $item.rss_id != ""}
+             <input type="checkbox" name="dflg[{$i}]" value="1">
+            {else}&nbsp;
+            {/if}
+        </td>
+{/if}
+        <td>
+          <input size="3" name="rss_id[{$i}]" type="hidden" value="{$item.rss_id}" />
+          <input size="20" name="rss_name[{$i}]" type="text" value="{$item.rss_name|escape}" />
+        </td>
+        <td><input size="30" name="rss_url[{$i}]" type="text" value="{$item.rss_url|escape}" /></td>
+  <td><select name="contents_type[{$i}]">{html_options options=$arrContents_type selected=$item.contents_type}</select></td>
+        <td><select name="open_flg[{$i}]">{html_options options=$arrOpFlg selected=$item.open_flg}</select></td>
+        <td><input size="3" name="grade[{$i}]" type="text" value="{$item.grade}" /></td>
+      </tr>
+{/foreach}
+
+    </table>
+
+{if $auth.rss.update || $auth.rss.insert }
+    {buttonbox}
+      <button type="submit">更新</button>
+    {/buttonbox}
+{/if}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

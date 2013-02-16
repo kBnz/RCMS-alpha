@@ -1,0 +1,22 @@
+{if $event_list|@count > 0}
+{module name="restaurant_artbeat"}
+<h2 class="module_title"><span>周辺のアートイベント</span></h2>
+
+<div class="module_contents">
+
+{foreach from=$event_list item=event}
+	<div class="artbeat_event">
+		{if $event.src}<p class="image"><img alt="{$event.name}" src="{$event.src}" /></p>{/if}
+		<h3><a href="{$event.href}" target="_blank">{$event.name}</a></h3>
+		<dl>
+			<dt>［開催期間］</dt><dd>{$event.date_start}-{$event.date_end}</dd>
+			<dt>［場所］</dt><dd><a href="{$event.place_href}" target="_blank">{$event.place_nm}</a></dd>
+		</dl>
+		<p>{$event.description}</p>
+	</div>
+{/foreach}
+
+
+</div>
+{/module}
+{/if}

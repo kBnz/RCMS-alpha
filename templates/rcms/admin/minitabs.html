@@ -1,0 +1,16 @@
+<ul class="minitabs">
+  <li><a href="/management/rcms/rcms_list/"{if $ct eq 'rcms_list'} class="active"{/if}>サイト一覧</a></li>
+  <li><a href="/management/rcms/rcms_info_list/"{if $ct eq 'rcms_info_list'} class="active"{/if}>お知らせ一覧</a></li>
+  <li><a href="/management/rcms/rcms_design_list/"{if $ct eq 'rcms_design_list'} class="active"{/if}>公式デザイン</a></li>
+  <li><a href="/management/rcms/rcms_package_list/"{if $ct eq 'rcms_package_list'} class="active"{/if}>公式パッケージ</a></li>
+{if $smarty.const.OEM_ID eq 1 || $smarty.const.OEM_ID eq 10001 || $smarty.const.RCMS_DEV_MODE}
+  <li><a href="/management/rcms/rcms_supportforum_list/"{if $ct eq 'rcms_supportforum_list'} class="active"{/if}>サポート</a></li>
+{/if}
+  <li><a href="/management/rcms/rcms_oem_edit/"{if $ct eq 'rcms_oem_edit'} class="active"{/if}>基本設定</a></li>
+</ul>
+<ul class="minitabs">
+  <li><a href="/management/rcms/rcms_site_widget_list/"{if $ct eq 'rcms_site_widget_list' || $ct eq 'rcms_site_widget_edit'} class="active"{/if}>ウィジェット</a></li>
+{if $smarty.const.OEM_ID eq 1 || $smarty.const.OEM_ID eq 10001 || $smarty.const.RCMS_DEV_MODE}
+  <li><a href="/management/rcms/rcms_aws_list/"{if $ct eq 'rcms_aws_list'} class="active"{/if}>AWS</a></li>
+{/if}
+</ul>

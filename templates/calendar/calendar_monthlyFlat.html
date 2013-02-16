@@ -1,0 +1,46 @@
+{module name="calendar_monthlyFlat"}
+<h2 class="module_title"><span>{'/modules/calendar/label/schedule_of_yyyymm'|translate:$this_year:$this_month}{* YYYY年MM月の予定 *}</span></h2>
+<div class="module_contents">
+
+{* 関連情報 *}
+{if $cal_mdata}
+<table class="list">
+  {foreach item=rItem from=$cal_mdata}
+    {if $rItem.event_id && ($rItem.toflg == false || $rItem.fromflg == false)}
+    {* イベントで複数日にまたがる場合 *}
+        {if $rItem.fromflg}
+          <tr>
+            <td class="monthFlat">
+                    <span class="day">{$rItem.from_m}/{$rItem.from_d} - {$rItem.to_m}/{$rItem.to_d}</span>
+            </td>
+            <td class="monthFlat">
+            <a href="/{$rItem.link}">{$rItem.table_titleval}</a>
+            </td>
+          </tr>
+        {/if}
+    {else}
+      <tr>
+        <td class="monthFlat">
+    {* 日付の色分け *}
+    {if ($rItem.ymd_holiday_flg == 1)}
+                <span class="holiday">{$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})</span>
+    {elseif ($rItem.ymd_week == 'Sun')}
+                <span class="sunday">{$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})</span>
+    {elseif ($rItem.ymd_week == 'Sat')}
+                <span class="saturday">{$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})</span>
+    {else}
+                <span class="day">{$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})</span>
+    {/if}
+        </td>
+        <td class="monthFlat">
+        <a href="/{$rItem.link}">{$rItem.table_titleval}</a>
+        </td>
+      </tr>
+    {/if}
+  {/foreach}
+    </table>
+{else}
+{'/modules/calendar/msg/no_schedule_in_yyyymm'|translate:$this_year:$this_month}{* YYYY年MM月の予定は登録されていません *}
+{/if}
+</div>
+{/module}

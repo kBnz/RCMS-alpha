@@ -1,0 +1,50 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2 class="login_history">{'/modules/login_history/label/login_history_summary'|translate}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/login_history/login_history_stats/">{'/modules/login_history/label/login_history'|translate}</a>
+{'/modules/login_history/label/summary'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="login_history/admin/minitabs.html" page_type=$ct auth=$auth header=$data}
+
+<div class="list_main">
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th>{'/modules/login_history/label/name'|translate}</th>
+      <th>{'/label/member_group'|translate}</th>
+{if $member_data_ok}
+      <th>Email</th>
+      <th>{'/label/login_id'|translate}</th>
+{/if}
+      <th>{'/modules/login_history/label/last_login_time'|translate}</th>
+      <th>{'/modules/login_history/label/login_times'|translate}</th>
+      <th>{'/modules/login_history/label/history'|translate}</th>
+    </tr>
+    {foreach item=login_history_data from=$login_history_list}
+    <tr>
+      <td><a href="/management/member/member_edit/member_id={$login_history_data.member_id}">{$login_history_data.name}</a></td>
+      <td>{$login_history_data.group_nm}</td>
+{if $member_data_ok}
+      <td>{$login_history_data.email}</td>
+      <td>{$login_history_data.login_id}</td>
+{/if}
+      <td>{$login_history_data.last_login_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      <td>{$login_history_data.login_cnt}</td>
+      <td><a href="/management/login_history/login_history_list/s_member_id={$login_history_data.member_id}&s_member_name={$login_history_data.name|escape:'url'}">{'/modules/login_history/label/history'|translate}</a></td>
+    </tr>
+    {/foreach }
+  </table>
+  {pager info=$pageInfo}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

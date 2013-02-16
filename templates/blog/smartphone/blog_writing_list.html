@@ -1,0 +1,20 @@
+{if $blog_list}
+
+<h2>[emoji:070]{'/modules/blog/label/blog_entry_written_by_member'|translate}{* このメンバーが書いているブログ記事 *}</h2>
+
+<ul>
+{foreach from=$blog_list item=blog key=blog_id}
+  <li><a href="/blog_my_top/blog_id={$blog.blog_id}">{$blog.title|escape}</a>
+    <ul>
+      {foreach from=$blog.items item=item}
+        <li><a href="/blog_detail/id={$item.blog_item_id}">{$item.subject|escape}</a></li>
+      {/foreach}
+    </ul>
+  </li>
+{/foreach}
+</ul>
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a>
+</div>
+<hr/>
+{/if}

@@ -1,0 +1,14 @@
+[SUBJECT:会員有効期限がもうすぐ切れます。]
+{$data.disp_name}様
+
+※このメールは{$smarty.const.SITE_TITLE}のシステムから送信されたメールです。
+※このメールには返信しないで下さい。
+
+期限が{$data.expiration_ymdhi}までとなっております。
+
+こちらから決済の手続きをお願いいたします。
+{$smarty.const.ROOT_URL}/
+
+今後ともどうぞ{$smarty.const.SITE_TITLE}をご利用下さい。
+
+よろしくお願い申し上げます。

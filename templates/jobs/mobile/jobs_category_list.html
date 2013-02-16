@@ -1,0 +1,8 @@
+<h2>{'/label/categories_list'|translate}{* ƒJƒeƒSƒŠˆê—— *}</h2>
+
+<ul>
+{foreach from=$categories key=id item=category}
+<li><a href="/jobs_list/jobs_category_id={$id}">{$category|escape}({$count_list[$id]})</a></li>
+{/foreach}
+</ul>
+<hr/>

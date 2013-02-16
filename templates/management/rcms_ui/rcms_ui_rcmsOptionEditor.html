@@ -1,0 +1,271 @@
+{literal}
+<script id="rcms_ui_option_editor_tmpl" type="text/x-jquery-tmpl">
+<div class="rcms_ui_option_editor_container">
+    <table class="option_editor_table" border="1">
+        <thead>
+            <tr>
+                <th>key</th>
+                <th>value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{each data}}
+            <tr>
+                <td class="key_span">${key}</td>
+                <td class="value_span">${value}</td>
+            </tr>
+            {{/each}}
+            <tr class="edit_span">
+                <td class="key_span edit_area"></td>
+                <td class="value_span edit_area"></td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="button" class="plusButton" value="+">
+    <input type="button" class="minusButton" value="−">
+</div>
+</script>
+<script type="text/javascript">
+(function($) {
+    /**
+    * input要素のvalueからクエリストリングを受け取ってテーブル表示するプラグイン
+    * 対象要素のvalueの直接の変更も反映する
+    * テーブル下段の編集エリアの大きさは指定していないため、使用するときはCSSで整形しないと小さくてクリック出来ない
+    *
+    * @対象要素  <input>タグ
+    * @使用例
+    *    <input type="text" id="hoge" value="hoge=12&bar[]=A&bar[]=B&bar[]=C">
+    *
+    *   selectタグがリストに置き換わる
+    *
+    *       $("#hoge").rcmsOptionEditor();
+    *
+    */
+    $.fn.rcmsOptionEditor = function() {
+        // グローバル変数
+        var targetElm;                      // 対象要素の$(this)
+        var encodeString;                   //クエリストリング
+        var decodeArray;                    //クエリストリングを配列に変換
+        var tableSize;                      // テーブルの行の大きさ
+
+        //テンプレートへ文字列を生成
+        function init() {
+            encodeString = targetElm.val();                                         // 対象要素のvalue(クエリストリング)をセット
+            decodeQueryStringToArray();                                             // クエリストリングを配列へ変換
+            var html = $("#rcms_ui_option_editor_tmpl").tmpl(tmplArrayGen());       //配列をテンプレート用に変換して"html"に格納
+            targetElm.after(html);                                                  //対象要素の後ろにテンプレートを流し込む
+            tableSize = $(".option_editor_table tbody").children().length;          //テーブルの大きさを登録
+            // inuptタグ内でのエンターキーで編集完了
+            $(document).on("keypress", "input:text", function (e) {
+                var code = null;
+                code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 13) {
+                    $(this).focusout();
+                    return false;
+                }
+            });
+            // ダブルクリックで編集
+            $(".option_editor_table tbody").on("dblclick.rcmsOptionEditor", "td:not(.edit_area, .hasfocus)", editElement);
+            // クリックで選択
+            $(".option_editor_table tbody").on("click.rcmsOptionEditor", "tr:not(.edit_span)", selectColumn);
+            // 空白行をダブルクリックで行追加
+            $(".option_editor_table tbody").on("dblclick.rcmsOptionEditor", "td.edit_area", function() {
+                editTextBox($(this));
+            });
+            // プラスボタンでテキストボックス出現
+            $(".plusButton").on("click.rcmsOptionEditor", function() {
+                editTextBox($(".option_editor_table td.edit_area:eq(0)"));
+            });
+            // マイナスボタンで項目削除
+            $(".minusButton").on("click.rcmsOptionEditor", editMinus);
+            // 対象要素の"value"の値が変わったらテーブルに反映
+            $(document).on("change.rcmsOptionEditor", this, refreshTable);
+        }
+
+        // テンプレート用の配列を生成 *keyとvalueを付けて連想配列にする
+        function tmplArrayGen() {
+            // 配列全体にdataラベルを付け、データにkey、valueラベルを付ける
+            var tmplArray = {data: []};
+                for (var i = 0; i < decodeArray.length; i++) {
+                    tmplArray.data.push({key: decodeArray[i][0].replace("[]", ""), value: decodeArray[i][1]});
+                }
+            return tmplArray;
+        }
+
+        // クエリストリングを配列にする
+        function decodeQueryStringToArray() {
+            var kvArray = [];
+            var setArray = encodeString.split("&");     // "&"で区切って配列にする
+            $.each(setArray, function(i) {
+                kvArray.push(setArray[i].split("="));   // "="で区切って二次元配列にする
+            });
+            // keyが欠落している場合はvalueもセットで削除
+            for (var i = 0; i < kvArray.length; i++) {
+                if (kvArray[i][0] == "") {
+                    kvArray.splice(i, 1);
+                }
+                // 既に"[]"が付いているものを除去して全てのキー要素に"[]"を追加
+                kvArray[i][0] = kvArray[i][0].replace("[]", "") + "[]";
+            }
+            decodeArray = kvArray;                      // decodeArrayを更新
+            encodeArrayToQueryString();                 // encodeStringを更新
+        }
+
+        // 配列をクエリストリングにエンコード *配列の一部を変更したいときはobjに添字と値を渡す
+        function encodeArrayToQueryString() {
+            var str = "";
+            $.each(decodeArray, function(i) {
+                // 既に"[]"が付いているものを除去して全てのキー要素に"[]"を追加
+                decodeArray[i][0] = decodeArray[i][0].replace("[]", "") + "[]";
+                // valueをエンコードしてkeyと結合
+                str += decodeArray[i][0] + "=" + encodeURIComponent(decodeArray[i][1]) + "&";
+            });
+            encodeString = str.slice(0, str.length - 1);        // 最後に付いている余計な"&"を削除
+            targetElm.val(encodeString);                        // 対象要素に生成したクエリストリングを渡す
+        }
+
+        // クリックして選択 *空白行以外
+        function selectColumn() {
+            $(".selected").removeClass("selected");
+            $(this).addClass("selected");
+        }
+
+        // 選択した項目をマイナスボタンで削除
+        function editMinus() {
+            var indexNum = $(".option_editor_table tr").index($(".selected"));
+            if (indexNum != -1 && indexNum <= tableSize - 1) {
+                $(".selected").remove();
+                decodeArray.splice(indexNum - 1, 1);
+                encodeArrayToQueryString();
+                tableSize -= 1;             // 行を削除したので-1
+            }
+        }
+
+        // ダブルクリックして編集
+        function editElement() {
+            var $this = $(this);
+            var val = $this.text();
+            // ダブルクリックした要素に"hasfocus"クラスを付ける
+            $(".hasfocus").removeClass("hasfocus");
+            $this.addClass("hasfocus");
+            // td内の値を渡して入力エリア出現
+            $this.html('<input type="text" id="dblclick_edit_area" value="' + val + '">');
+            $("#dblclick_edit_area").focus();
+            var tdIndex = $(".option_editor_table td").index(this);
+            // フォーカスが外れた時の処理
+            $("#dblclick_edit_area").on("focusout", function() {
+                var editedValue = $(".hasfocus input").val();
+                // keyが空白または許可されていない文字列だった場合は元の値に戻す
+                if ($this.is($(".option_editor_table td.key_span")) && (editedValue == "" || !stringFilter(editedValue))) {
+                    $(".hasfocus").html(val);
+                } else{
+                    // 編集によって変化した値を登録
+                    $(".hasfocus").html(editedValue.replace("[]", ""));                                         // "[]"を除去して表示
+                    var tableSpanSize = $(".option_editor_table tr:eq(0)").children().length;                   // テーブルの列数を取得
+                    decodeArray[Math.floor(tdIndex / tableSpanSize)][tdIndex % tableSpanSize] = editedValue;    // tdの場所に対応する配列番号に値を挿入
+                    encodeArrayToQueryString();
+                    targetElm.val(encodeString);
+                }
+                $(".hasfocus").removeClass("hasfocus");
+            });
+        }
+
+        //テキストボックスを出現させて編集を反映
+        function editTextBox(target) {
+            $(".selected").removeClass("selected");
+            var targetText = target.text();
+            var key   = $(".option_editor_table td.edit_area:eq(0)");
+            var value = $(".option_editor_table td.edit_area:eq(1)");
+            // keyの編集エリアをダブルクリックしたときの処理
+            if (key.is(target)) {
+                target.html('<input type="text" class="key_text" placeholder="input key" value="' + targetText + '">');
+                var inputKey = $(".option_editor_table td.edit_area .key_text");
+                inputKey.focus();
+                inputKey.on("focusout", function() {
+                    // keyが空でvalueに値がある場合はvalueも空にする
+                    if (inputKey.val() == "" && value.text() != "") {
+                        target.html(inputKey.val());
+                        value.text("");
+                    // keyに適切な値があってvalueが空の場合はフォーカスをvalueに移す
+                    } else if (inputKey.val() != "" && value.text() == "" && stringFilter(inputKey.val())) {
+                        editTextBox(value);
+                        target.html(inputKey.val());
+                    // keyに妥当な入力があり、valueに値がある場合はaddColumnに値を渡して編集を完了させる
+                    } else if (inputKey.val() != "" && value.text() != "" && stringFilter(inputKey.val())){
+                        addColumn(inputKey.val(), value.text());
+                    // keyとvalue共に空の場合はそのまま編集終了
+                    } else {
+                        target.html("");
+                    }
+                });
+            } else {
+            // valueの編集エリアをダブルクリックしたときの処理
+                target.html('<input type="text" class="value_text" placeholder="input value" value="' + targetText + '">');
+                var inputValue = $(".option_editor_table td.edit_area .value_text");
+                inputValue.focus();
+                inputValue.on("focusout", function() {
+                    // keyが空でvalueに値がある場合はフォーカスをkeyに移してvalueの値を反映させる
+                    if (key.text() == "" && inputValue.val() != "") {
+                        editTextBox(key);
+                        target.html(inputValue.val());
+                    // keyに値がある場合はaddColumnに値を渡して編集を完了させる
+                    } else if (key.text() != "" && stringFilter(key.text())) {
+                        addColumn(key.text(), inputValue.val());
+                    // keyとvalue共に空の場合はそのまま編集終了
+                    } else {
+                        target.html("");
+                    }
+                });
+            }
+        }
+
+        // 引数で渡されたキーバリューを項目の末尾に追加
+        function addColumn(keyText, valueText) {
+            encodeValueText = encodeURIComponent(valueText);
+            //encodeStringが空の場合はそのまま追加、それ以外は頭に"&"を付ける
+            if (encodeString == "") {
+                encodeString += keyText + "=" + encodeValueText;
+            } else {
+                encodeString += "&" + keyText + "=" + encodeValueText;
+            }
+            targetElm.val(encodeString);        // 対象要素にクエリストリングを渡す
+            decodeQueryStringToArray();         // クエリストリングを配列に変換
+            // 配列の"[]"を取り除いてテーブルに値を追加し、編集エリアの値を空にする
+            $(".option_editor_table tr")
+                .eq(tableSize)
+                .before('<tr><td class="key_span">' + keyText.replace("[]", "") + '</td><td class="value_span">' + valueText + "</td></tr>")
+                .end()
+                .eq(tableSize)
+                .children()
+                .text("");
+            tableSize += 1;         // 行を追加したので+1
+        }
+
+        // アルファベット、数字、下線なら"true"、それ以外は"false"
+        function stringFilter(str) {
+            if (str.match(/\W/) == null || str.match(/\w+\[\]$/) != null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // 対象要素の"value"が変更されたらテーブルをリフレッシュ
+        function refreshTable() {
+            var targetValue = targetElm.val();
+            if (encodeString != targetValue) {              // 対象要素の"value"に変化があった時
+                // テンプレート全体を削除して初期化
+                $(".rcms_ui_option_editor_container").remove();
+                init();
+            }
+        }
+        // メインシーケンス
+        return this.each(function() {
+            targetElm = $(this);
+            // 初期化してテンプレート生成
+            init();
+        });
+    };
+})(jQuery);
+</script>
+{/literal}

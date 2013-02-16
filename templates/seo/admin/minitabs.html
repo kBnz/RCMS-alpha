@@ -1,0 +1,8 @@
+<ul class="minitabs">
+  <li><a href="/management/seo/pageInfo/"{if $page_type eq 'pageInfo'} class="active"{/if}>{'/modules/seo/label/page_info'|translate}{*ページ情報*}</a></li>
+  <li><a href="/management/seo/searchWord/"{if $page_type eq 'searchWord'} class="active"{/if}>{'/modules/seo/label/search_word_settings'|translate}{*検索語設定*}</a></li>
+  <li><a href="/management/seo/refererAnalyze/"{if $page_type eq 'refererAnalyze'} class="active"{/if}>{'/modules/seo/label/referer_analysis'|translate}{*リファラー解析*}</a></li>
+  <li><a href="/management/seo/domain_rank/"{if $page_type eq 'domain_rank'} class="active"{/if}>{'/modules/seo/label/referer_rank'|translate}{*リファラーランク*}</a></li>
+  <li><a href="/management/seo/searchword_rank/"{if $page_type eq 'searchword_rank'} class="active"{/if}>{'/modules/seo/label/search_word_rank'|translate}{*検索語ランク*}</a></li>
+{* 権限はsite権限 *}{if $auth.site.select}  <li><a href="/management/seo/setup/"{if $page_type eq 'setup'} class="active"{/if}}>{'/modules/seo/label/basic_settings'|translate}{*SEO基本設定*}</a></li>{/if}
+</ul>

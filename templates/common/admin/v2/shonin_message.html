@@ -1,0 +1,22 @@
+{if $docmeta.is_waiting}
+<div class="waiting_auth">
+  <h1>{'/msg/this_is_approval_waiting'|translate}{* これは申請中のデータです。 *}</h1>
+
+  {if !$docmeta.own}
+  <p>
+    {'/msg/approve_refuse_help'|translate|strip_tags}
+    {* 承認するとこのデータが最新版になります。拒否するとこのデータは破棄されます。再修正を依頼する場合は何もしないでください。*}
+  </p>
+  {/if}
+
+  {if !$docmeta.is_new}
+    {if $smarty.request.iframe_mode == 1}
+      <p class="link"><a href="{$link}&_doc_lang={$docmeta.lang}&iframe_mode=1">{'/msg/display_latest_data'|translate}{* 最新版のデータを表示する *}</a><p>
+    {elseif $smarty.request.popup_mode == 1}
+      <p class="link"><a href="{$link}&_doc_lang={$docmeta.lang}&popup_mode=1">{'/msg/display_latest_data'|translate}{* 最新版のデータを表示する *}</a><p>
+    {else}
+      <p class="link"><a href="{$link}&_doc_lang={$docmeta.lang}">{'/msg/display_latest_data'|translate}{* 最新版のデータを表示する *}</a><p>
+    {/if}
+  {/if}
+</div>
+{/if}

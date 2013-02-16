@@ -1,0 +1,31 @@
+<h2>[emoji:176]{$this_year}年{$this_month}月の予定</h2>
+
+
+{* 関連情報 *}
+{if $cal_mdata}
+  {foreach item=rItem from=$cal_mdata}
+    {if $rItem.event_id && ($rItem.toflg == false || $rItem.fromflg == false)}
+    {* イベントで複数日にまたがる場合 *}
+        {if $rItem.fromflg}
+            {$rItem.from_m}/{$rItem.from_d} - {$rItem.to_m}/{$rItem.to_d}<br/>
+            <a href="/{$rItem.link}">{$rItem.table_titleval}</a>
+        {/if}
+    {else}
+    {* 日付の色分け *}
+    {if ($rItem.ymd_holiday_flg == 1)}
+                {$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})<br/>
+    {elseif ($rItem.ymd_week == 'Sun')}
+                {$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})<br/>
+    {elseif ($rItem.ymd_week == 'Sat')}
+                {$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})<br/>
+    {else}
+                {$rItem.ymd_m}/{$rItem.ymd_d}({$rItem.ymd_jweek})<br/>
+    {/if}
+        <a href="/{$rItem.link}">{$rItem.table_titleval}</a>
+    {/if}
+    <br/>
+  {/foreach}
+{else}
+この月の予定は登録されていません。
+{/if}
+<hr/>

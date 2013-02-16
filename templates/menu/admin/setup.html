@@ -1,0 +1,28 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{*	新しいモジュールのURLは menu/config.php に設定してね *}
+
+<h3 id="menu_title">{'/label/menus/setup'|translate}</h3>
+<div class="main_contents">
+	<ul id="mainnav">
+	{foreach from=$INCLUDE_MODULE_LIST item=module}
+			{if $conf_tab[$module] eq 'setup'}
+					{if $auth[$module].select}
+							<li class="mainnav_{$module}"><a href="{$management_menus[$module].link}"><span>{$module|translate_modules}</span></a></li>
+				 {/if}
+			{/if}
+	{/foreach}
+	</ul>
+</div><!-- main_contents -->
+<div class="clearFloat"><br></div>
+<div id="add">
+	<dl>
+			<dt>{'/label/page_settings'|translate}{*ページ設定*}</dt><dd>{'/msg/explanation_about_page_setting'|translate}{*ページの作成や各ページに表示するモジュールの配置、閲覧制限の設定などを行います*}</dd>
+			<dt>{'/label/site_management'|translate}{*サイト管理*}</dt><dd>{'/msg/about_site_management'|translate}{*サイト名や写真幅の設定など全体的な設定を行います。*}</dd>
+	</dl>
+</div><!-- add -->
+
+
+
+{rcms_include file="management/footer.html"}

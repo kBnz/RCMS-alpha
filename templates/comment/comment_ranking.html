@@ -1,0 +1,12 @@
+{if $list|@count > 0}
+{module name="comment_rank module"}
+<h2 class="module_title"><span>{$module_nm} {$order_rule} {'/label/ranking'|translate}</span></h2>
+<div class="module_contents">
+<ul>
+{foreach from=$list item=loopname name=comment_ranking}
+<li class="module-list-item">{$smarty.foreach.comment_ranking.iteration}:<a href="{$loopname.module_link}">{$loopname.module_title|escape}({if $sort_type == 'comment'}{'/label/comment'|translate}{'/label/comment_count'|translate}:{$loopname.cnt}{else}{$loopname.cnt}{'/label/points'|translate}{/if})</a></li>
+{/foreach}
+</ul>
+</div>
+{/module}
+{/if}

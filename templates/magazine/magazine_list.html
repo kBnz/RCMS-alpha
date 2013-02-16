@@ -1,0 +1,23 @@
+{module name="magazine_list"}
+<h2 class="module_title"><span>{'/modules/magazine/label/magazine_list_for_user'|translate}</span></h2>{*メルマガ一覧*}
+<div class="module_contents">
+<p class="page_links">{$page_links}</p>
+{foreach item=data from=$mm_list}
+
+	<h3><a href="/magazine_detail/id={$data.magazine_id}">{$data.magazine_name}</a></h3>
+	<div class="magazine_info">
+		<div class="clearFix">
+			{if $data.photo_url}<p class="photo"><img alt="{$data.madazine_name}" src="{$data.photo_url}" /></p>{/if}
+			<p class="text"><span>{'label/overview'|translate}</span>{$data.magazine_info}</p>{*概要*}
+		</div>
+		<ul class="link">
+			<li class="detail"><a href="/magazine_detail/id={$data.magazine_id}">&gt;&gt;{'/modules/magazine/label/detail_and_apply'|translate}</a></li>{*詳細・参加申請*}
+			{if $data.bn_flg}
+				<li class="bn"><a href="/magazine_bn_list/id={$data.magazine_id}">&gt;&gt;{'/modules/magazine/label/back_number_list'|translate}</a></li>{*バックナンバーリスト*}
+			{/if}
+		</ul>
+	</div>
+{/foreach}
+<p class="page_links">{$page_links}</p>
+</div>
+{/module}

@@ -1,0 +1,265 @@
+{module name="game_detail"}
+<h2 class="module_title">
+{$gameData.game_type} {$gameData.game_type2}
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+試合予定
+{elseif $gameData.game_status eq '2'}
+途中経過
+{elseif $gameData.game_status eq '3'}
+試合結果
+{/if}
+</h2>
+<div class="module_contents">
+<table>
+  <tr>
+    <td valign="top">
+      <table width="100%" class="score_table" border="1">
+        <tr>
+          <td colspan="3" width="50%" align="center" class="team_color">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+          <td colspan="3" width="50%" align="center" class="opp_color"><strong>{$gameData.team_nm}{$gameData.opponent_grade}</strong></td>
+        </tr>
+        <tr>
+          <td width="50" rowspan="{$gameData.score_rowspan}" class="score28">{$gameData.score_detail_arr.Self_Total}</td>
+          <td width="50">{$gameData.score_detail_arr.Self_Half1}</td>
+          <td width="40" colspan="2" align="center">前半</td>
+          <td width="50">{$gameData.score_detail_arr.Opp_Half1}</td>
+          <td width="50" rowspan="{$gameData.score_rowspan}" class="score28">{$gameData.score_detail_arr.Opp_Total}</td>
+        </tr>
+        <tr>
+          <td>{$gameData.score_detail_arr.Self_Half2}</td>
+          <td colspan="2" align="center">後半</td>
+          <td>{$gameData.score_detail_arr.Opp_Half2}</td>
+        </tr>
+{if $gameData.score_detail_arr.Self_Extra1 || $gameData.score_detail_arr.Opp_Extra1 || $gameData.score_detail_arr.Self_Extra2 || $gameData.score_detail_arr.Opp_Extra2}
+        <tr>
+          <td>{$gameData.score_detail_arr.Self_Extra1}</td>
+          <td colspan="2" align="center">延前</td>
+          <td>{$gameData.score_detail_arr.Opp_Extra1}</td>
+        </tr>
+        <tr>
+          <td>{$gameData.score_detail_arr.Self_Extra2}</td>
+          <td colspan="2" align="center">延後</td>
+          <td>{$gameData.score_detail_arr.Opp_Extra2}</td>
+        </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_PK || $gameData.score_detail_arr.Opp_PK}
+        <tr>
+          <td>{$gameData.score_detail_arr.Self_PK}</td>
+          <td colspan="2" align="center">PK</td>
+          <td>{$gameData.score_detail_arr.Opp_PK}</td>
+        </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_SH || $gameData.score_detail_arr.Opp_SH}
+        <tr>
+          <td colspan="2" align="right">{$gameData.score_detail_arr.Self_SH}</td>
+          <td colspan="2" align="center">SH</td>
+          <td colspan="2" align="left">{$gameData.score_detail_arr.Opp_SH}</td>
+        </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_GK || $gameData.score_detail_arr.Opp_GK}
+        <tr>
+          <td colspan="2" align="right">{$gameData.score_detail_arr.Self_GK}</td>
+          <td colspan="2" align="center">GK</td>
+          <td colspan="2" align="left">{$gameData.score_detail_arr.Opp_GK}</td>
+        </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_PK || $gameData.score_detail_arr.Opp_PK}
+        <tr>
+          <td colspan="2" align="right">{$gameData.score_detail_arr.Self_CK}</td>
+          <td colspan="2" align="center">CK</td>
+          <td colspan="2" align="left">{$gameData.score_detail_arr.Opp_CK}</td>
+        </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FK || $gameData.score_detail_arr.Opp_FK}
+        <tr>
+          <td colspan="2" align="right">{$gameData.score_detail_arr.Self_FK}</td>
+          <td colspan="2" align="center">FK</td>
+          <td colspan="2" align="left">{$gameData.score_detail_arr.Opp_FK}</td>
+        </tr>
+{/if}
+      </table>
+      <span class="small_text">SH：シュート数 GK：ゴールキック数 CK：コーナーキック数 FK：フリーキック数</span>
+    </td>
+    <td valign="top">
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">Kick off</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+{if $gameData.referee}
+        <tr>
+          <th class="gameinfo_table">レフリー</th>
+          <td>{$gameData.referee}</td>
+        </tr>
+{/if}
+{if $gameData.assistant_referee1 || $gameData.assistant_referee2}
+        <tr>
+          <th class="gameinfo_table">副審</th>
+          <td>{$gameData.assistant_referee1}<br>{$gameData.assistant_referee2}</td>
+        </tr>
+{/if}
+{if $gameData.referee4th}
+        <tr>
+          <th class="gameinfo_table">第4審判</th>
+          <td>{$gameData.referee4th}</td>
+        </tr>
+{/if}
+      </table>
+    </td>
+  </tr>
+</table>
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+<div id="game_topics" {if $gameTopicsList eq ''}style="display:none"{/if}>
+  <div id="game_member_link">&gt;&gt;<a href="javascript:;" onclick="display('game_topics');display('game_members');return false;">出場選手を見る</a></div>
+  {section name=game_topics loop=$gameTopicsList}
+    <h1 class="topics_subject">{$gameTopicsList[game_topics].subject}</h1>
+    <p class="topics_ymd">{$gameTopicsList[game_topics].ymd_str}</p>
+    <div class="topics_contents">{$gameTopicsList[game_topics].contents}</div>
+  {/section}
+  <div id="game_member_link">&gt;&gt;<a href="javascript:;" onclick="display('game_topics');display('game_members');return false;">出場選手を見る</a></div>
+</div>
+
+<div id="game_members" {if $gameTopicsList ne ''}style="display:none"{/if}>
+{if $gameTopicsList ne ''}
+<div id="game_topics_link">&gt;&gt;<a href="javascript:;" onclick="display('game_topics');display('game_members');return false;">観戦記を見る</a></div>
+{/if}
+
+
+{if count($gameMembers.self)}
+<h2 class="topics_subject">出場選手</h2>
+<br>
+<span class="self_team_nm">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</span>
+<table class="opp_member_table" cellspacing="0">
+  <tr>
+    <th width="70" class="opp_member_table">ポジション</th>
+    <th width="40" class="opp_member_table">背番号</th>
+    <th width="140" class="opp_member_table">名前</th>
+  </tr>
+  {section name=self_member loop=$gameMembers.self}
+    {if $gameMembers.self[self_member].member_order}
+      {if $smarty.section.self_member.iteration == 12}
+      <tr>
+        <td colspan="3" align="center">-　　　　-　　　　-　　　　-　　　　-　　　　-　　　　-　　　　-</td>
+      </tr>
+      {/if}
+    <tr>
+      <td class="center">{$gameMembers.self[self_member].position_nm}</td>
+      <td class="center">{$gameMembers.self[self_member].member_no}</td>
+      <td>
+        {if $gameMembers.self[self_member].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[self_member].member_id}">{$gameMembers.self[self_member].disp_name}</a>
+        {else}
+          {$gameMembers.self[self_member].disp_name}
+        {/if}
+      </td>
+    </tr>
+    {/if}
+  {/section}
+</table>
+  {if $gameMembers.self.change}
+  <span style="font-size: 1em">選手交代</span><br>
+  <table class="opp_member_table" cellspacing="0">
+    <tr>
+      <th></th>
+      <th align="center">OUT</th>
+      <th align="center">IN</th>
+    </tr>
+    {section name=i loop=$gameMembers.self.change}
+    <tr>
+      <td>{$gameMembers.self.change[i].change_time}分</td>
+      <td width="40%">{$gameMembers.self.change[i].change_from}</td>
+      <td width="40%">{$gameMembers.self.change[i].member_name}</td>
+    </tr>
+    {/section}
+  </table>
+  {/if}
+{/if}
+
+
+{if count($gameMembers.opp)}
+<br>
+<span class="opp_team_nm">{$gameData.team_nm}{$gameData.opponent_grade}</span>
+<table class="opp_member_table" cellspacing="0">
+  <tr>
+    <th width="70" class="opp_member_table">ポジション</th>
+    <th width="40" class="opp_member_table">背番号</th>
+    <th width="140" class="opp_member_table">名前</th>
+  </tr>
+  {section name=opp_member loop=$gameMembers.opp}
+    {if $gameMembers.opp[opp_member].member_order}
+      {if $smarty.section.opp_member.iteration == 12}
+      <tr>
+        <td colspan="3" align="center">-　　　　-　　　　-　　　　-　　　　-　　　　-　　　　-　　　　-</td>
+      </tr>
+      {/if}
+    <tr>
+      <td class="center">{$gameMembers.opp[opp_member].position_nm}</td>
+      <td class="center">{$gameMembers.opp[opp_member].member_no}</td>
+      <td>{$gameMembers.opp[opp_member].member_name}</td>
+    </tr>
+    {/if}
+  {/section}
+</table>
+  {if $gameMembers.opp.change}
+  <span style="font-size: 1em">選手交代</span><br>
+  <table class="opp_member_table" cellspacing="0">
+    <tr>
+      <th></th>
+      <th align="center">OUT</th>
+      <th align="center">IN</th>
+    </tr>
+    {section name=i loop=$gameMembers.opp.change}
+    <tr>
+      <td>{$gameMembers.opp.change[i].change_time}分</td>
+      <td width="40%">{$gameMembers.opp.change[i].change_from}</td>
+      <td width="40%">{$gameMembers.opp.change[i].member_name}</td>
+    </tr>
+    {/section}
+  </table>
+  {/if}
+
+{/if}
+
+
+
+{if $gameTopicsList ne ''}
+<div id="game_topics_link">&gt;&gt;<a href="javascript:;" onclick="display('game_topics');display('game_members');return false;">観戦記を見る</a></div>
+{/if}
+</div>
+</div>
+{/module}
+
+<style>
+{literal}
+
+table.score_table {
+  width: 90% ;
+  margin-left: 0 ;
+  border: 1px solid gray;
+  background-color: #ffffff;
+  border-collapse:collapse;
+  text-align:center;
+}
+
+{/literal}
+</style>

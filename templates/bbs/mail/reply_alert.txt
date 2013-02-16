@@ -1,0 +1,17 @@
+{$to_name}さん、掲示板に返信がありました。
+
+【投稿者】
+{$name|strip_tags}
+
+【タイトル】
+{$title|strip_tags}
+
+【内容】
+{$note|strip_tags}
+
+こちらからご確認ください。
+{$smarty.const.ROOT_URL}/bbs_show/bbs_header_id={$bbs_header_id}&seq={$seq}
+
+------------------------------
+{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/

@@ -1,0 +1,113 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f){
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}プランを編集</h2>
+<ul>
+{rcms_auth target="insert:/lpo/lpo/"}
+<li class="add"><a href="/management/lpo/lpo_edit/"><span>{'/modules/lpo/label/add_lpo_btn'|translate}</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/lpo/lpo_list/">{'/modules/lpo'|translate}</a>
+<a href="/management/lpo/lpo_list/">{'/modules/lpo/label/lpo_list'|translate}</a>
+{'/modules/lpo/label/lpo_edit'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/lpo/lpo_edit/{if $lpo_header_id}lpo_header_id={$lpo_header_id}{/if}" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="subflg" value="" />
+
+    <table width="100%" border="0">
+{if $lpo_header_id}
+      <tr>
+        <th style="width:150px">{'/modules/lpo/label/lpo_header_id'|translate}</th>
+        <td>
+          {$lpo_header_id|escape}
+        </td>
+      </tr>
+{/if}
+      <tr>
+        <th style="width:150px">{'/modules/lpo/label/lpo_header_nm'|translate}<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="lpo_header_nm" value="{$formData.lpo_header_nm|escape}" size="80" />
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/lpo/label/base_page_id'|translate}<span class="required">必須</span></th>
+        <td>
+            <select name="base_page_id">
+              {html_options options=$arrPage selected=$formData.base_page_id}
+            </select>
+            <input type="hidden" name="pre_base_page_id" value="{$pre_base_page_id}">
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/lpo/label/lpo_type'|translate}</th>
+        <td>{html_radios name="lpo_type" options=$arrLpo_type selected=$formData.lpo_type}
+        <br>再計算基準PV(自動加重設定で必要):<input type="text" name="add_timing" value="{$formData.add_timing|escape}" size="5" />PV毎に再計算
+        <br><span class="hint">比重：各設定ページに設定されたウェイトに応じた確率で表示されます。</span>
+        <br><span class="hint">キーワード：リファラーにある検索キーワードから設定されたキーワードに応じて表示します。</span>
+        <br><span class="hint">自動比重設定：各ランディングページの合計PVが[再計算基準PV]毎に離脱率の少ない順に加重が少しずつ最適化されていきます。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/lpo/label/enable_flg'|translate}</th>
+        <td>
+          <input type="checkbox" name="enable_flg" value="1" {if $formData.enable_flg}checked{/if}>{'/label/enable_btn'|translate}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/lpo/label/memo'|translate}</th>
+        <td>
+          <textarea name="memo" rows="4" cols="50">{$formData.memo|escape}</textarea>
+        </td>
+      </tr>
+    </table>
+
+
+
+  {buttonbox}
+    {if $lpo_header_id != ""}
+      {rcms_auth target="update:/lpo/lpo/$lpo_header_id"}
+        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+      {/rcms_auth}
+      {rcms_auth target="delete:/lpo/lpo/$lpo_header_id"}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+      {/rcms_auth}
+    {else}
+      {rcms_auth target="insert:/lpo/lpo/"}
+        <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+      {/rcms_auth}
+    {/if}
+  {/buttonbox}
+
+  {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

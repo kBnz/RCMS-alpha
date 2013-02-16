@@ -1,0 +1,171 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}基本設定</h2>
+<ul>
+  {if $auth.convention.insert}
+  <li class="add"><a href="/management/convention/convention_edit/"><span>大会追加</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/convention/convention_history/convention_id={$convention_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=convention&id={$convention_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="/convention_detail/id={$convention_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/convention/convention_list/">{$module_nm}</a>
+<a href="/management/convention/convention_list/">{$module_nm}一覧</a>
+{$module_nm}基本設定
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}件</a>　<a href="/convention_detail_list/id={$convention_id}">総アクセス数:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/convention/convention_edit/convention_id={$convention_id}" class="active">基本設定</a></li>
+  {if $convention_id}
+    <li><a href="/management/convention/convention_detail_list/convention_id={$convention_id}">結果入力</a></li>
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><span>結果入力</span></li>
+  {/if}
+</ul>
+  <div class="list_main">
+  <form name="convention_edit" id="convention_edit" action="/management/convention/convention_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="convention_id" value="{$convention_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="team_number" value="{$team_number}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <h3>基本設定</h3>
+    <table width="100%">
+      <tr>
+        <th>スポーツ</th>
+        <td><select name="sports_type" id="sports_type" onchange="change_sports_type(this.value)">{html_options options=$sports_list selected=$formData.sports_type}</select></td>
+      </tr>
+      <tr>
+        <th>大会名称</th>
+        <td><input type="text" name="convention_name" value="{$formData.convention_name}"><a href="javascript:;" onclick="gameTypeInput()">選択</a></td>
+      </tr>
+      <tr>
+        <th>シーズン&nbsp;<span class="required">※</span></th>
+        <td>{rcms_seasonOptions name="season" selected=$formData.season}</select></td>
+      </tr>
+      <tr>
+        <th>参加チーム</th>
+        <td>
+        <div id="joined_teams_direct" {if $formData.sports_type != "direct"}style="display:none"{/if}>
+        {section name="loopname" loop=$team_number}
+            <input type="text" name="joined_teams_direct[{$smarty.section.loopname.index}]" value="{$formData.joined_teams[loopname]}" size="30"><br>
+        {/section}
+        </div>
+
+        <div id="joined_teams" {if $formData.sports_type == "direct"}style="display:none"{/if}>
+        <table>
+        <tr><th>チーム</th></tr>
+        {section name="loopname" loop=$team_number}
+            <tr><td>
+            <select name="team_type[{$smarty.section.loopname.index}]" id="team_type[{$smarty.section.loopname.index}]" onchange="change_team_type(this.value, {$smarty.section.loopname.index})">{html_options options=$arrTeamType selected=$formData.team_type[loopname]}</select>
+            <select name="joined_teams[{$smarty.section.loopname.index}]" id="joined_teams[{$smarty.section.loopname.index}]">{html_options options=$arrJoined_team[loopname] selected=$formData.joined_teams[loopname]}</select>
+            </td>
+            </tr>
+        {/section}
+        </table>
+        </div>
+        <input type="submit" name="subflg" value="チームを増やす" onclick="add_team()">　<input type="submit" name="subflg" value="チームを減らす" onclick="rm_team()">
+        </td>
+      </tr>
+      <tr>
+        <th>拡張項目</th>
+        <td>
+            項目1：<input type="text" name="ext_titles[0]" value="{$formData.ext_titles.0|escape}" size="8"><br>
+            項目2：<input type="text" name="ext_titles[1]" value="{$formData.ext_titles.1|escape}" size="8"><br>
+            項目3：<input type="text" name="ext_titles[2]" value="{$formData.ext_titles.2|escape}" size="8"><br>
+            項目4：<input type="text" name="ext_titles[3]" value="{$formData.ext_titles.3|escape}" size="8"><br>
+            項目5：<input type="text" name="ext_titles[4]" value="{$formData.ext_titles.4|escape}" size="8"><br>
+        </td>
+      </tr>
+      <tr>
+        <th>コメント</th>
+        <td><textarea name="comment" rows="7" cols="50">{$formData.comment}</textarea></td>
+      </tr>
+    </table>
+
+    {rcms_include file="management/open_date_box.html" id=$convention_id data=$formData}
+
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <div class="clear"></div>
+
+    {if $auth.convention.update}
+      {buttonbox}
+        {if $convention_id != ''}
+          <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {else}
+          <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function add_team() {
+  document.convention_edit.MODE.value='ADD_TEAM';
+  document.convention_edit.submit();
+}
+
+function rm_team() {
+  document.convention_edit.MODE.value='RM_TEAM';
+  document.convention_edit.submit();
+}
+
+function confirmDelete(f){
+  if(confirm("削除してもよろしいですか？")){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+
+sports_type = document.getElementById('sports_type');
+
+function gameTypeInput(){
+    sports = sports_type.options[sports_type.selectedIndex].value;
+    window.open('/js/optionAssist.php?target=convention_edit.convention_name&type=game'+sports+'_game_type','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+
+function change_team_type(team_type, order_no) {
+    sports = sports_type.options[sports_type.selectedIndex].value;
+    onChangeTeamTypeConv(team_type, sports, order_no);
+}
+
+function change_sports_type(sports_type) {
+    var myIframe = document.getElementById('myFrame');
+    myIframe.src = "/js/getItem.php?item_type=teamType&sports_type=" + sports_type + "&start_number=0&end_number={/literal}{$team_number-1}{literal}";
+
+    if(sports_type=='direct'){
+        $('joined_teams_direct').style.display = 'block';
+        $('joined_teams').style.display = 'none';
+    }else{
+        $('joined_teams_direct').style.display = 'none';
+        $('joined_teams').style.display = 'block';
+    }
+}
+
+{/literal}
+-->
+</script>
+  </form>
+  </div>
+</div>
+{rcms_include file="management/footer.html"}

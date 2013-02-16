@@ -1,0 +1,127 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<script type="text/javascript">
+<!--
+function confirmDelete(f) {
+        if (confirm('{/literal}{'/modules/api_youtube/msg/confirm_del_data'|translate}{literal}')) {
+                f.submit();
+        }
+}
+//-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+  <h2>動画編集</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_search/">{$module_nm}</a>
+動画編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+  <div class="list_main">
+
+    {if $id}
+      {* Webのデータを表示 *}
+      {if $item.web}
+        <table style="width:100%">
+          <tr>
+            <th colspan="2">{$item.web->getVideoTitle()}</th>
+          </tr>
+          <tr>
+            <td style="width:450px">
+              <object width="425" height="344">
+                <param name="movie" value="{$item.web->getFlashPlayerUrl()}"></param>
+                <param name="allowFullScreen" value="true"></param>
+                <embed src="{$item.web->getFlashPlayerUrl()}" type="application/x-shockwave-flash" allowfullscreen="true" width="425" height="344"></embed>
+              </object>
+            </td>
+            <td>
+              <p>{$item.web->getVideoDuration()|date_format:"%M:%S"}</p>{* XXX 再生時間が1時間を超えると壊れる *}
+              <p>{$item.web->getVideoDescription()|nl2br}</p>
+              <p><a href="{$item.web->getVideoWatchPageUrl()}" onclick="window.open(href); return false;">YouTube上で見る</a></p>
+            </td>
+          </tr>
+        </table>
+      {elseif $item.db}
+        <table style="width:100%">
+          <tr>
+            <th>{$item.db.name}</th>
+          </tr>
+          <tr>
+            <td>該当IDのデータは外部データソースに存在しません。</td>
+            <p>※アップロードされた動画は、実際に公開されるまでにしばらく時間がかかることがあります。</p>
+          </tr>
+        </table>
+      {else}
+        <p>該当IDのデータは外部データソースに存在しません。</p>
+        <p>※アップロードされた動画は、実際に公開されるまでにしばらく時間がかかることがあります。</p>
+      {/if}
+
+
+      {* dbのデータを表示 *}
+      {if $item.web || $item.db}
+        <form action="/management/{$mt}/{$mt}_edit/{$query}" method="post">
+          <input type="hidden" name="MODE" value="update" />
+          <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+          {rcms_include file="management/messages_box.html" messages=$messages}
+          {rcms_include file="management/errors_box.html" errors=$errors}
+
+          <table style="width:100%">
+            <tr>
+              <th>カテゴリ</th>
+              <td>
+                <select name="category">
+                  <option value="0">---</option>
+                  {html_options options=$categories selected=$item.db.category}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>コメント</th>
+              <td>
+                <textarea name="note" rows="5" style="width:98%">{$item.db.note}</textarea>
+                <input type="hidden" name="name" value="{if $item.web}{$item.web->getVideoTitle()}{else}{$item.db.name}{/if}"/>
+              </td>
+            </tr>
+          </table>
+
+          {rcms_include file="management/relation_edit.html"}
+
+          {rcms_include file="management/open_date_box.html" id=$id->internal() data=$item.db}
+
+    {buttonbox}
+        {if $item.web && !$item.db}
+            {if $auth[$mt].insert}
+                <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+            {/if}
+        {elseif $item.web}
+            {if $auth[$mt].update}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+            {/if}
+            {* 作る
+            {if $auth[$mt].delete}
+                <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+            {/if}
+            *}
+        {/if}
+    {/buttonbox}
+        </form>
+      {/if}
+    {else}
+      <p>対象のデータを指定してください。</p>
+    {/if} {* end of if $id *}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

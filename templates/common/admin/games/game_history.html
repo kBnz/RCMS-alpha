@@ -1,0 +1,27 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{*更新履歴一覧*}</h2>
+<ul>
+{if $auth.$mt.insert}
+<li class="add"><a href="/management/{$mt}/{$mt}_edit/"><span>{'/modules/game/label/create_new_game_btn'|translate}{*試合追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm} {'/label/list'|translate}</a>
+<a href="/management/{$mt}/{$mt}_edit/game_id={$game_id}">{$module_nm} {'/label/edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 各種ゲーム >> 各種ゲーム一覧 >> 各種ゲーム編集 >> 更新履歴一覧 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/%mt/%mt_edit/game_id=$game_id"|replace:'%mt':$mt pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

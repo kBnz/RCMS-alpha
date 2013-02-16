@@ -1,0 +1,23 @@
+{* v2ではnotification_box.htmlを使用するため、既存のコードに対してはメッセージをerrors_box.htmlからnotification_box.htmlへ渡して処理する。よってここでは何もしない。 *}
+{*
+{if $messages}
+{literal}
+
+<script type="text/javascript">
+    jQuery(function($){
+        $("#error_box").rcmsNotificationBox({duration:1000,showTime:3600*1000});
+    });
+</script>
+{/literal}
+
+<div id="message_box">
+    {foreach from=$messages item=message}
+        <div class="notification_icon">
+            <img src="../../../images/management/v2/common/common_icons.png" class="notification_alert_icon">
+        </div>
+        <div class="notification_message">{$message|escape}</div>
+    {/foreach}
+</div>
+
+{/if}
+*}

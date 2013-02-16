@@ -1,0 +1,25 @@
+{module name="help_category_detail"}
+<div class="module_contents">
+<h2 class="module_title"><span>{$helpCategoryRow.category_name}</span></h2>
+{foreach item=help_item from=$helpItemList name=help_item}
+<div class="helpItem">
+  <h3><a href="/help_detail/id={$help_item.help_item_id}">{$help_item.title}</a></h3>
+  <p class="digest">
+  {$help_item.contents|strip_tags:false|mbtruncate:100}
+  {if $help_item.contents|strip_tags:false|@mb_strlen > 100}<a href="/help_detail/id={$help_item.help_item_id}">{'/label/continue_reading'|translate}{* 続きを読む *}</a>{/if}
+  </p>
+</div>
+{/foreach}
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+</div>
+{/module}
+
+{literal}
+<style>
+th.child a{
+  margin-left: 10px;
+  padding-left: 5px;
+  border-left: 1px dotted #000;
+}
+</style>
+{/literal}

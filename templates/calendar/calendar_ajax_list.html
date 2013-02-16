@@ -1,0 +1,61 @@
+{module name="calendar_ajax_list"}
+<h2 class="module_title"><span>{'/modules/calendar/label/monthly_calendar'|translate}{* 月間カレンダー *}</span></h2>
+<div class="module_contents">
+<div class="rightBox_top">
+  <div class="rightBox_bottom">
+    <div id="calendar">
+      <img src="/images/management/ajax-loader.gif">
+    </div>
+    <div class="event" id="event">
+    </div>
+  </div>
+</div>
+</div>
+{/module}
+
+<style type="text/css">
+{literal}
+#calendar table {
+  width:220px;
+}
+#calendar table caption {
+  color:#666666;
+  font-size:14px;
+  font-weight:bold;
+}
+#calendar table th {
+  background-color:#E6E6E6;
+  color:#666666;
+  font-weight:bold;
+  padding:2px;
+  text-align:center;
+  width:25px;
+}
+#calendar table td {
+  padding:2px;
+  text-align:center;
+}
+#event {
+  background-color:#E9F5FC;
+  color:#666666;
+  padding:4px 8px;
+}
+#event p {
+  font-weight:bold;
+}
+{/literal}
+</style>
+<script type="text/javascript">
+<!--
+{literal}
+function loadCal(year, month, _lang) {
+  new Ajax.Updater('calendar','/direct/calendar/calendar/year='+year+'&month='+month+'&start_week={/literal}{$start_week}{literal}&_lang='+_lang,{method: 'get'});
+}
+function loadEvent(date, _lang) {
+  new Ajax.Updater('event','/direct/calendar/event/date='+date+'&_lang='+_lang,{method: 'get'});
+}
+loadCal('', '', '{/literal}{$_lang}{literal}');
+loadEvent('', '{/literal}{$_lang}{literal}');
+{/literal}
+//-->
+</script>

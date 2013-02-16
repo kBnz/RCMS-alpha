@@ -1,0 +1,78 @@
+{module name="keyword_list"}
+<h2 class="module_title"><span>{'/modules/keyword/label/keyword_list'|translate}{*キーワード一覧*}</span></h2>
+<div class="module_contents">
+<table style="width: 100%; height: 100%;" cellspacing=0"">
+<tr>
+  <td rowspan="2" style="width: 250px">
+  <div class="keyword_search_index">
+{foreach from=$keyword_index_list item=row key=row_key}
+{strip}
+  <ul class="{$row_key}">
+  {foreach from=$row item=col key=col_key}
+    {if $col == 'N'}
+  </ul>
+  <ul class="{$row_key}">
+    {/if}
+    <li {if $keyword_index_cnt[$col_key] == 0}class="none"{/if}><a href="javascript:;" onclick="getKeywordList('{$col_key}')">{$col}</a></li>
+  {/foreach}
+  </ul>
+{/strip}
+{/foreach}
+  </div>
+  </td>
+  <td>
+    <input type="button" onclick="pageLeft()" value="&lt;--">
+  </td>
+  <td>
+<div id="keywordList" style="overflow: hidden; width:600px;">
+<table>
+  <tr>
+{foreach from=$keyword_list item=row name=keyword_list}
+    <td style="height: 60px; width: 150px;"><div onclick="showkeywordListDetail('{$row.keyword}', this, {$smarty.foreach.keyword_list.iteration})" style="border-top: 5px solid #FF9933;border-bottom: 5px solid #FF9933;border-left: 2.5px solid #FF9933;border-right: 2.5px solid #FF9933;height:30px;width:150px">{$row.keyword}<br />[{$row.japanese_syllabary}]</div></td>
+{/foreach}
+  </tr>
+</table>
+</div>
+  </td>
+  <td>
+    <input type="button" onclick="pageRight()" value="--&gt;">
+  </td>
+</tr>
+<tr>
+  <td colspan="3">
+    <table style="height: 450px; width:650px">
+      <tr style="height: 450px; width:650px">
+        <td style="height: 100%; width:650px">
+          <div id="contentslink" style="border-left: 5px solid #FF9933;border-right: 5px solid #FF9933; height: 30px; width: 650px;text-align:right;"></div>
+          <div id="contentsarea" style="border-left: 5px solid #FF9933;border-right: 5px solid #FF9933;border-bottom: 5px solid #FF9933; height: 450px; width: 650px; overflow: auto;"></div>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+</div>
+{/module}
+
+<div style="display:none;padding:10px;position:absolute;left:50px;width:450px;height:200px;background-color:#EEEEEE;" id="keywordSummaryArea">
+<span style="float:right;"><a href="javascript:;" onclick="hiddenKeywordSummary()">[×]</a></span>
+<div id="keywordTitle" style="font-size:120%;font-weight:bold;"></div>
+<hr /><br />
+<div id="keywordMsgArea" style="width:440px;height:130px;overflow:auto;"></div><br />
+<div id="keywordLink" style="float: right;font-size:80%;"></div>
+</div>
+<script type="text/javascript" src="/js/jkl-parsexml.js"></script>
+<script type="text/javascript">
+<!--
+var contentsarea = document.getElementById('contentsarea');
+var summaryarea = document.getElementById('keywordSummaryArea');
+var msgarea = document.getElementById('keywordMsgArea');
+var titlearea = document.getElementById('keywordTitle');
+var keywordLink = document.getElementById('keywordLink');
+var keywordList = document.getElementById('keywordList');
+var contentslink = document.getElementById('contentslink');
+var oldobj;
+var keyword;
+//-->
+</script>
+<script type="text/javascript" src="/js/keyword.js"></script>

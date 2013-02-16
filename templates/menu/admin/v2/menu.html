@@ -1,0 +1,145 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{rcms_include file="menu/admin/menu_common.html"}
+
+{headblock}
+<link rel="stylesheet/less" type="text/css" href="/css/management/v2/menu/menu.less">
+{/headblock}
+
+{literal}
+<script type="text/javascript">
+
+//アイコンでコンテンツを選択するプラグイン
+(function($) {
+    $.fn.menuSelector = function() {
+        //最初の要素をアクティブにする
+        $(".content:eq(0)", this).addClass("active");
+        $(".icon:eq(0)", this).addClass("select");
+        //アクティブなコンテンツのみを表示
+        $(".content", this).hide();
+        $(".active", this).show();
+        //アイコンをクリックした時アクティブな要素を入れ替える
+        $(".icon", this).click(function() {
+            var num = $(".icon").index(this);
+            $(".active").hide().removeClass("active");
+            $(".content:eq(" + num + ")").addClass("active").show();
+            $(".select").removeClass("select");
+            $(this).addClass("select");
+        });
+        return this;
+    };
+})(jQuery);
+
+//アイコンでコンテンツを選択するプラグインを使用
+(function($) {
+    $(function() {
+        $("#menu_selector").menuSelector();
+    });
+})(jQuery);
+
+</script>
+{/literal}
+
+
+
+<div class="menu_selector" id="menu_selector">
+    <!-- アイコンの画像を表示するdiv要素 -->
+    <div class="icon"><div class="contents">コンテンツ</div></div>
+    <div class="icon"><div class="communication">コミュニケーション</div></div>
+    <div class="icon"><div class="site">サイト</div></div>
+    <div class="icon"><div class="member">メンバー</div></div>
+    <div class="icon"><div class="setting">設定</div></div>
+    <div class="icon"><div class="filemanager">ファイルマネージャ</div></div>
+
+    <!-- コンテンツ -->
+    <div id="content1" class="content">
+        <ul>
+            {foreach from=$FOR_MENU.menu_list.contents item=module name=menu_contents}
+                <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- コミュニケーション -->
+    <div id="content2" class="content">
+        <ul>
+            {foreach from=$FOR_MENU.menu_list.communication item=module name=menu_communication}
+                <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- サイト -->
+    <div id="content3" class="content">
+        <ul>
+            {foreach from=$FOR_MENU.menu_list.design item=module name=menu_design}
+                <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- メンバー -->
+    <div id="content4" class="content">
+        <ul>
+            {foreach from=$FOR_MENU.menu_list.member item=module name=menu_member}
+                <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- 設定 -->
+    <div id="content5" class="content">
+        <ul>
+            {foreach from=$FOR_MENU.menu_list.setup item=module name=menu_setup}
+                <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- ファイルマネージャ -->
+    <div id="content6" class="content">
+        <ul>
+            <li><a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;">ファイルマネージャ</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+{if $onetime_link_list}
+
+{$smarty.capture.onetime}
+{$smarty.capture.unauthorized}
+
+{else}
+
+<div id="main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <div id="left" class="column">
+
+{foreach from=$menu_easy_order.main item=order}
+{$smarty.capture.$order}
+{/foreach}
+
+  </div><!-- left -->
+
+  <div id="right" class="column">
+
+{if $smarty.const.SITE_ID eq 10004}
+<div style="width:240px;height:60px;margin-top:20px;">
+<a href="http://rcms-support.r-cms.jp/" target="_blank"><img src="/images/modules/menu/support_site_bunner.gif" /></a>
+</div>
+{/if}
+
+{foreach from=$menu_easy_order.right item=order}
+{$smarty.capture.$order}
+{/foreach}
+
+  <div class="clearFloat"><br></div>
+
+  </div><!-- right -->
+
+</div><!-- main -->
+
+<div class="clearFloat"></div>
+
+{rcms_include file="menu/admin/menu_select_widget.html"}
+{rcms_include file="management/footer.html"}
+{/if}

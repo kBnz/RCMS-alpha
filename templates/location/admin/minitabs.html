@@ -1,0 +1,5 @@
+<ul class="minitabs">
+  <li><a href="/management/location/location_list/"{if $page_type eq 'location_list' || $page_type eq 'location_edit'} class="active"{/if}>{'/modules/location/label/location_list'|translate}{*地図情報一覧*}</a></li>
+  <li><a href="/management/location/location_category_list/"{if $page_type eq 'location_category_list' || $page_type eq 'location_category_edit'} class="active"{/if}>{'/modules/location/label/location_category'|translate}{*カテゴリ設定*}</a></li>
+  <li><a href="/management/location/location_order_edit/"{if $page_type eq 'location_order_edit'} class="active"{/if}>{'/modules/location/label/category_sorting'|translate}{*カテゴリ表示順*}</a></li>
+</ul>

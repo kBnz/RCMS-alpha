@@ -1,0 +1,9 @@
+{if $RelationCoupon|@count > 0}
+<h2>クーポン</h2>
+<ul>
+{foreach item=row from=$RelationCoupon}
+  <li><a href="/coupon_detail/id={$row.coupon_id}">{$row.coupon_nm}</a></li>
+{/foreach}
+</ul>
+<hr/>
+{/if}

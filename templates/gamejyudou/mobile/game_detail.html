@@ -1,0 +1,236 @@
+<h2>
+{$gameData.game_type} {$gameData.game_type2}　
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+試合予定
+{elseif $gameData.game_status eq '2'}
+途中経過
+{elseif $gameData.game_status eq '3'}
+試合結果
+{/if}</h2><br/>
+
+[ｽｺｱ]<br/>
+{if $gameData.game_status eq '2' ||  $gameData.game_status eq '3'}
+{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade} vs {$gameData.team_nm}{$gameData.opponent_grade}<br/>
+{$gameData.score_detail_arr.Self_Total}
+-
+{$gameData.score_detail_arr.Opp_Total}
+{/if}
+<br/>
+[日時]
+{$gameData.ymd_str}<br/>
+{if $gameData.ko_time}
+[開始時間]
+{$gameData.ko_time}<br/>
+{/if}
+{if $gameData.place}
+[試合会場]
+{$gameData.place}<br/>
+{/if}
+<br/>
+
+
+{if $gameMembers.self[1].disp_name}
+[先鋒]<br>
+  {if $gameMembers.self[1].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[1].member_id}">{$gameMembers.self[1].disp_name}</a>
+  {else}
+    {$gameMembers.self[1].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_1S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_1S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_1S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza1}({$gameData.score_detail_arr.waza1}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_1S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_1S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_1S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[1].member_name}<br>
+{/if}
+
+{if $gameMembers.self[2].disp_name}
+[次鋒]<br>
+  {if $gameMembers.self[2].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[2].member_id}">{$gameMembers.self[2].disp_name}</a>
+  {else}
+    {$gameMembers.self[2].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_2S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_2S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_2S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza2}({$gameData.score_detail_arr.waza2}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_2S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_2S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_2S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[2].member_name}<br>
+{/if}
+
+{if $gameMembers.self[3].disp_name}
+[五将]<br>
+  {if $gameMembers.self[3].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[3].member_id}">{$gameMembers.self[3].disp_name}</a>
+  {else}
+    {$gameMembers.self[3].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_3S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_3S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_3S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza3}({$gameData.score_detail_arr.waza3}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_3S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_3S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_3S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[3].member_name}<br>
+{/if}
+
+{if $gameMembers.self[4].disp_name}
+[中堅]<br>
+  {if $gameMembers.self[4].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[4].member_id}">{$gameMembers.self[4].disp_name}</a>
+  {else}
+    {$gameMembers.self[4].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_4S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_4S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_4S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza4}({$gameData.score_detail_arr.waza4}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_4S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_4S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_4S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[4].member_name}<br>
+{/if}
+
+{if $gameMembers.self[5].disp_name}
+[三将]<br>
+  {if $gameMembers.self[5].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[5].member_id}">{$gameMembers.self[5].disp_name}</a>
+  {else}
+    {$gameMembers.self[5].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_5S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_5S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_5S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza5}({$gameData.score_detail_arr.waza5}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_5S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_5S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_5S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[5].member_name}<br>
+{/if}
+
+{if $gameMembers.self[6].disp_name}
+[副将]<br>
+  {if $gameMembers.self[6].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[6].member_id}">{$gameMembers.self[6].disp_name}</a>
+  {else}
+    {$gameMembers.self[6].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_6S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_6S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_6S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza6}({$gameData.score_detail_arr.waza6}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_6S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_6S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_6S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[6].member_name}<br>
+{/if}
+
+{if $gameMembers.self[7].disp_name}
+[大将]<br>
+  {if $gameMembers.self[7].member_id > 0}
+    <a href="/member_detail/id={$gameMembers.self[7].member_id}">{$gameMembers.self[7].disp_name}</a>
+  {else}
+    {$gameMembers.self[7].disp_name}
+  {/if}
+  {if $gameData.score_detail_arr.Self_7S eq 'win'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_7S eq 'lose'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_7S eq 'draw'}
+    △
+  {/if}
+  {if $gameData.score_detail_arr.waza7}({$gameData.score_detail_arr.waza7}){else} - {/if}
+  {if $gameData.score_detail_arr.Self_7S eq 'win'}
+    ●
+  {elseif $gameData.score_detail_arr.Self_7S eq 'lose'}
+    ○
+  {elseif $gameData.score_detail_arr.Self_7S eq 'draw'}
+    △
+  {/if}
+  {$gameMembers.opp[7].member_name}<br>
+{/if}
+
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+{/if}
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/gamejyudou_list/">試合一覧へ</a>
+</div>
+
+{if $gameTopicsList|@count > 0}
+<hr/>
+{/if}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2>{$gameTopicsList[game_topics].subject}</h2>
+<div style="text-align:right;font-size:small;">
+{$gameTopicsList[game_topics].ymd_str}
+</div>
+{$gameTopicsList[game_topics].contents}
+{/section}
+{if $gameTopicsList|@count > 0}
+<div style="text-align:right;font-size:small;">
+<a href="/gamejyudou_list/">試合一覧へ</a>
+</div>
+{/if}
+<hr/>
+

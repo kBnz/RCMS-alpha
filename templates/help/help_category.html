@@ -1,0 +1,11 @@
+{module name="help_category"}
+<div class="module_contents">
+<h2 class="module_title"><span>{$helpCategoryRow.category_name}</span></h2>
+<ul>
+{foreach item=help_item from=$helpItemList name=help_item}
+  <li><a href="/help_detail/id={$help_item.help_item_id}">{$help_item.title}</a></li>
+{/foreach}
+</ul>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+</div>
+{/module}

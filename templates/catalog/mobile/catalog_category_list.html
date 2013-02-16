@@ -1,0 +1,16 @@
+<h2>{'/label/category'|translate}{* カテゴリ *}</h2>
+<ul>
+  <li>
+     <a href="/{$link_page_sysnm}{if $catalog_group_id}{$catalog_group_id}{/if}/">
+      【{'/modules/catalog/label/all_catalogs_of_this_group'|translate}{* このグループの全カタログ *}】
+     </a>
+  </li>
+{foreach from=$catalog_category_list item=row}
+  <li>{if $row.parent_id != 0}└{/if}
+     <a href="/{$link_page_sysnm}/contents_type={$row.contents_type}">
+       {$row.category_nm}({$row.cnt})
+     </a>
+  </li>
+{/foreach}
+</ul>
+<hr/>

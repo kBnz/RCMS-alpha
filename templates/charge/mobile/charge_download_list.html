@@ -1,0 +1,14 @@
+{module name="charge_download_list"}
+<h2 class="module_title"><span>ダウンロード一覧</span></h2>
+<div class="module_contents">
+{foreach item=row from=$charge_list}
+<hr />
+<div style="text-align:center;">
+<p><a href="/charge_download_detail/id={$row.charge_download_id}">{$row.name|escape}</a></p>
+<div><img src="{$row.thumbnail_url}" /></div>
+<p>{$row.description|escape|nl2br}</p>
+<p><a href="/charge_download_detail/id={$row.charge_download_id}">{$row.name|escape}</a></p>
+</div>
+{/foreach}
+</div>
+{/module}

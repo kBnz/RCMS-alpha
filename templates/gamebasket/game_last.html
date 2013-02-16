@@ -1,0 +1,209 @@
+{if $gameList|@count > 0}
+{module name="game_last"}
+<h2 class="module_title"><span>最新試合結果</span></h2>
+<div class="module_contents">
+
+{foreach from=$gameList item=gameData}
+<table>
+  <tr>
+    <td valign="top">
+      <table width="100%" class="score_table" border="1">
+        <tr>
+          <td colspan="3" width="50%" align="center" class="team_color">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+          <td colspan="3" width="50%" align="center" class="opp_color"><strong>{$gameData.team_nm}{$gameData.opponent_grade}</strong></td>
+        </tr>
+        <tr>
+          <td width="20%" class="score_total" rowspan="4">{$gameData.score_detail_arr.Self_Total}</td>
+          <td width="20%" class="score">{$gameData.score_detail_arr.Self_1Q}</td>
+          <td width="20%" colspan="2" class="score_label">1st</td>
+          <td width="20%" class="score">{$gameData.score_detail_arr.Opp_1Q}</td>
+          <td width="20%" class="score_total" rowspan="4">{$gameData.score_detail_arr.Opp_Total}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_2Q}</td>
+          <td colspan="2" class="score_label">2nd</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_2Q}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_3Q}</td>
+          <td colspan="2" class="score_label">3rd</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_3Q}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_4Q}</td>
+          <td colspan="2" class="score_label">4th</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_4Q}</td>
+        </tr>
+      </table>
+      <table width="280"><tr><td>&nbsp;</td></tr></table>
+    </td>
+    <td valign="top">
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">Kick off</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+           </td> 
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+{if $gameData.score_detail_arr.Self_3P_GET || $gameData.score_detail_arr.Self_3P_CNT || $gameData.score_detail_arr.Opp_3P_GET || $gameData.score_detail_arr.Opp_3P_CNT}
+<table class="opp_member_table" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <th width="25%" class="self_team_nm">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+    <td width="50%">&nbsp;</td>
+    <th width="25%" class="opp_team_nm">{$gameData.team_nm}</td>
+  </tr>
+{if $gameData.score_detail_arr.Self_3P_GET || $gameData.score_detail_arr.Self_3P_CNT || $gameData.score_detail_arr.Opp_3P_GET || $gameData.score_detail_arr.Opp_3P_CNT}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_3P_GET}/{$gameData.score_detail_arr.Self_3P_CNT}</td>
+    <td class="score_label">３ポイントシュート<br />(成功-回数)</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_3P_GET}/{$gameData.score_detail_arr.Opp_3P_CNT}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_2P_GET || $gameData.score_detail_arr.Self_2P_CNT || $gameData.score_detail_arr.Opp_2P_GET || $gameData.score_detail_arr.Opp_2P_CNT}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_2P_GET}/{$gameData.score_detail_arr.Self_2P_CNT}</td>
+    <td class="score_label">２ポイントシュート<br />(成功-回数)</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_2P_GET}/{$gameData.score_detail_arr.Opp_2P_CNT}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FT_GET || $gameData.score_detail_arr.Self_FT_CNT || $gameData.score_detail_arr.Opp_FT_GET || $gameData.score_detail_arr.Opp_FT_CNT}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_FT_GET}/{$gameData.score_detail_arr.Self_FT_CNT}</td>
+    <td class="score_label">フリースロー<br />(成功-回数)</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_FT_GET}/{$gameData.score_detail_arr.Opp_FT_CNT}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_OFF_RBD || $gameData.score_detail_arr.Opp_OFF_RBD}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_OFF_RBD}</td>
+    <td class="score_label">オフェンスリバウンド</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_OFF_RBD}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_DEF_RBD || $gameData.score_detail_arr.Opp_DEF_RBD}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_DEF_RBD}</td>
+    <td class="score_label">ディフェンスリバウンド</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_DEF_RBD}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_RBD_TOT || $gameData.score_detail_arr.Opp_RBD_TOT}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_RBD_TOT}</td>
+    <td class="score_label">リバウンド合計</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_RBD_TOT}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_AST || $gameData.score_detail_arr.Opp_AST}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_AST}</td>
+    <td class="score_label">アシスト</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_AST}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_STL || $gameData.score_detail_arr.Opp_STL}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_STL}</td>
+    <td class="score_label">スティール</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_STL}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_BLK || $gameData.score_detail_arr.Opp_BLK}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_BLK}</td>
+    <td class="score_label">ブロックシュート</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_BLK}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_TO || $gameData.score_detail_arr.Opp_TO}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_TO}</td>
+    <td class="score_label">ターンオーバー</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_TO}</td>
+  </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FAUL || $gameData.score_detail_arr.Opp_FAUL}
+  <tr>
+    <td class="score">{$gameData.score_detail_arr.Self_FAUL}</td>
+    <td class="score_label">ファウル</td>
+    <td class="score">{$gameData.score_detail_arr.Opp_FAUL}</td>
+  </tr>
+{/if}
+</table>
+{/if}
+
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+{/foreach}
+<div class="relation_link"><a href="/gamebasket_list/" class="small_text">試合一覧へ</a></div>
+
+</div>
+{/module}
+
+<style>
+{literal}
+
+table.score_table {
+  width: 90% ;
+  margin-left: 0 ;
+  border: 1px solid gray;
+  background-color: #ffffff;
+  border-collapse:collapse;
+  text-align:center;
+}
+
+table.score_table .score {
+  text-align: center ;
+}
+
+table.score_table .score_total {
+  font-size: 2em ;
+  text-align: center ;
+  font-weight: bold ;
+}
+
+table.score_table .score_label {
+  text-align: center ;
+  white-space: nowrap ;
+}
+
+table.score_table2_header {
+  border: 1px solid gray ;
+  margin-top: 1em;
+}
+
+table.score_table2 {
+  border: 1px solid gray ;
+}
+table.opp_member_table .score_label {
+  text-align: center ;
+}
+table.opp_member_table .score {
+  text-align: center ;
+}
+
+{/literal}
+</style>

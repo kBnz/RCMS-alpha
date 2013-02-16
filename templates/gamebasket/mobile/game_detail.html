@@ -1,0 +1,136 @@
+<h2>
+{$gameData.game_type} {$gameData.game_type2}　
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+試合予定
+{elseif $gameData.game_status eq '2'}
+途中経過
+{elseif $gameData.game_status eq '3'}
+試合結果
+{/if}</h2><br/>
+[ｽｺｱ]<br/>
+{if $gameData.game_status eq '2' ||  $gameData.game_status eq '3'}
+{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade} vs {$gameData.team_nm}{$gameData.opponent_grade}<br/>
+{$gameData.score_detail_arr.Self_Total}<span class="font-size:small;">({$gameData.score_detail_arr.Self_1Q}/{$gameData.score_detail_arr.Self_2Q}/{$gameData.score_detail_arr.Self_3Q}/{$gameData.score_detail_arr.Self_4Q})</span>
+-
+{$gameData.score_detail_arr.Opp_Total}<span class="font-size:small;">({$gameData.score_detail_arr.Opp_1Q}/{$gameData.score_detail_arr.Opp_2Q}/{$gameData.score_detail_arr.Opp_3Q}/{$gameData.score_detail_arr.Opp_4Q})</span>
+{/if}
+<br/>
+[日時]
+{$gameData.ymd_str}<br/>
+{if $gameData.ko_time}
+[Kick off]
+{$gameData.ko_time}<br/>
+{/if}
+{if $gameData.place}
+[試合会場]
+{$gameData.place}<br/>
+{/if}
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+<br/>
+
+<br/>
+
+{if $gameData.score_detail_arr.Self_3P_GET || $gameData.score_detail_arr.Self_3P_CNT || $gameData.score_detail_arr.Opp_3P_GET || $gameData.score_detail_arr.Opp_3P_CNT}
+[3ﾎﾟｲﾝﾄｼｭｰﾄ(成功-回数)]<br>
+{$gameData.score_detail_arr.Self_3P_GET}/{$gameData.score_detail_arr.Self_3P_CNT}
+-
+{$gameData.score_detail_arr.Opp_3P_GET}/{$gameData.score_detail_arr.Opp_3P_CNT}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_2P_GET || $gameData.score_detail_arr.Self_2P_CNT || $gameData.score_detail_arr.Opp_2P_GET || $gameData.score_detail_arr.Opp_2P_CNT}
+[2ﾎﾟｲﾝﾄｼｭｰﾄ(成功-回数)]<br>
+{$gameData.score_detail_arr.Self_2P_GET}/{$gameData.score_detail_arr.Self_2P_CNT}
+-
+{$gameData.score_detail_arr.Opp_2P_GET}/{$gameData.score_detail_arr.Opp_2P_CNT}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_FT_GET || $gameData.score_detail_arr.Self_FT_CNT || $gameData.score_detail_arr.Opp_FT_GET || $gameData.score_detail_arr.Opp_FT_CNT}
+[ﾌﾘｰｽﾛｰ(成功-回数)]<br>
+{$gameData.score_detail_arr.Self_FT_GET}/{$gameData.score_detail_arr.Self_FT_CNT}
+-
+{$gameData.score_detail_arr.Opp_FT_GET}/{$gameData.score_detail_arr.Opp_FT_CNT}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_OFF_RBD || $gameData.score_detail_arr.Opp_OFF_RBD}
+[ｵﾌｪﾝｽﾘﾊﾞｳﾝﾄﾞ]<br>
+{$gameData.score_detail_arr.Self_OFF_RBD}
+-
+{$gameData.score_detail_arr.Opp_OFF_RBD}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_DEF_RBD || $gameData.score_detail_arr.Opp_DEF_RBD}
+[ﾃﾞｨﾌｪﾝｽﾘﾊﾞｳﾝﾄﾞ]<br>
+{$gameData.score_detail_arr.Self_DEF_RBD}
+-
+{$gameData.score_detail_arr.Opp_DEF_RBD}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_RBD_TOT || $gameData.score_detail_arr.Opp_RBD_TOT}
+[ﾘﾊﾞｳﾝﾄﾞ合計]<br>
+{$gameData.score_detail_arr.Self_RBD_TOT}
+-
+{$gameData.score_detail_arr.Opp_RBD_TOT}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_AST || $gameData.score_detail_arr.Opp_AST}
+[ｱｼｽﾄ]<br>
+{$gameData.score_detail_arr.Self_AST}
+-
+{$gameData.score_detail_arr.Opp_AST}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_STL || $gameData.score_detail_arr.Opp_STL}
+[ｽﾃｨｰﾙ]<br>
+{$gameData.score_detail_arr.Self_STL}
+-
+{$gameData.score_detail_arr.Opp_STL}<br/>
+{/if}
+
+{if $gameData.score_detail_arr.Self_BLK || $gameData.score_detail_arr.Opp_BLK}
+[ﾌﾞﾛｯｸｼｭｰﾄ]<br>
+{$gameData.score_detail_arr.Self_BLK}
+-
+{$gameData.score_detail_arr.Opp_BLK}<br/>
+{/if}
+{if $gameData.score_detail_arr.Self_TO || $gameData.score_detail_arr.Opp_TO}
+[ﾀｰﾝｵｰﾊﾞｰ]<br>
+{$gameData.score_detail_arr.Self_TO}
+-
+{$gameData.score_detail_arr.Opp_TO}<br/>
+{/if}
+{if $gameData.score_detail_arr.Self_FAUL || $gameData.score_detail_arr.Opp_FAUL}
+[ﾌｧｳﾙ]<br>
+{$gameData.score_detail_arr.Self_FAUL}
+-
+{$gameData.score_detail_arr.Opp_FAUL}<br/>
+{/if}
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/gamebasket_list/">試合一覧へ</a>
+</div>
+
+{if $gameTopicsList|@count > 0}
+<hr/>
+{/if}
+{section name=game_topics loop=$gameTopicsList}
+<h2>{$gameTopicsList[game_topics].subject}</h2>
+<div style="text-align:right;font-size:small;">
+{$gameTopicsList[game_topics].ymd_str}
+</div>
+{$gameTopicsList[game_topics].contents}
+{/section}
+{if $gameTopicsList|@count > 0}
+<div style="text-align:right;font-size:small;">
+<a href="/gamebasket_list/">試合一覧へ</a>
+</div>
+{/if}
+<hr/>
+

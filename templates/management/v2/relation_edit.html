@@ -1,0 +1,110 @@
+{literal}
+<script type="text/javascript">
+(function($){
+
+    $(document).ready(function() {
+
+        initEditField();
+        setFormValues();
+        setStatusMsg();
+
+    });
+    
+    /**
+    * 編集画面の初期化
+    */
+    function initEditField(){
+
+        // イベント登録
+        $("#relatedcontents_settings").on("click",showEditField);
+
+        // 編集画面の設定
+        $("#relatedcontents_settings_edit_field").dialog({
+            title     : "{/literal}{'/label/related_contents'|translate}{*関連するコンテンツ*}{literal}",
+            autoOpen  : false,
+            resizable : true,
+            height    : 500,
+            width     : 500,
+            modal     : true,
+            buttons: {
+                "OK" : function() {
+                    setFormValues();
+                    setStatusMsg();
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+
+        // 既存の値を再設定 @todo relationitem.jsは作り直した方がいい。現状は暫定措置
+        {/literal}
+        {foreach name="loop" item="relation_list" from=$relation_list}
+        addCtrl("{$relation_list.table_prefix}", "{$relation_list.table_idval}", "{$relation_list.table_titleval|escape:"javascript"}", "{$form.frozen}", "{$relation_list.table_idnm}") ;
+        {/foreach }
+        {literal}
+
+    }
+    
+    /**
+    * 編集画面の表示
+    */
+    function showEditField(){
+        $("#relatedcontents_settings_edit_field").dialog("open");
+    }
+    
+    /**
+    * ステータスメッセージのセット
+    */
+    function setStatusMsg(){
+        var num = $("#relatedcontents_settings_edit_field #sel input[name^='relation']").size();
+        var msg = num+"件";
+        $("#relatedcontents_settings .status_msg").html(msg);
+    }
+
+    /**
+    * フォームの値をセット
+    */
+    function setFormValues(){
+        var relationForms = $("#relatedcontents_settings_edit_field #sel input[name^='relation']").clone(false);
+        $("#relatedcontents_settings_form_field").empty().append(relationForms);
+    }
+}(jQuery));
+</script>
+
+{/literal}
+
+<div id="relatedcontents_settings" class="metasettings">
+    <h1 class="title">{'/label/related_contents'|translate}{*関連するコンテンツ*}</h1>
+    <p class="status_msg">status message here.</p>
+
+    {* 送信用データ *}
+    <div id="relatedcontents_settings_form_field" style="display:none;">
+    </div>
+
+    {* 編集画面 *}
+    <div id="relatedcontents_settings_edit_field">
+        <div id="edit-linkage" class="entry-option">
+
+            <div id="sel">
+{*
+            {foreach name="relation_list" item="relation_list" from=$relation_list}
+                <input type="hidden" name="relation[{$smarty.foreach.relation_list.index}]" value="{$relation_list.table_prefix}:{$relation_list.table_idval}:{$relation_list.table_titleval|escape:"javascript"}">
+            {/foreach }
+*}
+                
+            </div><!-- 常に表示 -->
+
+            <div id="relation_edit3">
+                <p id="inputArea2[relation]" style="display:none;text-align:right;"><a href="javascript:void(0)" onclick="display('inputArea[relation]');display('inputArea2[relation]');return false;" >{'/label/add'|translate}</a></p>
+
+                <div class="relation_box" id="inputArea[relation]">
+                  <iframe id="inputFrame[relation]" frameborder="0" marginwidth="0" marginheight="0" src="/js/infoInput.php?order=relation&type={$mod|default:$mt}" width="100%" height="100%"></iframe>
+                </div>
+            </div><!-- //relation_edit3 -->
+
+            <div id="relationArea" style="position:absolute; visibility:hidden;">
+                <iframe name="myFrame2" id="myFrame2" frameborder="0" marginwidth="0" marginheight="0" src="/js/empty.html" scrolling="no" width="110%" height="110%"></iframe>
+            </div>
+
+        </div>
+    </div>
+</div>

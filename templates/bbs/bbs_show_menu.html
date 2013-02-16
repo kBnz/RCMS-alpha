@@ -1,0 +1,27 @@
+{assign var=site_file value=$smarty.const.SITE_TEMPLATE_PATH|cat:'/bbs/bbs_show_menu.html'}
+{if file_exists($site_file)}
+  {include file=$site_file}
+{else}
+<div class="navi">
+[ <a href="/bbs_show/MODE=input&bbs_header_id={$bbs_header_id}">{'/label/first_posting'|translate}{*新規投稿*}</a> | 
+{if $viewmode eq 'tree'}
+<b>{'/label/tree'|translate}{*ツリー*}</b>
+{else}
+<a href="/bbs_show/vm=tree&bbs_header_id={$bbs_header_id}">{'/label/tree'|translate}{*ツリー*}</a>
+{/if}
+ | 
+{if $viewmode eq 'thread'}
+<b>{'/label/thread'|translate}{*スレッド*}</b>
+{else}
+<a href="/bbs_show/vm=thread&bbs_header_id={$bbs_header_id}">{'/label/thread'|translate}{*スレッド*}</a>
+{/if}
+ | 
+{if $viewmode eq 'list'}
+<b>{'/label/list'|translate}{*一覧*}</b>
+{else}
+<a href="/bbs_show/vm=list&bbs_header_id={$bbs_header_id}">{'/label/list'|translate}{*一覧*}</a>
+{/if}
+ | 
+<a href="/bbs_list/">{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</a> ]
+</div>
+{/if}

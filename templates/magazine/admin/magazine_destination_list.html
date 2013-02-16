@@ -1,0 +1,78 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+function switchVal(id, MODE) {
+   document.magazine_destination_list.update_id.value   = id;
+   document.magazine_destination_list.MODE.value = MODE;
+   document.magazine_destination_list.submit();
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/magazine/label/magazine_destination_list'|translate}{*簡易メルマガあて先一覧*}</h2>
+<ul>
+{if $rauth->canInsert("/magazine/item/")}
+<li class="add"><a href="/management/magazine/magazine_destination_edit/magazine_id={$magazine_id}"><span>{'/label/add_destination_btn'|translate}{*あて先追加*}</span></a></li>
+{/if}{* あて先追加 *}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine/label/magazine_list'|translate}</a>
+{'/modules/magazine/label/magazine_destination_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 >> 簡易メルマガあて先一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.magazine_name}</h3>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="magazine_destination_list" method="POST" action="/management/magazine/magazine_destination_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input name="magazine_id" type="hidden" value="{$magazine_id}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="update_id" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'destination_id[]')"></th>
+      <th>{'/label/title'|translate}</th>{* タイトル *}
+      <th style="width:140px;">{'/label/last_updated_time'|translate}</th>{* 最終更新日時 *}
+    </tr>
+    {foreach item=destination_data from=$destination_list}
+    <tr>
+      <td><input type="checkbox" name="destination_id[]" value="{$destination_data.destination_id}" {if !$rauth->canDelete("/magazine/item/$magazine_id")}disabled="disabled"{/if} /></td>
+      <td><a href="/management/magazine/magazine_destination_edit/magazine_id={$magazine_id}&destination_id={$destination_data.destination_id}&pageID={$currentPageID}">{$destination_data.title}</a></td>
+      <td>{$destination_data.update_ymdhi|pg_dateformat}</td>
+    </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

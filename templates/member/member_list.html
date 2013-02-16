@@ -1,0 +1,32 @@
+{module name="member_list"}
+<h2 class="module_title"><span>{'/modules/member/label/member_list'|translate}{*メンバー一覧*}</span></h2>
+<div class="module_contents">
+<p class="page_links">{$page_links}</p>
+<table class="list">
+  <tr>
+    <th>{'/label/image'|translate}{*画像*}</th>
+    <th>{'/label/name'|translate}{*名前*}</th>
+  </tr>
+{foreach name=member item=member from=$memberList}
+  <tr>
+    <td>
+      {if $member.image_s_exist}
+      <a href="/member_detail/id={$member.member_id}"><img src="{$member.image_s_url}" alt="{$member.disp_name}" border="0"></a>
+      {elseif $exists_noimage}
+      <a href="/member_detail/id={$member.member_id}"><img src="/files/member/noimage_s.jpg" alt="{$member.disp_name}" border="0"></a>
+      {/if}
+    </td>
+    <td>
+      {if $member.nickname eq ''}<a href="/member_detail/id={$member.member_id}">{$member.namekana1} {$member.namekana2}</a><br>{/if}
+      <a href="/member_detail/id={$member.member_id}">{$member.disp_name}</a>
+    </td>
+  </tr>
+{/foreach}
+</table>
+<p class="page_links">{$page_links}</p>
+{if $memberList|@count == 0}
+  {* 0件の場合 *}
+  <p>{'/modules/member/msg/no_member_found'|translate}{*該当するメンバーが見つかりませんでした。*}</p>
+{/if}
+</div>
+{/module}

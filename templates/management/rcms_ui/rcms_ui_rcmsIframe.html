@@ -1,0 +1,92 @@
+{literal}
+
+<!-- rcms iFrame -->
+<script type="text/javascript">
+
+(function($){
+
+    /**
+    * iflameを生成、切り替えするプラグイン
+    *
+    * 対象要素の子要素としてiframeを生成する。既に生成済みの場合は既存のiframeを表示する。
+    * 読み込み中は全てのiframeを非表示にして、対象要素に"rcms_ui_loading"クラスを適用する。
+    *
+    * @対象要素  <div>タグなどの<iframe>を子要素に入れられるブロック要素
+    * @param @require  id           識別する為のID
+    * @param @require  url          URL
+    * @param @require  displayName  タブに表示する名前（タブは未実装）
+    *
+    * @使用例
+    *
+    *       <div id="edit_col">
+    *           ここにiframeが追加されていく。
+    *       </div>
+    *
+    *       $("#edit_col").rcmsIframe({id:"hoge",url:"/hoge/bar/foo/",displayName:"hogehoge"});
+    *
+    */
+    jQuery.fn.rcmsIframe = function(options){
+
+        // 引数を用意
+        var options=jQuery.extend({
+            id          : "",
+            url         : "",
+            displayName : ""
+        },options);
+        
+        var target   = this;                                         // 対象オブジェクト
+        var iframes  = function(){return jQuery("iframe",target);};  // iframes (毎回再評価して返す)
+        
+        // 既存のiframeを返す
+        var existIframe = function(needleId){
+            return jQuery("iframe[data-id='"+needleId+"']");
+        };
+        
+        // 新しいiframeを生成して返す
+        var addIframe = function(){
+            
+            var html = "<iframe src='"+options.url+"' data-id='"+options.id+"' data-display-name='"+options.displayName+"' style='display:none;' />";
+            var currentIframe = target.append(html).find("> :last-child");
+            return currentIframe;
+        };
+        
+        // メインシーケンス
+        return this.each(function(){
+            
+            console.log(options.id +"\n"+ options.url +"\n"+ options.displayName);
+            
+            // 引数の確認 全て揃わなければダメ。
+            if ( options.id && options.url && options.displayName ){
+                
+                var nextIframe = existIframe(options.id);
+                
+                if(nextIframe.size()>0){
+                    // 既にある場合
+                    iframes().hide();
+                    nextIframe.show();
+                    
+                }else{
+                    // まだ無い場合
+                    target.addClass("rcms_ui_loading");
+                    iframes().hide();
+                    addIframe().load(function(){
+                        jQuery(this).show();
+                        target.removeClass("rcms_ui_loading");
+                    });
+                    
+                }
+            
+            }
+            
+        });
+    };
+    
+})(jQuery);
+
+</script>
+
+<!-- テンプレートの定義   rcms_ui_iframe_tmpl-->
+<script id="rcms_ui_iframe_tmpl" type="text/x-jquery-tmpl">
+</script>
+
+{/literal}

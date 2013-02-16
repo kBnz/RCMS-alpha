@@ -1,0 +1,1061 @@
+{rcms_include file="management/header.html"}
+
+
+{headblock}
+<link rel="stylesheet" href="/css/management/v2/edit.css">
+<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css">
+<link rel="stylesheet" href="/css/management/v2/page/page_edit.css">
+{/headblock}
+
+
+{literal}
+<!-- サンドボックス -->
+<style type="text/css">
+</style>
+
+
+<script type="text/javascript">
+/**
+* $.rcmsPageContentsController()
+* ページで使用するコンテンツの情報を操作するjQuery関数
+*/
+
+(function($){
+
+    var DEVS = ['pc','mobile','smartphone','facebook','app'];
+    
+    // jQueryオブジェクトを返す関数
+    function model()                {return $("#content_data_sets")}                                  // モデル要素
+    function contents()             {return $(".contents", model())}                                  // モデル要素内の全てのコンテンツ要素
+    function contentById(id)        {return $("[data-contents-id='"+ id +"']",model())}               // 特定のIDのコンテンツ要素
+    function contentsByPlace(place,dev) {
+        dev = (dev === undefined) ? 'pc' : dev;
+        var result = $("."+dev+"_place[value='"+place+"']",contents()).parent();
+        return result;
+    }  // 特定のplaceの全てのコンテンツ要素
+    function modelTmpl()            {return $("#model_tmpl")}                                         // コンテンツ要素のテンプレート
+    
+    // jQueryオブジェクトのvalue値をオブジェクトの配列にして返す。無ければ空配列を返す。
+    function toData(jObj){
+
+        var contentsData = new Array();
+        if(jObj.size()>0){
+            jObj.each(function(){
+                var data = {
+                    moduleType     : $(".module_type"       ,this).val(),
+                    contentsType   : $(".contents_type"     ,this).val(),
+                    template       : $(".template"          ,this).val(),
+                    param          : $(".param"             ,this).val(),
+                    contentsTitle  : $(".contents_title"    ,this).val(),
+                    contentsId     : $(".contents_id"       ,this).val(),
+                    pc : {
+                        weight     : $(".pc_weight"             ,this).val(),
+                        place      : $(".pc_place"              ,this).val(),
+                        isVisible  : $(".pc_is_visible"         ,this).val()
+                    },
+                    mobile : {
+                        weight     : $(".mobile_weight"         ,this).val(),
+                        place      : $(".mobile_place"          ,this).val(),
+                        isVisible  : $(".mobile_is_visible"     ,this).val()
+                    },
+                    smartphone : {
+                        weight     : $(".smartphone_weight"     ,this).val(),
+                        place      : $(".smartphone_place"      ,this).val(),
+                        isVisible  : $(".smartphone_is_visible" ,this).val()
+                    },
+                    facebook : {
+                        weight     : $(".facebook_weight"       ,this).val(),
+                        place      : $(".facebook_place"        ,this).val(),
+                        isVisible  : $(".facebook_is_visible"   ,this).val()
+                    },
+                    app : {
+                        weight     : $(".app_weight"            ,this).val(),
+                        place      : $(".app_place"             ,this).val(),
+                        isVisible  : $(".app_is_visible"        ,this).val()
+                    }
+                };
+                contentsData.push(data);
+            });
+        }
+        return contentsData;
+    }
+    
+    // 上書き、新規追加
+    function setContent(o){
+        
+        var target = contentById(o.contentsId);
+        
+        if(target.size()>0){
+            // 上書き (存在する場合)
+            if( o.moduleType )      { $(".module_type"          ,target).val(o.moduleType); }
+            if( o.contentsType )    { $(".contents_type"        ,target).val(o.contentsType); }
+            if( o.template )        { $(".template"             ,target).val(o.template); }
+            if( o.param )           { $(".param"                ,target).val(o.param); }
+            if( o.contentsTitle )   { $(".contents_title"       ,target).val(o.contentsTitle); }
+            // PC
+            if( o.pc ){
+                if( o.pc.weight )            { $(".pc_weight"             ,target).val(o.pc.weight); }
+                if( o.pc.place )             { $(".pc_place"              ,target).val(o.pc.place); }
+                if( o.pc.isVisible )         { $(".pc_is_visible"         ,target).val(o.pc.isVisible); }
+            }
+            // mobile
+            if( o.mobile ){
+                if( o.mobile.weight )        { $(".mobile_weight"         ,target).val(o.mobile.weight); }
+                if( o.mobile.place )         { $(".mobile_place"          ,target).val(o.mobile.place); }
+                if( o.mobile.isVisible )     { $(".mobile_is_visible"     ,target).val(o.mobile.isVisible); }
+            }
+            // smartphone
+            if( o.smartphone ){
+                if( o.smartphone.weight )    { $(".smartphone_weight"     ,target).val(o.smartphone.weight); }
+                if( o.smartphone.place )     { $(".smartphone_place"      ,target).val(o.smartphone.place); }
+                if( o.smartphone.isVisible ) { $(".smartphone_is_visible" ,target).val(o.smartphone.isVisible); }
+            }
+            // facebook
+            if( o.facebook ){
+                if( o.facebook.weight )      { $(".facebook_weight"       ,target).val(o.facebook.weight); }
+                if( o.facebook.place )       { $(".facebook_place"        ,target).val(o.facebook.place); }
+                if( o.facebook.isVisible )   { $(".facebook_is_visible"   ,target).val(o.facebook.isVisible); }
+            }
+            // app
+            if( o.app ){
+                if( o.app.weight )           { $(".app_weight"            ,target).val(o.app.weight); }
+                if( o.app.place )            { $(".app_place"             ,target).val(o.app.place); }
+                if( o.app.isVisible )        { $(".app_is_visible"        ,target).val(o.app.isVisible); }
+            }
+
+            return true;
+
+        }else if(o.contentsId && o.place){
+            // 新規追加 (存在しない場合)
+            o.i      = contents().size();       // name属性で使うイテレータ
+            o.isMain = o.i==0 ? true : false;   // 初めてならMainモジュール
+
+            var html = modelTmpl().tmpl(o);
+            model().append(html);
+
+            return true;
+        }
+        return false;
+    
+    }
+    
+    
+    /**
+    * 外部から呼び出し可能な関数の定義
+    */
+    var methods = {
+
+        /**
+        * すべてのコンテンツを返す
+        */
+        getData : function(){
+            return toData( contents() );
+        },
+        
+
+        /**
+        * 場所ごとのコンテンツの情報を返す
+        * 
+        * @param  array  place   = [place1,place2,...]
+        * @param  String dev     = "pc"
+        * @return object{} = { place:'place1', contents:[{data},{data},{data}],
+        *                      place:'place2', contents:[{data},{data}]
+        *                    }
+        */
+        getDataByPlaces : function(places,dev){
+
+            // 引数が配列で無かったら配列にする
+            if(!(places instanceof Array) ){
+                var tmp    = places;
+                places     = new Array();
+                places[0]  = tmp;
+            }
+            var result = new Array();   // 返り値を格納する配列
+
+            // weightでソートする為の関数 使用例: result.sort(result.asc);
+            var sortFunc = {
+                pc:{
+                    asc  : function(a, b){return ( a.pc.weight > b.pc.weight ? 1 : -1)},
+                    desc : function(a, b){return ( a.pc.weight < b.pc.weight ? 1 : -1)}
+                },
+                mobile:{
+                    asc  : function(a, b){return ( a.mobile.weight > b.mobile.weight ? 1 : -1)},
+                    desc : function(a, b){return ( a.mobile.weight < b.mobile.weight ? 1 : -1)}
+                },
+                smartphone:{
+                    asc  : function(a, b){return ( a.smartphone.weight > b.smartphone.weight ? 1 : -1)},
+                    desc : function(a, b){return ( a.smartphone.weight < b.smartphone.weight ? 1 : -1)}
+                },
+                facebook:{
+                    asc  : function(a, b){return ( a.facebook.weight > b.facebook.weight ? 1 : -1)},
+                    desc : function(a, b){return ( a.facebook.weight < b.facebook.weight ? 1 : -1)}
+                },
+                app:{
+                    asc  : function(a, b){return ( a.app.weight > b.app.weight ? 1 : -1)},
+                    desc : function(a, b){return ( a.app.weight < b.app.weight ? 1 : -1)}
+                }
+            };
+
+            $.each(places,function(){
+                var place = String(this);
+                var data  = toData( contentsByPlace(place,dev) );
+                result.push({"place":place, "contents":data, "sortFunc":sortFunc});
+            });
+
+            return result;
+        },
+
+
+        /**
+        * コンテンツIDごとのコンテンツの情報を返す
+        * 
+        * @param  array    = [id1,id2,...]
+        * @return object{} = { id:'id1', contents:{data},
+        *                      id:'id2', contents:{data}
+        *                    }
+        */
+        getDataByContentsIds : function(ids){
+
+            // 引数が配列で無かったら配列にする
+            if(!(ids instanceof Array) ){
+                var tmp = ids;
+                ids     = new Array();
+                ids[0]  = tmp;
+            }
+            var result = new Array();   // 返り値を格納する配列
+
+            $.each(ids,function(){
+            
+                var id    = String(this);
+                var data  = toData( contentById(id) );
+                result.push({"id":id,"contents":data});
+            
+            });
+            return result;
+        },
+        
+        setContent : function(o){
+            setContent(o);
+        },
+        
+        // 試験用
+        test : function(o){
+            setContent(o);
+        }
+
+    };
+    
+    // jQueryに関数を追加
+    $.extend({
+        rcmsPageContentsController : function(method) {
+
+            if ( methods[method] ) {
+                return methods[ method ]
+                    .apply( this, Array.prototype.slice.call( arguments, 1 ));
+            } else if ( typeof method === 'object' || ! method ) {
+                return methods.getData.apply( this, arguments );
+            } else {
+                $.error(  method + " does not exist on rcmsPageContentsController.");
+                return this;
+            }
+        }
+    })
+
+})(jQuery);
+
+</script>
+
+<!-- テンプレートの定義   contents_tmpl-->
+<script id="model_tmpl" type="text/x-jquery-tmpl">
+
+    <fieldset class="contents {{if isMain}}main_content{{else}}sub_content{{/if}}" data-contents-id="${contentsId}" data-place="${pc.place}" >
+        <input type="hidden" name="module_type[${i}]"      class="module_type"      value="${moduleType}" />
+        <input type="hidden" name="contents_type[${i}]"    class="contents_type"    value="${contentsType}" />
+        <input type="hidden" name="template[${i}]"         class="template"         value="${template}" />
+        <input type="text" name="param[${i}]"            class="param"            value="${param}" />
+        <input type="text" name="contents_title[${i}]"   class="contents_title"   value="${contentsTitle}" />
+        <input type="text" name="contents_id[${i}]"      class="contents_id"      value="${contentsId}" />
+
+        <!--name属性は暫定-->
+        <input type="text" name="weight[${i}]"            class="pc_weight"             value="${pc.weight}" />
+        <input type="text" name="place[${i}]"             class="pc_place"              value="${pc.place}" />
+        <input type="text" name=""                        class="pc_is_visible"         value="${pc.isVisible}" />
+        
+        <input type="hidden" name="mobile_order_no2[${i}]"  class="mobile_weight"         value="${mobile.weight}" />
+        <input type="hidden" name=""                        class="mobile_place"          value="${mobile.place}" />
+        <input type="hidden" name="mobile_flg2[${i}]"       class="mobile_is_visible"     value="${mobile.isVisible}" />
+        
+        <input type="hidden" name=""                        class="smartphone_weight"     value="${smartphone.weight}" />
+        <input type="hidden" name=""                        class="smartphone_place"      value="${smartphone.place}" />
+        <input type="hidden" name="smartphone_flg2[${i}]"   class="smartphone_is_visible" value="${smartphone.isVisible}" />
+        
+        <input type="hidden" name=""                        class="facebook_weight"       value="${facebook.weight}" />
+        <input type="hidden" name=""                        class="facebook_place"        value="${facebook.place}" />
+        <input type="hidden" name="social_flg2[${i}]"       class="facebook_is_visible"   value="${facebook.isVisible}" />
+        
+        <input type="hidden" name=""                        class="app_weight"            value="${app.weight}" />
+        <input type="hidden" name=""                        class="app_place"             value="${app.place}" />
+        <input type="hidden" name=""                        class="app_is_visible"        value="${app.isVisible}" />
+
+    </fieldset>
+</script>
+
+
+
+
+<!-- サンドボックス -->
+<script type="text/javascript">
+
+// グローバル定数の設定 (IE,Operaではconstが使えないからvarを使う)
+var LAYOUT_TABLES = {
+    pc:{
+        {/literal}{foreach from=$arrTemplateType key=key item=row name=loop}
+        '{$key}' : '{rcms_includelayout no=$key}'{if $smarty.foreach.loop.last}{else},{/if}
+        {/foreach}{literal}
+    },
+    mobile:{
+        '1' : '<table class="layout_table" id="cust_tbl" width="100%"><tr><td><div id="cust_tbl2"><div class="target" id="place_main_module" data-place="main_module"></div></div></td></tr></table>'
+    },
+    smartphone:{
+        '1' : '<table class="layout_table" id="cust_tbl" width="100%"><tr><td><div id="cust_tbl2"><div class="target" id="place_main_module" data-place="main_module"></div></div></td></tr></table>'
+    },
+    facebook:{
+        {/literal}{foreach from=$arrTemplateType key=key item=row name=loop}
+        '{$key}' : '{rcms_includelayout no=$key}'{if $smarty.foreach.loop.last}{else},{/if}
+        {/foreach}{literal}
+    },
+    app:{
+        {/literal}{foreach from=$arrTemplateType key=key item=row name=loop}
+        '{$key}' : '{rcms_includelayout no=$key}'{if $smarty.foreach.loop.last}{else},{/if}
+        {/foreach}{literal}
+    }
+};
+var MODULES = {/literal}{$moduleInfo|@json_encode}{literal};
+var PLACES  = {
+    pc:['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}],
+        
+    mobile:['main_module'],
+    smartphone:['main_module'],
+    facebook:['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}],
+    app:['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}]
+};
+
+(function($) {
+
+    // jQueryオブジェクト用のローカル変数を宣言
+    var devSelector,
+        mainContainer,
+        layoutContainers,
+        layoutFields,
+        layoutTemplateSelectors;
+    
+    var pageLayoutNodeTmpl;
+    
+    function targetByDev(dev){
+        dev = dev ? dev : devSelector.val();
+        return $( ".target", layoutFields.filter("[data-dev="+dev+"]") );
+    }
+    
+    // 要素のjQueryオブジェクトを準備
+    function installElements(){
+        // デバイス切り替え系
+        devSelector             = $("#device_selector");
+        mainContainer           = $("#edit_fields_container");
+        layoutContainers        = $(".layout_container",mainContainer);
+        layoutFields            = $(".layout_field",mainContainer);
+        layoutTemplateSelectors = $(".layout_template_selector",mainContainer);
+        
+        // レイアウト系
+        pageLayoutNodeTmpl      = $("#page_layout_node_tmpl");
+    }
+    
+    // イベントの登録
+    function installEvents(){
+        // ハンドルの登録
+        $("#main_container").rcmsResizableCells({cell1:"#left_col",cell2:"#right_col",handle:"#handle_v",cell1MinWidth:300,cell2MinWidth:200,cell2MaxWidth:400});
+        $("#main_field").rcmsResizableCells({cell1:"#main_header",cell2:"#main_container",handle:"#handle_main",direction:"vertical",cell1MinHeight:170,cell1MaxHeight:250});
+        
+        // モジュールのマウスダウン
+        //$(".content_node").live("mousedown",showContentDetail);
+        
+        // モジュールの編集
+        $(".edit_content_btn").live("click",showModuleEditor);
+        
+        // 基本情報の編集
+        $("#edit_basic_settings_btn").click(showBasicSettingsEditor);
+        
+        
+// ============テストコード================
+        $("#contents_selector").rcmsCustomizableTemplatePicker();
+        $("#contents_selector").rcmsCustomizableTemplatePicker("loadContentsList","hello world");
+// ============テストコード================
+
+
+        
+        // デバイスの切り替え
+        devSelector.change(toggleLayoutContainer);
+        layoutTemplateSelectors.change(drawLayoutTable);
+        
+        $(".contents").draggable({
+            connectToSortable: ".target",
+            zIndex:100,
+            appendTo: 'body',
+            helper: "clone"
+        });
+
+    }
+
+    function init(){
+        drawLayoutTable();
+        setDropdownItem();
+    }
+    
+    // モジュールエディタの表示
+    function showModuleEditor(){
+        $( "#module_editor" ).dialog({
+            title     : "モジュール設定",
+            resizable : true,
+            height    : 500,
+            width     : 600,
+            modal     : true,
+            buttons: {
+                Ok : function() {
+                    $( this ).dialog( "close" );
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+
+        });
+        console.log("open editor");
+        
+    }
+    
+    // 基本設定エディタの表示
+    function showBasicSettingsEditor(){
+        $( "#basic_settings_editor" ).dialog({
+            title     : "基本設定",
+            resizable : true,
+            height    : 400,
+            width     : 500,
+            modal     : true,
+            buttons: {
+                Ok : function() {
+                    $( this ).dialog( "close" );
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+
+        });
+        console.log("open editor");
+    }
+    
+    // LayoutContainerの切り替え
+    function toggleLayoutContainer(){
+        var dev = devSelector.val();
+        layoutContainers.hide();
+        layoutContainers.filter("[data-dev="+dev+"]").show();
+        drawLayoutTable();
+
+    }
+    
+    // コンテンツを非表示にする
+    function delNode(){
+        var dev = devSelector.val();
+        var id  = $(this).parent().data("contents-id");
+        
+        $(this).parent().remove();
+        var o  = eval("({ 'contentsId':'" + id + "','" + dev + "':{ 'isVisible':'0'} })");
+
+        $.rcmsPageContentsController("setContent",o);
+        renumberWeight();
+    }
+    
+    // レイアウトテーブルを描画
+    function drawLayoutTable(){
+    
+        var dev      = devSelector.val();
+        var layoutId = layoutTemplateSelectors.filter("[data-dev="+dev+"]").val();
+
+        // テーブルの枠組みを描画
+        layoutFields.filter("[data-dev="+dev+"]").html(LAYOUT_TABLES[dev][layoutId]);
+        
+        // コンテンツを描画
+        var allContents = $.rcmsPageContentsController("getDataByPlaces",PLACES[dev],dev);
+
+        // ソート
+        for(var i=0; i < allContents.lenght; i++){
+            allContents[i].sort(allContents[i].sortFunc[dev].desc);
+        }
+        console.log(allContents);
+
+        $.each(allContents,function(){
+            if(this.contents.length > 0 && this.place){
+                $.each(this.contents,function(){
+                    if(this[dev].isVisible ==1){
+                        var html = pageLayoutNodeTmpl.tmpl(this);
+                        $( "#place_" + this[dev].place ,layoutFields.filter("[data-dev="+dev+"]") ).append(html);
+                    }
+                });
+            }
+        });
+
+        // イベントを登録
+        targetByDev().sortable( {connectWith: ".target", update : renumberWeight, placeholder: "content_node_placeholder", forcePlaceholderSize: true} );
+        targetByDev().disableSelection();
+        
+        $(".del_node_btn").click(delNode);
+        
+        
+    
+    }
+    
+    // コンテンツの設定フィールドを表示
+    function showContentDetail(){
+
+        var id = $(this).data("contents-id");
+        var data = $.rcmsPageContentsController("getDataByContentsIds",id);
+        $.each(data,function(){
+            var html = $("#page_layout_content_detail_tmpl").tmpl(this.contents);
+            $("#contents_settings_field").html(html);
+        });
+        
+    }
+    
+    function renumberWeight(){
+        
+        var dev = devSelector.val();
+        
+        targetByDev().each(function(){
+            // placeごとのループ
+            var place    = $(this).data("place");
+            var contents = $(".content_node",this);
+            var w        = contents.size();
+
+            contents.each(function(){
+                // place内でのループ
+                var id = $(this).data("contents-id");
+                var o  = eval("({ 'contentsId':'" + id + "','" + dev + "':{ 'place':'" + place + "', 'weight':'" + w + "','isVisible':'1'} })");
+//console.log(o);
+                $.rcmsPageContentsController("setContent",o);
+                w--;
+            });
+        
+        });
+        drawLayoutTable();
+    
+    }
+    function setDropdownItem(){
+
+        $("#page_auth").rcmsDropdown({close_page_auth:true});
+
+    }
+
+    
+    // 初期化
+    $(document).ready(function(){
+        installElements();
+        installEvents();
+        init();
+    });
+
+})(jQuery);
+
+</script>
+
+<!-- テンプレートの定義   rcms_ui_customizable_template_picker_tmpl-->
+<script id="page_layout_node_tmpl" type="text/x-jquery-tmpl">
+    
+    <div class="content_node" data-contents-id="${contentsId}" >
+        <h2 class="content_title">${moduleType}</h2>
+        <dl>
+            <dt>weight</dt><dd>${pc.weight}</dd>
+            <dt>contentsId</dt><dd>${contentsId}</dd>
+        </dl>
+        <!--
+        <label class="del_node_btn">取り除く</label>
+        -->
+        <label class="edit_content_btn"><img src="../../../images/common/edit_btn.png"></label>
+    </div>
+
+</script>
+
+<!-- テンプレートの定義   rcms_ui_customizable_template_picker_tmpl-->
+<script id="page_layout_content_detail_tmpl" type="text/x-jquery-tmpl">
+    
+    <h2 class="content_title">${moduleType}</h2>
+    <dl>
+        <dt>moduleType    </dt><dd>${moduleType}</dd>
+        <dt>contentsType  </dt><dd>${contentsType}</dd>
+        <dt>template      </dt><dd>${template}</dd>
+        <dt>param         </dt><dd>${param}</dd>
+        <dt>contentsTitle </dt><dd>${contentsTitle}</dd>
+        <dt>mobileOrderNo2</dt><dd>${mobileOrderNo2}</dd>
+        <dt>mobileFlg2    </dt><dd>${mobileFlg2}</dd>
+        <dt>smartphoneFlg2</dt><dd>${smartphoneFlg2}</dd>
+        <dt>socialFlg2    </dt><dd>${socialFlg2}</dd>
+        <dt>contentsId    </dt><dd>${contentsId}</dd>
+        <dt>weight        </dt><dd>${weight}</dd>
+        <dt>place         </dt><dd>${place}</dd>
+    </dl>
+</script>
+{/literal}
+
+
+<!-- モジュールエディタ -->
+<div id="module_editor" style="display:none;">
+    <h3>独自タイトル</h3>
+    <input type="text" />
+    <div class="module_arrow_box">
+        <h3>モジュールの種類</h3>
+        <select><option></option></select></div>
+    <div class="controller_arrow_box">
+        <div class="contents_container">
+            <h3 class="contents_title">コンテンツ</h3>
+
+        <!-- テストコードここから -->
+        <div id="contents_selector" data-query="" data-controller="" data-selected-content="">content selector test</div>
+        <!-- テストコードここまで -->
+
+
+
+{*
+            <div class="contents_item">
+                <div class="contents_check">
+                    <input type="checkbox" name value="自動で設定">自動で設定
+                </div>
+                <div class="contents_box">
+                    <div class="contents_header">グループ</div>
+                    <select size="7"><option value="">グループA</option><option value="">グループB</option><option value="">グループC</option><option value="">グループD</option><option value="">グループE</option><option value="">グループF</option><option value="">グループG</option></select>
+                </div>
+                <div class="contents_box">
+                    <div class="contents_header">カテゴリ</div>
+                    <select size="7"><option value="">カテゴリA</option><option value="">カテゴリB</option><option value="">カテゴリC</option><option value="">カテゴリD</option><option value="">カテゴリE</option><option value="">カテゴリF</option><option value="">カテゴリG</option></select>
+                </div>
+                <div class="contents_box">
+                    <div class="contents_header">記事</div>
+                    <select size="7"><option value="">記事A</option><option value="">記事B</option><option value="">記事C</option><option value="">記事D</option><option value="">記事E</option><option value="">記事F</option><option value="">記事G</option></select>
+                </div>
+            </div>
+*}
+        </div>
+        <div class="controller_container">
+            <h3 class="controller_title">コントローラ</h3>
+            <select size="11"><option value="">詳細用</option><option value="">一覧用</option><option value="">カスタマイズ用1</option><option value="">カスタマイズ用2</option><option value="">カスタマイズ用3</option><option value="">カスタマイズ用4</option><option value="">カスタマイズ用5</option></select>
+        </div>
+        <div class="temperate_container">
+            <h3 class="temperate_title">テンプレート</h3>
+            <select size="11"><option value="">テンプレート名1</option><option value="">テンプレート名2</option><option value="">テンプレート名3</option><option value="">テンプレート名4</option><option value="">テンプレート名5</option><option value="">テンプレート名6</option><option value="">テンプレート名7</option></select>
+        </div>
+    </div>
+    <div class="module_container">
+        <h3>プレビュー</h3>
+        <div class="preview_container">
+            <div class="tape"></div>
+            <div class="preview_content"></div>
+        </div>
+    </div>
+    <h3>パラメーター</h3>
+    <div class="header">
+        <div class="col_1">パラメーター名</div>
+        <div class="col_2">値</div>
+        <div class="col_3">言語</div>
+        <div class="col_4">デバイス</div>
+    </div>
+    <div class="content">
+        <ul>
+            <li>
+                <div class="grid_col_1">
+                    <span>contents_type</span>
+                </div>
+                <div class="grid_col_2">
+                    <span>4</span>
+                </div>
+                <div class="grid_col_3">
+                    <span>日本語</span>
+                </div>
+                <div class="grid_col_4">
+                    <span>PC</span>
+                </div>
+            </li>
+            <li>
+                <div class="grid_col_1">
+                    <span>contents_type</span>
+                </div>
+                <div class="grid_col_2">
+                    <span>4</span>
+                </div>
+                <div class="grid_col_3">
+                    <span>日本語</span>
+                </div>
+                <div class="grid_col_4">
+                    <span>PC</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="parameter_edit">
+        <ul>
+            <li>
+                <button>＋</button>
+            </li>
+            <li>
+                <button>−</button>
+            </li>
+        </ul>
+    </div>
+    <h3>デバイス</h3></div>
+<!-- モジュールエディタここまで -->
+
+<!-- 基本設定エディタ -->
+<div id="basic_settings_editor" style="display:none;">
+
+<table>
+    <tr>
+        <th>ページ名</th>
+        <td><input id="page_nm" name="page_nm" type="text" value="{$pageForm.page_nm}" /></td>
+    </tr>
+    <tr>
+        <th>URL</th>
+        <td>
+            {if $pageForm.page_id == ""}
+                {$smarty.const.ROOT_URL}/<input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm2}"/>
+            {else}
+                {$smarty.const.ROOT_URL}/<input id="page_sysnm" name="page_sysnm" type="text" readonly="readonly" value="{$pageForm.page_sysnm2}"/>
+            {/if}
+        </td>
+    </tr>
+    <tr>
+        <th>エイリアス</th>
+        <td>
+        {if $docmeta.is_primary}
+            {$smarty.const.ROOT_URL}/<input name="page_sysnm_alias" type="text" value="{$pageForm.page_sysnm_alias}">
+        {else}
+            <input id="page_sysnm_alias" name="page_sysnm_alias" type="hidden" value="{$pageForm.page_sysnm_alias}"/>
+        {/if}
+        </td>
+    </tr>
+    {if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+        <tr>
+            <th>SSL</th>
+            <td><input id="ssl_flg" name="ssl_flg" type="checkbox" value="1" {if $pageForm.ssl_flg}checked="checked"{/if}/><label for="ssl_flg">SSL(暗号化通信)を使用する</label></td>
+        </tr>
+    {else}
+        <input id="ssl_flg" name="ssl_flg" type="hidden" value="0"/>
+    {/if}
+    <tr>
+        <th>メタ情報</th>
+        <td>
+            <table>
+                <tr>
+                    <td>{'/label/meta_title'|translate}{*METAタイトル*}</td>
+                    <td><input id="title" name="title" type="text" value="{$pageForm.title}" /></td>
+                </tr>
+                <tr>
+                    <td>{'/label/meta_explanation'|translate}{*META説明文*}</td>
+                    <td><input id="description" name="description" type="text" value="{$pageForm.description}" /></td>
+                </tr>
+                <tr>
+                    <td>{'/label/meta_keyword'|translate}{*METAキーワード*}</td>
+                    <td><input id="keywords" name="keywords" type="text" value="{$pageForm.keywords}" /></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</div>
+<!-- 基本設定エディタここまで -->
+
+
+<div id="main_field">
+
+    <div id="handle_main"></div>
+
+    <div id="main_header">
+        
+
+        
+        <div id="edit_detail">
+            <div class="view_container">
+            </div>
+            <div class="info_container">
+                <input id="page_nm" name="page_nm" type="text" value="{$pageForm.page_nm}" />
+                <button id="edit_basic_settings_btn">編集</button>
+
+
+{*
+                <div id="tool_bar" class="rcms_ui_toolbar">
+                    <button id="page_auth" class="rcms_ui_select"><span class="icon-time"></span>{$pageForm.page_auth}</button>
+                    <ul>
+                        <div><li id="close_page_auth">閉じる</li></div>
+                    {foreach from=$arrAdmin key=group_id  item=admin_nm}
+                        <div><li><input type="checkbox" name="page_auth[]" value="{$group_id}" />{$admin_nm}</li></div>
+                    {/foreach}
+                    </ul>
+                </div>
+*}
+
+             </div>
+        </div>
+    </div>
+    <div id="edit_tool_bar" class="rcms_ui_toolbar">
+        <ul>
+            <li class="rcms_ui_check">
+                <input type="checkbox" name="" value="有効">このページを有効にする
+            </li>
+            <li>
+                <button id="css_btn" class="rcms_ui_btn">
+                    CSS編集
+                </button>
+            </li>
+            <li>
+                <button id="view_selector" class="rcms_ui_select">
+                    閲覧制限
+                </button>
+            </li>
+            <li>
+                <button id="setup_dropdown_btn" class="rcms_ui_dropdown">
+                    <span class="icon-cog"></span>
+                </button>
+            </li>
+            <li class="update_btn">
+                <a herf="#">更新する</a>
+            </li>
+        </ul>
+    </div>
+    <div id="main_container">
+    
+        <div id="handle_v"></div>
+        <div id="left_col">
+            <div id="edit_fields_container">
+                <select id="device_selector" value="pc">
+                    <option value="pc">pc</option>
+                    <option value="mobile">mobile</option>
+                    <option value="smartphone">smartphone</option>
+                    <option value="facebook">facebook</option>
+                    <option value="app">app</option>
+                </select>
+    
+                <!-- PC用レイアウト -->
+                <div id="pc_layout_container" class="layout_container" data-dev="pc">
+                    <select name="page_template" id="pc_layout_template_selector" class="layout_template_selector" data-dev="pc"><!--name暫定対応-->
+                        {html_options options=$arrTemplateType selected=$pageForm.page_template}
+                    </select>
+                    <div id="pc_layout_field" class="layout_field" data-dev="pc"></div>
+                </div>
+                
+                <!-- mobiel用レイアウト -->
+                <div id="mobile_layout_container" class="layout_container" data-dev="mobile">
+                    <select name="" id="mobile_layout_template_selector" class="layout_template_selector" data-dev="mobile"><!--name暫定対応-->
+                        <option value="1">1段組</option>
+                    </select>
+                    <div id="mobile_layout_field" class="layout_field" data-dev="mobile"></div>
+                </div>
+                
+                <!-- smartphone用レイアウト -->
+                <div id="smartphone_layout_container" class="layout_container" data-dev="smartphone">
+                    <select name="" id="smartphone_layout_template_selector" class="layout_template_selector" data-dev="smartphone"><!--name暫定対応-->
+                        <option value="1">1段組</option>
+                    </select>
+                    <div id="smartphone_layout_field" class="layout_field" data-dev="smartphone"></div>
+                </div>
+                
+                <!-- facebook用レイアウト -->
+                <div id="facebook_layout_container" class="layout_container" data-dev="facebook">
+                    <select name="" id="facebook_layout_template_selector" class="layout_template_selector" data-dev="facebook"><!--name暫定対応-->
+                        {html_options options=$arrTemplateType selected=$pageForm.page_template}
+                    </select>
+                    <div id="facebook_layout_field" class="layout_field" data-dev="facebook"></div>
+                </div>
+                
+                <!-- app用レイアウト -->
+                <div id="app_layout_container" class="layout_container" data-dev="app">
+                    <select name="" id="app_layout_template_selector" class="layout_template_selector" data-dev="app"><!--name暫定対応-->
+                        {html_options options=$arrTemplateType selected=$pageForm.page_template}
+                    </select>
+                    <div id="app_layout_field" class="layout_field" data-dev="app"></div>
+                </div>
+            </div>
+
+{*  ============================= コンテンツ設定ブロック ============================== *}
+
+        
+        </div>
+            
+        <div id="right_col">
+            <div id="contents_settings_field">
+    
+    
+    
+                <div id="content_data_sets">
+                <!--メインコンテンツ データセット-->
+                    <fieldset class="contents main_content" data-contents-id="{$contForm[0].contents_id}" data-place="main_module">
+                        <legend>メインコンテンツ</legend>
+                        <input type="hidden" name="module_type[0]"      class="module_type"      value="{$contForm[0].module_type}" />
+                        <input type="hidden" name="contents_type[0]"    class="contents_type"    value="{$contForm[0].contents_type}" />
+                        <input type="hidden" name="template[0]"         class="template"         value="{$contForm[0].template}" />
+                        <input type="text"   name="param[0]"            class="param"            value="{$contForm[0].param|escape}" placeholder="パラメータ"/>
+                        <input type="text"   name="contents_title[0]"   class="contents_title"   value="{$contForm[0].contents_title|escape}" placeholder="サブタイトル"/>
+                        <input type="text"   name="contents_id[0]"      class="contents_id"      value="{$contForm[0].contents_id}" />
+                
+                        <input type="text"   name="weight[{$i}]"            class="pc_weight"             value="{$contForm[0].weight|escape}" />
+                        <input type="text"   name="place[{$i}]"             class="pc_place"              value="main_module" />
+                        <input type="text"   name=""                        class="pc_is_visible"         value="1" />
+                        
+                        <input type="hidden" name="mobile_order_no2[{$i}]"  class="mobile_weight"         value="{$contForm[0].mobile_order_no}" />
+                        <input type="hidden" name=""                        class="mobile_place"          value="main_module" />
+                        <input type="hidden" name="mobile_flg2[{$i}]"       class="mobile_is_visible"     value="{$contForm[0].mobile_flg}" />
+                        
+                        <input type="hidden" name=""                        class="smartphone_weight"     value="{$contForm[0].mobile_order_no}" />
+                        <input type="hidden" name=""                        class="smartphone_place"      value="main_module" />
+                        <input type="hidden" name="smartphone_flg2[{$i}]"   class="smartphone_is_visible" value="{$contForm[0].smartphone_flg}" />
+                        
+                        <input type="hidden" name=""                        class="facebook_weight"       value="{$contForm[0].weight|escape}" />
+                        <input type="hidden" name=""                        class="facebook_place"        value="{$contForm[0].place|escape}" />
+                        <input type="hidden" name="social_flg2[{$i}]"       class="facebook_is_visible"   value="{$contForm[0].social_flg}" />
+                        
+                        <input type="hidden" name=""                        class="app_weight"            value="{$contForm[0].weight|escape}" />
+                        <input type="hidden" name=""                        class="app_place"             value="{$contForm[0].place|escape}" />
+                        <input type="hidden" name=""                        class="app_is_visible"        value="1" />
+                
+                
+                
+                    </fieldset>
+                
+                
+                <!--サブコンテンツ データセット-->
+                {assign var=blnLimiteduser value=$rauth->unlimitedUpdate("/page/item/$page_id", $docmeta.lang)}
+                {section start=1 name="loopname" loop=$contForm}
+                
+                    {assign var=i value=$smarty.section.loopname.index}
+                    {assign var=contents_id value=$contForm[loopname].contents_id}
+                
+                    <fieldset class="contents sub_content" data-contents-id="{$contForm[loopname].contents_id}" data-place="{$contForm[loopname].place|escape}">
+                        <legend>サブコンテンツ</legend>
+                        <input type="hidden" name="module_type[{$i}]"      class="module_type"      value="{$contForm[loopname].module_type}" />
+                        <input type="hidden" name="contents_type[{$i}]"    class="contents_type"    value="{$contForm[loopname].contents_type}" />
+                        <input type="hidden" name="template[{$i}]"         class="template"         value="{$contForm[loopname].template}" />
+                        <input type="text"   name="param[{$i}]"            class="param"            value="{$contForm[loopname].param|escape}" placeholder="パラメータ"/>
+                        <input type="text"   name="contents_title[{$i}]"   class="contents_title"   value="{$contForm[loopname].contents_title|escape}" placeholder="サブタイトル"/>
+                        <input type="text"   name="contents_id[{$i}]"      class="contents_id"      value="{$contForm[loopname].contents_id}" />
+                
+                        <input type="text"   name="weight[{$i}]"            class="pc_weight"             value="{$contForm[loopname].weight|escape}" />
+                        <input type="text"   name="place[{$i}]"             class="pc_place"              value="{$contForm[loopname].place|escape}" />
+                        <input type="text"   name=""                        class="pc_is_visible"         value="1" />
+                        
+                        <input type="hidden" name="mobile_order_no2[{$i}]"  class="mobile_weight"         value="{$contForm[loopname].mobile_order_no}" />
+                        <input type="hidden" name=""                        class="mobile_place"          value="main_module" />
+                        <input type="hidden" name="mobile_flg2[{$i}]"       class="mobile_is_visible"     value="{$contForm[loopname].mobile_flg}" />
+                        
+                        <input type="hidden" name=""                        class="smartphone_weight"     value="{$contForm[loopname].mobile_order_no}" />
+                        <input type="hidden" name=""                        class="smartphone_place"      value="main_module" />
+                        <input type="hidden" name="smartphone_flg2[{$i}]"   class="smartphone_is_visible" value="{$contForm[loopname].smartphone_flg}" />
+                        
+                        <input type="hidden" name=""                        class="facebook_weight"       value="{$contForm[loopname].weight|escape}" />
+                        <input type="hidden" name=""                        class="facebook_place"        value="{$contForm[loopname].place|escape}" />
+                        <input type="hidden" name="social_flg2[{$i}]"       class="facebook_is_visible"   value="{$contForm[loopname].social_flg}" />
+                        
+                        <input type="hidden" name=""                        class="app_weight"            value="{$contForm[loopname].weight|escape}" />
+                        <input type="hidden" name=""                        class="app_place"             value="{$contForm[loopname].place|escape}" />
+                        <input type="hidden" name=""                        class="app_is_visible"        value="1" />
+                    </fieldset>
+                {/section}
+                </div>
+                <!-- #content_data_sets ここまで-->
+    
+            
+            </div>
+        </div>
+    </div>
+</div><!-- main_field ここまで -->
+
+{if false}
+
+{*  ============================= 基本設定ブロック ============================== *}
+
+<form action="/management/page/page_edit/" method="post" name="page_data_form" id="page_data_form">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+{if $latestRow.page_id != ""}
+    <input type="hidden" name="page_page_id" value="{$latestRow.page_id}" />
+{/if}
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    <input type="hidden" id="contents_id[0]" name="contents_id[0]" value="{$contForm[0].contents_id}" />
+    <input type="hidden" id="weight[0]" name="weight[0]" value="0" />
+    <input type="hidden" id="place[0]" name="place[0]" value="main_module" />
+
+    <input id="page_nm" name="page_nm" type="text" value="{$pageForm.page_nm}" />
+
+{if $pageForm.page_id == ""}
+    <input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm2}"/>
+{else}
+    <input id="page_sysnm" name="page_sysnm" type="hidden" value="{$pageForm.page_sysnm2}"/>
+{/if}
+
+{if $pageForm.page_id}
+    {if $pageForm.page_id ne 1}
+        {if $docmeta.is_primary}
+            <input name="page_sysnm_alias" type="text" value="{$pageForm.page_sysnm_alias}">
+        {else}
+            <input id="page_sysnm_alias" name="page_sysnm_alias" type="hidden" value="{$pageForm.page_sysnm_alias}"/>
+        {/if}
+    {/if}
+        <input id="page_forward_url" name="page_forward_url" type="text" value="{$pageForm.page_forward_url}">
+{/if}
+
+{if $pageForm.page_sysnm == 'top'}
+{else}
+    <select id="parent_page_id" name="parent_page_id">{html_options options=$arrPage selected=$pageForm.parent_page_id}</select>
+{/if}
+
+
+
+
+<input id="page_require" name="page_require" type="checkbox" value="1" {if $pageForm.page_require == "1"}checked="checked"{/if} /><label for="page_require">{'/label/set_viewing_limit'|translate}{*閲覧制限を行う*}</label></p>
+<select multiple="multiple" size="4" id="page_auth" name="page_auth[]">{html_options options=$arrAdmin selected=$pageForm.page_auth}</select>
+
+{if $pageForm.page_id eq '1'}
+    <input id="sitemap_flg" name="sitemap_flg" type="hidden" value="1" />
+    <input id="menu_flg" name="menu_flg" type="hidden" value="1" />
+    <input id="menu_head_sub_flg" name="menu_head_sub_flg" type="checkbox" value="1" {if $pageForm.menu_head_sub_flg}checked="checked"{/if}/><label for="menu_head_sub_flg">{'/label/menu_head_sub'|translate}{*ヘッダサブメニュー*}</label>
+    <input id="menu_footer_flg" name="menu_footer_flg" type="checkbox" value="1" {if $pageForm.menu_footer_flg}checked="checked"{/if}/><label for="menu_footer_flg">{'/label/menu_footer'|translate}{*フッタメニュー*}</label>
+    <input id="open_flg" name="open_flg" type="hidden" value="1"/>
+    <input id="mobile_flg" name="mobile_flg" type="hidden" value="1"/>
+    <input id="smartphone_flg" name="smartphone_flg" type="hidden" value="1"/>
+    <input id="social_flg" name="social_flg" type="hidden" value="1"/>
+{else}
+    <input id="sitemap_flg" name="sitemap_flg" type="checkbox" value="1" {if $pageForm.sitemap_flg}checked="checked"{/if} /><label for="sitemap_flg">{'/label/site_map'|translate}{*サイトマップ*}</label>
+    <input id="menu_flg" name="menu_flg" type="checkbox" value="1" {if $pageForm.menu_flg}checked="checked"{/if}/><label for="menu_flg">{'/label/menu'|translate}{*メニュー*}</label>
+    <input id="menu_head_sub_flg" name="menu_head_sub_flg" type="checkbox" value="1" {if $pageForm.menu_head_sub_flg}checked="checked"{/if}/><label for="menu_head_sub_flg">{'/label/menu_head_sub'|translate}{*ヘッダサブメニュー*}</label>
+    <input id="menu_footer_flg" name="menu_footer_flg" type="checkbox" value="1" {if $pageForm.menu_footer_flg}checked="checked"{/if}/><label for="menu_footer_flg">{'/label/menu_footer'|translate}{*フッタメニュー*}</label>
+    <input id="open_flg" name="open_flg" type="checkbox" value="1" {if $pageForm.open_flg}checked="checked"{/if}/><label for="open_flg">{'/label/enable_flg'|translate}{*有効*}</label>
+    <input id="mobile_flg" name="mobile_flg" type="checkbox" value="1" {if $pageForm.mobile_flg}checked="checked"{/if}/><label for="mobile_flg">{'/label/mobile_phone'|translate}{*携帯*}</label>
+    <input id="smartphone_flg" name="smartphone_flg" type="checkbox" value="1" {if $pageForm.smartphone_flg}checked="checked"{/if}/><label for="smartphone_flg">{'/label/smart_phone'|translate}{*スマートフォン*}</label>
+    {if $module_installed.social}
+        <input id="social_flg" name="social_flg" type="checkbox" value="1" {if $pageForm.social_flg}checked="checked"{/if}/><label for="social_flg">{'/label/facebook'|translate}{*facebook*}</label>
+    {else}
+        <input id="social_flg" name="social_flg" type="hidden" value="1"/>
+    {/if}
+{/if}
+
+{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+    <input id="ssl_flg" name="ssl_flg" type="checkbox" value="1" {if $pageForm.ssl_flg}checked="checked"{/if}/><label for="ssl_flg">SSL</label>
+{else}
+    <input id="ssl_flg" name="ssl_flg" type="hidden" value="0"/>
+{/if}
+<input id="not_hf_flg" name="not_hf_flg" type="checkbox" value="1" {if $pageForm.not_hf_flg}checked="checked"{/if}/><label for="not_hf_flg">{'/label/not_hf_flg'|translate}{*ヘッダフッタ非表示*}</label>
+        
+{'/label/meta_title'|translate}{*METAタイトル*}<input id="title" name="title" type="text" value="{$pageForm.title}" />
+{'/label/meta_explanation'|translate}{*META説明文*}<input id="description" name="description" type="text" value="{$pageForm.description}" />
+{'/label/meta_keyword'|translate}{*METAキーワード*}<input id="keywords" name="keywords" type="text" value="{$pageForm.keywords}" />
+
+<!-- CSS -->
+<textarea name="user_css" rows="10" cols="60">{$pageForm.user_css|escape}</textarea>
+</form>
+
+{*  ============================= //基本設定ブロック ========================= *}
+{/if}

@@ -1,0 +1,115 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+function confirmDelete(f){
+    if(confirm("削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+</script>
+{/literal}
+<script type="text/javascript" src="/js/jwplayer/jwplayer.js"></script>
+<script>jwplayer.key="{$smarty.const.JWPLAYER_KEY}"</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+<ul>
+  {if $auth.movie.insert}
+  <li class="add"><a href="/management/movie/movie_edit/"><span>動画追加</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/movie/movie_history/movie_id={$movie_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/movie_detail/id={$movie_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/movie/movie_list/">{$module_nm}</a>
+<a href="/management/movie/movie_list/">{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  <form name="movie_edit" id="movie_edit" action="/management/movie/movie_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="movie_id" value="{$movie_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="movie_file" value="{$data.movie_file}" />
+    <input type="hidden" name="movie_file_capture" value="{$data.movie_file_capture}" />
+
+    {rcms_include file="management/messages_box.html"}
+    {rcms_include file="management/errors_box.html"}
+
+    <table width="100%">
+      <tr>
+        <th>動画名称<span class="required">※</span></th>
+        <td><input type="text" name="movie_name" value="{$data.movie_name}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>動画<span class="required">※</span></th>
+        <td>
+          {if $data.movie_url != ""}
+          <div id='player'></div>
+          <script type='text/javascript'>
+	     {literal}
+             jwplayer('player').setup({
+              file: "{/literal}{$data.movie_url}{literal}",
+              width: "480",
+              height: "320",
+              stretching: 'exactfit',
+              image: "{/literal}{$data.movie_url_capture}{literal}"
+            });
+           {/literal}
+          </script>
+          <br />
+          {/if}
+          <input type="file" name="movie" />
+          <p class="hint">アップロードできる最大サイズは30Mバイトまでです。</p>
+        </td>
+      </tr>
+      <tr>
+        <th>日付<span class="required">※</span></th>
+        <td>
+          <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+          <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="ymd-pop"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>コメント</th>
+        <td><textarea name="comment" cols="60" rows="5">{$data.comment}</textarea></td>
+      </tr>
+    </table>
+
+
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    {rcms_include file="management/open_date_box.html" id=$movie_id data=$data}
+
+    {if $auth.movie.update || $auth.movie.delete}
+      {buttonbox}
+        {if $auth.movie.update}
+          <button type="submit">更新する</button>
+        {/if}
+        {if $movie_id != '' && $auth.movie.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+    <p class="hint">動画の変換に時間がかかりますので、ボタンを押した後、暫くお待ちください。</p>
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

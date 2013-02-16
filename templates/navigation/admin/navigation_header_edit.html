@@ -1,0 +1,86 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/navigation'|translate}{'/label/edit'|translate}</h2>
+<ul>
+{if $rauth->canInsert("/navigation/header/")}
+<li class="add"><a href="/management/navigation/navigation_header_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+{/if}
+</li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation/label/navigation_list'|translate}</a>
+{'/label/basic_settings'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{if $formData.navigation_nm}{$formData.navigation_nm|escape}{else}{'/label/create_new'|translate}{/if}</h3>
+{rcms_include file="navigation/admin/minitabs.html" page_type=$ct}
+
+<div id="navigation_header_edit" class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/navigation/navigation_header_edit/navigation_header_id=$navigation_header_id"}
+
+{if $navigation_header_id}
+    {lang_selector meta=$docmeta link="/management/navigation/navigation_header_edit/navigation_header_id=$navigation_header_id"}
+{/if}   
+
+  <form action="/management/navigation/navigation_header_edit/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="navigation_header_id" value="{$formData.navigation_header_id}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>{'/modules/navigation/label/name'|translate}</th>{*名前*}
+        <td><input type="text" style="width:350px" name="navigation_nm" value="{$formData.navigation_nm|escape}" /></td>
+      </tr>
+
+{if $docmeta.is_primary}
+      <tr>
+        <th>{'/modules/navigation/label/type'|translate}</th>{*形式*}
+        <td><select style="width:100px" name="navi_type">{html_options options=$navi_type_options selected=$formData.navi_type}</select></td>
+      </tr>
+      <tr>
+        <th>{'/modules/navigation/label/design'|translate}</th>{*デザイン*}
+        <td><select style="width:100px" name="navi_design">{html_options options=$navi_type_options selected=$formData.navi_design}</select></td>
+      </tr>
+{/if}
+
+{if $formData.navigation_header_id}
+      <tr>
+        <th>{'/modules/navigation/label/template_for_pc'|translate}</th>{*テンプレート(PC用)*}
+        <td><textarea name="template_text" cols="50" rows="10">{$formData.template_text|escape}</textarea><br>
+            <input type="checkbox" name="default_flg" value="1">{'/modules/navigation/label/reset'|translate}{*初期化する*}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/navigation/label/template_for_mobile'|translate}</th>{*テンプレート(モバイル用)*}
+        <td><textarea name="template_text_m" cols="50" rows="10">{$formData.template_text_m|escape}</textarea><br>
+            <input type="checkbox" name="default_m_flg" value="1">{'/modules/navigation/label/reset'|translate}{*初期化する*}
+        </td>
+      </tr>
+{/if}
+    </table>
+
+
+{if $docmeta.is_primary}
+{rcms_include file="management/open_date_box.html" data=$formData id=$formData.navigation_header_id}
+{/if}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

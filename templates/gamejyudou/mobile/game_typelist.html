@@ -1,0 +1,39 @@
+{if $gameList|@count > 0}
+<h2>{$game_type_nm}</h2>
+{section name=mydata loop=$gameList}
+{$gameList[mydata].ymd_str} {$gameList[mydata].ko_time}<br/>
+{$gameList[mydata].team_grade}vs{$gameList[mydata].team_nm}{$gameList[mydata].opponent_grade}<br/>
+  <a href="/gamejyudou_detail/id={$gameList[mydata].game_id}">
+  {if $gameList[mydata].game_status eq '3'}
+      {if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+      ○
+      {elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+      ●
+      {elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+      △
+      {/if}
+  {/if}
+  {if $gameList[mydata].game_status >= '2'}
+      {$gameList[mydata].score_detail_arr.Self_Total}
+  {/if}
+  -
+  {if $gameList[mydata].game_status >= '2'}
+      {$gameList[mydata].score_detail_arr.Opp_Total}
+  {/if}
+  {if $gameList[mydata].game_status eq '3'}
+      {if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+      ○
+      {elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+      ●
+      {elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+      △
+      {/if}
+  {/if}
+          </a><br/>
+{$gameList[mydata].place}
+<br/>
+<br/>
+{/section}
+<hr/>
+
+{/if}

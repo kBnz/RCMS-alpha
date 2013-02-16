@@ -1,0 +1,554 @@
+{module name="game_detail"}
+<h2 class="module_title">
+{$gameData.game_type} {$gameData.game_type2}
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+試合予定
+{elseif $gameData.game_status eq '2'}
+途中経過
+{elseif $gameData.game_status eq '3'}
+試合結果
+{/if}
+</h2>
+<div class="module_contents">
+    <div class="score">
+        <div>
+            <table class="score_table" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th colspan="3" class="self_team_nm">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+                    <th colspan="3" class="opp_team_nm"><strong>{$gameData.team_nm}{$gameData.opponent_grade}</strong></td>
+                </tr>
+                <tr>
+                    <td width="20%" class="score_total" rowspan="{if $gameData.score_detail_arr.Self_OT ne '' || $gameData.score_detail_arr.Opp_OT ne ''}5{else}4{/if}">{$gameData.score_detail_arr.Self_Total}</td>
+                    <td width="20%" class="score">{$gameData.score_detail_arr.Self_1Q}</td>
+                    <td width="20%" colspan="2" class="score_label">1st</td>
+                    <td width="20%" class="score">{$gameData.score_detail_arr.Opp_1Q}</td>
+                    <td width="20%" class="score_total" rowspan="{if $gameData.score_detail_arr.Self_OT ne '' || $gameData.score_detail_arr.Opp_OT ne ''}5{else}4{/if}">{$gameData.score_detail_arr.Opp_Total}</td>
+                </tr>
+                <tr>
+                    <td class="score">{$gameData.score_detail_arr.Self_2Q}</td>
+                    <td colspan="2" class="score_label">2nd</td>
+                    <td class="score">{$gameData.score_detail_arr.Opp_2Q}</td>
+                </tr>
+                <tr>
+                    <td class="score">{$gameData.score_detail_arr.Self_3Q}</td>
+                    <td colspan="2" class="score_label">3rd</td>
+                    <td class="score">{$gameData.score_detail_arr.Opp_3Q}</td>
+                </tr>
+                <tr>
+                    <td class="score">{$gameData.score_detail_arr.Self_4Q}</td>
+                    <td colspan="2" class="score_label">4th</td>
+                    <td class="score">{$gameData.score_detail_arr.Opp_4Q}</td>
+                </tr>
+{if $gameData.score_detail_arr.Self_OT ne '' || $gameData.score_detail_arr.Opp_OT ne ''}
+                <tr>
+                    <td class="score">{$gameData.score_detail_arr.Self_OT}</td>
+                    <td colspan="2" class="score_label">OT</td>
+                    <td class="score">{$gameData.score_detail_arr.Opp_OT}</td>
+                </tr>
+{/if}
+            </table>
+        </div>
+        <table class="gameinfo_table" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="gameinfo_table">日時</th>
+                <td>{$gameData.ymd_str}</td>
+            </tr>
+            <tr>
+                <th class="gameinfo_table">Kick off</th>
+                <td>{$gameData.ko_time}</td>
+            </tr>
+            <tr>
+                <th class="gameinfo_table">試合会場</th>
+                <td>
+                    {if $gameData.place_id != "" && $gameData.place_id != -1}
+                            <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+                    {else}
+                            {$gameData.place}
+                    {/if}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<div class="clr"></div>
+
+{if $gameData.game_comment}
+<div class="comment">
+{$gameData.game_comment|nl2br}
+</div>
+{/if}
+
+{if $gameData.score_detail_arr.Self_TD || $gameData.score_detail_arr.Opp_TD}
+<table class="score_detail_table" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <th width="25%" class="self_team_nm">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+        <td width="50%">&nbsp;</td>
+        <th width="25%" class="opp_team_nm">{$gameData.team_nm}</td>
+    </tr>
+{if $gameData.score_detail_arr.Self_TD || $gameData.score_detail_arr.Opp_TD}
+    <tr>
+        <td width="25%" class="score">{$gameData.score_detail_arr.Self_TD}</td>
+        <td width="50%" class="score_label">タッチダウン</td>
+        <td width="25%" class="score">{$gameData.score_detail_arr.Opp_TD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_PAT1_GET || $gameData.score_detail_arr.Self_PAT1_CNT || $gameData.score_detail_arr.Opp_PAT1_GET || $gameData.score_detail_arr.Opp_PAT1_CNT}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_PAT1_GET}/{$gameData.score_detail_arr.Self_PAT1_CNT}</td>
+        <td class="score_label">ポイントアフタータッチダウン<br>1点(成功-回数)</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_PAT1_GET}/{$gameData.score_detail_arr.Opp_PAT1_CNT}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_PAT2_GET || $gameData.score_detail_arr.Self_PAT2_CNT || $gameData.score_detail_arr.Opp_PAT2_GET || $gameData.score_detail_arr.Opp_PAT2_CNT}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_PAT2_GET}/{$gameData.score_detail_arr.Self_PAT2_CNT}</td>
+        <td class="score_label">ポイントアフタータッチダウン<br>2点(成功-回数)</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_PAT2_GET}/{$gameData.score_detail_arr.Opp_PAT2_CNT}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FG_GET || $gameData.score_detail_arr.Self_FG_CNT || $gameData.score_detail_arr.Opp_FG_GET || $gameData.score_detail_arr.Opp_FG_CNT}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FG_GET}/{$gameData.score_detail_arr.Self_FG_CNT}</td>
+        <td class="score_label">フィールドゴール(成功-回数)</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FG_GET}/{$gameData.score_detail_arr.Opp_FG_CNT}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_SAFTY || $gameData.score_detail_arr.Opp_SAFTY}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_SAFTY}</td>
+        <td class="score_label">セーフティ</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_SAFTY}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FD || $gameData.score_detail_arr.Opp_FD}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FD}</td>
+        <td class="score_label">1stダウン獲得回数</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FD1 || $gameData.score_detail_arr.Opp_FD1}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FD1}</td>
+        <td class="score_label">ランによる1stダウン獲得回数</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FD1}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FD2 || $gameData.score_detail_arr.Opp_FD2}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FD2}</td>
+        <td class="score_label">パスによる1stダウン獲得回数</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FD2}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FD3 || $gameData.score_detail_arr.Opp_FD3}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FD3}</td>
+        <td class="score_label">相手反則による1stダウン獲得回数</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FD3}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_3DC1 || $gameData.score_detail_arr.Self_3DC2 || $gameData.score_detail_arr.Opp_3DC1 || $gameData.score_detail_arr.Opp_3DC2}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_3DC1}-{$gameData.score_detail_arr.Self_3DC2}</td>
+        <td class="score_label">3rdダウンコンヴァージョン(成功-回数)</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_3DC1}-{$gameData.score_detail_arr.Opp_3DC2}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_4DC1 || $gameData.score_detail_arr.Self_4DC2 || $gameData.score_detail_arr.Opp_4DC1 || $gameData.score_detail_arr.Opp_4DC2}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_4DC1}-{$gameData.score_detail_arr.Self_4DC2}</td>
+        <td class="score_label">4thダウンコンヴァージョン(成功-回数)</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_4DC1}-{$gameData.score_detail_arr.Opp_4DC2}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_TOTAL_YARD || $gameData.score_detail_arr.Opp_TOTAL_YARD}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_TOTAL_YARD}</td>
+        <td class="score_label">総獲得ヤード</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_TOTAL_YARD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_RUN_YARD || $gameData.score_detail_arr.Opp_RUN_YARD}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_RUN_YARD}</td>
+        <td class="score_label">ラン獲得ヤード</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_RUN_YARD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_RUN_CNT || $gameData.score_detail_arr.Opp_RUN_CNT}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_RUN_CNT}</td>
+        <td class="score_label">ラン</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_RUN_CNT}</td>
+    </tr>
+{/if}
+{*
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_RUN_YARD / $gameData.score_detail_arr.Self_RUN_CNT}</td>
+        <td class="score_label">ラン平均獲得ヤード</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_RUN_YARD / $gameData.score_detail_arr.Opp_RUN_CNT}</td>
+    </tr>
+*}
+{if $gameData.score_detail_arr.Self_PASS_YARD || $gameData.score_detail_arr.Opp_PASS_YARD}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_PASS_YARD}</td>
+        <td class="score_label">パス獲得ヤード</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_PASS_YARD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_PASS_GET || $gameData.score_detail_arr.Opp_PASS_GET}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_PASS_GET}-{$gameData.score_detail_arr.Self_PASS_CNT}</td>
+        <td class="score_label">パス（成功-試投回数</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_PASS_GET}-{$gameData.score_detail_arr.Opp_PASS_CNT}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_PASS_I || $gameData.score_detail_arr.Opp_PASS_I}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_PASS_I}</td>
+        <td class="score_label">被インターセプト数</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_PASS_I}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FOUL_CNT || $gameData.score_detail_arr.Opp_FOUL_CNT}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FOUL_CNT}-{$gameData.score_detail_arr.Self_FOUL_YARD}</td>
+        <td class="score_label">反則(回数-罰退ヤード)</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FOUL_CNT}-{$gameData.score_detail_arr.Opp_FOUL_YARD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_FUMBLE_CNT || $gameData.score_detail_arr.Opp_FUMBLE_CNT}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_FUMBLE_CNT}-{$gameData.score_detail_arr.Self_FUMBLE_YARD}</td>
+        <td class="score_label">ファンブル（回数-攻撃権を失った回数）</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_FUMBLE_CNT}-{$gameData.score_detail_arr.Opp_FUMBLE_YARD}</td>
+    </tr>
+{/if}
+{if $gameData.score_detail_arr.Self_ATTACK_TIME || $gameData.score_detail_arr.Opp_ATTACK_TIME}
+    <tr>
+        <td class="score">{$gameData.score_detail_arr.Self_ATTACK_TIME}</td>
+        <td class="score_label">攻撃時間</td>
+        <td class="score">{$gameData.score_detail_arr.Opp_ATTACK_TIME}</td>
+    </tr>
+{/if}
+</table>
+{/if}
+{if $gameData.score_passage_arr|@count}
+    <h3>得点経過</h3>
+    <table class="score_detail_table2" cellpadding="0" cellspacing="0">
+    <tr>
+        <th>TEAM</th>
+        <th>TIME</th>
+        <th>PLAY</th>
+        <th>PLAYER(S)</th>
+        <th>PAT</th>
+        <th>PLAYER(S)</th>
+        <th>G/NG</th>
+        <th>Score</th>
+    </tr>
+    {foreach from=$gameData.score_passage_arr item=item}
+    <tr>
+        <td>{if $item.score_passage_team == "2"}{$gameData.team_nm}{else}{$score_passage_team_options[$item.score_passage_team]}{/if}</td>
+        <td>{$item.score_passage_time|escape}</td>
+        <td>{$item.score_passage_play|escape}</td>
+        <td>{$item.score_passage_players1|escape}</td>
+        <td>{$score_passage_pat_options[$item.score_passage_pat]}</td>
+        <td>{$item.score_passage_players2|escape}</td>
+        <td>{$score_passage_n_ng_options[$item.score_passage_g_ng]}</td>
+        <td>{$item.score_passage_score|escape}</td>
+    </tr>
+    {/foreach}
+</table>
+{/if}
+{if $gameData.rushing|@count}
+    <h3>RUSHING</h3>
+    <table class="score_detail_table2" cellpadding="0" cellspacing="0" id="rushing">
+        <tr>
+            <th class="number">背番号</th>
+            <th class="member">members</th>
+            <th>Att</th>
+            <th>yards</th>
+            <th>TD</th>
+            <th>LG</th>
+        </tr>
+    {section name="loopname" loop=$gameData.rushing|@count}
+        <tr>
+            <td>{$gameData.rushing[loopname].member_no}</td>
+            <td>{$gameData.rushing[loopname].member_name}</td>
+            <td>{$gameData.rushing[loopname].att_point}</td>
+            <Td>{$gameData.rushing[loopname].yard}</td>
+            <td>{$gameData.rushing[loopname].td_point}</td>
+            <td>{$gameData.rushing[loopname].lg_point}</td>
+        </tr>
+    {/section}
+</table>
+{/if}
+{if $gameData.passing|@count}
+    <h3>PASSING</h3>
+    <table class="score_detail_table2" cellpadding="0" cellspacing="0" id="passing">
+        <tr>
+            <th class="number">背番号</th>
+            <th class="member">members</th>
+            <th>Att</th>
+            <th>COMP</th>
+            <th>INT</th>
+            <th>yards</th>
+            <th>TD</th>
+            <th>LG</th>
+        </tr>
+    {section name="loopname" loop=$gameData.passing|@count}
+        <tr>
+            <td>{$gameData.passing[loopname].member_no}</td>
+            <td>{$gameData.passing[loopname].member_name}</td>
+            <td>{$gameData.passing[loopname].att_point}</td>
+            <td>{$gameData.passing[loopname].comp_point}</td>
+            <td>{$gameData.passing[loopname].int_point}</td>
+            <td>{$gameData.passing[loopname].yard}</td>
+            <td>{$gameData.passing[loopname].td_point}</td>
+            <td>{$gameData.passing[loopname].lg_point}</td>
+        </tr>
+    {/section}
+    </table>
+{/if}
+{if $gameData.receiving|@count}
+<h3>RECEIVING</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="receiving">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>NO</th>
+        <th>yards</th>
+        <th>TD</th>
+        <th>LG</th>
+    </tr>
+{section name="loopname" loop=$gameData.receiving|@count}
+    <tr>
+        <td>{$gameData.receiving[loopname].member_no}</td>
+        <td>{$gameData.receiving[loopname].member_name}</td>
+        <td>{$gameData.receiving[loopname].no_point}</td>
+        <td>{$gameData.receiving[loopname].yard}</td>
+        <td>{$gameData.receiving[loopname].td_point}</td>
+        <td>{$gameData.receiving[loopname].lg_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.field_goal|@count}
+<h3>FIELD GOAL</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="field_goal">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+        <th>ATT-GOOD</th>
+    </tr>
+{section name="loopname" loop=$gameData.field_goal|@count}
+{assign var="field_goal1_good" value=$gameData.field_goal[loopname].field_goal1_good}
+{assign var="field_goal2_good" value=$gameData.field_goal[loopname].field_goal2_good}
+{assign var="field_goal3_good" value=$gameData.field_goal[loopname].field_goal3_good}
+{assign var="field_goal4_good" value=$gameData.field_goal[loopname].field_goal4_good}
+{assign var="field_goal5_good" value=$gameData.field_goal[loopname].field_goal5_good}
+    <tr>
+        <td>{$gameData.field_goal[loopname].member_no}</td>
+        <td>{$gameData.field_goal[loopname].member_name}</td>
+        <td>{$gameData.field_goal[loopname].field_goal1}&nbsp;{$field_goal_options[$field_goal1_good]}</td>
+        <td>{$gameData.field_goal[loopname].field_goal2}&nbsp;{$field_goal_options[$field_goal2_good]}</td>
+        <td>{$gameData.field_goal[loopname].field_goal3}&nbsp;{$field_goal_options[$field_goal3_good]}</td>
+        <td>{$gameData.field_goal[loopname].field_goal4}&nbsp;{$field_goal_options[$field_goal4_good]}</td>
+        <td>{$gameData.field_goal[loopname].field_goal5}&nbsp;{$field_goal_options[$field_goal5_good]}</td>
+        <td>{$gameData.field_goal[loopname].att_good}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.punt|@count}
+<h3>PUNT</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="punt">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+        <th>TB</th>
+    </tr>
+{section name="loopname" loop=$gameData.punt|@count}
+    <tr>
+        <td>{$gameData.punt[loopname].member_no}</td>
+        <td>{$gameData.punt[loopname].member_name}</td>
+        <td>{$gameData.punt[loopname].cnt}</td>
+        <td>{$gameData.punt[loopname].yard}</td>
+        <td>{$gameData.punt[loopname].tb_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.kick_off_return|@count}
+<h3>KICK OFF RETURN</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="kick_off_return">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+        <th>TD</th>
+    </tr>
+{section name="loopname" loop=$gameData.kick_off_return|@count}
+    <tr>
+        <td>{$gameData.kick_off_return[loopname].member_no}</td>
+        <td>{$gameData.kick_off_return[loopname].member_name}</td>
+        <td>{$gameData.kick_off_return[loopname].cnt}</td>
+        <td>{$gameData.kick_off_return[loopname].yard}</td>
+        <td>{$gameData.kick_off_return[loopname].td_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.qb_sack|@count}
+<h3>QB SACK</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="qb_sack">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+    </tr>
+{section name="loopname" loop=$gameData.qb_sack|@count}
+    <tr>
+        <td>{$gameData.qb_sack[loopname].member_no}</td>
+        <td>{$gameData.qb_sack[loopname].member_name}</td>
+        <td>{$gameData.qb_sack[loopname].cnt}</td>
+        <td>{$gameData.qb_sack[loopname].yard}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.punt_return|@count}
+<h3>PUNT RETURN</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="punt_return">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+        <th>TD</th>
+    </tr>
+{section name="loopname" loop=$gameData.punt_return|@count}
+    <tr>
+        <td>{$gameData.punt_return[loopname].member_no}</td>
+        <td>{$gameData.punt_return[loopname].member_name}</td>
+        <td>{$gameData.punt_return[loopname].cnt}</td>
+        <td>{$gameData.punt_return[loopname].yard}</td>
+        <td>{$gameData.punt_return[loopname].td_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.interception|@count}
+<h3>INTERCEPTION</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="interception">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+        <th>TD</th>
+    </tr>
+{section name="loopname" loop=$gameData.interception|@count}
+    <tr>
+        <td>{$gameData.interception[loopname].member_no}</td>
+        <td>{$gameData.interception[loopname].member_name}</td>
+        <td>{$gameData.interception[loopname].cnt}</td>
+        <td>{$gameData.interception[loopname].yard}</td>
+        <td>{$gameData.interception[loopname].td_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.fumble_return|@count}
+<h3>FUMBLE RETURN</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="fumble_return">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+        <th>TD</th>
+    </tr>
+{section name="loopname" loop=$gameData.fumble_return|@count}
+    <tr>
+        <td>{$gameData.fumble_return[loopname].member_no}</td>
+        <td>{$gameData.fumble_return[loopname].member_name}</td>
+        <td>{$gameData.fumble_return[loopname].cnt}</td>
+        <td>{$gameData.fumble_return[loopname].yard}</td>
+        <td>{$gameData.fumble_return[loopname].td_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+{if $gameData.etc_return|@count}
+<h3>その他のリターン</h3>
+<table class="score_detail_table2" cellpadding="0" cellspacing="0" id="etc_return">
+    <tr>
+        <th class="number">背番号</th>
+        <th class="member">members</th>
+        <th>回数</th>
+        <th>yards</th>
+        <th>TD</th>
+    </tr>
+{section name="loopname" loop=$gameData.etc_return|@count}
+    <tr>
+        <td>{$gameData.etc_return[loopname].member_no}</td>
+        <td>{$gameData.etc_return[loopname].member_name}</td>
+        <td>{$gameData.etc_return[loopname].cnt}</td>
+        <td>{$gameData.etc_return[loopname].yard}</td>
+        <td>{$gameData.etc_return[loopname].td_point}</td>
+    </tr>
+{/section}
+</table>
+{/if}
+
+{if count($gameMembers)}
+<div class="game_members">
+    <h3>出場選手</h3>
+    <table class="self_member_table2" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <th class="number">背番号</th>
+            <th class="position">ポジション</th>
+            <th class="grade">学年</th>
+            <th class="name">名前</th>
+        </tr>
+    {section name=self_member loop=$gameMembers}
+        {if $gameMembers[self_member].member_order && $gameMembers[self_member].disp_name}
+        <tr>
+            <td>{$gameMembers[self_member].member_no}</td>
+            <td>{$gameMembers[self_member].position_nm}</td>
+            <td>{$gameMembers[self_member].member_grade}</td>
+            <td>
+                {if $gameMembers[self_member].member_id > 0}
+                    <a href="/member_detail/id={$gameMembers[self_member].member_id}">{$gameMembers[self_member].disp_name}</a>
+                {else}
+                    {$gameMembers[self_member].disp_name}
+                {/if}
+            </td>
+        </tr>
+        {/if}
+    {/section}
+    </table>
+</div>
+{/if}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2 class="topics_subject">{$gameTopicsList[game_topics].subject}</h2>
+<p class="topics_ymd">{$gameTopicsList[game_topics].ymd_str}</p>
+<div class="topics_contents">{$gameTopicsList[game_topics].contents}</div>
+{/section}
+<div class="relation_link"><a href="/gameamefoot_list/" class="small_text">試合一覧へ</a></div>
+
+</div>
+{/module}
+

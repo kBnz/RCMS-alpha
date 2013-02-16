@@ -1,0 +1,13 @@
+{if $keyword_list|@count>0}
+<h2>{'/modules/keyword/label/keyword_list'|translate}</h2>
+
+{foreach from=$keyword_list item=row name=keyword_list}
+<dl>
+<dt><a href="/keyword_detail/id={$row.keyword_id}">{$row.keyword}</a> [{$row.japanese_syllabary}]</dt>
+<dd>{$row.description|strip_tags:false|mbtruncate:400}</dd>
+</dl>
+{/foreach}
+
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<hr/>
+{/if}

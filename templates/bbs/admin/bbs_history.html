@@ -1,0 +1,27 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs/label/bbs_list'|translate}</a>
+<a href="/management/bbs/bbs_edit/bbs_header_id={$bbs_header_id}">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 掲示板 >> 掲示板一覧 >>  基本設定 >> 更新履歴一覧*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.forum_title|escape}</h3>
+<ul class="minitabs">
+  <li><a href="/management/bbs/bbs_edit/bbs_header_id={$header.bbs_header_id}" class="active">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_list/bbs_header_id={$header.bbs_header_id}" >{'/modules/bbs/label/post'|translate}{*投稿記事*}</a></li>
+</ul>
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/bbs/bbs_edit/bbs_header_id=$bbs_header_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

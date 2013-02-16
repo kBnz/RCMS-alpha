@@ -1,0 +1,96 @@
+{module name="topics_detail"}
+<h2 class="module_title"><span>{$topicsData.subject}</span></h2>
+<div class="module_contents">
+{if !$topicsData.no_use_ymd}<p class="topics_ymd">{$topicsData.ymd_str}</p>{/if}
+<div class="topics_contents">
+{rcms_include file='topics/topics_extensions.html'}
+
+{if not $pageInfo.use_multi_page}
+  {$topicsData.contents}
+{else}
+  <h3>{$topicsData.dividedCaptions[$pageInfo.currentOffset]|escape}</h3>
+  {rcms_include file="topics/pager.html"}
+  {$topicsData.dividedContents[$pageInfo.currentOffset]}
+  {rcms_include file="topics/pager.html"}
+{/if}
+<div class="clr"></div>
+
+{if $topicsData.swf_url}
+<div class="pdf_area">
+<div id="swf{$topicsData.topics_id}"></div>
+
+<script type="text/javascript">
+<!--
+var moduleWidth = $('contents{$contents_id}').getDimensions().width; //モジュールの幅
+var swf_width  = String(moduleWidth - 40);
+var swf_height  = Math.floor((swf_width/4*3+25)*1.1+15);
+
+var so = new SWFObject("/images/common/swf_player.swf","swf{$topicsData.topics_id}", swf_width,swf_height , "7", "#000000");
+so.addVariable("swf_file", "{$topicsData.swf_url}");
+so.write("swf{$topicsData.topics_id}");
+
+//-->
+</script>
+</div>
+{/if}
+
+{if $topicsData.files|@count > 0}
+  <div class="pdf_area">
+    <ul>
+{foreach from=$topicsData.files item=row name=files}
+      <li>{if $row.extension eq 'pdf'}<img src="/images/common/icon_pdf.gif">{elseif $row.extension eq 'doc'}<img src="/images/common/icon_doc.gif">{elseif $row.extension eq 'xls'}<img src="/images/common/icon_xls.gif">{elseif $row.extension eq 'zip'}<img src="/images/common/icon_zip.gif">{elseif $row.extension eq 'ppt'}<img src="/images/common/icon_ppt.gif">{/if}<a href="{$row.url}">{$row.title|escape}</a>({$row.path|rcms_file_size})</li>
+{/foreach}
+    </ul>
+  </div>
+{/if}
+
+{if $topicsData.use_pdf_files || $topicsData.swf_url}
+<div class="pdf_area">
+    <div class="acrobat_link">
+
+{if $topicsData.swf_url}
+        <p class="banner"><a href="{'/label/url_of_adove_flash_player_download'|translate}{* AdobeへのURL *}" target="_blank"><img alt="get_adobe_reader" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" height="31" width="88"></a></p>
+        <p>
+        <a href="{'/label/url_of_adove_flash_player_download'|translate}{* AdobeへのURL *}" target="_blank">{'/label/download_adobe_flash_player'|translate}{* AdobeR Flash Player のダウンロード *}</a>
+        <br>
+        {'/msg/you_need_adove_flash_player'|translate}{* Flashムービーをご覧いただくには、Adobe社のFlash Playerが必要になります。･･･省略･･･インストールしてください。 *}
+        </p>
+    {headblock}
+    <script src="/js/swfobject.js" type="text/javascript"></script>
+    {/headblock}
+
+{/if}
+
+
+{if $topicsData.use_pdf_files}
+    <p class="banner"><a href="{'/label/url_of_acrobat_reader_download'|translate}{* AdobeへのURL *}" target="_blank"><img alt="get_adobe_reader" src="/images/common/get_adobe_reader.gif" height="31" width="88"></a></p>
+    <p>{'/msg/you_need_acrobat_reader'|translate}{* ※PDFファイルをご覧いただくには、Adobe Acrobat Reader が必要です。…省略…表示するまで時間がかかることがございます。 *}</p>
+{/if}
+
+    </div>
+</div>
+
+{/if}
+
+</div>
+
+{if $topics_link_id.back.id != "" || $topics_link_id.next.id != ""}
+<p class="topics_link">
+{if $topics_link_id.back.id != ""}
+<a href="/topics_detail{if $topics_group_id}{$topics_group_id}{/if}/id={$topics_link_id.back.id}" class="small_text">&laquo; {$topics_link_id.back.title|mbtruncate:60}</a>
+{/if}
+{if $topics_link_id.back.id != "" && $topics_link_id.next.id != ""}&nbsp;|&nbsp;{/if}
+{if $topics_link_id.next.id != ""}
+<a href="/topics_detail{if $topics_group_id}{$topics_group_id}{/if}/id={$topics_link_id.next.id}" class="small_text">{$topics_link_id.next.title|mbtruncate:60} &raquo;</a>
+{/if}
+</p>
+<div class="relation_link clr">
+<a href="/topics_list{if $topics_group_id}{$topics_group_id}{/if}/" class="small_text">{'/modules/topics/label/topics_list_of_the_group_user_page_link'|translate:$topicsData.group_nm}{* [記事グループ名]一覧 *}</a>
+</div>
+{/if}
+
+</div>
+{/module}
+{headblock}
+<link rel="alternate" type="application/rss+xml" title="{$topicsData.group_nm}" href="{$smarty.const.ROOT_URL}/files/topics/rss/group{$topicsData.topics_group_id}.rdf">
+{/headblock}

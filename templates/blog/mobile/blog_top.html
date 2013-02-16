@@ -1,0 +1,27 @@
+<h2>[emoji:070]{'/modules/blog'|translate}{* ブログ *} {$blog_sub_title}</h2>
+    {section name=new_item loop=$blog_item_list}
+
+<h4><a href="/blog_detail/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}">{$blog_item_list[new_item].subject|escape}</a></h4>
+<div style="text-align:right;font-size:small;">
+{$blog_item_list[new_item].post_ymdhi|pg_dateformat}<br/>
+[<a href="/blog_my_top/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}">{$blog_item_list[new_item].title|escape}</a>]{if $blog_item_list[new_item].member_open eq 1} [<a href="/member_detail/id={$blog_item_list[new_item].member_id}">{$blog_item_list[new_item].disp_name}</a>]{/if}</div>
+{$blog_item_list[new_item].contents}
+
+{if $blog_item_list[new_item].comment_flg != 0}
+<a href="/blog_detail/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}#comment_form" class="small_text">{'/label/comments'|translate}{* コメント *}({$blog_item_list[new_item].commentCnt})</a>
+{/if}
+{if $blog_item_list[new_item].trackback_flg != 0}
+<a href="/blog_detail/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}#trackback" class="small_text">{'/label/trackback'|translate}{* トラックバック *}({$blog_item_list[new_item].tbCnt})</a>
+{/if}
+<hr/>
+
+    {/section}
+
+<div style="text-align:center;font-size:small;">
+{if $blog_pre_pos != ""}<a href="/blog_top/blog_pos={$blog_pre_pos}{$defaultRequest}">&lt;&lt;{'/label/prev'|translate}{* 前へ *}</a>{/if}
+{if $blog_pre_pos != "" || $blog_pos > 0}|{/if}
+{if $blog_pos > 0}<a href="/blog_top/blog_pos={$blog_next_pos}{$defaultRequest}">{'/label/next'|translate}{* 次へ *}&gt;&gt;</a>{/if}
+</div>
+
+<div style="text-align:right;font-size:small;"><a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a></div>
+<hr/>

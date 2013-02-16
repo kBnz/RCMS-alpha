@@ -1,0 +1,338 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{rcms_include file="page/admin/page_jscss.html"}
+
+
+<div class="list_right_bt">
+<h2 class="accesscount">{$module_nm}編集</h2>
+<ul>
+{rcms_auth target="insert:/lpo/lpo/"}
+    <li class="add"><a href="/management/lpo/lpo_page_edit/lpo_header_id={$lpo_header_id}"><span>ページ追加</span></a></li>
+    <li class="add"><a href="/management/lpo/lpo_page_copy/?lpo_header_id={$lpo_header_id}"><span>ページコピー</span></a></li>
+{/rcms_auth}
+  {if $pageForm.lpo_page_id ne ''}
+    <li class="view"><a href="/{$pageForm.page_sysnm2}/lpo_page_id={$pageForm.lpo_page_id}" target="_BLANK"><span>{'/label/view_page'|translate}</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/lpo/lpo_list/">{'/modules/lpo'|translate}</a>
+<a href="/management/lpo/lpo_page_edit/{if $pageForm.lpo_page_id}&lpo_page_id={$pageForm.lpo_page_id}{/if}">{$module_nm}編集</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<ul class="tabnavi">
+  <li class="regist_000" id="here"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_setup',this);return false;" id="a_setup"><div>基本設定</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_contents',this);return false;" id="a_contents"><div>コンテンツ設定</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_layout',this);return false;" id="a_layout"><div>配置</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_css',this);return false;" id="a_css"><div>CSS編集</div></a></li>
+</ul>
+
+<form action="/management/lpo/lpo_page_edit/" method="post" name="page_data_form" id="page_data_form">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+{if $pageForm.lpo_page_id != ""}
+  <input type="hidden" name="lpo_page_id" value="{$pageForm.lpo_page_id}" />
+{/if}
+
+{*  ============================= 基本設定ブロック ============================== *}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div id="blk_setup" style="position:relative; display:block;">
+<div class="list_main">
+  <p><span class="required">※</span>は必須事項</p>
+  <input type="hidden" id="contents_id[0]" name="contents_id[0]" value="{$contForm[0].contents_id}" />
+  <input type="hidden" id="weight[0]" name="weight[0]" value="0" />
+  <input type="hidden" id="place[0]" name="place[0]" value="main_module" />
+  <input type="hidden" id="lpo_header_id" name="lpo_header_id" value="{$lpo_header_id}" />
+  <table width ="100%">
+    <tr>
+      <th style="width:150px;">{'/modules/lpo/label/lpo_page_nm'|translate}<span class="required">※</span></th>
+      <td><input id="lpo_page_nm" name="lpo_page_nm" type="text" value="{$pageForm.lpo_page_nm}" /></td>
+    </tr>
+    <tr>
+      <th>{'/modules/lpo/label/lpo_type'|translate}</th>
+      <td>{$arrLpo_type[$lpo_type]}</td>
+    </tr>
+    <tr>
+      <th>
+      {$arrLpo_type[$lpo_type]}の設定<span class="required">※</span>
+      </th>
+      <td>
+      {if $lpo_type eq '0' || $lpo_type eq '2'}
+          <input type="text" name="lpo_weight" value="{$pageForm.lpo_weight}">
+      {elseif $lpo_type eq '1'}
+          <input type="text" name="lpo_keyword" value="{$pageForm.lpo_keyword}">
+      {/if}
+      </td>
+    </tr>
+    <tr>
+      <th>ページ名称</th>
+      <td>{$basePage.page_nm}</td>
+    </tr>
+    <tr>
+      <th>ページシステム名称</th>
+      <td>
+          {$basePage.page_sysnm}
+      </td>
+    </tr>
+    <tr>
+      <th>{'/modules/page/label/template'|translate}{*段組・レイアウト*}<span class="required">※</span></th>
+      <td>
+        <select id="page_template" name="page_template">
+          {html_options options=$arrTemplateType selected=$pageForm.page_template}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <th>親ページ</th>
+      <td>
+           {$arrPage[$basePage.parent_page_id]}
+      </td>
+    </tr>
+    <tr>
+      <th>閲覧権限</th>
+      <td>
+        {if $basePage.page_require == "1"}
+        閲覧制限を行う
+        <select multiple="multiple" size="4" id="page_auth" name="page_auth[]" disabled >{html_options options=$arrAdmin selected=$basePage.page_auth}</select>
+        {/if}
+      </td>
+    </tr>
+    <tr>
+      <th>表示設定</th>
+      <td>
+        <input type="checkbox" name="open_flg" value="1" {if $pageForm.open_flg}checked{/if} />公開する<br>
+        サイトマップ{if $basePage.sitemap_flg}掲載{else}非掲載{/if}
+        メニュー{if $basePage.menu_flg}掲載{else}非掲載{/if}
+        {if $basePage.open_flg}有効{else}無効{/if}
+        {if $basePage.mobile_flg}携帯{/if}
+
+        {if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://' && $pageForm.ssl_flg}
+          SSL
+        {/if}
+
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/meta_data'|translate}{*META情報*}</th>
+      <td>
+          <table>
+              <th>{'/label/meta_title'|translate}{*METAタイトル*}</th><td>{$basePage.title}</td></tr>
+              <th>{'/label/meta_explanation'|translate}{*META説明文*}</th><td>{$basePage.description}</td></tr>
+              <th>{'/label/meta_keyword'|translate}{*METAキーワード*}</th><td>{$basePage.keywords}</td></tr>
+          </table>
+     </td>
+    </tr>
+  </table>
+
+</div><!--//list_main-->
+</div><!--//blk_setup-->
+{*  ============================= //基本設定ブロック ========================= *}
+
+{*  ============================= コンテンツ設定ブロック ============================== *}
+
+<div id="blk_contents" style="position:relative; display:none;">
+<div class="list_main">
+  <p><span class="required">※</span>は必須事項　<span class="hint">携帯用表示順はページ内で小さい順に並びます。</span></p>
+  <input type="hidden" id="contents_id[0]" name="contents_id[0]" value="{$contForm[0].contents_id}" />
+  <input type="hidden" id="weight[0]" name="weight[0]" value="0" />
+  <input type="hidden" id="place[0]" name="place[0]" value="main_module" />
+  <input type="hidden" id="lpo_header_id" name="lpo_header_id" value="{$lpo_header_id}" />
+  <table width ="100%">
+    <tr>
+      <th>コンテンツ<span class="required">※</span></th>
+      <td>
+        <select id="module_type[0]" name="module_type[0]">
+          {html_options options=$cont_op selected=$contForm[0].module_type}
+        </select>
+        &gt;&gt;
+        <select id="contents_type[0]" name="contents_type[0]">
+          {html_options options=$arrItitContentsType[0] selected=$contForm[0].contents_type}
+        </select>
+        &gt;&gt;
+        <select id="template[0]" name="template[0]">
+          {html_options options=$arrItitTemplate[0] selected=$contForm[0].template}
+        </select>
+        {if $pageForm.fundamental_flg == 1 && $pageForm.page_sysnm ne 'top'}
+        <br><span class="hint">変更するとページがうまく動かなくなる場合がありますので、なるべく変更しないでください。</span>
+        {/if}
+      </td>
+    </tr>
+    <tr>
+      <th>パラメータ</th>
+      <td>
+        <input type="text" size="40" id="param[0]" name="param[0]" value="{$contForm[0].param|escape}" />
+        <a href="javascript:void(0)" id="paramHelpBtn[0]" class="paramHelpBtn">ヘルプ</a>
+        <div id="paramHelp[0]" class="paramHelp"></div>
+      </td>
+    </tr>
+    <tr>
+      <th>独自タイトル</th>
+      <td>
+        <input type="text" size="40" id="contents_title[0]" name="contents_title[0]" value="{$contForm[0].contents_title|escape}" />
+      </td>
+    </tr>
+    <tr>
+      <th style="width:150px;">携帯・表示順</th>
+      <td>
+        {if $pageForm.page_sysnm eq 'top'}
+            <input type="checkbox" id="mobile_flg2[0]" name="mobile_flg2[0]" value="1" {if $contForm[0].mobile_flg}checked="checked"{/if}/>
+        {else}
+            <input type="hidden" id="mobile_flg2[0]" name="mobile_flg2[0]" value="{$contForm[0].mobile_flg}"/>
+        {/if}
+        <input id="mobile_order_no2[0]" name="mobile_order_no2[0]" type="text" size="2" value="{$contForm[0].mobile_order_no}"/>
+      </td>
+    </tr>
+  </table>
+  <table width="100%" id="modulesTable">
+    <tr>
+      <th>No</th>
+      <th>コンテンツ設定</th>
+      <th>削除</th>
+    </tr>
+{section start=1 name="loopname" loop=$contForm}
+  {assign var=i value=$smarty.section.loopname.index}
+    <tr id="moduleRow[{$i}]">
+      <td>
+        {$i}
+        <input type="hidden" id="contents_id[{$i}]" name="contents_id[{$i}]" value="{$contForm[loopname].contents_id}" />
+        <input type="hidden" id="weight[{$i}]" name="weight[{$i}]" value="{$contForm[loopname].weight|escape}" />
+        <input type="hidden" id="place[{$i}]" name="place[{$i}]" value="{$contForm[loopname].place|escape}" />
+      </td>
+      <td width="100%">
+        <table>
+          <tr>
+            <td class="title">コンテンツ:</td>
+            <td width="30%">
+              <select id="module_type[{$i}]" name="module_type[{$i}]">
+                {html_options options=$cont_op selected=$contForm[loopname].module_type}
+              </select>
+            </td>
+            <td>&gt;&gt;</td>
+            <td width="30%">
+              <select id="contents_type[{$i}]" name="contents_type[{$i}]" style="margin-left:5px;{if count($arrItitContentsType[$i]) <= 1}display:none;{/if}">
+                {html_options options=$arrItitContentsType[$i] selected=$contForm[loopname].contents_type}
+              </select>
+            </td>
+            <td>&gt;&gt;</td>
+            <td width="30%">
+              <select id="template[{$i}]" name="template[{$i}]" {if count($arrItitTemplate[$i]) <= 1}style="display:none;"{/if}>
+                {html_options options=$arrItitTemplate[$i] selected=$contForm[loopname].template}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="title">パラメータ:</td>
+            <td colspan="5">
+              <input type="text" class="param" id="param[{$i}]" name="param[{$i}]" value="{$contForm[loopname].param|escape}" size="5" />
+              <a href="javascript:void(0)" id="paramHelpBtn[{$i}]" class="paramHelpBtn">ヘルプ</a>
+              <div id="paramHelp[{$i}]" class="paramHelp"></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="title">独自タイトル:</td>
+            <td colspan="5">
+              <input type="text" class="contents_title" id="contents_title[{$i}]" name="contents_title[{$i}]" value="{$contForm[loopname].contents_title|escape}" />
+            </td>
+          </tr>
+          <tr>
+            <td class="title">携帯・表示順:</td>
+            <td colspan="5">
+              <input type="checkbox" id="mobile_flg2[{$i}]" name="mobile_flg2[{$i}]" value="1" {if $contForm[loopname].mobile_flg}checked="checked"{/if}/>
+              <input id="mobile_order_no2[{$i}]" name="mobile_order_no2[{$i}]" type="text" value="{$contForm[loopname].mobile_order_no|escape}" size="2"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <input type="button" id="delBtn[{$i}]" value="削除" />
+      </td>
+    </tr>
+{/section}
+  </table>
+
+  <p style="margin-top: 5px">
+    <input type="button" id="addModuleBtn" value="追加" />
+    <span style="margin-left: 20px" class="hint3"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_layout', $('a_layout'));return false;">コンテンツを設定したら配置を確認</a></span>
+  </p>
+</div><!--//list_main-->
+</div><!--//blk_setup-->
+{*  ============================= //コンテンツ設定ブロック ========================= *}
+
+
+{*  ============================= 配置ブロック =========================== *}
+<div id="blk_layout" style="position:relative; display:none;">
+  <div id="changelayoutAll"></div>
+</div>
+<div class="clear"></div>
+{*  ============================= //配置ブロック ========================= *}
+
+{*  ============================= CSS編集ブロック =========================== *}
+<div id="blk_css" style="position:relative; display:none;">
+<div class="list_main">
+このページに適応したいCSS情報を入力してください。<br />
+<textarea name="user_css" rows="10" cols="60">{$pageForm.user_css}</textarea>
+</div>
+</div>
+<div class="clear"></div>
+{*  ============================= //CSS編集ブロック =========================== *}
+
+{*  ============================= 送信ボタン ============================= *}
+{buttonbox}
+    {if $pageForm.lpo_page_id != ""}
+        {rcms_auth target="update:/lpo/page/"}
+            <button type="submit" onclick="submitExec(this.form, 'UPDATE')">更新する</button>
+        {/rcms_auth}
+        {rcms_auth target="delete:/lpo/page/"}
+            {if $pageForm.base_page_flg != 1}
+                <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+            {/if}
+        {/rcms_auth}
+    {else}
+        {rcms_auth target="insert:/lpo/page/"}
+            <button type="submit" onclick="submitExec(this.form, 'INSERT')">追加する</button>
+        {/rcms_auth}
+    {/if}
+{/buttonbox}
+
+{rcms_auth target="delete:/lpo/page/"}
+    {if $pageForm.base_page_flg == 1}
+        <p><span class="required">(このページは削除できません)</span></p>
+    {/if}
+{/rcms_auth}
+{*  ============================= //送信ボタン ============================ *}
+</form>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_setup"; //初期表示ブロック
+var a_obj = $("a_setup"); //カレント表示タブ(初期)
+function tabnaviCtl(nm, anchorObj){
+  if(blk_name != nm){
+    $(blk_name).style.display = "none";
+    blk_name = nm;
+    $(nm).style.display = "block";
+    a_obj.style.backgroundPosition = "center top";
+    a_obj = anchorObj;
+    anchorObj.style.backgroundPosition = "center bottom";
+  }
+}
+{/literal}
+//-->
+</script>
+
+{rcms_include file="management/footer.html"}

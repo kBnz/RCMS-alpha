@@ -1,0 +1,28 @@
+{if $chargeInfo}
+{if $module.param.type == 'delete'}
+<div style="text-align: center;font-size:large;">
+<form method="POST" action="http://w1m.docomo.ne.jp/cp/regst">
+<input type="hidden" name="ci" value="{$chargeInfo.site_id}">
+<input type="hidden" name="uid" value="NULLGWDOCOMO">
+<input type="hidden" name="nl" value="{$smarty.const.ROOT_URL}/">
+<input type="hidden" name="rl" value="{$smarty.const.ROOT_URL}/direct/charge/charge_docomo/">
+<input type="hidden" name="act" value="rel">
+<input type="hidden" name="arg1" value="{$chargeInfo.charge_docomo_id}">
+<input type="submit" value="月額315円解約">
+</form>
+</div>
+{else}
+<div style="text-align: center;font-size:large;">
+<form method="POST" action="http://w1m.docomo.ne.jp/cp/regst">
+<input type="hidden" name="ci" value="{$chargeInfo.site_id}">
+<input type="hidden" name="uid" value="NULLGWDOCOMO">
+<input type="hidden" name="nl" value="{$smarty.const.ROOT_URL}/thanks_mobile_charge/">
+<input type="hidden" name="rl" value="{$smarty.const.ROOT_URL}/direct/charge/charge_docomo/">
+<input type="hidden" name="act" value="reg">
+<input type="hidden" name="arg1" value="{$chargeInfo.charge_docomo_id}">
+<input type="submit" value="月額315円登録">
+</form>
+</div>
+{/if}
+{/if}
+

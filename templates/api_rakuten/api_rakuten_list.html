@@ -1,0 +1,26 @@
+{module name="rakuten_list"}
+<h2 class="module_title"><span>商品一覧</span></h2>
+<div class="module_contents">
+	<p>このサイトで紹介している商品の一覧です。</p>
+
+	{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+	<table>
+		<thead>
+			<tr>
+				<th>商品名</th><th>コメント</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach from=$items item=item}
+			<tr>
+				<td><a href="{$item.detail}">{$item.item_name|truncate}</a></td>
+				<td>{$item.notes|truncate}</td>
+			</tr>
+			{/foreach}
+		</tbody>
+	</table>
+	{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+
+	<p><a href="http://webservice.rakuten.co.jp/" onclick="return !window.open(this.href)"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a></p>
+</div>
+{/module}

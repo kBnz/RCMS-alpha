@@ -1,0 +1,114 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>サイト編集</h2>
+</div>
+{pankuzu}
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_list/">サイト一覧</a>
+サイト編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<ul class="tabnavi" style="width:100%;">
+<li class="regist_003"><a href="/management/rcms/rcms_edit/?site_id={$site_id}"><span>サイト編集</span></a></li>
+<li id="here" class="regist_009"><a href="javascript:;"><span>モジュール設定</span></a></li>
+</ul>
+
+<div class="list_main">
+<form method="POST" action="/management/rcms/rcms_edit2/" name="rcms_edit2">
+<input type="checkbox" name="use_module_flg" id="use_module_flg" value="1" onClick="AllDisabled(this.checked, this.form, 'use_module[]');AllDisabled(this.checked, this.form, 'use_module_all');" {if $use_module_flg}checked{/if}>どれを利用可能にするか選択する<br>
+<input type="checkbox" name="easy_module_flg" id="easy_module_flg" value="1" onClick="AllDisabled(this.checked, this.form, 'easy_module[]');AllDisabled(this.checked, this.form, 'easy_module_all');" {if $easy_module_flg}checked{/if}>簡易管理画面でどれを利用可能にするか選択する ※簡易管理画面はコンテンツとコミュニケーションしか表示されません。<br>
+
+<p>使用を許可する、また簡易管理画面で表示するモジュールの一覧です。使用するモジュールを選択してください。</p>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<br/>
+<input type="hidden" name="site_id" value="{$site_id}" />
+<input type="hidden" name="MODE" value="UPDATE" />
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<table>
+  <tr>
+    <th>許可</th>
+    <th>簡易</th>
+    <th rowspan="2">モジュール名</th><th rowspan="2">コメント</th></tr>
+  <tr>
+    <th>{if $auth.rcms.update}<input type="checkbox" name="use_module_all" onClick="AllChecked(this.checked, this.form, 'use_module[]');" />{/if}</th>
+    <th>{if $auth.rcms.update}<input type="checkbox" name="easy_module_all" onClick="AllChecked(this.checked, this.form, 'easy_module[]');" />{/if}</th>
+  </tr>
+    {foreach key=key item=category from=$dispModuleList}
+      <tr>
+        <th colspan="4" class="category_nm">{$category.name}</th>
+      </tr>
+{foreach item=mod from=$moduleList}
+{if $mod.category eq $key}
+  </tr>
+    <td>
+    {if $mod.required eq '1' }
+    必
+    {else}
+        <input type="checkbox" name="use_module[]" value="{$mod.module_nm}" {if $mod.module_use eq '1'}checked="checked"{/if} />
+    {/if}
+    </td>
+    <td>
+        <input type="checkbox" name="easy_module[]" value="{$mod.module_nm}" {if $mod.module_easy eq '1'}checked="checked"{/if} />
+    </td>
+    <td>{$mod.module_disp_nm}</td>
+    <td>{$mod.comment}</td>
+  </tr>
+{/if}
+{/foreach}
+{/foreach}
+</table>
+{buttonbox}
+  <button type="submit">更新</button>
+{/buttonbox}
+
+<script>
+{literal}
+function AllDisabled(check, form, ele) {
+
+    if (!form) return;
+
+    var disable;
+    if(check){
+        disable = false;
+    }else{
+        disable = true;
+    }
+    
+    var cb = form.elements[ele];
+
+    if (!cb) return;
+
+    if (cb.length) {
+
+        for(var i = 0 ; i < cb.length ; i++) cb[i].disabled = disable;
+        if(disable){
+            for(var i = 0 ; i < cb.length ; i++) cb[i].checked = false;
+        }
+    }else{
+        cb.disabled = disable;
+        if(disable){
+            cb.checked = false;
+        }
+    }
+
+}
+
+AllDisabled($('use_module_flg').checked, document.forms["rcms_edit2"], 'use_module[]');
+AllDisabled($('use_module_flg').checked, document.forms["rcms_edit2"], 'use_module_all');
+
+AllDisabled($('easy_module_flg').checked, document.forms["rcms_edit2"], 'easy_module[]');
+AllDisabled($('easy_module_flg').checked, document.forms["rcms_edit2"], 'easy_module_all');
+{/literal}
+</script>
+
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

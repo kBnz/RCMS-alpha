@@ -1,0 +1,36 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/inquiry/label/inquiry_reply_edit_fin'|translate}{*振り分け完了*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry/label/inquiry_list'|translate}</a>
+<a href="/management/inquiry/inquiry_bn_list/inquiry_id={$inquiry_id}">{'/modules/inquiry/label/inquiry_bn_list'|translate}</a>
+<a href="/management/inquiry/inquiry_reply_edit/inquiry_id={$inquiry_id}&inquiry_bn_id={$inquiry_bn_id}">{'/modules/inquiry/label/inquiry_reply_edit'|translate}</a>
+{'/modules/inquiry/label/inquiry_reply_edit_fin'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 問い合わせ一覧 >> メール一覧 >> メール詳細 >> 振り分け完了 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.inquiry_name}</h3>
+{rcms_include file="inquiry/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div style="text-align:center;height:200px;padding:50px;margin-top:10px">
+  {'/modules/inquiry/msg/finish_move_inquiry_no'|translate}{*メールの振り分けを行いました。*}
+  <ul>
+    <li><a href="/management/inquiry/inquiry_reply_edit/inquiry_id={$inquiry_id}&inquiry_bn_id={$inquiry_bn_id}">{'/modules/inquiry/label/new_inquiry_no_data'|translate}{*振り分け先の問い合わせ*}</a></li>
+  </ul>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

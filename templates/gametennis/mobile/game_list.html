@@ -1,0 +1,18 @@
+<h2>試合情報一覧</h2>
+{if $using_season}
+  <form action="/gametennis_list/" method="get">
+    {rcms_seasonOptions name=season selected=$season firstOption=true}
+    <input type="submit" value="検索" />
+  </form>
+{/if}
+{foreach from=$gameList item=row}
+  ▼<a href="/gametennis_detail/game_id={$row.game_id}">{$row.game_name}</a><br/>
+  {if $row.start_ymd_str eq $row.end_ymd_str}{$row.start_ymd_str}{else}{$row.start_ymd_str}～{$row.end_ymd_str}{/if}<br/>
+  {if $row.place_id != "" && $row.place_id != -1}<a href="/location_detail/id={$row.place_id}">{$row.place}</a>{else}{$row.place}{/if}<br/>
+<br/>
+{/foreach}
+    
+{if !$using_season}
+    {rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo}
+{/if}
+<hr/>

@@ -1,0 +1,28 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="main_contents">
+
+<div class="list_main">
+
+<h3>注文履歴</h3>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<a href="/management/menu/payment/">購入ページに戻る</a>
+
+<table width="100%">
+{foreach from=$order_list item=order}
+<tr>
+<th>{$order.order_ymdhi}</th>
+<td>\{$order.total_price|number_format}</td>
+<td>{$order.name}</td>
+<td>{if $order.pay_type eq 9}銀行振込{elseif $order.pay_type eq 1}クレジットカード{/if}</td>
+<td>{$order.status}</td>
+</tr>
+{/foreach}
+</table>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

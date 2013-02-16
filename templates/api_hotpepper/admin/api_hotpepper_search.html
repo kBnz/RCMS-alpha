@@ -1,0 +1,80 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript" src="/js/modules/api_hotpepper/HotPepperSearch.js"></script>
+<script type="text/javascript">
+var hpa = new HotPepperApi('{$proxy}');
+{literal}
+onReady(function() {
+  window.hps = new HotPepperSearch(hpa);
+  window.hpf = new HotPepperForm(hpa, hps, 'ahForm');
+  window.moveTo = function(page) { hps.moveTo(page); };
+
+  hps.restore();
+});
+{/literal}
+</script>
+{literal}
+<style type="text/css">
+#ahResultViewer p { margin: 1em 0em; }
+</style>
+{/literal}
+<div class="list_right_bt">
+  <h2>飲食店検索</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_hotpepper/api_hotpepper_search/">{$module_nm}</a>
+飲食店検索
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_hotpepper/api_hotpepper_search/" class="active">飲食店検索</a></li>
+  <li><a href="/management/api_hotpepper/api_hotpepper_list/">飲食店一覧</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+
+    <p>関連させたい飲食店を検索します。</p>
+
+    <h3>検索</h3>
+    <form id="ahForm" action="javascript:void(0);" onsubmit="hpf.submit(); return false">
+      <table style="width:98%">
+        <tr>
+          <th>フリーワード</th><td><input type="text" name="Keyword" value="" /></td>
+          <th>住所</th><td><input type="text" name="ShopAddress" value="" /></td>
+        </tr>
+        <tr>
+          <th>ジャンル</th><td><select name="GenreCD" ><option value="" selected="selected">未指定</option></select></td>
+          <th>料理名</th><td><select name="FoodCD" ><option value="" selected="selected">未指定</option></select></td>
+        </tr>
+        <tr>
+          <th>エリア</th>
+          <td colspan="3">
+            <p>大：<select name="LargeAreaCD" onchange="hpf.loadMiddleArea(this.value);"><option value="" selected="selected">未指定</option></select></p>
+            <p>中：<select name="MiddleAreaCD" onchange="hpf.loadSmallArea(this._largeAreaCD, this.value);"><option value="" selected="selected">未指定</option></select></p>
+            <p>小：<select name="SmallAreaCD" ><option value="" selected="selected">未指定</option></select></p>
+          </td>
+        </tr>
+        <tr>
+          <th>表示件数</th><td colspan="3"><input type="text" name="Count" value="20" /></td>
+        </tr>
+      </table>
+      <p><input type="submit" value="検索" /></p>
+    </form>
+
+    <h3>検索結果</h3>
+    <div id="ahResultViewer">検索結果はここに表示されます。</div>
+
+    <p style="margin-top:3em"><a href="http://www.hotpepper.jp/" onclick="return !window.open(this.href)"><img src="http://api.hotpepper.jp/content/images/hp_api_s.gif" alt="ホットペッパー Webサービス" width="155" height="20" border="0" title="ホットペッパー Webサービス"></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

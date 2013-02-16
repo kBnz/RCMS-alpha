@@ -1,0 +1,265 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{headblock}
+<style type="text/css">
+{literal}
+.tree-mid1, .tree-mid2, .tree-mid3, .tree-mid4, .tree-mid5, .tree-mid6 {
+	background: url(/images/modules/page/sitemap_2.gif) no-repeat left center;
+	padding-right: 15px;
+	padding-left: 30px;
+}
+
+.tree-end1, .tree-end2, .tree-end3, .tree-end4, .tree-end5, .tree-end6 {
+	background: url(/images/modules/page/sitemap_3.gif) no-repeat left center;
+	padding-right: 15px;
+	padding-left: 30px;
+}
+#pageListTable span.gray {
+	color: #888;
+}
+#pageListTable a span.gray {
+	color: #888;
+	display: inline;
+}
+#pageListTable td {
+	white-space: nowrap;
+}
+
+/*  th 表示切替  */
+th.change {
+	font-size: 85%;
+	text-align: right !important;
+}
+th.change span {
+	margin-left: 4px;
+}
+th.change .off a {
+	padding: 3px 2px;
+	background-color: #fcfcfc;
+	border-right: 1px solid #999;
+	border-bottom: 1px solid #999;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+}
+th.change .off a:active {
+	border-top: 1px solid #999;
+	border-left: 1px solid #999;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+th.change .on {
+	padding: 3px 2px;
+	background-color: #FF6633;
+	color: #fff;
+	border: 1px solid #FF4202;
+}
+.disp_col06,.disp_col07,.disp_col08,.disp_col09,.disp_col10{
+	display:none;
+	width:80px;;
+}
+{/literal}
+</style>
+<script type="text/javascript">
+<!--
+{literal}
+// 表示・非表示切り替えリンクに表示するメッセージ
+var toggleMsg = ['{/literal}{'/modules/page/msg/display_able_pages_only'|translate}{literal}', '{/literal}{'/modules/page/msg/display_all_pages'|translate}{literal}'];//有効ページのみ,全てのページを表示
+
+// 表示・非表示を切り替える
+function toggleTable ($action) {
+
+	if($action == "all"){
+		$('toggleLink1').className = "";
+		$('toggleLink2').className = "active";
+			$A(document.getElementById('pageListTable').getElementsByTagName('tr')).each(function(e){e.show();});
+	} else {
+		$('toggleLink1').className = "active";
+		$('toggleLink2').className = "";
+
+			//テーブルの切り替え
+			var trs = document.getElementById('pageListTable').getElementsByTagName('tr');
+			var sflg = true;
+			var matched;
+			for (var i = 0; i < trs.length; i++) {
+					var e = $(trs[i]);
+					if ((matched = e.className.match(/toggleTarget_(\d+)/)) &&
+							 !document.page_list_form['open_flg['+matched[1]+']'].checked) {
+							e.hide();
+					} else if (e.className == 'spacer') {
+							if (sflg) {
+									e.hide();
+							}
+							sflg = true;
+					} else {
+							sflg = false;
+					}
+			};
+		}
+}
+// デフォルトで非表示
+Event.observe(window, 'load', function () {
+	toggleTable();
+}, false);
+
+{/literal}
+//-->
+</script>
+{/headblock}
+
+<div class="list_right_bt">
+<h2 class="page">{'/modules/page'|translate}{*ページ構成*}</h2>
+<ul>
+{rcms_auth target="insert:/page/item/"}
+		<li class="add"><a href="/management/page/page_edit/"><span>{'/modules/page/label/add_page_btn'|translate}{*ページ追加*}</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+{'/modules/page/label/page_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> ページ設定 >> ページ設定一覧  *}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+	<form action="/management/page/page_list/" method="post" name="page_list_form">
+		<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+		<input type="hidden" name="MODE" value="UPDATE" />
+
+<ul class="minitabs">
+	<li><a href="javascript:void(0)" onclick="toggleTable('only')" id="toggleLink1">{'/modules/page/msg/display_able_pages_only'|translate}</a></li>
+	<li><a href="javascript:void(0)" onclick="toggleTable('all')" id="toggleLink2">{'/modules/page/msg/display_all_pages'|translate}</a></li>
+</ul>
+
+<div class="clear"></div>
+
+		<table width="100%" border="0" cellspacing="2" cellpadding="0" id="pageListTable">
+			<tr>
+				<th rowspan="2">{'/label/site_structure'|translate}{*ページ構成*}</th>
+				<th colspan="{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}4{else}3{/if}" class="change disp_col02"><span class="on">{'/label/site_structure'|translate}</span>{*ページ構成*}<span class="off"><a href="javascript:void(0);" onClick="j$('#pageListTable .disp_col02,#pageListTable .disp_col03,#pageListTable .disp_col04,#pageListTable .disp_col05,#pageListTable .disp_col06,#pageListTable .disp_col07,#pageListTable .disp_col08,#pageListTable .disp_col09,#pageListTable .disp_col10').toggle();">{'/label/menu'|translate}{*メニュー*}/{'/label/site_map'|translate}</a></span>{*サイトマップ*}</th>
+				<th colspan="5" class="change disp_col06"><span class="off"><a href="javascript:void(0);" onClick="j$('#pageListTable .disp_col02,#pageListTable .disp_col03,#pageListTable .disp_col04,#pageListTable .disp_col05,#pageListTable .disp_col06,#pageListTable .disp_col07,#pageListTable .disp_col08,#pageListTable .disp_col09,#pageListTable .disp_col10').toggle();">{'/label/site_structure'|translate}</a></span>{*ページ構成*}<span class="on">{'/label/menu'|translate}{*メニュー*}/{'/label/site_map'|translate}</span>{*サイトマップ*}</th>
+			</tr>
+
+			<tr>
+				<th class="disp_col02">{'/modules/page/label/template'|translate}{*段組*}</th>
+				<th class="disp_col03">{'/label/mobile_phone'|translate}{*携帯*}</th>
+		{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+				<th class="disp_col04">SSL</th>
+		{/if}
+				<th class="disp_col05">{'/label/enable_flg'|translate}{*有効*}</th>
+				<th class="disp_col06">{'/label/menu'|translate}{*メニュー*}</th>
+				<th class="disp_col07">{'/label/menu_head_sub'|translate}{*メニュー*}</th>
+				<th class="disp_col08">{'/label/menu_footer'|translate}{*メニュー*}</th>
+				<th class="disp_col09">{'/label/site_map'|translate}{*サイトマップ*}</th>
+				<th class="disp_col10">{'/label/sort'|translate}{*並び順*}</th>
+			</tr>
+
+			<tr>
+				<td valign="top"><strong style="font-size:110%;">{'/modules/page/label/top_page'|translate}{*Topページ*}<span class="gray">(/)</span></strong>
+				[ <a href="/management/page/page_edit/page_page_id=1">{'/label/settings'|translate}{*設定*}</a> | 
+				<a href="{$smarty.const.ROOT_URL}/" target="_blank">{'/label/display'|translate}{*表示*}</a> ]
+				{if $page_top.page_require}<span class="required">[{'/label/viewing_limit'|translate}{*閲覧制限*}]</span>{/if}
+				</td>
+				<td class="disp_col02">{$arrTemplateType[$page_top.template]}
+				</td>
+				<td class="disp_col03"></td>
+				<td class="disp_col04">
+				{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+					<input type="checkbox" name="page_top_ssl_flg" value="1" {if $page_top.ssl_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth} />
+				</td>
+				<td class="disp_col05">
+				{else}
+					<input type="hidden" name="page_top_ssl_flg" value="0">
+				{/if}
+				</td>
+				<td class="disp_col06"></td>
+				<td class="disp_col07">
+						<input type="checkbox" name="page_top_menu_head_sub_flg" value="1" {if $page_top.menu_head_sub_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth} />
+				</td>
+				<td class="disp_col08">
+					<input type="checkbox" name="page_top_menu_footer_flg" value="1" {if $page_top.menu_footer_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth} />
+				</td>
+				<td class="disp_col09"></td>
+				<td class="disp_col10"></td>
+			</tr>
+		<tr class="spacer">
+		<td><img src="/images/modules/page/sitemap_1.gif" alt="" width="26" height="14"></td>
+		<td class="font12px disp_col02">&nbsp;</td>
+		<td class="font12px disp_col03">&nbsp;</td>
+		{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+		<td class="font12px disp_col04">&nbsp;</td>
+		{/if}
+		<td class="font12px disp_col05">&nbsp;</td>
+		<td class="font12px disp_col06">&nbsp;</td>
+		<td class="font12px disp_col07">&nbsp;</td>
+		<td class="font12px disp_col08">&nbsp;</td>
+		<td class="font12px disp_col09">&nbsp;</td>
+		<td class="font12px disp_col10">&nbsp;</td>
+		</tr>
+<!--{$count++}-->
+{foreach item="page_data" from=$page_list name="row"}
+{rcms_include file="page/admin/page_list_child.html" page_data=$page_data nest=0}<!--{$count++}-->
+{foreach item="page_data1" from=$page_data.child1 name="row1"}
+{rcms_include file="page/admin/page_list_child.html" page_data=$page_data1 nest=1}<!--{$count++}-->
+{foreach item="page_data2" from=$page_data1.child2 name="row2"}
+{rcms_include file="page/admin/page_list_child.html" page_data=$page_data2 nest=2}<!--{$count++}-->
+{foreach item="page_data3" from=$page_data2.child3 name="row3"}
+{rcms_include file="page/admin/page_list_child.html" page_data=$page_data3 nest=3}<!--{$count++}-->
+{foreach item="page_data4" from=$page_data3.child4 name="row4"}
+{rcms_include file="page/admin/page_list_child.html" page_data=$page_data4 nest=4}<!--{$count++}-->
+{foreach item="page_data5" from=$page_data4.child5 name="row5"}
+{rcms_include file="page/admin/page_list_child.html" page_data=$page_data5 nest=5}<!--{$count++}-->
+{/foreach}
+{/foreach}
+{/foreach}
+{/foreach}
+{/foreach}
+{if !$smarty.foreach.row.last}
+<tr class="spacer">
+<td><img src="/images/modules/page/sitemap_1.gif" alt="" width="26" height="14"></td>
+<td class="font12px disp_col02">&nbsp;</td>
+<td class="font12px disp_col03">&nbsp;</td>
+{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+<td class="font12px disp_col04">&nbsp;</td>
+{/if}
+<td class="font12px disp_col05">&nbsp;</td>
+<td class="font12px disp_col06">&nbsp;</td>
+<td class="font12px disp_col07">&nbsp;</td>
+<td class="font12px disp_col08">&nbsp;</td>
+<td class="font12px disp_col09">&nbsp;</td>
+<td class="font12px disp_col10">&nbsp;</td>
+</tr>
+{/if}
+{/foreach}
+			<tr>
+				<th>{'/label/site_structure'|translate}{*ページ構成*}</th>
+				<th class="disp_col02">{'/modules/page/label/template'|translate}{*段組*}</th>
+				<th class="disp_col03">{'/label/mobile_phone'|translate}{*携帯*}</th>
+		{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+				<th class="disp_col04">SSL</th>
+		{/if}
+				<th class="disp_col05">{'/label/enable_flg'|translate}{*有効*}</th>
+				<th class="disp_col07">{'/label/menu'|translate}{*メニュー*}</th>
+				<th class="disp_col08">{'/label/menu_head_sub'|translate}{*メニュー*}</th>
+				<th class="disp_col09">{'/label/menu_footer'|translate}{*メニュー*}</th>
+				<th class="disp_col06">{'/label/site_map'|translate}{*サイトマップ*}</th>
+				<th class="disp_col10">{'/label/sort'|translate}{*並び順*}</th>
+			</tr>
+				</table>
+
+
+{rcms_auth target="update:/page/item/"}
+		{buttonbox}
+				<button type="submit">{'/label/update_btn'|translate}{* 更新する *}</button>
+		{/buttonbox}
+{/rcms_auth}
+
+	</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

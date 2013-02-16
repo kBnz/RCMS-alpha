@@ -1,0 +1,109 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+    if(confirm('選択されたメニューを削除します。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{rcms_auth target="insert:/restaurant_menu/item/"}
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_category_edit/"><span>料理分類追加</span></a></li>
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_category_id={$restaurant_menu_category_id}"><span>{$module_nm}追加</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant_menu/restaurant_menu_category_list/">{$module_nm}</a>
+{$module_nm}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 承認待ち自由HTML一覧 -->   
+{rcms_include file="common/admin/shonin_list.html"} 
+
+  <form method="post" action="/management/restaurant_menu/restaurant_menu_list/">
+    <fieldset class="search_box">
+      <select name="restaurant_menu_category_id">{html_options options=$arrCategory selected=$smarty.request.restaurant_menu_category_id}</select>
+      <input type="submit" value="{'/label/search'|translate}" />{* 検索 *}
+    </fieldset>
+  </form>
+
+<form name="restaurant_menu_list_form" method="POST" action="/management/restaurant_menu/restaurant_menu_list/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" />
+
+{pager info=$pageInfo}
+
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th scope="col" width="30"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'restaurant_menu_id[]');" /></th>
+      <th width="40">公開</th>
+      <th>料理の分類</th>
+      <th>メニュー名</th>
+      <th>価格</th>
+      <th>並び順</th>
+    </tr>
+    {foreach from=$menu_list item=row}
+    {assign var=restaurant_menu_id value=$row.restaurant_menu_id}
+    <tr>
+      <td><input type="checkbox" name="restaurant_menu_id[]" value="{$row.restaurant_menu_id}" {rcms_auth not=true target="update:/restaurant_menu/item/$restaurant_menu_id || delete:/restaurant_menu/item/$restaurant_menu_id"}disabled="disabled"{/rcms_auth} /></td>
+      <td>{$row.open_flg|rcms_publicimg}</td>
+      <td>{if $row.parent_id}{$row.parent_nm}<br>&nbsp;┗{/if}{$row.category_nm}</td>
+      <td>
+        <a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id={$row.restaurant_menu_id}&restaurant_menu_category_id={$row.restaurant_menu_category_id}">{$row.menu_nm|escape}<br>{$row.menu_explain|strip_tags:false|mbtruncate:50}</a>
+        {rcms_include   
+            file="common/admin/language_status.html" 
+            meta=$docmetas[$restaurant_menu_id] 
+            link="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id=$restaurant_menu_id"
+        }   
+      </td>
+      <td>{$row.price|escape|nl2br}
+      </td>
+      <td>{$row.order_no}</td>
+    </tr>
+{if $row.use_page}
+    <tr>
+      <td colspan="3" class="usepage">
+      {foreach from=$row.use_page item=pageRow}
+        <a href="{if $pageRow.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $pageRow.page_sysnm ne 'TOP'}{$pageRow.page_sysnm}/{/if}" target="_blank">{$pageRow.page_nm|escape}</a>
+      {/foreach}
+      </td>
+    </tr>
+{/if}
+    {/foreach }
+  </table>
+{pager info=$pageInfo}
+
+{buttonbox}
+<p>選択したメニューを一括で</p>
+    <button type="submit" onclick="this.form.MODE.value='OPEN'">公開にする</button>
+    <button type="submit" onclick="this.form.MODE.value='CLOSE'">非公開にする</button>
+    <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+{/buttonbox}
+
+</form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

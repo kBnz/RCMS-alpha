@@ -1,0 +1,69 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>商品詳細</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_rakuten/api_rakuten_search/">{$module_nm}</a>
+商品詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_rakuten/api_rakuten_search/">商品検索</a></li>
+  <li><a href="/management/api_rakuten/api_rakuten_list/">商品一覧</a></li>
+</ul>
+
+
+  <div class="list_main">
+
+    {if $item}
+	<p style="font-weight:bold">{$item->itemName}</p>
+	{if $item->imageFlag}
+		<p>
+			<img src="{$item->mediumImageUrl}" alt="{$item->itemName}" />
+		</p>
+	{/if}
+	<p><a title="{$item->shopName}" href="{$item->shopUrl}">{$item->shopName}</a></p>
+	<p>{$item->itemCaption}</p>
+	<p><a href="{$item->itemUrl}" onclick="return !window.open(this.href)">詳細情報はコチラ</a></p>
+
+	<p><a href="http://webservice.rakuten.co.jp/" onclick="return !window.open(this.href)"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a></p>
+
+    <form action="/management/api_rakuten/api_rakuten_edit/item_id={$itemId}" method="post">
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <table style="width:100%">
+        <tr>
+          <th>コメント</th>
+        </tr>
+        <tr>
+          <td style="text-align:center"><textarea name="notes" rows="5" style="width:98%">{$item->notes}</textarea></td>
+        </tr>
+      </table>
+
+      {rcms_include file="management/relation_edit.html"}
+
+      {if $auth.api_rakuten.update}
+        <input type="hidden" name="mode" value="update" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        {buttonbox}
+          <button type="submit">更新する</button>
+        {/buttonbox}
+      {/if}
+
+    </form>
+
+    {else}
+    <p><strong>指定したIDの商品は、楽天市場に存在しません。</strong></p>
+    {/if} {* end of if $item *}
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

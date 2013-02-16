@@ -1,0 +1,140 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function isCheckedURL(form) {
+
+    var cb = form["portal_setting_id[]"];
+    // ファイルが選択されているかチェック
+    if (cb.length) {
+        for(var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                return true;
+            }
+        }
+    }
+    else {
+        return true;
+    }
+    return false;
+}
+
+function confirmDelete(form) {
+    if (!isCheckedURL(form)) {
+        alert('削除するURLを選択してください。');
+        return;
+    }
+    var msg = '削除してよろしいですか？';
+    if (confirm(msg)) {
+        form.MODE.value = "DELETE";
+        form.submit();
+    }
+}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>ポータルサイト</h2>
+<ul>
+{if $auth.portal.insert}
+<li class="normal"><a href="/management/portal/portal_setting_edit/"><span>新規作成</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/portal/portal_setting_list/">{'/modules/portal'|translate}</a>
+<a href="/management/portal/portal_setting_list/">{$module_nm}設定一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div id="portal_setting_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $auth.portal.select}
+<h3>送信URL設定</h3>
+  {foreach from=$portal_send_list item=item name=portal_setting}
+    {if $smarty.foreach.portal_setting.first}
+    <form name="portal_send_list" action="/management/portal/portal_setting_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'portal_setting_id[]')" /></th>
+        <th>URL</th>
+        <th>URLタイプ</th>
+        <th>通信状態</th>
+        <th>設定</th>
+        <th>ファイル更新日</th>
+        <th>更新者</th>
+      </tr>
+    {/if}
+      <tr>
+        <td><input type="checkbox" name="portal_setting_id[]" value="{$item.portal_setting_id}" /></td>
+        <td>{$item.portal_url}</td>
+        <td>{$portal_url_type_options[$item.url_type]}</td>
+        <td>{$portal_status_kbn_options[$item.status_kbn]}</td>
+        <td><a href="/management/portal/portal_setting_edit/portal_setting_id={$item.portal_setting_id}">設定</a></td>
+        <td width="120px" style="white-space:nowrap">{$item.update_ymdhi|pg_dateformat}</td>
+        <td width="60px" style="white-space:nowrap">{$item.admin_name}</td>
+      </tr>
+    {if $smarty.foreach.portal_setting.last}
+    </table>
+    {buttonbox}
+    {if $auth.portal.delete}
+    チェックしたURLを<button type="button" onclick="confirmDelete(this.form)">削除する</button>
+    {/if}
+    {/buttonbox}
+    </form>
+    {/if}
+  {/foreach}
+<h3>受信URL設定</h3>
+  {foreach from=$portal_receive_list item=item name=portal_setting}
+    {if $smarty.foreach.portal_setting.first}
+    <form name="portal_receive_list" action="/management/portal/portal_setting_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'portal_setting_id[]')" /></th>
+        <th>URL</th>
+        <th>URLタイプ</th>
+        <th>通信状態</th>
+        <th>設定</th>
+        <th>ファイル更新日</th>
+        <th>更新者</th>
+      </tr>
+    {/if}
+      <tr>
+        <td><input type="checkbox" name="portal_setting_id[]" value="{$item.portal_setting_id}" /></td>
+        <td>{$item.portal_url}</td>
+        <td>{$portal_url_type_options[$item.url_type]}</td>
+        <td>{$portal_status_kbn_options[$item.status_kbn]}</td>
+        <td><a href="/management/portal/portal_setting_edit/portal_setting_id={$item.portal_setting_id}">設定</a></td>
+        <td width="120px" style="white-space:nowrap">{$item.update_ymdhi|pg_dateformat}</td>
+        <td width="60px" style="white-space:nowrap">{$item.admin_name}</td>
+      </tr>
+    {if $smarty.foreach.portal_setting.last}
+    </table>
+    {buttonbox}
+    {if $auth.portal.delete}
+    チェックしたURLを<button type="button" onclick="confirmDelete(this.form)">削除する</button>
+    {/if}
+    {/buttonbox}
+    </form>
+    {/if}
+  {/foreach}
+{else}
+  <p style="margin-top:10px">権限がないため閲覧することができません。</p>
+{/if}
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

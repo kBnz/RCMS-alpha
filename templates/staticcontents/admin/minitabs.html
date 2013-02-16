@@ -1,0 +1,4 @@
+<ul class="minitabs">
+  <li><a href="/management/staticcontents/staticcontents_list/" {if $page_type eq 'staticcontents_list' || $page_type eq 'staticcontents_edit'}class="active"{/if}>{'/modules/staticcontents/label/staticcontents_list'|translate}</a></li>{*自由HTML一覧*}
+  <li><a href="/management/staticcontents/staticcontents_category_list/" {if $page_type eq 'staticcontents_category_list' || $page_type eq 'staticcontents_category_edit'}class="active"{/if}>{'/label/categories_list'|translate}</a></li>{*カテゴリ設定*}
+</ul>

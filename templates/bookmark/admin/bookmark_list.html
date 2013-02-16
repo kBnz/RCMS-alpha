@@ -1,0 +1,68 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete() {
+   if(confirm('選択されたブックマークを削除します')) {
+       document.bookmark_list.MODE.value = 'DELETE';
+       document.bookmark_list.submit();
+   }
+}
+
+function switchVal(id, MODE) {
+   document.bookmark_list.update_id.value   = id;
+   document.bookmark_list.MODE.value = MODE;
+   document.bookmark_list.submit();
+}
+
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h3>{$module_nm}</h3>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/bookmark/bookmark_list/">{$module_nm}</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="bookmark_list" method="POST" action="/management/bookmark/bookmark_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="update_id" value="" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+{if $auth.bookmark.delete}
+      <th scope="col" width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'bookmark_id[]');"></th>
+{/if}
+      <th scope="col">タイトル</th>
+    </tr>
+    {foreach item=bookmark_data from=$bookmark_list}
+    <tr>
+{if $auth.bookmark.delete}
+      <td><input type="checkbox" name="bookmark_id[]" value="{$bookmark_data.bookmark_id}"></td>
+{/if}
+      <td><a href="{$bookmark_data.url}" target="_brank">{$bookmark_data.title}</a></td>
+    </tr>
+    {/foreach }
+  </table>
+{if $auth.bookmark.delete}
+<div class="btn_box_bottom">
+  <div style="float: left; margin-top: 5px;">　選択したブックマークを一括で</div>
+  <ul class="bt_orange" style="margin-left: -5px;">
+  <li><a href="javascript:void(0)" onclick="document.getElementById('button3').click(); return false;"><span>削除する</span></a></li>
+  </ul>
+  <input type="button" name="button" id="button3" value="削除する" onclick="confirmDelete();" style="display: none;"  />
+</div>
+{/if}
+</form>
+</div>
+{rcms_include file="management/footer.html"}

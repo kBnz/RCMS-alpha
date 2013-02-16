@@ -1,0 +1,42 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+
+<hr class="for_mng"/>
+<h2 class="for_mng">{'/modules/catalog/label/catalog_group_list'|translate}{* グループ一覧 *}</h2>
+
+{if $rauth->canInsert('/catalog/group')}
+<a href="/management/catalog/catalog_group_edit/"><span>{'/modules/catalog/label/create_group_btn'|translate}{* グループ追加 *}</span></a>
+{/if}
+
+<hr class="for_mng"/>
+
+  <form name="catalog_group_list_form" method="POST" action="/management/catalog/catalog_group_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+      <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select><br />
+      <input type="submit" value="{'/label/search_btn'|translate}{* 検索する *}" />
+  </form>
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+    {pager info=$pageInfo}
+    {foreach from=$catalog_group_list item=row}
+    {assign var=catalog_group_id value=$row.catalog_group_id}
+        {$row.open_status|rcms_publicimg}{$row.update_ymdhi|pg_dateformat}<br />
+        {$row.catalog_group_id}:
+        {$row.group_nm}<br />
+        {if $rauth->canInsert("/catalog/item/[@catalog_group_id=$catalog_group_id]")}
+        <a href="/management/catalog/catalog_edit/catalog_group_id={$row.catalog_group_id}">{'/modules/catalog/label/create_catalog'|translate}{* カタログ作成 *}</a> | 
+        {/if}
+        {if $rauth->canSelect("/catalog/item/[@catalog_group_id=$catalog_group_id]")}
+        <a href="/management/catalog/catalog_list/catalog_group_id={$row.catalog_group_id}">{'/modules/catalog/label/catalog_list'|translate}{* カタログ一覧 *}</a> | 
+        {/if}
+        <a href="/management/catalog/catalog_group_edit/catalog_group_id={$row.catalog_group_id}">{'/label/setting'|translate}{* 設定 *}</a><br />
+<br />
+    {/foreach}
+    {pager info=$pageInfo}
+
+{rcms_include file="management/mobile/footer.html"}

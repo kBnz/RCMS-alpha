@@ -1,0 +1,94 @@
+{module name="calendar_list"}
+<h2 class="module_title"><span>{$this_year}年{$this_month}月 &nbsp {$program.program_nm}{if $program.program_subnm}({$program.program_subnm}){/if}の予定</span></h2>
+<div class="module_contents">
+
+{*クラスの内容*}
+<div>
+<table>
+<tr><th>{$program.program_nm}の内容</th></tr>
+<tr><td>{$program.content}</td></tr>
+<tr><th>所要時間</th></tr>
+<tr><td>{$program.minutes}</td></tr>
+<tr><th>強度</th></tr>
+<tr><td>{$program.strength}</td></tr>
+<tr><th>難易度</th></tr>
+<tr><td>{$program.target}</td></tr>
+{if $program.recommend_flg == 1}
+<tr><th>お勧め</th></tr>
+<tr><td>{$program.recommend_comment}</td></tr>
+{/if}
+</table>
+</div>
+
+
+{* 年の移動ナビ *}
+<ul class="naviYear">
+  <li class="pre"><a href="{$smarty.const.ROOT_URL}/program_schedule_list/year={$this_year-1}&month={$this_month}&id={$id}"><span class="arrow">&lt;&lt;</span>{$this_year-1}年</a></li>
+  <li class="next"><a href="{$smarty.const.ROOT_URL}/program_schedule_list/year={$this_year+1}&month={$this_month}&id={$id}">{$this_year+1}年<span class="arrow">&gt;&gt;</span></a></li>
+</ul>
+<div style="clear:both"></div>
+{* 月の移動ナビ *}
+<ul class="naviMonth">
+{foreach from=$arrMonth item=month}
+{assign var="month_num" value=$month|string_format:"%d"}
+  <li{if $this_month == $month_num} class="current"{/if}>
+  <a href="{$smarty.const.ROOT_URL}/program_schedule_list/year={$this_year}&month={$month_num}&id={$id}">{$month_num}月</a>
+  </li>
+{/foreach}
+</ul>
+<div style="clear:both"></div>
+
+{* カレンダーの見出*}
+<table border="0" cellspacing="0" class="header">
+  <tr valign="bottom">
+    <td class="pre">
+      <a href="{$smarty.const.ROOT_URL}/program_schedule_list/year={$pre_year}&month={$pre_month}&id={$id}" class="month2"><span class="arrow">&lt;&lt;</span>{$pre_month}月</a></td>
+    <td class="this"><span class="month1">{$this_year}<span>年</span>{$this_month}<span>月</span></span></td>
+    <td class="next"><a href="{$smarty.const.ROOT_URL}/program_schedule_list/year={$next_year}&month={$next_month}&id={$id}" class="month2">{$next_month}月<span class="arrow">&gt;&gt;</span></a></td>
+  </tr>
+</table>
+
+<div align="center">
+{* 月間スケジュールリスト本体 *}
+{if $monthly_schedule}
+<table class="schedule_list" width="90%">
+{strip}
+  <tr>
+    <th width="20%">実施日</th><th width="20%">時間</th><th width="20%">担当</th><th width="20%">お知らせ</th>
+   {if $monthly_schedule.reserve_status == 10}<th width="20%">予約</th>{/if}
+  </tr>
+    {foreach item=cal_line from=$cal_data.days name="cal_line_nm"}
+    {foreach key=key item=item from=$cal_line}
+    {* 日毎のデータ *}
+      {if $monthly_schedule[$item.date]}
+        {foreach from=$monthly_schedule[$item.date] item = program name=program_data}
+        <tr>
+          {if $smarty.foreach.program_data.first}
+          <td rowspan="{$smarty.foreach.program_data.total}">{$this_year}/{$this_month}/{$item.day}({$item.week})</td>
+          {/if}
+          <td>{$program.from_time}～{$program.to_time}</td>
+          <td>{$program.teacher}</td>
+          <td>{$program.comment}</td>
+          {if $monthly_schedule.reserve_status == 10}
+          <td {if $program.accept_flg == 2} class="reserved" {/if}>
+            {if ($program.accept_flg == $smarty.const.RESERVE_ACCEPT_ON)||($program.accept_flg == $smarty.const.RESERVE_ACCEPT_LITTLE)}
+            <a href="{$smarty.const.ROOT_URL}/program_schedule_detail/id={$program.program_schedule_id}">{$program.accept_condition}</a>
+            {else}<div>{$program.accept_condition}</div>
+            {/if}
+          </td>
+          {/if}
+        </tr>
+        {/foreach}
+      {/if}
+    {/foreach}
+    {/foreach}
+{/strip}
+</table>
+{else}
+現在予定はありません。
+{/if}
+</div>
+
+<div class="relation_link"><a href="{$smarty.const.ROOT_URL}/program_category_list/">クラスの一覧へ</a></div>
+</div>
+{/module}

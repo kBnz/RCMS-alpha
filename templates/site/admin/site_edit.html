@@ -1,0 +1,145 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">/*<![CDATA[*/
+/* 色関係 */
+function changeColor(id) {
+  $('swatch' + id).style.color = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+}
+
+var color_picker_current_id = null;
+function showColorPicker(id) {
+  color_picker_current_id = id;
+  var wnd = window.open(
+                '/js/colorpicker/colorpicker.php?callback=callback_color_picker',
+                'color_picker', 'status=no,modal=yes,width=350,height=250'
+            );
+
+  // 現在の色を渡す
+  wnd.dialogArguments = '#' + ($F('code' + id).match(/[0-9a-f]{6}/i) || '000000');
+  return wnd;
+}
+
+function callback_color_picker(wnd) {
+  $('swatch' + color_picker_current_id).style.color
+      = $('code' + color_picker_current_id).value
+      = wnd.returnValue;
+}
+/*]]>*/</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2 class="site">{$module_nm}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+{'/modules/site'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+<div class="main_contents">
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/site/site_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+  {foreach item=d from=$data name=list}
+      {if $pre_category ne $d.category && $smarty.foreach.list.iteration > 1}
+      </table>
+      <br>
+      <h3>{'/label/menus/'|cat:$d.category|translate}</h3>
+      <table width="100%">
+      {elseif $pre_category eq ''}
+      <h3>{'/label/common'|translate}</h3>
+      <table>
+       <tr>
+          <th colspan="3">■{'/label/common'|translate}</th>
+      </tr>
+
+      {/if}
+      {if $pre_module_nm ne $d.module_nm && $smarty.foreach.list.iteration > 1}
+          {if $pre_category eq $d.category && $pre_category}
+          <tr>
+              <td colspan="3"></td>
+          </tr>
+          {/if}
+      <tr>
+          <th colspan="3">■{if $d.module_nm|translate_modules}{$d.module_nm|translate_modules}{else}{'/label/common'|translate}{/if}</th>
+      </tr>
+      {/if}
+      <tr>
+        <th width="150">{$d.disp_nm}</th>
+        {if $d.input_type == "TEXTAREA" || $d.type == "arrayVariable"}
+          <td>
+            <textarea id="{$d.sys_nm}" name="value[{$d.sys_nm}]" rows="4" cols="25">{$d.value|escape:"html"}</textarea>
+          </td>
+        {elseif $d.input_type == "CHECKBOX"}
+          <td>
+            <input type="checkbox" name="value[{$d.sys_nm}]" value="1" {if $d.value == "1"}checked{/if}>
+          </td>
+        {assign var="checked" value=$d.value}
+        {elseif $d.input_type == "MULTICHECKBOX"}
+          <td>
+            {foreach item=option from=$d.options name=multicheckbox}
+            <input type="checkbox" name="value[{$d.sys_nm}{$smarty.foreach.multicheckbox.iteration-1}]" value="1"{if $option.checked == "1"}checked{/if} />{$option.name}({$option.url})<br />
+            {/foreach}
+          </td>
+        {elseif $d.input_type == "COLOR"}
+          <td>
+            <span id="swatch{$smarty.foreach.list.iteration}">■</span>
+            <input type="text" id="code{$smarty.foreach.list.iteration}" name="value[{$d.sys_nm}]" size="40" value="{$d.value|escape:"html"}" onkeyup="changeColor({$smarty.foreach.list.iteration})" />
+            <input type="button" value="{'/label/setting'|translate}" {*設定*} onclick="showColorPicker({$smarty.foreach.list.iteration})" />
+          </td>
+
+        {else}
+          <td>
+            {if $d.sys_nm eq 'HEADER_IMAGE_URL' || $d.sys_nm eq 'mobile_logo_url'}
+            <input type="text" id="{$d.sys_nm}" name="value[{$d.sys_nm}]" size="40" value="{$d.value|escape:"html"}">
+            {else}
+            <input type="text" id="{$d.sys_nm}" name="value[{$d.sys_nm}]" size="40" value="{$d.value|escape:"html"}">
+            {/if}
+            
+            {if $d.disp_nm eq "RSSファイルキー"}
+              <br><input type="checkbox" name="random_key" value="1" {if $d.value eq ''}checked{/if}>{'/label/generate_randomly'|translate}{*ランダムに生成する*}
+            {/if}
+          </td>
+        {/if}
+          <td>
+            {$d.comment|nl2br}
+          </td>
+      </tr>
+      {assign var="pre_module_nm" value=$d.module_nm}
+      {assign var="pre_category" value=$d.category}
+  {/foreach}
+    </table>
+
+<script type="text/javascript">
+var color_i;
+{foreach item=d from=$data name=list}
+{if $d.input_type == "COLOR"}
+color_i = {$smarty.foreach.list.iteration};
+{literal}
+if ($('code' + color_i)){
+     $('swatch' + color_i).style.color = $F('code' + color_i);
+}
+{/literal}
+
+{/if}
+{/foreach}
+</script>
+
+    {if $auth.site.update}
+      {buttonbox}
+        <button type="submit">{'/label/update_btn'|translate}</button>{*更新する*}
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

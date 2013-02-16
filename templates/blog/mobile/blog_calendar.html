@@ -1,0 +1,12 @@
+<h2>[emoji:176]{'/label/yyyymm'|translate:$arrBlogDate[0]:$arrBlogDate[1]}{* yyyy年mm月 *}</h2>
+
+<div style="text-align:center;font-size:small;">
+<a href="/{$page_sysnm}/{$get_default}&date={$arrPreBlogDate[0]}-{$arrPreBlogDate[1]}">&lt;&lt;{'/label/last_month'|translate}{* 前月 *}</a>&nbsp;&nbsp;<a href="/{$page_sysnm}/{$get_default}&date={$arrAftBlogDate[0]}-{$arrAftBlogDate[1]}">{'/label/next_month'|translate}{* 次月 *}&gt;&gt;</a>
+</div>
+
+{section loop=$monthDateCount name=i}
+{if $blog_list[i].blog_item_id}
+<a href="/{$page_sysnm}/{$get_default}&date={$arrBlogDate[0]}-{$arrBlogDate[1]}-{$smarty.section.i.iteration}">{'/label/mmdd'|translate:$arrBlogDate[1]:$smarty.section.i.iteration}{* mm月dd日 *}({$blog_list_cnt[i].cnt})</a><br/>
+{/if}
+{/section}
+<hr/>

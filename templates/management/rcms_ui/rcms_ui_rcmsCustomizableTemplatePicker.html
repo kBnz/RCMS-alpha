@@ -1,0 +1,249 @@
+{literal}
+<!-- rcmsCustomizableTemplatePicker -->
+<script type="text/javascript">
+
+(function($){
+
+    /**
+    * カスタマイズ可能なテンプレートを選択するプラグイン
+    * テンプレートのリストはローカルストレージにキャッシュ。ハッシュ値により変更を毎回確認し、変更がある場合は最新版をダウンロードする。
+    *
+    * @対象要素  <div>タグ
+    * @param   showAll = true    bool           すべてを表示する場合はtrue、まだカスタマイズされていないテンプレートを薄く表示する場合はfalse 
+    * @param   source            JSON           テンプレートのリストをJSONで渡す。通常は変更しない。この値はローカルストレージにキャッシュされる。
+    * @param   onChange          function(id)   選択時に実行する関数。引数としてidが渡される
+    *
+    * @使用例
+    *       <div id="tmpl_type_picker" data-id="" >モジュールから検索</div>
+    *       $("#tmpl_type_picker").rcmsCustomizableTemplatePicker({onChange:function(id){alert(id);},showAll:false});
+    *
+    */
+    $.fn.rcmsCustomizableTemplatePicker = function(options){
+
+        // 引数を用意
+        var options=$.extend({
+            showAll  : true,
+            source   : JSON.parse(localStorage.getItem("rcmsCustomizableTemplateList")),
+            onChange : function(){},
+        },options);
+        
+        // 対象オブジェクト
+        var target = this;
+        
+        // 初期化
+        var init = function (response){
+            var currentSource = JSON.parse(response);
+            if(currentSource.data){
+                localStorage.setItem("rcmsCustomizableTemplateList", response);
+                target.after(generatPickerFieldHtml(currentSource));
+            }else{
+                target.after(generatPickerFieldHtml(options.source));
+            }
+            target.addClass("rcms_ui_customizable_template_picker");
+            target.click(showPicker);                                                            // targetをクリック
+            $(".modal",target.next()).click(hideField);                                     // その他の場所をクリック
+            $(".main .rcms_ui_module_selector ul li",target.next()).click(onSelectModule);     // moduleをクリック
+            $(".main .rcms_ui_content_selector ul li",target.next()).click(onSelectContent);   // contentをクリック
+            $(".main .rcms_ui_template_selector ul li",target.next()).click(onSelectTemplate); // templateをクリック
+        };
+        
+        // pickerを表示
+        var showPicker = function(){
+            
+            target.next().show(); // 先に表示しないとスクロールできない
+
+//console.log($(".main .rcms_ui_module_selector ul li.selected",target.next()).length);
+            
+            // 選択されている要素までスクロール (module)
+            if( $(".main .rcms_ui_module_selector ul li.selected",target.next()).length > 0 ){
+                var pos = $(".main .rcms_ui_module_selector ul li.selected",target.next()).position();
+                var h   = $(".main .rcms_ui_module_selector ul li.selected",target.next()).outerHeight(true);
+                var m   = parseInt($(".main .rcms_ui_module_selector ul",target.next()).css("padding-top"));
+                var b   = parseInt($(".main .rcms_ui_module_selector ul",target.next()).css("border-top-width"));
+                $(".main .rcms_ui_module_selector ul",target.next()).scrollTop(pos.top-h-m-b);
+            }
+            // 選択されている要素までスクロール (content)
+            if( $(".main .rcms_ui_content_selector ul li.selected",target.next()).length > 0 ){
+                var pos = $(".main .rcms_ui_content_selector ul li.selected",target.next()).position();
+                var h   = $(".main .rcms_ui_content_selector ul li.selected",target.next()).outerHeight(true);
+                var m   = parseInt($(".main .rcms_ui_content_selector ul",target.next()).css("padding-top"));
+                var b   = parseInt($(".main .rcms_ui_content_selector ul",target.next()).css("border-top-width"));
+                $(".main .rcms_ui_content_selector ul",target.next()).scrollTop(pos.top-h-m-b);
+            }
+            // 選択されている要素までスクロール (template)
+            if( $(".main .rcms_ui_template_selector ul li.selected",target.next()).length > 0 ){
+                var pos = $(".main .rcms_ui_template_selector ul li.selected",target.next()).position();
+                var h   = $(".main .rcms_ui_template_selector ul li.selected",target.next()).outerHeight(true);
+                var m   = parseInt($(".main .rcms_ui_template_selector ul",target.next()).css("padding-top"));
+                var b   = parseInt($(".main .rcms_ui_template_selector ul",target.next()).css("border-top-width"));
+                $(".main .rcms_ui_template_selector ul",target.next()).scrollTop(pos.top-h-m-b);
+            }
+            
+        };
+        
+        // module選択時
+        var onSelectModule = function(){
+            $(".selected",$(this).parent()).removeClass("selected"); //全てのselectedを削除
+            $(this).addClass("selected");  // selectedを追加
+            var key = $(this).data("key");
+    
+            $(".main .rcms_ui_template_selector",target.next()).hide();
+            $(".main .rcms_ui_content_selector",target.next()).hide();
+            $(".rcms_ui_content_selector ul li[data-parent-key!='"+key+"']" ,$(this).parent().parent().parent()).hide();
+            $(".rcms_ui_content_selector ul li[data-parent-key='"+key+"']" ,$(this).parent().parent().parent()).show();
+            $(".main .rcms_ui_content_selector",target.next()).show('slide', {direction: 'left'}, 200);
+            //$(".rcms_ui_content_selector li[data-parent-key='"+key+"']:first" ,$(this).parent().parent()).click();
+        };
+        
+        // content選択時
+        var onSelectContent = function(){
+            $(".selected",$(this).parent()).removeClass("selected"); //全てのselectedを削除
+            $(this).addClass("selected");  // selectedを追加
+            var key = $(this).data("key");
+    
+            $(".rcms_ui_template_selector ul li[data-parent-key!='"+key+"']" ,$(this).parent().parent().parent()).hide();
+            $(".rcms_ui_template_selector ul li[data-parent-key='"+key+"']" ,$(this).parent().parent().parent()).show();
+            $(".main .rcms_ui_template_selector",target.next()).show('slide', {direction: 'left'}, 200);
+        };
+        
+        // template選択時
+        var onSelectTemplate = function(){
+            $(".selected",$(this).parent()).removeClass("selected"); //全てのselectedを削除
+            $(this).addClass("selected");  // selectedを追加
+            var id = setValue(target);
+            options.onChange(id);
+            hideField();
+        };
+        
+        // 値をtargetに設定
+        var setValue = function(){
+            var moduleName   = $(".rcms_ui_module_selector li.selected" ,target.next()).html();
+            var contentName  = $(".rcms_ui_content_selector li.selected" ,target.next()).html();
+            var templateName = $(".rcms_ui_template_selector li.selected" ,target.next()).html();
+            var templateId   = $(".rcms_ui_template_selector li.selected" ,target.next()).data("id");
+            
+//console.log( moduleName+":"+contentName+":"+templateName+"("+templateId+")" );
+            target.html( moduleName+":"+contentName+":"+templateName );
+            target.attr({"data-id":templateId});
+            return templateId;
+        };
+        
+        // 選択肢を隠す
+        var hideField = function(event){
+            target.next().hide();
+        };
+        
+        // 選択肢のhtmlを生成
+        var generatPickerFieldHtml = function(data){
+            if(options.showAll){
+                return $("#rcms_ui_customizable_template_picker_tmpl").tmpl(data);
+            }else{
+                return $("#rcms_ui_customizable_template_picker_with_count_tmpl").tmpl(data);
+            }
+        };
+        
+        // メインシーケンス
+        return this.each(function(){
+            
+            // リストの最新版を確認する
+            $.ajax({
+                type   : "POST",
+                async  : true,
+                url    : "/direct/templateedit/customizable_template_list/",
+                data   : {"q" : (options.source ? options.source.hash : "")},
+                success: init
+            });
+        });
+    };
+    
+})(jQuery);
+</script>
+
+<!-- テンプレートの定義   rcms_ui_customizable_template_picker_with_count_tmpl-->
+<script id="rcms_ui_customizable_template_picker_with_count_tmpl" type="text/x-jquery-tmpl">
+    
+    <div class="rcms_ui_customizable_template_picker_field">
+        <div class="modal" style="" ></div>
+        <div class="main" style="">
+    
+            <div class="rcms_ui_module_selector">
+                <label>1. モジュールを選択</label>
+                <ul>
+                    {{each(i,d) data}}
+                        <li data-key="${d.module_key}" class="{{if d.count>0}}{{else}}none{{/if}}">${d.module_name}</li>
+                    {{/each}}
+                </ul>
+            </div>
+    
+            <div class="rcms_ui_content_selector">
+                <label>2. コンテンツタイプを選択</label>
+                <ul>
+                    {{each(i,d) data}}
+                        {{each(j,c) d.contents}}
+                            <li data-key="${c.content_key}" data-parent-key="${d.module_key}" class="{{if c.count>0}}{{else}}none{{/if}}">${c.content_name}</li>
+                        {{/each}}
+                    {{/each}}
+                </ul>
+            </div>
+    
+            <div class="rcms_ui_template_selector"> 
+                <label>3. テンプレートを選択</label>
+                <ul>
+                    {{each(i,d) data}}
+                        {{each(j,c) d.contents}}
+                            {{each(k,t) c.templates}}
+                                <li data-id="${t.template_id}" data-parent-key="${c.content_key}" class="{{if t.count>0}}{{else}}none{{/if}}">${t.template_name}  (${t.count}件)</li>
+                            {{/each}}
+                        {{/each}}
+                    {{/each}}
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+</script>
+
+<!-- テンプレートの定義   rcms_ui_customizable_template_picker_tmpl-->
+<script id="rcms_ui_customizable_template_picker_tmpl" type="text/x-jquery-tmpl">
+    
+    <div class="rcms_ui_customizable_template_picker_field">
+        <div class="modal" style="" ></div>
+        <div class="main" style="">
+    
+            <div class="rcms_ui_module_selector">
+                <label>1. モジュールを選択</label>
+                <ul>
+                    {{each(i,d) data}}
+                        <li data-key="${d.module_key}">${d.module_name}</li>
+                    {{/each}}
+                </ul>
+            </div>
+    
+            <div class="rcms_ui_content_selector">
+                <label>2. コンテンツタイプを選択</label>
+                <ul>
+                    {{each(i,d) data}}
+                        {{each(j,c) d.contents}}
+                            <li data-key="${c.content_key}" data-parent-key="${d.module_key}">${c.content_name}</li>
+                        {{/each}}
+                    {{/each}}
+                </ul>
+            </div>
+    
+            <div class="rcms_ui_template_selector"> 
+                <label>3. テンプレートを選択</label>
+                <ul>
+                    {{each(i,d) data}}
+                        {{each(j,c) d.contents}}
+                            {{each(k,t) c.templates}}
+                                <li data-id="${t.template_id}" data-parent-key="${c.content_key}">${t.template_name}</li>
+                            {{/each}}
+                        {{/each}}
+                    {{/each}}
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+</script>
+{/literal}

@@ -1,0 +1,11 @@
+このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+
+{$header.title}に回答がありました。
+添付されているファイルを確認するか、ログインして確認してください。
+{$smarty.const.ROOT_SSL_URL}/management/survey/survey_report/survey_id={$survey_id}
+
+
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/
+■管理画面
+{$smarty.const.ROOT_SSL_URL}/management/

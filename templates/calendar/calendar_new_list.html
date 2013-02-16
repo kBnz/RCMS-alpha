@@ -1,0 +1,24 @@
+{module name="calendar_new_list"}
+<h2 class="module_title"><span>{'/modules/calendar/label/event_list'|translate}</span></h2>
+<div class="module_contents">
+{foreach from=$calendar_new_item_list item=item name=new_list}
+  {if $smarty.foreach.new_list.first}
+    <table width="100%">
+  {/if}
+    <tr>
+      <td>
+        {if $item.from_time != ''}
+          {$item.from_date|cat:' '|cat:$item.from_time|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}
+        {else}
+          {$item.from_date|cat:' 00:00:00'|pg_dateformat:"%Y/%m/%d(%%w%%)"}
+        {/if}
+      </td>
+      <td><a href="/calendar_detail/id={$item.event_id}" >{$item.event_txt}</a></td>
+    </tr>
+  {if $smarty.foreach.new_list.last}
+    </table>
+  {/if}
+{/foreach}
+<div class="relation_link"></div>
+</div>
+{/module}

@@ -1,0 +1,41 @@
+{module name="magazine_detail"}
+<h2 class="module_title"><span>{'/modules/magazine/label/magazine_detail'|translate}</span></h2>{*メールマガジン詳細*}
+<div class="module_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form name="magazine_detail_form" id="magazine_detail_form" action="/{$page_sysnm}/id={$data.magazine_id}" method="POST">
+<input type="hidden" name="mode" value="SUBSCRIBE" />
+
+<h3>{$data.magazine_name}</h3>
+<div class="magazine_info">
+	<div class="clearFix">
+	{if $data.photo_url}<p classs="photo"><img alt="{$data.madazine_name}" src="{$data.photo_url}" /></p>{/if}
+	<p class="text"><span>{'label/overview'|translate}</span>{$data.magazine_info}</p>{*概要*}
+
+	<p class="readingCnt"><span>{'/label/subscriber'|translate}</span>{$data.reading_cnt}{'/label/member_unit'|translate}{*人*}</p>
+	</div>
+	<div class="reg">
+		<p class="mail"><label for="mail_address">{'/label/mail_address'|translate}{*メールアドレス*}</label><input type="text" id="mail_address" name="mail_address" value="{$formData.mail_address}" size="50" /></p>
+	{if $smarty.const.MAGAZINE_USE_CAPTCHA}
+		<img class="captcha" src="{$captcha}" />
+		<p class="phrase"><label for="phrase">{'/msg/use_captcha'|translate}{*画像の英字５文字を入力して下さい。*}</label><input type="text" name="phrase" class="phrase" maxlength="5" /></p>
+	{/if}
+		<p class="btn">
+			<input type="button" id="sub" 	 onclick="this.form.mode.value='SUBSCRIBE'; this.form.submit();" value="{'/label/subscribe_btn'|translate}" />{*購読する*}
+			<input type="button" id="cancel" onclick="this.form.mode.value='CANCEL'; this.form.submit();" value="{'/label/resign_btn'|translate}" />{*退会する*}
+		</p>
+	</div>
+</div><!--//magazine_info-->
+</form>
+
+<div class="relation_link">
+{if $data.bn_flg}
+	<p><a href="/magazine_bn_list/id={$data.magazine_id}" class="small_text">{'/modules/magazine/label/back_number_list'|translate}</a></p>{*メルマガバックナンバー一覧*}
+{/if}
+	<p><a href="/magazine_list/" class="small_text">{'/modules/magazine/label/magazine_list_for_user'|translate}</a></p>{*メルマガ一覧*}
+</div>
+
+</div>
+{/module}

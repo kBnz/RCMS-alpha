@@ -1,0 +1,44 @@
+{rcms_include file="management/header.html"}
+{*
+
+  更新用メッセージ表示テンプレートです。
+
+  使用方法は
+
+  if (!$auth['xxxx']['update']) {
+      postAdminMessage("権限がありません。",$opt,"/management/update_message.html");
+      exit;
+  }
+
+*}
+{literal}
+<style>
+#message {
+    background:#E2E2E2 url("/images/management/bg_update.jpg") no-repeat;
+    width:420px;
+    height:143px;
+    margin:50px auto;
+}
+#messeage_box {
+	font-size:120%;
+	font-weight:bold;
+	width:260px;
+	margin-left:160px;
+    padding-top:50px;
+}
+</style>
+{/literal}
+<div id="content">
+  <div id="message">
+  	<div id="messeage_box">
+    {$message}
+    </div>
+ </div>
+</div><!-- content -->
+
+<div id="box"></div><!-- box -->
+
+<div class="clear"></div>
+
+{rcms_include file="management/footer.html"}
+

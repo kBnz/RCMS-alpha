@@ -1,0 +1,9 @@
+<ul class="minitabs">
+  <li><a href="/management/photo/photo_list/"{if $page_type eq 'photo_list'} class="active"{/if}>{'/modules/photo/label/photo_list'|translate}{*画像一覧*}</a></li>
+  <li><a href="/management/photo/photo_edit/"{if $page_type eq 'photo_edit'} class="active"{/if}>{'/modules/photo/label/photo_edit'|translate}{*画像編集*}</a></li>
+  <li><a href="/management/photo/photo_upload/"{if $page_type eq 'photo_upload'} class="active"{/if}>{'/modules/photo/label/upload_images'|translate}{*一括アップロード*}</a></li>
+  <li><a href="/management/photo/photo_category_list/"{if $page_type eq 'photo_category_list' || $page_type eq 'photo_category_edit'} class="active"{/if}>{'/modules/photo/label/category_list'|translate}{*カテゴリ設定*}</a></li>
+  {if $auth.site.select}
+  <li><a href="/management/photo/setup/"{if $page_type eq 'setup'} class="active"{/if}>{'/modules/photo/label/photo_setup'|translate}{*基本設定*}</a></li>
+  {/if}
+</ul>

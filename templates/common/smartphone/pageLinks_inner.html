@@ -1,0 +1,31 @@
+{if $pageInfo.totalPageCnt > 1}
+  {if $page_num == NULL}
+    {assign var="page_num" value="10"} {*ページの最大表示数、デフォルト値*}
+  {/if}
+
+  {strip}
+  {if $pageInfo.totalCnt != 0}
+    {math equation="x - (x - 1) % y" x=$pageInfo.pageNo y=$page_num assign="start"} {*ページリンクの左端*}
+    {assign var="loop" value=$pageInfo.totalPageCnt+1|min:$start+$page_num}
+
+    <span class="summary">{"/label/pagination/summary"|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}</span>
+
+    <div data-role="navbar">
+    <ul>
+    {if $pageInfo.pageNo!=1}
+      <li><a href="{$pageInfo.path}?{if $pageInfo.param}{$pageInfo.param}&{/if}pageID=1"  title="first page" class="first"><span>{"/label/pagination/first"|translate}</span></a></li>
+      <li><a href="{$pageInfo.path}?{if $pageInfo.param}{$pageInfo.param}&{/if}pageID={$pageInfo.pageNo-1}"  title="previous page" class="back"><span>{"/label/pagination/prev"|translate}</span></a></li>
+    {/if}
+
+    {if $pageInfo.pageNo!=$pageInfo.totalPageCnt}
+      <li><a href="{$pageInfo.path}?{if $pageInfo.param}{$pageInfo.param}&{/if}pageID={$pageInfo.pageNo+1}"  title="next page" class="next"><span>{"/label/pagination/next"|translate}</span></a></li>
+      <li><a href="{$pageInfo.path}?{if $pageInfo.param}{$pageInfo.param}&{/if}pageID={$pageInfo.totalPageCnt}"  title="last page" class="last"><span>{"/label/pagination/last"|translate}</span></a></li>
+    {/if}
+    </ul>
+    </div>
+
+  {else}
+    <!--該当するデータがありません。-->
+  {/if}
+  {/strip}
+{/if}

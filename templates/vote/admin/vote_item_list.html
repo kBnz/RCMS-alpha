@@ -1,0 +1,110 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+<!--
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/vote/label/vote_item_list'|translate}{*コメント一覧*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote/label/vote_list'|translate}</a>
+<a href="/management/vote/vote_module_list/vote_header_id={$vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}</a>
+{'/modules/vote/label/vote_item_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 投票 >> 投票一覧 >> モジュール一覧　>>　回答一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">【{if $page_id != ''}{$module_nm}・{$contents_title}{else}({'/label/all'|translate}{*すべて*}){/if}】</h3>
+<ul class="minitabs">
+  <li><a href="/management/vote/vote_edit/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/vote/vote_module_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</a></li>
+  <li><a href="/management/vote/vote_item_list/vote_header_id={$header.vote_header_id}" class="active">{'/modules/vote/label/vote_item_list'|translate}{*コメント*}</a></li>
+  <li><a href="/management/vote/vote_report/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_report'|translate}{*投票結果*}</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form method="POST" action="/management/vote/vote_item_list/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="vote_header_id" value="{$vote_header_id}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="page_id" value="{$page_id}" />
+  <input type="hidden" name="module_id" value="{$module_id}" />
+  <input type="hidden" name="vote_id" value="{$vote_id}" />
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+{if $auth.vote.update || $auth.vote.delete}
+      <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'vote_id[]');" /></th>
+{/if}
+      <th style="width:30px">{'/label/publish_status'|translate}{*公開*}</th>
+      <th style="width:30px">{'/label/id'|translate}{*ID*}
+      <th >{'/modules/vote'|translate}{*投票*}</th>
+      <th>{'/label/comments'|translate}{*コメント*}</th>
+      <th style="width:90px">{'/label/person_who_posted'|translate}{*投稿者名*}</th>
+      <th style="width:140px">{'/label/post_date'|translate}{*投稿日時*}</th>
+    </tr>
+    {foreach item=row from=$vote_list}
+    <tr>
+{if $auth.vote.update || $auth.vote.delete}
+      <td><input type="checkbox" name="vote_id[]" value="{$row.vote_id}" /></td>
+{/if}
+      <td>
+        {if $row.open_flg eq '1'}
+          <img src="/images/management/check.gif" border="0" title="公開中" />
+        {elseif $row.open_flg eq '0'}
+          <img src="/images/management/batu.gif" border="0" title="非公開" />
+        {elseif $row.open_flg eq '2'}
+          <img src="/images/management/sankaku.gif" border="0" title="申請中" />
+        {/if}
+      </td>
+      <td>{$row.vote_id}</td>
+      <td><a href="/management/vote/vote_item_edit/vote_id={$row.vote_id}">{$row.answer_title}</a></td>
+      <td>{$row.comment|nl2br}</a></td>
+      <td>{$row.name}</td>
+      <td>{$row.inst_ymdhi|pg_dateformat}</td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+  {if $auth.vote.update || $auth.vote.delete}
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+      {if $auth.vote.update}
+        <button type="submit" onclick="this.form.MODE.value='OPEN'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='CLOSE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+      {/if}
+      {if $auth.vote.delete}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+      {/if}
+    {/buttonbox}
+  {/if}
+
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

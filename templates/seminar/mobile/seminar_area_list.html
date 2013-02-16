@@ -1,0 +1,10 @@
+<h2>{'/modules/seminar/label/seminar_area_list'|translate}{* セミナーエリア一覧 *}</h2>
+{foreach from=$seminar_area_list item=item}
+<a href="/seminar_list/?{$item.param}">{$item.area_nm}({$item.cnt})</a>
+<br/>
+{foreachelse}
+<div style="text-align:center;padding-top:30px;">
+{'/msg/no_data'|translate}{* 表示するデータがありません *}
+</div>
+{/foreach}
+<hr/>

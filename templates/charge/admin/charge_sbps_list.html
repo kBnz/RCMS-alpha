@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+<!--
+-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>SBPS課金</h2>
+<ul>
+  {if $auth.charge.insert}
+  <li class="add"><a href="/management/charge/charge_sbps_edit/"><span>追加</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_sbps_list/">SBPS課金一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+{rcms_include file="charge/admin/minitabs.html" page_type="sbps"}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+  <form  action="/management/charge/charge_sbps_list/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+  <table style="width: 100%">
+    <tr>
+      <th>id</th>
+      <th>名前</th>
+      <th>会員数</th>
+      <th>履歴</th>
+    </tr>
+{foreach from=$charge_list item=row}
+  <tr>
+    <td>{$row.charge_sbps_id}</td>
+    <td><a href="/management/charge/charge_sbps_edit/charge_sbps_id={$row.charge_sbps_id}">{$row.name|escape}</a></td>
+    <td>{$row.member_cnt}</td>
+    <td><a href="/management/charge/charge_history_sbps_list/charge_sbps_id={$row.charge_sbps_id}">履歴</a></td>
+  </tr>
+
+{/foreach}
+  </table>
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

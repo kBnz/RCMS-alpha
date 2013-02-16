@@ -1,0 +1,126 @@
+{if ($view.comment != 'none' || $view.write != 'none') && $id != ""}
+{module name="new_comment"}
+<h2 class="module_title"><span>{'/label/comments'|translate}{*コメント*}</span></h2>
+<div class="module_contents">
+{if $view.comment != 'none'}
+
+<input type="hidden" name="deleteId" value="">
+{if $ratingAvg ne '' && $rating_flg != "0"}{'/label/everyones_evaluation'|translate}{*みんなの評価*}：{$ratingAvg}<img src="/images/modules/comment/stars-{$ratingAvgImg}.gif">{/if}
+{if $rating_flg != "2"}
+{foreach item=itemList from=$commentList name=comments roop=roopb}
+<a name="delete_form{$smarty.foreach.comments.index}"></a>
+<form name="deleteForm{$smarty.foreach.comments.index}" method="POST" action="/{$page_sysnm}/id={$id}#delete_form{$smarty.foreach.comments.index}">
+<input name="DG_CODE" type="hidden" value="{$DG_CODE|escape}">
+{assign var=comment_id value=$itemList.comment_id}
+{rcms_include file="management/errors_box.html" errors=$del_err_msg.$comment_id}
+
+<br>{$itemList.note|escape|nl2br}<br><br>
+
+{if $itemList.rating ne '' && $rating_flg != "0"}{'/label/evaluation'|translate}{*評価*}:<img src="/images/modules/comment/stars-{$itemList.rating}-0.gif">{/if}
+
+
+{if $itemList.mail == ""}Posted by {$itemList.name|escape}
+{else}Posted by <a href="mailto:{$itemList.mail|escape}">{$itemList.name|escape}</a>
+{/if}
+ at {$itemList.create_date|replace:"-":"/"}
+PASS:<input type="password" name="delkey" value="" size="5">
+
+<!--削除してよろしいですか？-->
+<input type="button" name="delete" value="{'/label/delete_btn'|translate}{*削除*}" onclick="if(confirm('{'/msg/confirm_del'|translate}')){literal}{document.deleteForm{/literal}{$smarty.foreach.comments.index}{literal}.submit()}{/literal}">
+<hr>
+<!--[<a href="/{$page_sysnm}/id={$id}&action=edit&comment_id={$itemList.comment_id}#comment_form">編集</a>]-->
+<input type="hidden" name="comment_id" value="{$itemList.comment_id|escape}">
+<input type="hidden" name="action" value="delete">
+</form>
+{/foreach}
+{else}
+<hr>
+{/if}
+
+{/if}
+
+{if $view.write != 'none'}
+<a name="comment_form"></a>
+<form name="comment" action="/{$page_sysnm}/#comment_form" method="POST">
+<input name="action" type="hidden" value="{$commentData.action|escape}">
+<input name="comment_id" type="hidden" value="{$commentData.comment_id|escape}">
+<input name="module_id" type="hidden" value="{$commentData.module_id|escape}">
+<input name="res" type="hidden" value="{$commentData.res|escape}">
+<input name="node" type="hidden" value="{$commentData.node|escape}">
+<input name="rootnode" type="hidden" value="{$commentData.rootnode|escape}">
+<input name="depth" type="hidden" value="{$commentData.depth|escape}">
+<input name="DG_CODE" type="hidden" value="{$DG_CODE|escape}">
+<input name="id" type="hidden" value="{$id|escape}">
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html" errors=$comment_errors}
+
+<dl>
+{if $rating_flg != "2"}
+  <dt>{'/label/name'|translate}{*名前*}:</dt><dd><input style="width:80%" maxlength="50" name="name" type="text" value="{if $commentData.name != ""}{$commentData.name|escape}{else}{$commentData.defaultNm|escape}{/if}"></dd>
+  <dt>{'/label/mail_address'|translate}{*メールアドレス*}:</dt><dd><input style="width:80%" maxlength="255" name="mail" type="text" value="{$commentData.mail|escape}"></dd>
+  <dt>{'/label/comments'|translate}{*コメント*}:</dt><dd><textarea style="width:80%" name="note" rows="5" cols="50">{$commentData.note|escape}</textarea></dd>
+{/if}
+{if $rating_flg != 0}
+  <dt>{'/label/evaluation'|translate}{*評価*}:</dt><dd><input name="rating" id="rating" type="hidden" value="{if $commentData.rating != ""}{$commentData.rating}{else}5{/if}">
+    <a href="#comment_form" id="rating1" onMouseOver="changeRating(1)"><img src="/images/modules/comment/star2.gif" id="imgRating1"></a>
+    <a href="#comment_form" id="rating2" onMouseOver="changeRating(2)"><img src="/images/modules/comment/star2.gif" id="imgRating2"></a>
+    <a href="#comment_form" id="rating3" onMouseOver="changeRating(3)"><img src="/images/modules/comment/star2.gif" id="imgRating3"></a>
+    <a href="#comment_form" id="rating4" onMouseOver="changeRating(4)"><img src="/images/modules/comment/star2.gif" id="imgRating4"></a>
+    <a href="#comment_form" id="rating5" onMouseOver="changeRating(5)"><img src="/images/modules/comment/star2.gif" id="imgRating5"></a>
+  </dd>
+{/if}
+</dl>
+
+{if $smarty.const.COMMENT_USE_CAPTCHA eq '1'}
+    <img src="{$captcha}"><br>
+    {'/msg/use_captcha'|translate}{*画像の５文字を入力して下さい*}:<input type="text" name="phrase" class="phrase" size="5" maxlength="5"><br>
+{/if}
+
+{if $rating_flg == "3"}
+    <input type="submit" name="btnSubmit1" value="{'/label/comment_btn'|translate}{*コメントする*}">
+    <input type="submit" name="btnSubmit2" value="{'/label/evaluate_btn'|translate}{*評価する*}">
+    <input type="submit" name="btnSubmit3" value="{'/label/comment_and_evaluate_btn'|translate}{*両方する*}">
+  {if $comment_id != ""}
+    <input type="submit" name="btnSubmit" value="{'/label/delete_btn'|translate}{*削除*}">
+  {/if}
+{else}
+  {if $rating_flg != "2"}
+  {'/label/password'|translate}{*パスワード*}:<input size="7" name="delkey" type="password" value="{$commentData.delkey|escape}">
+  {/if}
+    <input type="submit" name="btnSubmit" value="{'/label/write_btn'|translate}{*書込*}">
+  {if $comment_id != ""}
+    <input type="submit" name="btnSubmit" value="{'/label/delete_btn'|translate}{*削除*}">
+  {/if}
+{/if}
+
+{if $view.write != 'none' && $view.comment == 'none'}
+<br>
+※{'/msg/not_allowed_to_select'|translate}{*権限がないため閲覧することはできません*}
+{/if}
+
+</form>
+{/if}
+
+</div>
+{/module}
+
+<script type="text/javascript">
+{literal}
+<!--
+
+function changeRating(number) {
+    document.getElementById('rating').value = number;
+    for(i=1; i <= number; i++) {
+        document.getElementById('imgRating'+i).setAttribute("src", "/images/modules/comment/star2.gif");
+    }
+
+    for(i=1+number; i <= 5; i++) {
+        document.getElementById('imgRating'+i).setAttribute("src", "/images/modules/comment/star1.gif");
+    }
+}
+
+//-->
+{/literal}
+</script>
+{/if}

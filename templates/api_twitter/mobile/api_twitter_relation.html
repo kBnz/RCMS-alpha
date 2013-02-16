@@ -1,0 +1,12 @@
+{if $restaurants}
+<h2>関連ぐるなび情報</h2>
+
+	{foreach from=$restaurants item=rest}
+	<a href="{$rest.detail}">{$rest.restaurant_name}</a><br/>
+	{/foreach}
+
+<div style="text-align:center;font-size:small;">
+<a href="http://www.gnavi.co.jp/"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" alt="ｸﾞﾙﾒ情報検索ｻｲﾄ　ぐるなび"></a>
+</div>
+<hr/>
+{/if}

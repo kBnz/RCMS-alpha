@@ -1,0 +1,90 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>表示設定</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant_menu/restaurant_menu_category_list/">{$module_nm}</a>
+表示設定
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="restaurant_menu/admin/minitabs.html" auth=$auth page_type=$ct}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/restaurant_menu/restaurant_menu_disp_type/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="MODE" value="UPDATE">
+
+		<h3>大カテゴリ表示位置</h3>
+		<table width="100%" border="0" cellspacing="2" cellpadding="0">
+			<tr>
+				<th>カテゴリ</th>
+				<td>
+					<table>
+						<tr>
+							<td><img src="/images/management/menu_sample01.gif" alt="左に表示"></td>
+							<td><img src="/images/management/menu_sample02.gif" alt="上に表示"></td>
+						</tr>
+						<tr>
+							<td align="center"><input type="radio" name="restaurant_menu_disp_type" value="0" {if $restaurant_menu_disp_type eq '0'}checked{/if}> 左に表示する</td>
+							<td align="center"><input type="radio" name="restaurant_menu_disp_type" value="1" {if $restaurant_menu_disp_type eq '1'}checked{/if}> 上に表示する</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		<h3>小カテゴリ写真表示位置</h3>
+		<table width="100%" border="0" cellspacing="2" cellpadding="0">
+			<tr>
+				<th>レイアウト</th>
+				<td>
+					<table>
+						<tr>
+							<td><img src="/images/management/menu_sample03.gif" alt="写真を右に表示"></td>
+							<td><img src="/images/management/menu_sample04.gif" alt="写真を下に表示"></td>
+						</tr>
+						<tr>
+							<td align="center"><input type="radio" name="restaurant_menu_disp_layout" value="0" {if $restaurant_menu_disp_layout ne '1'}checked{/if}> 写真を右に表示</td>
+							<td align="center"><input type="radio" name="restaurant_menu_disp_layout" value="1" {if $restaurant_menu_disp_layout eq '1'}checked{/if}> 写真を下に表示</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		<h3>メニュー写真表示位置</h3>
+		<table width="100%" border="0" cellspacing="2" cellpadding="0">
+			<tr>
+				<th>レイアウト</th>
+				<td>
+					<table>
+						<tr>
+							<td><img src="/images/management/menu_sample05.gif" alt="メニュー写真"></td>
+							<td><img src="/images/management/menu_sample06.gif" alt="アルバム風表示"></td>
+						</tr>
+						<tr>
+							<td align="center"><input type="radio" name="restaurant_menu_disp_layout2" value="0" {if $restaurant_menu_disp_layout2 ne '1'}checked{/if}> メニュー写真</td>
+							<td align="center"><input type="radio" name="restaurant_menu_disp_layout2" value="1" {if $restaurant_menu_disp_layout2 eq '1'}checked{/if}> アルバム風表示</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		{buttonbox}
+			<button type="submit">更新する</button>
+		{/buttonbox}
+	</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}
+

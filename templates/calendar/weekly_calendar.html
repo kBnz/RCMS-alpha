@@ -1,0 +1,47 @@
+{module name="weekly_calendar"}
+<h2 class="module_title"><span>{'/modules/calendar/label/weekly_calendar'|translate}{* 週間カレンダー *}</span></h2>
+<div class="module_contents">
+<table>
+{* 週間カレンダー本体 *}
+{foreach item=item from=$cal_data.days}
+  <tr>
+    <td width="55" valign="top">
+      {* 日付の色分け *}
+      {if ($item.holiday_flg == 1)}
+      <span class="holiday">{$item.day|string_format:"%2d"}({$item.jweek})</span>
+      {elseif ($item.week == 'Sun')}
+      <span class="sunday">{$item.day|string_format:"%2d"}({$item.jweek})</span>
+      {elseif ($item.week == 'Sat')}
+      <span class="saturday">{$item.day|string_format:"%2d"}({$item.jweek})</span>
+      {else}
+      <span class="day">{$item.day|string_format:"%2d"}({$item.jweek})</span>
+      {/if}
+    </td>
+    <td  class="calendar_data">
+    {* 祝日など *}
+    {if $item.date_nm ne ''}
+      {$item.date_nm}<br>
+    {/if}
+
+    {* 関連データ *}
+    {foreach item=rItem from=$item.relations}
+      {if $rItem.icon}<img src="{$rItem.icon}" align="top">{/if}<a href="/{$rItem.link}">{$rItem.table_titleval}</a><br>
+    {/foreach}
+
+    {* イベントデータ *}
+    {foreach item=event_item from=$item.event_data}
+      <a href="/calendar_detail/id={$event_item.event_id}">{$event_item.event_txt|mbtruncate:30:"..."}
+      {if ($event_item.cal_from_time != '' || $event_item.cal_to_time != '')}<span class="calendar_time">[{/if}
+      {$event_item.cal_from_time}
+      {if ($event_item.cal_from_time != '' && $event_item.cal_to_time != '')}～{/if}
+      {$event_item.cal_to_time}
+      {if ($event_item.cal_from_time != '' || $event_item.cal_to_time != '')}]</span>{/if}
+      </a><br>
+    {/foreach}
+    </td>
+  </tr>
+{/foreach}
+</table>
+<p class="relation_link"><a href="/calendar_list/" class="small_text">{'/modules/calendar/label/monthly_calendar'|translate}{* 月間カレンダー *}</a></p>
+</div>
+{/module}

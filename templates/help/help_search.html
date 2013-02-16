@@ -1,0 +1,25 @@
+{module name="help_search"}
+<h2 class="module_title"><span>{'/mudules/help/label/search_for_helps'|translate}{* Q&A検索 *}</span></h2>
+<div class="module_contents">
+<form action="/help_list/" method="get">
+<input type="text" name="keyword" value="{$smarty.request.keyword}" />
+<input type="submit" name="searchButton" value="{'/label/search_btn'|translate}{* 検索 *}" />
+</form>
+{if $helpSearchList}
+<br />
+<span style="font-size:80%;float:right;">{if $searchIndex}「<span style="font-weight:bold;">{'/msg/search_word_is'|translate:$searchIndex}{*●●●で検索*}</span>」{/if}　{$resultSummary.totalCnt}{'/label/items'|translate}{* 件 *} [{$resultSummary.start}-{$resultSummary.resultCnt}]</span>
+<br />
+{foreach item=helpSearchItem from=$helpSearchList}
+<div class="searchItem">
+  <p class="title"><a href="/help_detail/id={$helpSearchItem.help_item_id}">{$helpSearchItem.title}</a></p>
+  <p class="digest">{$helpSearchItem.digest.contents}</p>
+  <p class="addLink">[<a href="/help_category/category_id={$helpSearchItem.help_category_id}">{$helpSearchItem.category_name}</a>]</p>
+</div>
+{/foreach}
+<p class="page_links">{$resultSummary.pageLink}</p>
+{elseif $searchIndex}
+<br />
+<p>{'/label/not_found'|translate}{* 見つかりませんでした *}</p>
+{/if}
+</div>
+{/module}

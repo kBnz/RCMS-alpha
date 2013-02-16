@@ -1,0 +1,35 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/develop/develop_list/">RCMS_DB</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+<table width="50%" border="0" cellspacing="2" cellpadding="0" >
+<tr>
+    <th align="center" >テーブル名</th>
+    <th align="center" >レコード数</th>
+</tr>
+{section name="list_loop" loop=$table_list}
+<tr>
+    <td align="center"><a href="/management/develop/develop_struct/edit_table_nm={$table_list[list_loop].edit_table_nm}">{$table_list[list_loop].edit_table_nm}</a></td>
+    <td align="center">{$table_list[list_loop].record}</td>
+</tr>
+{/section}
+</table>
+</div>
+</div><!--//list_main-->
+
+{rcms_include file="management/footer.html"}
+

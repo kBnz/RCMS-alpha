@@ -1,0 +1,21 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{*	新しいモジュールのURLは menu/config.php に設定してね *}
+
+<h3 id="menu_title">{'/label/menus/communication'|translate}</h3>
+<div class="main_contents">
+	<ul id="mainnav">
+	{foreach from=$INCLUDE_MODULE_LIST item=module}
+			{if $conf_tab[$module] eq 'communication'}
+					{if $auth[$module].select}
+							<li class="mainnav_{$module}"><a href="{$management_menus[$module].link}"><span>{$module|translate_modules}</span></a></li>
+				 {/if}
+			{/if}
+	{/foreach}
+	</ul>
+
+</div><!-- main_contents -->
+
+
+{rcms_include file="management/footer.html"}

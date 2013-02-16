@@ -1,0 +1,98 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function addInhibit(url) {
+    window.open('/js/addInhibit.php?url=' + url,'','width=600,height=280,scrollbars=1,resizable=yes');
+}
+function showInhibit() {
+    window.open('/js/showInhibit.php','','width=600,height=250,scrollbars=1,resizable=yes');
+}
+
+function confirmDelete(f){
+    if (confirm("削除してもよろしいですか？")) {
+        f.MODE.value = 'delete';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}{$arrTb_kbn.$tb_kbn}詳細</h2>
+<ul>
+{if $auth.tb.insert}
+<li class="add"><a href="/management/tb/tb_input/"><span>新規送信</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/tb/tb_list/">{'/modules/tb'|translate}</a>
+{$arrTb_kbn.$tb_kbn}詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/tb/tb_list/tb_kbn={$smarty.const.TB_KBN_RECEIVE}">受信一覧</a></li>
+  <li><a href="/management/tb/tb_list/tb_kbn={$smarty.const.TB_KBN_SEND}">送信一覧</a></li>
+  <li><a href="/management/tb/tb_detail/tb_id={$tb_id}" class="active">{$arrTb_kbn.$tb_kbn}詳細</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/tb/tb_detail/" method="POST">
+    <input type="hidden" name="tb_id" value="{$tb_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="update" />
+
+    <table width="100%">
+      <tr><th>区分</th><td>{$arrTb_kbn.$tb_kbn}</td></tr>
+      <tr><th>ブログ名</th><td>{$data.blog_name}</td></tr>
+      <tr><th>タイトル</th><td>{$data.title}</td></tr>
+      <tr><th>概要</th><td>{$data.excerpt}</td></tr>
+      <tr><th>送信先pingURL</th><td>{$data.ping_url}</td></tr>
+{* 未実装
+{if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+      <tr>
+        <th>ターゲットページ</th>
+        <td>
+        {if $data.page_module && $data.id}
+          <a href="/{$data.page_module}/id={$data.id}" target="_blank">/{$data.page_module}/id={$data.id}</a>
+        {/if}
+        </td>
+      </tr>
+{/if}
+*}
+      <tr><th>送信元URL</th><td><a target="_blank" href="{$data.url}">{$data.url}</a>
+{if $auth.tb.update && $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+         <p><input type="button" onclick="addInhibit('{$data.url}')" value="禁止リストに追加"></p>
+{/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{$arrTb_kbn.$tb_kbn}日時</th>
+        <td>{if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}{$data.receive_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{else}{$data.send_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{/if}</td>
+      </tr>
+      {if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+        <tr><th>ステータス</th><td>{html_radios name="open_flg" options=$s_arrTb_open_flg selected=$data.open_flg}</td></tr>
+      {/if}
+    </table>
+
+    {if $auth.tb.update}
+      {buttonbox}
+        <button type="submit">更新する</button>
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,7 @@
+{if !$docmeta.is_primary && $ext_columns_disp_primary.group[$cols_key][$item_key].value!=''}
+<p class="major_language">
+<span class="step">{$ext_columns_disp_primary.group[$cols_key][$item_key].value|escape}</span>
+<span class="g_translate"><a href="javascript:void(0);" onClick="g_translate('{$ext_columns_disp_primary.group[$cols_key][$item_key].value|escape:'quotes'|strip_tags|regex_replace:'/\n|\r/':''|escape}');">{'/label/translate'|translate}</a></span></p>
+{/if}
+<input type="text" name="{$item.name}" value="{if $docmeta.is_primary}{$item.value|escape}{elseif !$toopics_id}{$item.value|escape}{/if}" size="60" />
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}

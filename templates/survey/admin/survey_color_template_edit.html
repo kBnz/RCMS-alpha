@@ -1,0 +1,222 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+/* 色関係 */
+function changeColor(id) {
+    var rgb = document.getElementById('code' + id).value;
+    var swatch = document.getElementById('swatch' + id);
+    swatch.style.width = 60/(Math.sqrt(id)) + 30 + "%";
+    if (rgb.match(/^#[0-9a-z]{6}$/i)) {
+        swatch.style.backgroundColor = rgb;
+    }
+    else if (rgb.match(/^[0-9a-z]{6}$/i)) {
+        swatch.style.backgroundColor = "#" + rgb;
+    }
+    else {
+        swatch.style.backgroundColor = "#000000"; //TODO
+    }
+
+}
+
+var color_picker_current_id = null;
+function showColorPicker(id) {
+    color_picker_current_id = id;
+    var wnd = window.open(
+        '/js/colorpicker/colorpicker.php?callback=callback_color_picker',
+        "color_picker",
+        'status=no,modal=yes,width=350,height=250'
+    );
+
+    // 現在の色を渡す
+    var rgb = document.getElementById('code' + id).value;
+    if (rgb.match(/^#[0-9a-z]{6}$/i)) {
+        // OK
+    }
+    else if (rgb.match(/^[0-9a-z]{6}$/i)) {
+        rgb = "#" + rgb;
+    }
+    else {
+        rgb = "#000000";
+    }
+    wnd.dialogArguments = rgb;
+    return wnd;
+}
+
+function callback_color_picker(wnd) {
+    document.getElementById('code' + color_picker_current_id).value = wnd.returnValue;
+    var swatch = document.getElementById('swatch' + color_picker_current_id);
+    swatch.style.backgroundColor = wnd.returnValue;
+}
+
+{/literal}
+-->
+</script>
+
+
+
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/graph_template_edit'|translate}{*グラフカラーテンプレート編集*}</h2>
+<ul>
+  {if $rauth->canInsert('/survey/color/')}
+  <li class="add"><a href="/management/survey/survey_color_template_edit/"><span>{'/label/add_color'|translate}{*カラー追加*}</span></a></li>
+  {/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey/label/survey_list'|translate}</a>
+<a href="/management/survey/survey_color_template_list/">{'/modules/survey/label/graph_template_list'|translate}</a>
+{'/modules/survey/label/graph_template_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> アンケート一覧 >> グラフカラーテンプレート一覧 >> グラフカラーテンプレート編集*}
+
+<div class="clear"></div>
+
+<div class="contents_table">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/survey/survey_color_template_edit/id=$survey_color_template_id"}
+
+{if $survey_color_template_id}
+    {lang_selector meta=$docmeta link="/management/survey/survey_color_template_edit/id=$survey_color_template_id"}
+{/if}
+
+<div class="list_main">
+<form action="/management/survey/survey_color_template_edit/" name="mainform" method="POST">
+  <input type="hidden" name="id" value="{$formData.id}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+  <div id="blk_kihon" style="position:relative; display:block;">
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="150px">{'/label/name'|translate}{*名前*}</th>
+        <td><input name="name" type="text" size="30" value="{$formData.name}"></td>
+      </tr>
+    </table>
+  </div>
+
+<br  style="clear:both;">
+
+{if $docmeta.is_primary}
+
+  <div id="blk_color" style="position:relative; display:block;">
+    <table id="color_list" width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="150px">{'/label/color_code'|translate}{*カラーコード*}</th>
+        <th>{'/label/sample_color'|translate}{*色見本*}</th>
+      </tr>
+    {foreach from=$formData.colors item=item name=color_list_nm}
+      {assign var=i value=$smarty.foreach.color_list_nm.iteration}
+      <tr>
+        <td>
+          <input type="text" id="code{$i}" name="code{$i}" size="10" value="{$item}" onkeyup="changeColor({$i})"/>
+          <input type="button" onclick="showColorPicker({$i})" value="{'/label/setting'|translate}{*設定*}"/>
+        </td>
+        <td class="color_td"><div id="swatch{$i}" class="color_swatch"><img src="/images/management/spacer.gif"/></div></td>
+      </tr>
+<script type="text/javascript">changeColor({$i});</script>
+    {/foreach}
+    </table>
+    <input type="hidden" name="option_cnt" value="{$smarty.foreach.color_list_nm.total}" />
+    <input type="button" onclick="addRow();" value="{'/label/add_line'|translate}{*行を追加*}" />
+    {'/msg/max_line_is'|translate:$option_system_max}{*最大{$option_system_max}行まで増やせます*}
+  </div>
+{/if}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div><!--//list_main-->
+
+</div> <!--//contents_table-->
+
+
+{if $docmeta.is_primary}
+
+<script type="text/javascript">
+<!--
+
+
+// システム上追加可能な行数
+var option_system_max = {$option_system_max};
+
+{literal}
+
+// 行を追加ボタンで増やす単位
+var option_cnt_step = 5;
+
+function addRow() {
+    var a = parseInt(document.mainform.option_cnt.value) ;
+    var b = Math.floor(a / option_cnt_step + 1) * option_cnt_step;
+    if (b > option_system_max) {
+        alert('{/literal}{'/msg/no_more_line_to_add'|translate}{literal}');//これ以上行を増やすことはできません。
+        return;
+    }
+//    alert('現在=' + a + "、次=" + b);
+    var list = document.getElementById("color_list");
+
+    for (var i = a + 1 ; i <= b ; i++) {
+        var newRow = list.insertRow(list.rows.length);
+        // color code
+        var buf = new Array();
+        buf.push(
+          '<input type="text" id="code'+ i + '" name="code' + i + '" size="10" onkeyup="changeColor(' + i + ')"/>',
+          '<input type="button" onclick="showColorPicker(' + i + ')" value="{/literal}{'/label/setting'|translate}{literal}"/>'//設定
+        );
+        newRow.insertCell(0).innerHTML = buf.join("");
+
+        // swatch
+        buf = new Array();
+        buf.push(
+            '<div class="color_swatch" id="swatch', i, '" style="width:', (60/(Math.sqrt(i)) + 30) ,'%">',
+            '<img src="/images/management/spacer.gif"/>',
+            '</div>'
+        );
+        var cell = newRow.insertCell(1);
+        if (cell.getAttribute("className") != null) {
+            cell.setAttribute("className", "color_td");
+        }
+        else {
+            cell.setAttribute("class", "color_td");
+        }
+        cell.innerHTML = buf.join("");
+    }
+
+    document.mainform.option_cnt.value = b;
+}
+
+if (0 == parseInt(document.mainform.option_cnt.value)) {
+    addRow();
+}
+
+{/literal}
+-->
+</script>
+{/if}
+
+{literal}
+<style>
+.color_swatch {
+/*  width:100px; */
+}
+
+.color_swatch img {
+  height:15px;
+}
+
+#color_list td.color_td {
+  background-color: #ffffff;
+  border: 2px solid rgb(238, 238, 238);
+}
+</style>
+{/literal}
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,55 @@
+<h2>{'/label/game_list'|translate}{*試合情報一覧*}</h2>
+
+{section name=mydata loop=$gameList}
+
+          {$gameList[mydata].game_type} {$gameList[mydata].game_type2}
+      <br/>
+      {$gameList[mydata].ymd_str}<br/>
+       <a href="/gamebaseball_detail/id={$gameList[mydata].game_id}">{$gameList[mydata].team_grade}&nbsp;vs&nbsp;{$gameList[mydata].team_nm}{$gameList[mydata].opponent_grade}</a><br/>
+      
+      
+{if $gameList[mydata].game_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}
+{/if}
+-
+{if $gameList[mydata].game_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+<br/>
+{/if}
+{$gameList[mydata].place}
+<hr/>
+
+
+{/section}
+
+
+{if $using_season}
+  <form action="/gamebaseball_list/" method="get">
+    {rcms_seasonOptions name=season selected=$season firstOption=true}
+    <input type="submit" value="{'/label/search_btn'|translate}{*検索*}">
+  </form>
+{else}
+{'/msg/display_current_page'|translate:$current_page:$all_page}{* n/Nページを表示*}({'/label/total'|translate}{*合計*}:{$all_cnt}{'/label/item'|translate}{*件*})
+
+[
+{if $game_pos > 0}
+<a href="/gamebaseball_list/?game_pos={$current_page-1}">{'/label/prev'|translate}{*前へ*}</a>
+{else}
+{'/label/prev'|translate}{*前へ*}
+{/if}
+{if $game_pre_pos != ''}
+<a href="/gamebaseball_list/?game_pos={$current_page+1}">{'/label/next'|translate}{*次へ*}</a>
+{else}
+{'/label/next'|translate}{*次へ*}
+{/if}
+]
+
+{/if}
+<hr/>

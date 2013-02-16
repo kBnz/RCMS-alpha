@@ -1,0 +1,126 @@
+{capture name=name}
+{if $inquiry_header.user_profile.name == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.name == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+    <span>{'/label/name_formal'|translate}{*お名前*}：{if $inquiry_header.user_profile.name == $smarty.const.INQUIRY_PROFILE_REQUIRE}<span style="color:#ff6600">{'/label/required'|translate}{*必須*}</span>{/if}</span>
+    <input type="text" name="name" value="{$submit_data.name|escape}" /><br/>
+{/if}
+{/capture}
+
+{capture name=email}
+{if $inquiry_header.user_profile.email == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.email == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+    <span>{'/label/mail_address'|translate}{*メールアドレス*}：{if $inquiry_header.user_profile.email == $smarty.const.INQUIRY_PROFILE_REQUIRE}<span style="color:#ff6600">{'/label/required'|translate}{*必須*}</span>{/if}</span>
+    <input type="text" name="from_mail" value="{$submit_data.from_mail|escape}" {istyle type="en"} /><br/>
+{/if}
+{/capture}
+
+{capture name=message}
+{if $inquiry_header.user_profile.message == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.message == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+    <span>{'/label/message'|translate}{*メッセージ*}：{if $inquiry_header.user_profile.message == $smarty.const.INQUIRY_PROFILE_REQUIRE}<span style="color:#ff6600">{'/label/required'|translate}{*必須*}</span>{/if}</span><br/>
+    <textarea name="body">{$submit_data.body|escape}</textarea><br />
+{/if}
+{/capture}
+
+{section name=cnt start=1 loop=$ext_loop_max}
+  {assign var="i" value=$smarty.section.cnt.index|string_format:"%02d"}
+  {assign var="ext_title" value="ext_title_$i"}
+  {assign var="ext" value="ext_$i"}
+  {capture name=$ext_title}
+    {if $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+        {if $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_ON || $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_REQUIRE}
+            {if $inquiry_header.$ext_title ne ''}
+            <span>{$inquiry_header.$ext_title}：{if $inquiry_header.user_profile.$ext_title == $smarty.const.INQUIRY_PROFILE_REQUIRE}<span style="color:#ff6600">{'/label/required'|translate}{*必須*}</span>{/if}</span>
+                {if $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_TEXT_FORMAT}
+                <input type="text" class="user_profile {$ext}" name="{$ext}" value="{$submit_data.$ext|escape}" /><br/>
+                {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_TEXT_AREA_FORMAT}
+                <textarea name="{$ext}" rows="4" cols="60">{$submit_data.$ext|escape}</textarea><br/>
+                {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_RADIO_BUTTON_FORMAT}
+                {html_radios  name=$ext options=$inquiry_header.form_type_option.$ext_title selected=$submit_data.$ext|escape separator="<br/>"}
+                {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_SELECT_BOX_FORMAT }
+                <br/><select name="{$ext}"><option value="">{'/label/no_select'|translate}</option>{* 選択無し *}
+                {html_options options=$inquiry_header.form_type_option.$ext_title selected=$submit_data.$ext|escape}
+                </select><br/>
+                {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_CHECK_BOX_FORMAT}
+                <br/>{html_checkboxes  name=$ext options=$inquiry_header.form_type_option.$ext_title selected=$submit_data.$ext|escape separator="<br/>"}
+
+                {elseif $inquiry_header.form_type.$ext_title == $smarty.const.INQUIRY_DATE_FORMAT}
+                    {assign var="ext_y" value=$ext|cat:"_y"}
+                    {assign var="ext_m" value=$ext|cat:"_m"}
+                    {assign var="ext_d" value=$ext|cat:"_d"}
+                    <select name="{$ext}_y"><option value="">
+                        {'/label/no_select'|translate}</option>{* 選択無し *}
+                        {html_options options=$arrYear selected=$submit_data.$ext_y|escape}
+                    </select>
+                    /
+                    <select name="{$ext}_m"><option value="">
+                        {'/label/no_select'|translate}</option>{* 選択無し *}
+                        {html_options options=$arrMonth selected=$submit_data.$ext_m|escape}
+                    </select>
+                    /
+                    <select name="{$ext}_d"><option value="">
+                        {'/label/no_select'|translate}</option>{* 選択無し *}
+                        {html_options options=$arrDate selected=$submit_data.$ext_d|escape}
+                    </select>
+                    <br/>
+                {else}
+                <input type="text" class="user_profile {$ext}" name="{$ext|escape}" value="{$submit_data.$ext|escape}" /><br/>
+                {/if}
+            {/if}
+        {/if}
+    {/if}
+  {/capture}
+{/section}
+
+
+<h2>[emoji:110]{$inquiry_header.inquiry_name}</h2>
+<a id="inquiry{$contents_id}"></a>
+  {rcms_include file="management/mobile/errors_box.html" errors=$errors}
+<form action="/{$page_sysnm}/id={$inquiry_id}&MODE={if $inquiry_header.confirm_flg}CONFIRM{else}SEND{/if}" method="POST">
+{if $inquiry_isMain}
+    <input type="hidden" name="id" value="{$inquiry_id}" />
+{else}
+     <input type="hidden" name="id" value="{$submit_data.from_id|escape}" />
+     <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+{/if}
+  {if $inquiry_header.confirm_flg}
+      <input type="hidden" name="MODE" value="CONFIRM" />
+  {else}
+      <input type="hidden" name="MODE" value="SEND" />
+  {/if}
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="from_id" value="{$submit_data.from_id|escape}" />
+  <input type="hidden" name="from_module" value="{$submit_data.from_module|escape}" />
+  <input type="hidden" name="from_uri" value="{$submit_data.from_uri|escape}" />
+
+{* header文言 *}
+{if $inquiry_header.header_text != ""}
+  <span style="color: #666666;">{$inquiry_header.header_text|nl2br|forContentsConvert}</span><br/>
+{/if}
+
+{foreach from=$grades item=value}
+  {$smarty.capture.$value}
+{/foreach}
+
+{if $arrInquiry_category|@count eq 1}
+  <input type="hidden" name="inquiry_category_id" value="{foreach from=$arrInquiry_category item=item key=id}{$id}{/foreach}">
+{else}
+{foreach from=$arrInquiry_category name=category_list item=category key=id}
+  {if $smarty.foreach.category_list.first}
+    <span>{'/modules/inquiry/label/inquiry_types'|translate}{*お問い合わせ種類*}：<span style="color:#ff6600">{'/label/required'|translate}{*必須*}</span></span>
+    <br/>
+  {/if}
+  <input type="radio" name="inquiry_category_id" value="{$id}" {if $submit_data.inquiry_category_id == $id}checked="checked"{/if}{if $smarty.foreach.category_list.first && $submit_data.inquiry_category_id eq ''}checked="checked"{/if} />{$category}<br/>
+{/foreach}
+{/if}
+
+<br />
+    {if $inquiry_header.confirm_flg}
+        <input type="submit" value="{'/label/confirm_btn'|translate}{*確認*}"  />
+    {else}
+          <input type="submit" value="{'/label/send_btn'|translate}{*送信*}" >
+    {/if}
+
+    {* footer文言 *}
+    {if $inquiry_header.footer_text != ""}
+    <br/><span>{$inquiry_header.footer_text|nl2br|forContentsConvert}</span>
+    {/if}
+</form>
+<hr/>

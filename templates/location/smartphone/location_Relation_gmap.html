@@ -1,0 +1,12 @@
+{if $RelationLocation.0.location_id ne ''}
+
+<h2>{'/modules/location/label/related_location'|translate}{*関連ロケーション*}</h2>
+
+<ul data-role="listview">
+{foreach item=itemList from=$RelationLocation name=mydata}
+<li><a href="/location_detail/id={$itemList.location_id}">{$itemList.location_nm}</a></li>
+{/foreach}
+</ul>
+<hr/>
+
+{/if}

@@ -1,0 +1,211 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{if $docmeta.is_primary}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'txtStaValid', btnId: 'txtStaValid-btn', boxId: 'txtStaValid-pop', tableId: 'txtStaValid-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'txtEndValid', btnId: 'txtEndValid-btn', boxId: 'txtEndValid-pop', tableId: 'txtEndValid-table'});
+});
+</script>
+{/literal}
+{/if}
+
+<div class="list_right_bt">
+<h2>{'/modules/vote/label/vote_edit'|translate}{*アンケート基本設定*}</h2>
+<ul>
+  {if $rauth->canInsert('/vote/question/[@vote_header_id=$vote_header_id]')}
+    <li class="add"><a href="/management/vote/vote_edit/vote_header_id="><span>{'/label/create_vote_btn'|translate}{*投票項目追加*}</span></a></li>
+  {/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote/label/vote_list'|translate}</a>
+{'/modules/vote/label/vote_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> >> アンケート一覧 >>アンケート基本設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{if $header.title}{$header.title|escape}{else}新規作成{/if}</h3>
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/vote/vote_edit/vote_header_id=$vote_header_id"}
+
+<ul class="minitabs">
+  {if $header.vote_header_id}
+    <li><a href="/management/vote/vote_edit/vote_header_id={$header.vote_header_id}" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/vote/vote_module_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</a></li>
+    <li><a href="/management/vote/vote_item_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_item_list'|translate}{*回答一覧*}</a></li>
+    <li><a href="/management/vote/vote_report/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_report'|translate}{*投票結果*}</a></li>
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><a href="/management/vote/vote_edit/" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><span>{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</span></li>
+    <li><span>{'/modules/vote/label/vote_item_list'|translate}{*回答一覧*}</span></li>
+    <li><span>{'/modules/vote/label/vote_report'|translate}{*投票結果*}</span></li>
+  {/if}
+
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{if $vote_header_id} 
+    {lang_selector meta=$docmeta link="/management/vote/vote_edit/vote_header_id=$vote_header_id"}
+{/if}
+
+<form action="/management/vote/vote_edit/" id="vote_edit" name="vote_edit" method="POST">
+  <input type="hidden" name="vote_header_id" value="{$header.vote_header_id}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="{if $header.vote_header_id}UPDATE{else}INSERT{/if}" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+  {*} {'/label/basic_settings'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*基本設定*}
+  <div id="blk_kihon" style="position:relative; display:block;">
+    <h3>{'/label/basic_settings'|translate}{*基本設定*}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>{'/label/id'|translate}{*ID*}</th>
+        <td>{$header.vote_header_id}</td>
+      </tr>
+      <tr>
+        <th width="150">{'/modules/vote/label/vote_name'|translate}{*投票名*}</th>
+        <td><input name="title" type="text" size="70" value="{$formData.title|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/overview'|translate}{*概要*}</th>
+        <td><textarea name="description" style="width:450px;height:80px;">{$formData.description|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>{'/modules/vote/label/choice_item'|translate}</th>
+        <td>
+            <table>
+            {foreach from=$formData.question_titles key=num item=val name=question}
+                <tr> <th>{'/modules/vote/label/choice_item'|translate}{$smarty.foreach.question.iteration}{*選択肢*}</th><tr>
+                <tr> <td><input type="text" name="question_titles[]" value="{$val}" size="45"></td></tr>
+            {/foreach}
+            </table>
+        </td>
+      </tr>
+      <tr>
+          <th>{'/label/user_input_information'|translate}{*ユーザ入力情報*}</th>
+          <td>
+              <table>
+              <tr> <th>{'/label/comments'|translate}{*コメント*}</th> </tr>
+              <tr> <td>{html_radios name=comment_flg options=$voteProfileType selected=$formData.comment_flg}{*コメント*}</td><tr>
+              <tr> <th> {'modules/vote/label/name_input'|translate}{*名前入力*}</th> </tr>
+              <tr> <td>{html_radios name=name_flg options=$voteProfileType selected=$formData.name_flg}</td><tr>
+              <tr> <th> {'/label/sex'|translate}{*性別*}</th>
+              <tr> <td>{html_radios name=sex_flg options=$voteProfileType selected=$formData.sex_flg}</td><tr>
+              <tr> <th> {'/label/age_category'|translate}{*年齢層*}</th>
+              <tr> <td>{html_radios name=age_flg options=$voteProfileType selected=$formData.age_flg}</td><tr>
+              <tr> <th> {'/label/select_area'|translate}{*地域*}</th>
+              <tr> <td>{html_radios name=area_flg options=$voteProfileType selected=$formData.area_flg}</td><tr>
+              </table>
+          </td>
+      </tr>
+      <tr>
+          <th>{'/modules/vote/label/vote_report'|translate}{*投票結果*}</th>
+          <td> {html_radios name="result_disp_flg" options=$arrResultDispOptions selected=$formData.result_disp_flg} <td>
+      </tr>
+      <tr>
+        <th>{'/label/start_date'|translate}{*開始日付*}</th>
+        <td>
+          {html_radios name=rdoStaValid options=$arrTimeOptions selected=$formData.rdoStaValid}
+          <input type="text" name="txtStaValid" id="txtStaValid" value="{if $formData.sta_valid_date ne ''}{$formData.sta_valid_date}{else}{$smarty.post.txtStaValid}{/if}" autocomplete="off" />
+          <button type="button" id="txtStaValid-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="txtStaValid-pop"></div>
+          <select name="sta_valid_date_h" style="min-width:40px">{html_options options=$arrHours selected=$formData.sta_valid_date_h}</select>{'/label/hour'|translate}{*時*}
+          <select name="sta_valid_date_m" style="min-width:40px">{html_options options=$arrMinutes selected=$formData.sta_valid_date_m}</select>{'/label/minute'|translate}{*分*}
+          <div id="sta_cal"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/end_date'|translate}{*終了日付*}</th>
+        <td>
+          {html_radios name=rdoEndValid options=$arrTimeOptions selected=$formData.rdoEndValid}
+          <input type="text" name="txtEndValid" id="txtEndValid" value="{if $formData.end_valid_date ne ''}{$formData.end_valid_date}{else}{$smarty.post.txtEndValid}{/if}" autocomplete="off" />
+          <button type="button" id="txtEndValid-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="txtEndValid-pop"></div>
+          <select name="end_valid_date_h" style="min-width:40px">{html_options options=$arrHours selected=$formData.end_valid_date_h}</select>{'/label/hour'|translate}{*時*}
+          <select name="end_valid_date_m" style="min-width:40px">{html_options options=$arrMinutes selected=$formData.end_valid_date_m}</select>{'/label/minute'|translate}{*分*}
+          <div id="end_cal"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/confirm_page_setting'|translate}{*確認画面の有無*}</th>
+        <td>
+            {html_radios name=confirmation_screen options=$confirmationScreenOptions selected=$formData.confirmation_screen}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/vote/label/multiple_answers_setting'|translate}{*二重回答の可否*}</th>
+        <td>
+          <input type="radio" name="dup_flg" value="{$smarty.const.VOTE_DUPLICATE_OK}" id="dup_flg0" {if $formData.dup_flg == $smarty.const.VOTE_DUPLICATE_OK}checked="checked"{/if} /><label for="dup_flg0">{'/label/able'|translate}{*できる*}</label>
+          <input type="radio" name="dup_flg" value="{$smarty.const.VOTE_DUPLICATE_NG}" id="dup_flg1" {if $formData.dup_flg == $smarty.const.VOTE_DUPLICATE_NG}checked="checked"{/if} /><label for="dup_flg1">{'/label/disable'|translate}{*できない*}</label>
+        </td>
+      </tr>      <tr>
+          <th>{'/modules/vote/label/message_for_complete_answer'|translate}{*回答完了メッセージ*}</th>
+          <td>
+            <textarea name="thanks_text" cols="60" rows="3">{$formData.thanks_text|escape}</textarea>
+            <p class="hint">{'/modules/vote/msg/vote_is_completed'|translate}{*投票の回答が完了した際のメッセージです。*}</p>
+          </td>
+      </tr>
+      <tr>
+          <th>{'/modules/vote/label/tag_for_complete_vote'|translate}{*回答完了タグ*}</th>
+          <td>
+            <textarea name="thanks_tag" cols="60" rows="3">{$formData.thanks_tag|escape}</textarea>
+            <p class="hint">{'/modules/vote/msg/tags_to_measure_effect'|translate}{*効果測定用のタグなどをセットしてください。*}</p>
+          </td>
+      </tr>
+      <tr>
+          <th>{'/label/activation_status'|translate}{*運用状態*}</th>
+          <td> {html_radios name="status" options=$vote_status_options selected=$formData.status} <td>
+      </tr>
+    </table>
+  </div>
+
+
+    {buttonbox}
+        {if $vote_header_id != ""}
+              {* 通常データに対する更新処理 *}
+              {if $rauth->canUpdate("/vote/item/$vote_header_id", $docmeta.lang)}
+              {* 更新権限がある *}
+                  <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+              {/if}
+              {if $rauth->canDelete("/vote/item/$vote_header_id", $docmeta.lang)}
+              {* 削除権限がある *}
+                  <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+              {/if}
+        {else}
+              {if $rauth->canInsert("/vote/item/")}
+                  <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>{* 追加する *}
+              {/if}
+        {/if}
+    {/buttonbox}
+
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    //var msg = 'この投票を削除します。\nよろしいですか？';
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

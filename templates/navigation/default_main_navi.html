@@ -1,0 +1,12 @@
+{module name="navigation"}
+<ul class="navi">
+{foreach item="navi_menu" from=$navi_menu_list name="navi_menu_list"}
+  {if $navi_menu.this eq '1'}
+    <li class="navi gnavi{$smarty.foreach.navi_menu_list.iteration}{if $smarty.foreach.navi_menu_list.first} first{elseif $smarty.foreach.navi_menu_list.last} last{/if}"><strong>{$navi_menu.page_nm}</strong></li>
+  {else}
+    <li class="navi gnavi{$smarty.foreach.navi_menu_list.iteration}{if $smarty.foreach.navi_menu_list.first} first{elseif $smarty.foreach.navi_menu_list.last} last{/if}"><a href="/{if $navi_menu.page_sysnm ne 'top'}{$navi_menu.page_sysnm}/{/if}">{$navi_menu.page_nm}</a></li>
+  {/if}
+{/foreach}
+</ul>
+<div class="clr"></div>
+{/module}

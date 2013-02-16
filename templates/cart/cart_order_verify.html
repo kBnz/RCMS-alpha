@@ -1,0 +1,157 @@
+{module name="cart_order_input"}
+<form method="post" action="/{$page_sysnm}/" name="cart_order_input_form">
+    <input type="hidden" name="MODE" value="finish" />
+    <input type="hidden" name="name" value="{$data.name|escape}" />
+    <input type="hidden" name="zip_main" value="{$data.zip_main|escape}" />
+    <input type="hidden" name="zip_sub" value="{$data.zip_sub|escape}" />
+    <input type="hidden" name="address" value="{$data.address|escape}" />
+    <input type="hidden" name="phone_number" value="{$data.phone_number|escape}" />
+    <input type="hidden" name="email" value="{$data.email|escape}" />
+    <input type="hidden" name="settlement" value="{$data.settlement|escape}" />
+    <input type="hidden" name="message" value="{$data.message|escape}" />
+    <input type="hidden" name="send_to_another" value="{$data.send_to_another|escape}" />
+    <input type="hidden" name="another_name" value="{$data.another_name|escape}" />
+    <input type="hidden" name="another_zip_main" value="{$data.another_zip_main|escape}" />
+    <input type="hidden" name="another_zip_sub" value="{$data.another_zip_sub|escape}" />
+    <input type="hidden" name="another_address" value="{$data.another_address|escape}" />
+    <input type="hidden" name="another_phone_number" value="{$data.another_phone_number|escape}" />
+    {section name=ext_loop loop=$smarty.const.CART_EXT_COLUMN_CNT}
+      {assign var="i" value=$smarty.section.ext_loop.iteration|string_format:"%02d"}
+      {assign var="ext_txt" value="ext_txt_$i"}
+      {if $data.$ext_txt}
+    <input type="hidden" name="{$ext_txt}" value="{$data.$ext_txt|escape}" />
+      {/if}
+    {/section}
+
+    <h2 class="module_title"><span>ご注文内容の確認</span></h2>
+
+    <div class="module_contents">
+
+        <h3>ご注文内容</h3>
+        <table class="cart_order_table">
+            <tr>
+                <th class="goods">商品名</th>
+                <th>単価</th>
+                <th>注文数</th>
+                <th>小計</th>
+            </tr>
+            {foreach from=$cartItems item=row}
+            <tr>
+                <td>
+                    <a href="/{$row.item_link}">{$row.item_name}</a>
+                </td>
+                <td class="price">
+                    {$row.price}円
+                </td>
+                <td class="order">
+                    {$row.amount}
+                </td>
+                <td class="price">
+                    {$row.subTotal}円
+                </td>
+            </tr>
+            {/foreach}
+            {if $cartSetting.carriage ne ''}
+            <tr>
+                <th colspan="3" class="price">
+                    送料
+                </th>
+                <td class="price">{$cartSetting.carriage}円</td>
+            </tr>
+            {/if}
+            <tr>
+                <th colspan="3" class="price">
+                    合計
+                </th>
+                <td class="price">{$total}円</td>
+            </tr>
+        </table>
+
+        <h3>注文者情報</h3>
+        <table class="cart_order_input_table">
+            <tr>
+                <th>氏名</th>
+                <td>{$data.name|escape}</td>
+            </tr>
+            <tr>
+                <th>郵便番号</th>
+                <td>{$data.zip_main|escape}-{$data.zip_sub|escape}</td>
+            </tr>
+            <tr>
+                <th>住所</th>
+                <td>{$data.address|escape}</td>
+            </tr>
+            <tr>
+                <th>電話番号</th>
+                <td>{$data.phone_number|escape}</td>
+            </tr>
+            <tr>
+                <th>メールアドレス</th>
+                <td>{$data.email|escape}</td>
+            </tr>
+            {section name=ext_loop loop=$smarty.const.CART_EXT_COLUMN_CNT}
+              {assign var="i" value=$smarty.section.ext_loop.iteration|string_format:"%02d"}
+              {assign var="ext_title" value="ext_title_$i"}
+              {assign var="ext_txt" value="ext_txt_$i"}
+              {if $cartSetting.$ext_title}
+                  <tr>
+                    <th>{$cartSetting.$ext_title}</th>
+                    <td>{$data.$ext_txt|escape}</td>
+                  </tr>
+              {/if}
+            {/section}
+
+            <tr>
+                <th>決済方法</th>
+                <td>{assign var=settle value=$data.settlement}{$arrCartSettlement.$settle}</td>
+            </tr>
+            {if $data.message}
+            <tr>
+                <th>メッセージ</th>
+                <td>{$data.message|escape|nl2br}</td>
+            </tr>
+            {/if}
+        </table>
+        {if $data.send_to_another}
+        <h3>送付先情報</h3>
+        <table class="cart_order_input_table">
+            <tr>
+                <th>氏名</th>
+                <td>{$data.another_name|escape}</td>
+            </tr>
+            <tr>
+                <th>郵便番号</th>
+                <td>{$data.another_zip_main|escape}-{$data.another_zip_sub|escape}</td>
+            </tr>
+            <tr>
+                <th>住所</th>
+                <td>{$data.another_address|escape}</td>
+            </tr>
+            <tr>
+                <th>電話番号</th>
+                <td>{$data.another_phone_number|escape}</td>
+            </tr>
+        </table>
+        {/if}
+
+        {if $arrCartSettlement[$data.settlement] eq "クレジットカード" && $smarty.const.USE_PAYPAL_FLAG eq 1}
+        <p class="input_button">
+        「この入力で注文する」ボタンを押すと、オンライン決済サービス「PayPal（ペイパル）」のクレジット決済画面へ移動します。<br/>
+         必要な情報をご入力、送信していただきますとクレジット決済が完了します。 
+        </p>
+        {/if}
+         <p class="input_button">
+             <input type="submit" value="この入力で注文する" /> <input type="button" value="入力しなおす" onclick="back2input()" />
+         </p>
+    </div>
+
+</form>
+<script>
+{literal}
+function back2input () {
+    document.cart_order_input_form.MODE.value = "input";
+    document.cart_order_input_form.submit();
+}
+{/literal}
+</script>
+{/module}

@@ -1,0 +1,228 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript" src="/js/swfobject.js"></script>
+{head_include file="common/calendar_scripts.html"}
+
+<script type="text/javascript">
+var ac_page_sysnm = "{$selectPageSysnm}";
+var ac_module_type = "{$selectModuleType}";
+var ac_id = {$selectModuleId};
+var ac_title = "{$selectTitle}";
+var ac_media_type = "{$selectMedia_type}";
+
+{literal}
+function changeSpan(span) {
+    document.getElementById('span').value = span;
+    document.accesscount_list_form.submit();
+}
+function ChangeMedia(media_type) {
+    document.getElementById('media_type').value = media_type;
+    document.accesscount_list_form.submit();
+}
+
+function changeShow(show) {
+    document.getElementById('show').value = show;
+    document.getElementById('page_sysnm').value = '';
+    document.getElementById('id').value = '';
+    document.accesscount_list_form.submit();
+}
+
+function changeModuleType(module_type) {
+    document.getElementById('page_sysnm').value = '';
+    document.getElementById('id').value = '';
+    document.accesscount_list_form.submit();
+}
+
+function showGraphImg(page_sysnm, module_type, id, title) {
+    ac_page_sysnm = page_sysnm;
+    ac_module_type = module_type;
+    ac_id = id;
+    ac_title = title;
+
+    document.getElementById('dayCont').value = {/literal}{$dayCount}{literal};
+    document.getElementById('from_dt').value = '';
+    document.getElementById('to_dt').value = {/literal}'{$today}'{literal};
+    imgShow({/literal}{$dayCount}{literal});
+}
+
+function imgShow(dayCount) {
+    var host = location.protocol + "//" + location.hostname;
+    if (!flashMovie) {
+        return;
+    }
+    var date = new Date();
+    if (dayCount > 0) {
+        flashMovie.reloadAll(
+            escape(host + '/direct/accesscount/accesscount_graph/?module_type='+ac_module_type+'&id='+ac_id+'&page_sysnm='+ac_page_sysnm+'&title='+ac_title+'&dayCount='+dayCount+'&media_type='+ac_media_type+'&k='+date.getTime()),
+            escape(host + '/direct/accesscount/accesscount_graph_settings/?module_type='+ac_module_type+'&id='+ac_id+'&page_sysnm='+ac_page_sysnm+'&title='+ac_title+'&dayCount='+dayCount+'&media_type='+ac_media_type+'&k='+date.getTime()),
+            true,true
+        );
+    }
+    else {
+        from_dt = document.getElementById('from_dt').value;
+        to_dt = document.getElementById('to_dt').value;
+        if(from_dt == "" || to_dt == "") {
+            alert("{/literal}{'/modules/accesscount/msg/interval_confirm'|translate}{literal}");  // 範囲を指定してください
+        }
+        else {
+            flashMovie.reloadAll(
+                escape(host + '/direct/accesscount/accesscount_graph/?module_type='+ac_module_type+'&id='+ac_id+'&page_sysnm='+ac_page_sysnm+'&title='+ac_title+'&from_dt='+from_dt+'&to_dt='+to_dt+'&media_type='+ac_media_type+'&k='+date.getTime()),
+                escape(host + '/direct/accesscount/accesscount_graph_settings/?module_type='+ac_module_type+'&id='+ac_id+'&page_sysnm='+ac_page_sysnm+'&title='+ac_title+'&from_dt='+from_dt+'&to_dt='+to_dt+'&media_type='+ac_media_type+'&k='+date.getTime()),
+                true,true
+            );
+        }
+    }
+    //document.getElementById('search_range').style.display = "inline";
+}
+
+var flashMovie;
+Event.observe(window, 'load', function() {
+    var host = location.protocol + "//" + location.hostname;
+    var so = new SWFObject("/images/common/amcharts/amline.swf", "amline", "750px", "300px", "8", "#FFFFFF");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("data_file", escape(host + '{/literal}/direct/accesscount/accesscount_graph/?page_sysnm=site&dayCount={$dayCount}&title={$strLabelSiteTotal}&media_type={$selectMedia_type}&k={$smarty.now|date_format:"%D%T"}{literal}'));
+    so.addVariable("settings_file", escape(host + '{/literal}/direct/accesscount/accesscount_graph_settings/?page_sysnm=site&dayCount={$dayCount}&title={$strLabelSiteTotal}&media_type={$selectMedia_type}&k={$smarty.now|date_format:"%D%T"}{literal}'));
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flashcontent");
+
+    flashMovie = document.getElementById("amline");
+
+    DUI.calendar.PopupWindow({title:"From", textId: 'from_dt', btnId: 'from_dt-btn', boxId: 'from_dt-pop', tableId: 'from_dt-table'});
+    DUI.calendar.PopupWindow({title:"To", textId: 'to_dt', btnId: 'to_dt-btn', boxId: 'to_dt-pop', tableId: 'to_dt-table'});
+});
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2 class="accesscount">{'/modules/accesscount/label/access_statistic'|translate}</h2>{* アクセス統計 *}
+</div>
+
+{* 【ぱんくず】サイト基本設定>> アクセス統計 >> アクセス統計 *}
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/accesscount/accesscount_list/">{'/modules/accesscount'|translate}</a>
+{'/modules/accesscount/label/access_statistic'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div style="color:red;font-weight:bold;padding:5px;margin-bottom:10px;line-height:120%;">この機能は将来的にアップグレードせずに、<a href="http://www.google.com/analytics/" target="_blank">GoogleAnalytics</a>などを利用した外部のアクセス解析との連携強化の方向で開発が進んでおります。<br>サイト基本設定＞モジュール設定からGoogleAnalyticsモジュールの追加ができますので、こちらを是非ご利用ください。</div>
+
+<input type="radio" name="media_type_chk" value="" {if $selectMedia_type == ""}checked="checked"{/if} onclick="ChangeMedia('');return false;" />{'/modules/accesscount/label/pc_mobile'|translate}{* PC/携帯 *}
+<input type="radio" name="media_type_chk" value="pc" {if $selectMedia_type == "pc"}checked="checked"{/if} onclick="ChangeMedia('pc');return false;" />{'/modules/accesscount/label/pc'|translate}{* PCのみ *}
+<input type="radio" name="media_type_chk" value="mobile" {if $selectMedia_type == "mobile"}checked="checked"{/if} onclick="ChangeMedia('mobile');return false;" />{'/modules/accesscount/label/mobile'|translate}{* 携帯のみ *}
+
+<div id="flashcontent" style="margin-bottom: 20px;">
+  <strong>You need to upgrade your Flash Player</strong>
+</div>
+
+<form name="accesscount_list_form" action="/management/accesscount/accesscount_list/" method="get">
+<input type="hidden" name="media_type" id="media_type" value="{$selectMedia_type}" />
+
+  <div class="search_box">
+    <label>{'/modules/accesscount/label/past'|translate}:</label>{* 過去 *}
+    <select name="dayCount" id="dayCont" onchange="imgShow(this.value)">{html_options options=$arrDayCount selected=30}</select>{'/modules/accesscount/label/days'|translate}{* 日 *}
+
+    <label style="margin-left: 20px;">{'/modules/accesscount/label/time_interval'|translate}:</label>{* 期間指定 *}
+    <input type="text" name="from_dt" id="from_dt" value="" />
+    <button type="button" id="from_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+    <div class="pop_calendar" id="from_dt-pop"></div>
+    ～
+    <input type="text" name="to_dt" id="to_dt" value="" />
+    <button type="button" id="to_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+    <div class="pop_calendar" id="to_dt-pop"></div>
+    <input type="button" value="{'/modules/accesscount/label/refresh_btn'|translate}" onclick="imgShow(0)" />{* 再表示 *}
+  </div>
+
+<select name="module_type" id="module_type" onChange="changeModuleType(this.value)">{html_options options=$accessModuleNmArray selected=$selectModuleType}</select>
+{if $showMode != "ranking"}
+<a href="javascript:;" onclick="changeShow('ranking');return false">{'/modules/accesscount/label/ranking'|translate}</a>{* ランキング *}
+{else}
+{'/modules/accesscount/label/ranking'|translate}{* ランキング *}
+{/if}
+｜
+{if $showMode != "list"}
+<a href="javascript:;" onclick="changeShow('list');return false">{'/label/list'|translate}</a>{* 一覧 *}
+{else}
+{'/label/list'|translate}{* 一覧 *}
+{/if}
+｜
+<a href="javascript:;" onclick="showGraphImg('site', '', '', '{$strLabelSiteTotal}{*サイト全体*}');return false;">{'/modules/accesscount/label/whole_acc_change'|translate}</a>{* サイト全体のアクセス数の推移 *}
+
+<input type="hidden" name="show" id="show" value="{$showMode}" />
+<input type="hidden" name="span" id="span" value="{$spanMode}" />
+<input type="hidden" name="page_sysnm" id="page_sysnm" value="{$selectPageSysnm}" />
+<input type="hidden" name="id" id="id" value="{$selectModuleId}" />
+
+<div class="list_main">
+
+  {if $spanMode != "oneDay"}
+  <a href="javascript:;" onclick="changeSpan('oneDay');return false">{'/modules/accesscount/label/1_day'|translate}</a>{* １日 *}
+  {else}
+  {'/modules/accesscount/label/1_day'|translate}{* １日 *}
+  {/if}|
+  {if $spanMode != "threeDays"}
+  <a href="javascript:;" onclick="changeSpan('threeDays');return false">{'/modules/accesscount/label/3_days'|translate}</a>{* ３日 *}
+  {else}
+  {'/modules/accesscount/label/3_days'|translate}{* ３日 *}
+  {/if}|
+  {if $spanMode != "oneWeek"}
+  <a href="javascript:;" onclick="changeSpan('oneWeek');return false">{'/modules/accesscount/label/1_week'|translate}</a>{* １週間 *}
+  {else}
+  {'/modules/accesscount/label/1_week'|translate}{* １週間 *}
+  {/if}|
+  {if $spanMode != "oneMonth"}
+  <a href="javascript:;" onclick="changeSpan('oneMonth');return false">{'/modules/accesscount/label/1_month'|translate}</a>{* １ヶ月 *}
+  {else}
+  {'/modules/accesscount/label/1_month'|translate}{* １ヶ月 *}
+  {/if}|
+  {if $spanMode != "threeMonths"}
+  <a href="javascript:;" onclick="changeSpan('threeMonths');return false">{'/modules/accesscount/label/3_months'|translate}</a>{* ３ヶ月 *} 
+  {else}
+  {'/modules/accesscount/label/3_months'|translate}{* ３ヶ月 *}
+  {/if}
+
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+  {foreach  item=rank_data from=$rank_all_data key=key}
+  {if $key != "all" && $key != "page"}
+    <tr><th colspan="3">{$accessModuleNmArray[$selectModuleType]}  {$from_dt}～</th></tr>
+    {section name=loopname loop=$rank_data.today}
+    <tr>
+      {if $key != "staticpage"}
+      <td><input type="button" onclick="showGraphImg('{$accessModuleKeyArray.$key}', '{$key}', '{$rank_data.today[loopname].id}', '{$rank_data.today[loopname].encodedtitle}');return false;" value="{'/modules/accesscount/label/graph_btn'|translate}{*グラフ*}" />
+          {if $rank_data.today[loopname].subinfo != ""}({$rank_data.today[loopname].subinfo}){/if}<a href="/{$accessModuleKeyArray.$selectModuleType}/id={$rank_data.today[loopname].id}">{$rank_data.today[loopname].title}</a></td>
+      {else}
+      <td><a href="/staticpage/{$rank_data.today[loopname].id}">{$rank_data.today[loopname].title}</a></td>
+      {/if}
+      <td>{$rank_data.today[loopname].cnt}</td>
+      <td>
+        <img src="/images/modules/accesscount/graph_border.gif" width="{$rank_data.today[loopname].width}px" height="10px">
+      </td>
+    </tr>
+    {sectionelse}
+    <tr><td colspan="3">{'/modules/accesscount/msg/no_data'|translate}</td></tr>{* 表示するデータがありません。 *}
+    {/section}
+  {/if}
+  {/foreach}
+  {if !$selectModuleType && !$selectPageSysnm}
+    <tr><th colspan="3">{'/label/each_page'|translate}{*ページ別*} {$from_dt}～ {$addListTitle}</th></tr>
+    {section name=loopname loop=$rank_all_data.page.today}
+    <tr>
+      <td>
+        <input type="button" onclick="showGraphImg('{$rank_all_data.page.today[loopname].page_sysnm}', '{$rank_all_data.page.today[loopname].module_type}', '0', '{$rank_all_data.page.today[loopname].encoded_page_nm}');return false;" value="{'/modules/accesscount/label/graph_btn'|translate}" />{* グラフ *}
+        <a href="/{$rank_all_data.page.today[loopname].page_sysnm}/">{$rank_all_data.page.today[loopname].page_nm}</a></td>
+      <td>{$rank_all_data.page.today[loopname].cnt}</td>
+      <td>
+        <img src="/images/modules/accesscount/graph_border.gif" width="{$rank_all_data.page.today[loopname].width}px" height="10px">
+      </td>
+    </tr>
+    {/section}
+    {/if}
+  </table>
+</div>
+</form>
+</div>
+{rcms_include file="management/footer.html"}

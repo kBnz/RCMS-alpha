@@ -1,0 +1,18 @@
+<h2>部員紹介</h2>
+
+<a href="/member_detail/id={$memberList.0.member_id}">
+{if $memberList.0.image_s_exist}
+<img src="{$smarty.const.MEMBER_PHOTO_S_URL}/{$memberList.0.member_id}.jpg" alt="{$memberList.0.disp_name}">
+{else}
+<img src="{imageurl}/member/no-image.gif" alt="no image">
+{/if}
+</a>
+
+名前: <a href="/member_detail/id={$memberList.0.member_id}">{$memberList.0.disp_name}</a><br />
+学年: {if $memberList.0.grade}<a href="/member_list/grade={$memberList.0.grade}">{$memberList.0.grade}年</a>{/if}<br />
+ﾎﾟｼﾞｼｮﾝ: <a href="/member_list/position_int={$memberList.0.main_position}">{$memberList.0.main_position_nm}</a><br />
+出身校: {if $memberList.0.hs_sname ne ''}{$memberList.0.hs_sname}{else}{$memberList.0.hs_name}{/if}<br />
+<a href="/member_list/">他の選手を見る</a>
+
+<hr/>
+

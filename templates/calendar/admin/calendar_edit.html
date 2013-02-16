@@ -1,0 +1,322 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{if $docmeta.is_primary}{head_include file="common/calendar_scripts.html"}{/if}
+
+{literal}
+<script type="text/javascript">
+
+
+Event.observe(window, 'load', function() {
+{/literal}{if $docmeta.is_primary}{* $docmeta.is_primary from *}{literal}
+    DUI.calendar.PopupWindow({title:"開始日", textId: 'from_date', btnId: 'from_date-btn', boxId: 'from_date-pop', tableId: 'from_date-table'});
+    DUI.calendar.PopupWindow({title:"終了日", textId: 'to_date', btnId: 'to_date-btn', boxId: 'to_date-pop', tableId: 'to_date-table'});
+{/literal}{/if}{* $docmeta.is_primary to *}{literal}
+    funcEnableUpdate();
+});
+
+// イベント時間使用・不使用切り替え
+function control_event_date_time(){
+
+    if ($("allDayFlg").checked) {
+        $('from_time').hide() ;
+        $('to_time').hide() ;
+    }else{
+        $('from_time').show() ;
+        $('to_time').show() ;
+    }
+
+}
+
+function funcEnableUpdate(){
+    if($("enableUpdateflg").checked == true){
+    // スケジュール入力を可能にする
+        display('schedule_detail', '');
+    }else{
+        display('schedule_detail', 'none');
+    }
+}
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/calendar/label/calendar_edit'|translate}{* 予定編集 *}</h2>
+<ul>
+{if $rauth->canInsert("/calendar/item/")}
+    <li class="add"><a href="/management/calendar/calendar_edit/"><span>{'/modules/calendar/add_new_schedule_btn'|translate}{* 予定追加 *}</span></a></li>
+{/if}
+{if $event_id != ""}
+<li class="normal"><a href="/management/calendar/calendar_history/event_id={$event_id}"><span>{'/label/update_history'|translate}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/calendar_detail/id={$event_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/calendar/calendar_list/">{'/modules/calendar/label/calendar_list'|translate}</a>
+{'/modules/calendar/label/calendar_edit'|translate}{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カレンダー >> 予定編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{'/label/items'|translate}</a>{* 関連情報 N件 *}
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <form name="calendar_edit" id="calendar_edit" action="/management/calendar/calendar_edit/{if $event_id}event_id={$event_id}{/if}" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+
+{if $data.event_recurrence_id && $docmeta.is_primary}{*主言語の場合で繰返し設定がある場合*}
+<style>
+{literal}
+#recur_description {
+  width: 85%;
+  border: 2px solid #F60;
+  padding: 10px 0;
+  margin-bottom: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align:center;
+}
+.recur_description_detail {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+{/literal}
+</style>
+<div id="recur_description">
+
+<span style="margin:15px;">
+{*このイベントは一連の定期的な予定の一部です。一連の定期的な予定自体を修正する場合下記のページから行ってください。*}
+{'/modules/calendar/msg/update_a_part_of_series_of_regular_schedule'|translate}<br />
+</span>
+
+<span class="recur_description_detail">
+<a href="{$smarty.const.ROOT_SSL_URL}/management/calendar/calendar_recurrence_edit/event_recurrence_id={$data.event_recurrence_id}">>>{'/modules/calendar/label/recurrence_settings'|translate}{*繰り返し設定*}</a><br />
+</span>
+
+<br />
+<input type="checkbox" name="enableUpdateflg" id="enableUpdateflg"  onclick="funcEnableUpdate();" />
+<span class="recur_description_detail">
+{'/modules/calendar/msg/please_click_checkbox_when_you_update'|translate}{*変更する場合、チェックしてください。*}<br />
+</span>
+
+<span style="margin:15px;">
+※{'/modules/calendar/msg/this_data_will_not_be_a_series_of_part_of_regular_schedule'|translate}{*変更すると、一連の定期的な予定の一部ではなくなり、再び定期的な予定に戻すことは出来ません。*}
+</span>
+
+</div id="recur_description">
+{else}
+<input style="display:none;" type="checkbox" name="enableUpdateflg" id="enableUpdateflg" checked="checked" />
+{/if}
+
+<div id="schedule_detail" style="display:none;" >
+
+    {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/calendar/calendar_edit/event_id=$event_id"}
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    {if $event_id && !$data.event_recurrence_id}{* 言語選択 *}
+        {lang_selector meta=$docmeta link='/management/calendar/calendar_edit/event_id='|cat:$event_id}
+    {/if}
+    <table width="100%" >
+    <tr>
+      <th>{'/modules/calendar/label/calendar_event'|translate}{* イベント *}</th>
+      <td><input type="text" name="event_txt" value="{$data.event_txt|escape}" size="80" /><span class="required">{'/label/required'|translate}</span></td>
+    </tr>
+
+{if $docmeta.is_primary}{* $docmeta.is_primary from *}
+    <tr id="tr_calendar_category">
+      <th>{'/label/category'|translate}{* カテゴリ *}</th>
+      <td><select name="event_category_id">{html_options options=$arrCategoryId selected=$data.event_category_id}</select></td>
+    </tr>
+    <tr id="tr_calendar_date">
+      <th>{'/label/date'|translate}{* 日付 *}</th>
+      <td>
+            <span class="required">{'/modules/calendar/msg/end_day_is_required'|translate}{* 日付をまたぐ場合は必須です。 *}</span>
+            <div id="event_date">
+                <input type="text" name="from_date" id="from_date" value="{$data.from_date|escape}" autocomplete="off" size="15"/>
+                <button type="button" id="from_date-btn" ><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                <div class="pop_calendar" id="from_date-pop"></div>
+                <span id="from_time">
+                <select name="from_hour" id="from_hour" onChange="if(j$('#from_hour').val() != '' && j$('#from_minute').val()==''){ldelim}j$('#from_minute').val('00');{rdelim}">{html_options options=$hours selected=$data.from_hour}</select>{'/label/hour'|translate}{*時*}
+                <select name="from_minute" id="from_minute">{html_options options=$minutes selected=$data.from_minute}</select>{'/label/minute'|translate}{*分*}
+                </span>
+                ～<input type="text" name="to_date" id="to_date" value="{$data.to_date|escape}" autocomplete="off" size="15"/>
+                <button type="button" id="to_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                <div class="pop_calendar" id="to_date-pop"></div>
+                <span id="to_time">
+                <select name="to_hour" id="to_hour" onChange="if(j$('#to_hour').val() != '' && j$('#to_minute').val()==''){ldelim}j$('#to_minute').val('00');{rdelim}">{html_options options=$hours selected=$data.to_hour}</select>{'/label/hour'|translate}{*時*}
+                <select name="to_minute" id="to_minute">{html_options options=$minutes selected=$data.to_minute}</select>{'/label/minute'|translate}{*分*}
+                </span>
+                <label for="allDayFlg"></label><input type="checkbox" name="allDayFlg" id="allDayFlg" {if $data.allDayFlg}checked="checked"{/if}  onclick="control_event_date_time()" />{'/label/all_day'|translate}{* 終日 *}
+                <span class="hint" id="example"></span>
+            </div>
+      </td>
+    </tr>
+    <tr id="tr_calendar_attend">
+      <th>{'/modules/calendar/label/absence_settings'|translate}{* 出欠設定 *}</th>
+      <td>
+        <input type="checkbox" name="attend_flg" id="attend_flg" value="1" {if $data.attend_flg}checked="checked"{/if} onChange="SetAttendChkBox()" />{'/modules/calendar/label/marking_absence'|translate}{* 出欠席をとる *}<br />
+        <table width="100%">
+        <tr>
+          <th>{'/label/viewing_limit'|translate}{* 閲覧制限 *}</th>
+          <td>
+            <input type="radio" name="attend_secure_flg" id="attend_secure_flg_off" value="off" onclick="display('attend_secure_level_list', 'none');" {if $data.attend_secure_flg != 'on'}checked="checked"{/if}/><label for="attend_secure_flg_off">{'/label/unlimited'|translate}{* 制限無し *}</label>
+            <input type="radio" name="attend_secure_flg" id="attend_secure_flg_on" value="on" onclick="display('attend_secure_level_list', '');" {if $data.attend_secure_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="attend_secure_flg_on">{'/label/limited'|translate}{* 制限有り *}</label>
+            <div id="attend_secure_level_list" style="margin: 10px 0 0 10px; {if $data.attend_secure_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/calendar/msg/select_viewing_group'|translate}{* 閲覧を許可するグループを選択してください。グループは複数選択できます。 *}</p>
+              <select name="attend_secure_level[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$data.attend_secure_level}</select>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/modules/calendar/label/absence_marking_limit'|translate}{* 投稿制限 *}</th>
+          <td>
+            <input type="radio" name="attend_editable_flg" id="attend_editable_flg_off" value="off" onclick="display('attend_editable_group_list', 'none');" {if $data.attend_editable_flg != 'on'}checked="checked"{/if}/><label for="attend_editable_flg_off">{'/label/unlimited'|translate}{* 制限無し *}</label>
+            <input type="radio" name="attend_editable_flg" id="attend_editable_flg_on" value="on" onclick="display('attend_editable_group_list', '');" {if $data.attend_editable_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="attend_editable_flg_on">{'/label/limited'|translate}{* 制限有り *}</label>
+            <div id="attend_editable_group_list" style="margin: 10px 0 0 10px; {if $data.attend_editable_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/calendar/msg/select_marking_absence_group'|translate}{* 出欠登録を許可するグループを選択してください。グループは複数選択できます。 *}</p>
+              <select name="attend_editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$data.attend_editable_group}</select>
+            </div>
+          </td>
+        </tr>
+        </table>
+      </td>
+    </tr>
+
+{if $data.attend_flg && count($attend)  > 0}{* 配列に値が入っていれば出欠情報があるとみなせる *}
+<tr id="tr_calendar_attend_status">
+
+<th>{'/modules/calendar/label/status_of_marking_status'|translate}{* 出欠状況 *}</th><td>
+<ul>
+{foreach from=$attend item="att"}
+    <li id="attend_{$att.event_attend_id}"><span id="attend_{$att.event_attend_id}_show"><a href="javascript:void(0);" onclick="attendedit('{$att.event_attend_id}');return false;">[{' /label/edit'|translate}{* 編集 *}]</a>
+    <span style="font-weight:bold;{if $att.attend_type eq 1}color:#00cc00;">{'/label/attendance'|translate}{* 出席 *}{elseif $att.attend_type eq 0}color:#ff0000;">{'/label/absence'|translate}{* 欠席 *}{elseif $att.attend_type eq 2}color:#777777;">{'/label/undesided'|translate}{* 未定 *}{/if}</span>:{$att.attend_nm}:<span style="font-size:84%;letter-spacing:0.11em;color:#666666;vertical-align:top;">{$att.comment} ({$att.date})</span>
+    </span>
+    <span id="attend_{$att.event_attend_id}_edit" style="display:none;background-color:#dddddd;">
+<a href="javascript:void(0);" onclick="attendedit_end('{$att.event_attend_id}');return false;">[{'/modules/calendar/label/quit_editing'|translate}{* 編集をやめる *}]</a><br />
+{'/label/name'|translate}{* 名前 *}:<input type="text" value="{$att.attend_nm}" name="attend_nm" id="attend_nm_{$att.event_attend_id}" maxlength="20" size="20" />
+<select name="attend_type" id="attend_type_{$att.event_attend_id}">
+<option value="1" name="att"{if $att.attend_type eq 1} selected="selected"{/if}>{'/label/attendance'|translate}{* 出席 *}</option>
+<option value="0" name="att"{if $att.attend_type eq 0} selected="selected"{/if}>{'/label/absence'|translate}{* 欠席 *}</option>
+<option value="2" name="att"{if $att.attend_type eq 2} selected="selected"{/if}>{'/label/undesided'|translate}{* 未定 *}</option>
+</select> ({$att.date})
+<br />
+<input type="hidden" value="{$att.event_attend_id}" name="event_attend_id" id="event_attend_id_{$att.event_attend_id}" />
+<input type="hidden" value="{$att.date}" name="event_attend_date" id="event_attend_date_{$att.event_attend_id}" />
+{'/label/comments'|translate}{* コメント *}:<input type="text" value="{$att.comment}" name="comment" id="comment_{$att.event_attend_id}" size="60" /><br />
+<a href="javascript:void(0);" onclick="attendedit_reg('{$att.event_attend_id}');return false;">[{'/label/update_btn'|translate}{* 更新する *}]</a>
+<a href="javascript:void(0);" onclick="attendedit_del('{$att.event_attend_id}');return false;">[{'/label/delete_btn'|translate}{* 削除する *}]</a><br />
+<br />
+
+</span>
+    </li>
+{/foreach}
+</ul><br />
+※{'/modules/calendar/msg/not_change_even_if_editing'|translate}{* 編集しても投稿時間は変わりません。 *}
+</td></tr>
+{/if}
+
+{else}
+<input type="hidden" value="{$data.event_category_id}" name="event_category_id" id="event_category_id" /> 
+{/if}{* $docmeta.is_primary to *}
+
+    <tr id="tr_calendar_event_detail">
+      <th>{'/modules/calendar/label/event_detail'|translate}{* イベントの詳細 *}</th>
+      <td>
+        {if $calendar_wysiwyg_use_flg}
+        {* wisiwigエディタを使用する場合 *}
+        {$sw_html}
+        {else}
+        <textarea name="event_detail" rows="10" cols="50">{$data.event_detail|escape}</textarea>
+        {/if}
+      </td>
+    </tr>
+  </table>
+
+{if $docmeta.is_primary}{* $docmeta.is_primary from *}
+{literal}
+<script type="text/javascript">
+//出欠をとらない場合はオプションを無効にする
+function SetAttendChkBox(){
+    if($("attend_flg").checked == false){
+        // 「制限なし」を選択状態にする
+        $("attend_secure_flg_off").checked = true;
+        $("attend_editable_flg_off").checked = true;
+        // グループリストを非表示にする
+        display('attend_secure_level_list', 'none');
+        display('attend_editable_group_list', 'none');
+        // オプションを選択不可にする
+        $("attend_secure_flg_off").disabled = true;
+        $("attend_secure_flg_on").disabled = true;
+        $("attend_editable_flg_off").disabled = true;
+        $("attend_editable_flg_on").disabled = true;
+    }else{
+        // オプションを選択不可にする
+        $("attend_secure_flg_off").disabled = false;
+        $("attend_secure_flg_on").disabled = false;
+        $("attend_editable_flg_off").disabled = false;
+        $("attend_editable_flg_on").disabled = false;
+    }
+}
+SetAttendChkBox()
+
+
+//出欠編集画面
+function attendedit(id){
+    $("attend_"+id+"_show").style.display = "none";
+    $("attend_"+id+"_edit").style.display = "list-item";
+}
+
+function attendedit_end(id){
+    $("attend_"+id+"_show").style.display = "list-item";
+    $("attend_"+id+"_edit").style.display = "none";
+}
+
+function attendedit_reg(id){
+    var attend_nm = $("attend_nm_"+id).value;
+    var comment = $("comment_"+id).value;
+    var event_attend_id = $("event_attend_id_"+id).value;
+    var event_attend_date = $("event_attend_date_"+id).value;
+    var attend_type = $("attend_type_"+id)[$("attend_type_"+id).selectedIndex].value;
+
+    new Ajax.Updater("attend_"+id, '/management/calendar/calendar_attend_update/', {method: 'get', parameters: 'attend_type='+attend_type+'&event_attend_id='+event_attend_id+'&comment='+comment+'&attend_nm='+attend_nm+'&event_attend_date='+event_attend_date+'&MODE=attend_updater'});
+}
+function attendedit_del(id){
+    var event_attend_id = $("event_attend_id_"+id).value;
+
+    new Ajax.Updater("attend_"+id, '/management/calendar/calendar_attend_update/', {method: 'get', parameters: '&event_attend_id='+event_attend_id+'&MODE=attend_del'});
+}
+
+</script>
+{/literal}
+
+  <a id="relation_data" name="relation_data"></a>
+  {rcms_include file="management/relation_edit.html"}
+  {rcms_include file="management/open_date_box.html" id=$event_id data=$data}
+
+{/if}{* $docmeta.is_primary to *}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+{rcms_include file="management/update_comment.html" comment=$data.update_comment}
+
+</div>
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

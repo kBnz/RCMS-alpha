@@ -1,0 +1,69 @@
+{module name="tasklist_list"}
+<h2 class="module_title"><span>{'/modules/tasklist/label/tasklist_list'|translate}{* 課題一覧 *}</span></h2>
+<div class="module_contents">
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="management/messages_box.html" messages=$messages}
+  <div class="search_box">
+
+  <form action="/{$page_sysnm}/" method="get">
+    {'/label/representative'|translate}{* 担当者 *}:<input type="text" name="member_name" size="20" value="{$member_name|escape}">
+    {'/label/title'|translate}{* タイトル *}:<input type="text" name="cate_title" size="30" value="{$cate_title|escape}">
+    {'/label/content'|translate}{* 内容 *}:<input type="text" name="text" size="30" value="{$text|escape}"><br />
+    <select name="category">{html_options options=$arrCategory selected=$category}</select>
+    <select name="serious_flg">{html_options options=$arrSeriousFlg selected=$serious_flg}</select>
+    <select name="priority_flg">{html_options options=$arrPriorityFlg selected=$priority_flg}</select>
+    {html_checkboxes name=syori_flg options=$arrSyoriFlg selected=$syori_flg}
+    <input type="submit" value="{'/label/search_btn'|translate}{* 検索する *}" />
+    <input type="hidden" name="search_flg" value="1" />
+    <input type="hidden" name="sort" value="{$sort}">
+    <input type="hidden" name="desc" value="{$desc}">
+  </form>
+  </div>
+  <p class="add_item"><a href="/tasklist_edit/">{'/modules/tasklist/label/create_new_task_btn'|translate}{* 課題追加 *}</a></p>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  <form action="/tasklist_list/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="UPDATE_SYORI_FLG" />
+  <input type="hidden" name="update_syori_flg" value="" />
+  <table class="list tasklist_list">
+    <tr>
+      <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'tasklist_id[]')" /></th>
+      <th width="200">{'/label/title'|translate|sort_link:cate_title:$sort_url:$sort:$desc}{* タイトル *}</th>
+      <th width="60">{'/label/representative'|translate|sort_link:member_name:$sort_url:$sort:$desc}{* 担当者 *}</th>
+      <th width="60">{'/label/inscriber'|translate|sort_link:insert_nm:$sort_url:$sort:$desc}{* 記入者 *}</th>
+      <th width="50">{'/label/category'|translate|sort_link:category:$sort_url:$sort:$desc}{* カテゴリ *}</th>
+      <th width="30">{'/modules/tasklist/label/replys'|translate|sort_link:cnt:$sort_url:$sort:$desc}{* 返信 *}</th>
+      <th width="30">{'/label/last_reply'|translate|sort_link:latest_reply:$sort_url:$sort:$desc}{* 最終返信 *}</th>
+      <th width="10">{'/label/deadline'|translate|sort_link:limit_date:$sort_url:$sort:$desc}{* 期限 *}</th>
+      <th width="40">{'/label/importance'|translate|sort_link:serious_flg:$sort_url:$sort:$desc}{* 重要度 *}</th>
+      <th width="40">{'/label/priority'|translate|sort_link:priority_flg:$sort_url:$sort:$desc}{* 優先度 *}</th>
+      <th width="35">{'/label/status'|translate|sort_link:syori_flg:$sort_url:$sort:$desc}{* 状況 *}</th>
+      <th width="70">{'/modules/tasklist/label/inscribe_date'|translate|sort_link:inst_ymdhi:$sort_url:$sort:$desc}{* 記入日時 *}</th>
+    </tr>
+{foreach from=$tasklistList item=row}
+    <tr>
+      <td><input type="checkbox" name="tasklist_id[]" value="{$row.tasklist_id}"></td>
+      <td><a href="/tasklist_detail/id={$row.tasklist_id}">{$row.cate_title|escape}</a></td>
+      <td>{$row.member_name|escape}</td>
+      <td>{$row.insert_nm|escape}</td>
+      <td>{$row.category_txt|escape}</td>
+      <td>{$row.cnt}{'/label/items'|translate}{* 件 *}</td>
+      <td>{if $row.latest_reply != ""}{$row.margin_d}{/if}</td>
+      <td {if $row.deadline}class="deadline"{/if}>{$row.limit_date}</td>
+      <td class="serious{$row.serious_flg}">{$row.serious_flg_txt}</td>
+      <td class="priority{$row.priority_flg}">{$row.priority_flg_txt}</td>
+      <td>{$row.syori_flg_txt}</td>
+      <td>{$row.inst_ymdhi|pg_dateformat}</td>
+    </tr>
+{/foreach}
+  </table>
+        <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+
+        {foreach from=$arrSyoriFlg key=key item=item}
+        <button type="submit" onclick="this.form.update_syori_flg.value={$key}">{'/modules/tasklist/label/update_status_btn'|translate:$item}{* ●●●に更新する *}</button>
+        {/foreach}
+      </p>
+  </form>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+</div>
+{/module}

@@ -1,0 +1,22 @@
+{rcms_include file="management/mobile/header.html"}
+{*
+
+  更新用ﾒｯｾｰｼﾞ表示ﾃﾝﾌﾟﾚｰﾄです。
+
+  使用方法は
+
+  if (!$auth['xxxx']['update']) {
+      postAdminMessage("権限がありません。");
+      exit;
+  }
+
+*}
+<h2 class="for_mng">更新ﾒｯｾｰｼﾞ</h2>
+<hr class="for_mng"/>
+<br/>
+  <div style="text-align: center;">
+    {$message}
+  </div>
+<br/>
+
+{rcms_include file="management/mobile/footer.html"}

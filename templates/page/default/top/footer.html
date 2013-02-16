@@ -1,0 +1,15 @@
+<div id="footer_contents">
+{if $global_menu_footer_list|@count > 0}
+	<div class="footer_link">
+		<ul>
+			{foreach from=$global_menu_footer_list item=menu}
+			<li><a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}">{$menu.page_nm}</a></li>
+			{/foreach}
+		</ul>
+	</div>
+{/if}
+	<address><!--%copyright%--></address>
+	<p><!--%edition_text%--></p>
+</div>
+<div id="footer_bottom">
+</div>

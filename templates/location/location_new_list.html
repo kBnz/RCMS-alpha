@@ -1,0 +1,24 @@
+{if $list|@count>0}
+{module name="location_new_list"}
+<h2 class="module_title"><span>{'/modules/location/label/location_new_list'|translate}{*’n}V’…ˆê——*}</span></h2>
+<div class="module_contents">
+<style type="text/css">
+{literal}
+<!--
+body {font-size: 0.8em; background-color:#D5D5D5;}
+a:link {color:#003399; text-decoration: none; padding: 0px;}
+a:hover {text-decoration: underline;}
+-->
+{/literal}
+</style>
+  <table>
+  {foreach from=$list item=row}
+      <tr>
+        <td><a href="/{if $link_page}{$link_page}{else}location_detail{/if}/id={$row.location_id}" target="_top">{$row.alphabet}</a></td>
+        <td><a href="/{if $link_page}{$link_page}{else}location_detail{/if}/id={$row.location_id}" target="_top">{$row.location_nm}</a></td>
+      </tr>
+  {/foreach}
+  </table>
+</div>
+{/module}
+{/if}

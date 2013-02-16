@@ -1,0 +1,48 @@
+{module name="catalog_list_digest"}
+<h2 class="module_title"><span>{'/modules/catalog'|translate}{* カタログ *}</span></h2>
+<div class="module_contents">
+
+{foreach from=$catalogList item=row}
+<div class="CatalogItem"{if $row.parent_id ne 0}style="padding-left: 5em"{/if}>
+  <h3>{if $row.detail_flg eq 1}<a href="/catalog_detail{if $catalog_group_id != 1}{$catalog_group_id}{/if}/id={$row.catalog_id}">{/if}
+        {if $row.subject_type ne '1'}
+            {$row.subject}
+        {else}
+            {if $row.subject1_ext eq 'swf'}
+            <div id="subject_flash"></div>
+            <script type="text/javascript" src="/js/swfobject.js"></script>
+            <script type="text/javascript">
+            <!--
+                var so = new SWFObject("{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_1.{$row.subject1_ext}", "subject_flash", "{$row.subject_width}", "{$row.subject_height}", "8", "#000000");
+                so.write("subject_flash");
+            //-->
+            </script>
+
+            {else}
+                {if $row.subject1_ext}
+                <img src="{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_1.{$row.subject1_ext}" 
+                {if $row.subject2_ext}
+                  onMouseOver="this.src='{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_2.{$row.subject2_ext}'" 
+                  onMouseOut="this.src='{$smarty.const.CATALOG_SUBJECT_URL}/{$row.catalog_id}_1.{$row.subject1_ext}'" 
+                {/if}
+                >
+                {/if}
+            {/if}
+        {/if}
+{if $row.detail_flg eq 1}</a>{/if}
+  </h3>
+    <p >
+    {*{if $row.group_nm != ""}<span class="group">[{$row.group_nm}]</span>{/if}*}
+    <table width="600">
+    {foreach from=$user_profile_list[$row.contents_type].profile item=item key=key name=catalog_item}
+        {if $smarty.foreach.catalog_item.first}<tr><td align="center">{$row.$key|nl2br}</td></tr>
+        {else}<tr><td align ="center">{if $key ne "image" && $key ne "contents" && $key ne "url"}{$item.name}:{/if}{$row.$key|nl2br}</td></tr>{/if}
+    {/foreach}
+    </table>
+    </p>
+</div>
+{/foreach}
+
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+</div>
+{/module}

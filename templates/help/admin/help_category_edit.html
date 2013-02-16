@@ -1,0 +1,122 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/label/category_edit'|translate}</h2>{*カテゴリ編集*}
+  <ul>
+    {if $rauth->canInsert('/help/category')}
+    <li class="add"><a href="/management/{$mt}/help_category_edit/pageID={$currentPageID}"><span>{'/label/create_new_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+    {/if}
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/help_item_list/">{'/modules/help'|translate}</a>
+<a href="/management/{$mt}/help_category_list/">{'/label/categories_list'|translate}</a>
+{'/label/category_edit'|translate}{*カテゴリ編集*}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> Q&A >> カテゴリ一覧 >> カテゴリ編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="help/admin/minitabs.html" page_type=$ct auth=$auth }
+
+  <form action="/management/{$mt}/help_category_edit/" method="post" name="help_category_edit" id="help_category_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="help_category_id" type="hidden" value="{$formData.help_category_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="wizard" value="{$wizard}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/$mt/$ct/help_category_id=$help_category_id"}
+{rcms_include file="management/wizard_box.html" wizard_options=$wizard_options wizard_flg=$wizard id=$formData.help_category_id}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    {if $help_category_id}
+      {lang_selector meta=$docmeta link="/management/$mt/$ct/help_category_id=$help_category_id"}
+    {/if}
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+        <td><input size="25" maxlength="50" name="category_name" type="text" value="{$formData.category_name|escape}" /></td>
+      </tr>
+      {if $docmeta.is_primary}
+      <tr>
+        <th>{'/label/parent_category'|translate}</th>{*親カテゴリ*}
+        <td><select name="parent_id">{html_options options=$arrParentCategory selected=$formData.parent_id}</select></td>
+      </tr>
+      {/if}
+    </table>
+
+    {if $docmeta.is_primary}
+    {rcms_include file="management/open_date_box.html" id=$formData.help_category_id data=$formData}
+    {/if}
+
+    {buttonbox}
+    {if $help_category_id}
+      {if $docmeta.is_waiting}
+        {* これは承認待ちドキュメント *}
+
+        {if $rauth->canUpdate("/help/category/$help_category_id", $docmeta.lang)}
+          {if $rauth->unlimitedUpdate("/help/category/$help_category_id", $docmeta.lang)}
+            {* 許可する権限がある *}
+            <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>{* 承認する *}
+            <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>{* 拒否する *}
+          {elseif $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+          {else}
+               {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+          {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+      {else}
+        {* これは通常ドキュメント *}
+        {if $docmeta.has_waiting}
+          {* 承認待ちドキュメントがある場合は何もできない *}
+            {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+            <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+       {else}
+          {* 通常ドキュメントに対する更新処理 *}
+          {if $rauth->canUpdate("/help/category/$help_category_id", $docmeta.lang)}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+          {/if}
+          {if $rauth->canDelete("/help/category/$help_category_id", $docmeta.lang)}
+            {* 削除権限がある *}
+            <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+          {/if}
+        {/if}
+      {/if}
+    {else}
+      {if $rauth->canInsert("/help/category")}
+        <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>{* 追加する *}
+      {/if}
+    {/if}
+
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

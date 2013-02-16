@@ -1,0 +1,409 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{rcms_include file="management/fileupload.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/jobs/label/jobs_edit'|translate}{*採用情報編集*}</h2>
+<ul>
+  {if $jobs_id && $rauth->canInsert('/jobs/item/')}
+    <li class="normal"><a href="/management/jobs/jobs_copy/jobs_id={$jobs_id}"><span>{'/label/copy'|translate}{*コピー*}</span></a></li>
+  {/if}
+  {if $rauth->canInsert("/jobs/item/")}
+  <li class="add"><a href="/management/jobs/jobs_edit/"><span>{'/modules/jobs/label/add_jobdata'|translate}{*採用情報追加*}</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/jobs/jobs_history/jobs_id={$jobs_id}"><span>{'/label/update_history'|translate}{*更新履歴*}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/jobs_detail/id={$jobs_id}" target="_blank"><span>{'/label/view_page'|translate}{*サイト確認*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/jobs/jobs_list/">{'/modules/jobs'|translate}</a>
+<a href="/management/jobs/jobs_list/">{'/modules/jobs/label/jobs_list'|translate}</a>{*採用情報一覧*} 
+<a href="/management/jobs/jobs_edit/{if $jobs_id}jobs_id={$jobs_id}{/if}">{'/modules/jobs/label/jobs_edit'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 採用情報 >> 採用情報一覧 >> 採用情報編集*}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>　<a href="/jobs_detail/id={$jobs_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/jobs/jobs_edit/jobs_id=$jobs_id"}
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+<form name="jobs_edit" id="jobs_edit" action="/management/jobs/jobs_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="jobs_id" value="{$jobs_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $jobs_id}UPDATE{else}INSERT{/if}" />
+    <input type="hidden" name="subflg" value="" />
+    <input type="hidden" name="file_type" value="{$data.file_type}" />
+    <input type="hidden" name="photo_file" value="{$data.photo_file}" />
+    <input type="hidden" name="photo_s_file" value="{$data.photo_s_file}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    {rcms_include file="management/messages_box.html"}
+    {rcms_include file="management/errors_box.html"}
+    {if $jobs_id}  
+    {lang_selector meta=$docmeta link="/management/jobs/jobs_edit/jobs_id=$jobs_id"}
+    {/if}  
+
+
+    <table width="100%" border="0">
+        <tr>
+            <th>{'/label/sort'|translate}{if $required_settings.order_no==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+
+            {if $docmeta.is_primary}
+            <td>
+                <input type="text" size="3" maxlength="3" name="order_no" value="{$data.order_no|escape}" />
+                <span class="hint">{'/msg/data_order'|translate}{*並び順は数字の大きい順に並びます。*}</span>
+            </td>
+            {else}
+            <td>
+                {$latestRow.order_no|escape}
+            </td>
+            {/if}
+        </tr>
+        <tr>
+            <th>{'/label/category'|translate}{*カテゴリ*}{if $required_settings.jobs_category_id==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <select name="jobs_category_id">{html_options options=$arrJobsCategory selected=$data.jobs_category_id}</select>
+            </td>
+            {else}
+            <td>
+                {$latestRow.explanation|escape}
+            </td>
+            {/if}
+        </tr>
+
+        {if $docmeta.is_primary}
+        <tr>
+            <th>{'/label/image'|translate}{if $required_settings.photo_url==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td>
+                {fileupload id=1 url='/direct/jobs/file_upload/' default=$data.photo_url hidden_nm='photo_url' file_type='jpg'}{/fileupload}
+                <p>※{'/msg/if_image_size_is_wider_than_photo_width'|translate:$photo_width:$photo_width}</p>{*写真幅サイズは{$photo_width}pxを超える場合、{$photo_width}pxに縮小されます*}
+            </td>
+        </tr>
+        {/if}
+
+        <tr>
+            <th width="100">{'/label/job_name'|translate}{*職名*}<span class="required">{'/label/required'|translate}</span></th>
+            <td>
+                <input type="text" name="job_nm" value="{$data.job_nm}" size="80" />
+            </td>
+        </tr>
+
+        <tr>
+            <th>{'/label/job_description'|translate}{*仕事内容*}<span class="required">{'/label/required'|translate}</span></th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea rows="4" cols="60" name="explanation">{$data.explanation}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.explanation|escape}
+            </td>
+            {/if}
+        </tr>
+        <tr>
+            <th>{'/label/age'|translate}{*年齢*}{if $required_settings.age==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <input type="text" name="lowest_age" value="{$data.lowest_age}" size="10" />{'/label/years_old'|translate}{*歳*} ～
+                <input type="text" name="highest_age" value="{$data.highest_age}" size="10" />{'/label/years_old'|translate}{*歳*}<span class="hint">(例 22{'label/years_old'|translate}～45{'label/years_old'|translate})</span>
+            </td>
+            {else}
+            <td>
+                {$latestRow.lowest_age|escape}{'/label/years_old'|translate} ～{$latestRow.highest_age|escape}{'/label/years_old'|translate}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/education_record'|translate}{*学歴*}{if $required_settings.edu_background==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea rows="4" cols="60" name="edu_background">{$data.edu_background}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.edu_background|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/modules/jobs/label/welcomed_skills'|translate}{*歓迎される経験、スキル、資格*}{if $required_settings.welcomed_skills==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea rows="4" cols="60" name="welcomed_skills">{$data.welcomed_skills}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.welcomed_skills|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/modules/jobs/label/qualifications'|translate}{*必須の経験、スキル、資格*}{if $required_settings.indispensable_skills==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea rows="4" cols="60" name="indispensable_skills">{$data.indispensable_skills}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.indispensable_skills|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/work_place'|translate}{*勤務地*}{if $required_settings.area==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                {'/label/select_area'|translate}:<select name="area">{html_options options=$arrArea selected=$data.area}</select><br />
+                <textarea rows="3" cols="60" name="location">{$data.location}</textarea>
+            </td>
+            {else}
+            <td>
+                {$arrArea[$latestRow.area]} {$latestRow.location}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/map_information'|translate}{*地図*}{if $required_settings.map==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <span class="hint">{'/modules/location/msg/help_googlemap_setting'|translate}{*地図上をクリックすると設定される位置が変わります。ズームなどの状態も設定できます。*}</span><br>
+                <input id="gmap_x" name="gmap_x" type="hidden" value="{$data.gmap_x}" />
+                <input id="gmap_y" name="gmap_y" type="hidden" value="{$data.gmap_y}" />
+                <input id="gmap_zoom" name="gmap_zoom" type="hidden" value="{$data.gmap_zoom}" />
+                <input id="gmap_type" name="gmap_type" type="hidden" value="{$data.gmap_type}" />
+                <iframe src="/management/location/location_map/gmap_x={$data.gmap_x}&gmap_y={$data.gmap_y}&gmap_zoom={$data.gmap_zoom}&gmap_type={$data.gmap_type}" name="googlemap" width=490 height=430 scrolling="auto" marginheight="0" marginwidth="0" frameborder="0"></iframe>
+            </td>
+            {else}
+            <td>
+                <iframe src="/management/location/location_map/gmap_x={$data.gmap_x}&gmap_y={$data.gmap_y}&gmap_zoom={$data.gmap_zoom}&gmap_type={$data.gmap_type}" name="googlemap" width=490 height=430 scrolling="auto" marginheight="0" marginwidth="0" frameborder="0"></iframe>
+            </td>
+            {/if}
+
+        <tr>
+            <th>{'/label/work_time'|translate}{*勤務時間*}{if $required_settings.time==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <input type="text" name="from_time" value="{$data.from_time}" />
+                ～
+                <input type="text" name="to_time" value="{$data.to_time}" /><span class="hint">({'/label/example'|translate} 10:30)</span>
+                <textarea name="time_note" rows="3" cols="60">{$data.time_note}</textarea>
+            </td>
+            {else}
+            <td>
+                {if $latestRow.from_time && $latestRow.to_time}{$latestRow.from_time}～{$latestRow.to_time}{/if}
+                <p>{$latestRow.time_note}</p>
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/salary'|translate}{*給料*}{if $required_settings.salary==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <input type="text" name="salary" value="{$data.salary}" /><span class="hint">({'/label/example'|translate} {'/label/JPY200000_month'|translate} ～)</span><br/>
+                <textarea name="salary_note" rows="3" cols="60">{$data.salary_note}</textarea><br/>
+                <span class="hint">({'/label/example'|translate} {'/label/salary_msg'|translate})</span>
+            </td>
+            {else}
+            <td>
+                {$latestRow.salary} {$latestRow.salary_note}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/bonus'|translate}{*ボーナス*}{if $required_settings.bonus==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea name="bonus" rows="3" cols="60">{$data.bonus}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.bonus}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/allowance'|translate}{*諸手当*}{if $required_settings.allowance==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea name="allowance" rows="3" cols="60">{$data.allowance|escape}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.allowance|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/label/holiday'|translate}{*休暇*}{if $required_settings.holiday==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <input type="text" name="holiday" value="{$data.holiday}" size="80" />
+            </td>
+            {else}
+            <td>
+                {$latestRow.holiday|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/modules/jobs/label/benefit'|translate}{*待遇、福利厚生*}{if $required_settings.welfare==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea name="welfare" rows="3" cols="60">{$data.welfare}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.welfare|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            <th>{'/modules/jobs/label/training_program'|translate}{*教育制度*}{if $required_settings.edu_system==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            {if $docmeta.is_primary}
+            <td>
+                <textarea name="edu_system" rows="3" cols="60">{$data.edu_system|escape}</textarea>
+            </td>
+            {else}
+            <td>
+                {$latestRow.edu_system|escape}
+            </td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_01'|translate}{*自由項目*}<input type="text" name="ext_title_01" value="{$data.ext_title_01|escape}" /> {if $required_settings.ext_txt_01==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_01" rows="3" cols="60">{$data.ext_txt_01|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_01'|translate}{*自由項目*}<br/>{$latestRow.ext_title_01|escape}</th>
+            <td>{$latestRow.ext_txt_01|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_02'|translate}{*自由項目*}<input type="text" name="ext_title_02" value="{$data.ext_title_02|escape}" /> {if $required_settings.ext_txt_02==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_02" rows="3" cols="60">{$data.ext_txt_02|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_02'|translate}{*自由項目*}<br/>{$latestRow.ext_title_02|escape}</th>
+            <td>{$latestRow.ext_txt_02|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_03'|translate}{*自由項目*}<input type="text" name="ext_title_03" value="{$data.ext_title_03|escape}" /> {if $required_settings.ext_txt_03==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_03" rows="3" cols="60">{$data.ext_txt_03|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_03'|translate}{*自由項目*}<br/>{$latestRow.ext_title_03|escape}</th>
+            <td>{$latestRow.ext_txt_03|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_04'|translate}{*自由項目*}<input type="text" name="ext_title_04" value="{$data.ext_title_04|escape}" /> {if $required_settings.ext_txt_04==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_04" rows="3" cols="60">{$data.ext_txt_04|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_04'|translate}{*自由項目*}<br/>{$latestRow.ext_title_04|escape}</th>
+            <td>{$latestRow.ext_txt_04|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_05'|translate}{*自由項目*}<input type="text" name="ext_title_05" value="{$data.ext_title_05|escape}" /> {if $required_settings.ext_txt_05==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_05" rows="3" cols="60">{$data.ext_txt_05|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_05'|translate}{*自由項目*}<br/>{$latestRow.ext_title_05|escape}</th>
+            <td>{$latestRow.ext_txt_05|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_06'|translate}{*自由項目*}<input type="text" name="ext_title_06" value="{$data.ext_title_06|escape}" /> {if $required_settings.ext_txt_06==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_06" rows="3" cols="60">{$data.ext_txt_06|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_06'|translate}{*自由項目*}<br/>{$latestRow.ext_title_06|escape}</th>
+            <td>{$latestRow.ext_txt_06|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_07'|translate}{*自由項目*}<input type="text" name="ext_title_07" value="{$data.ext_title_07|escape}" /> {if $required_settings.ext_txt_07==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_07" rows="3" cols="60">{$data.ext_txt_07|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_07'|translate}{*自由項目*}<br/>{$latestRow.ext_title_07|escape}</th>
+            <td>{$latestRow.ext_txt_07|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_08'|translate}{*自由項目*}<input type="text" name="ext_title_08" value="{$data.ext_title_08|escape}" /> {if $required_settings.ext_txt_08==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_08" rows="3" cols="60">{$data.ext_txt_08|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_08'|translate}{*自由項目*}<br/>{$latestRow.ext_title_08|escape}</th>
+            <td>{$latestRow.ext_txt_08|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_09'|translate}{*自由項目*}<input type="text" name="ext_title_09" value="{$data.ext_title_09|escape}" /> {if $required_settings.ext_txt_09==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_09" rows="3" cols="60">{$data.ext_txt_09|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_09'|translate}{*自由項目*}<br/>{$latestRow.ext_title_09|escape}</th>
+            <td>{$latestRow.ext_txt_09|escape}</td>
+            {/if}
+        </tr>
+
+        <tr>
+            {if $docmeta.is_primary}
+            <th>{'/label/ext_title_10'|translate}{*自由項目*}<input type="text" name="ext_title_10" value="{$data.ext_title_10|escape}" /> {if $required_settings.ext_txt_10==$smarty.const.JOBS_REQUIRED_INPUT_ON}<span class="required">{'/label/required'|translate}</span>{/if}</th>
+            <td><textarea name="ext_txt_10" rows="3" cols="60">{$data.ext_txt_10|escape}</textarea></td>
+            {else}
+            <th>{'/label/ext_title_10'|translate}{*自由項目*}<br/>{$latestRow.ext_title_10|escape}</th>
+            <td>{$latestRow.ext_txt_10|escape}</td>
+            {/if}
+        </tr>
+
+    </table>
+
+    <a id="relation_data" name="relation_data"></a>
+
+    {rcms_include file="management/relation_edit.html"}
+
+    {editTagsBox docmeta=$docmeta}{/editTagsBox}
+
+    {rcms_include file="management/open_date_box.html" id=$jobs_id data=$data}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$data.update_comment}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

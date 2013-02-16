@@ -1,0 +1,46 @@
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+------------------------------------------------------------ */
+body {
+	text-align:[site_align];
+}
+
+.mng_line {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#container {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#header {
+}
+
+#navi {
+}
+
+#footpath {
+	[footpath_width]
+}
+
+#contents {
+	[contents_width]
+}
+
+#top_contents {
+}
+
+#main_contents {
+}
+
+#bottom_contents {
+}
+
+#footer {
+}
+

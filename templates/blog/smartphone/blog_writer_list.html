@@ -1,0 +1,11 @@
+{if $blog_writer_list|@count > 0}
+{module name="blog_writer_list"}
+<h2>[emoji:070]{'/modules/blog/label/blog_writer_list'|translate}{* ブログ記者一覧 *}</h2>
+{foreach from=$blog_writer_list item=writer}
+    <div>
+    {'/label/name'|translate}{* 名前 *}: <a href="/member_detail/id={$writer.member_id}">{$writer.disp_name}</a>
+    </div>
+{/foreach}
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo }
+{/module}
+{/if}

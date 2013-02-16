@@ -1,0 +1,138 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/staticpage/label/staticpage_edit'|translate}{*外部HTML編集*}</h2>
+<ul>
+{if $rauth->canInsert("/staticpage/item/")}
+    <li class="add"><a href="/management/staticpage/staticpage_edit/"><span>{'/modules/staticpage/label/add_staticpage'|translate}{*外部HTML追加*}</span></a></li>
+{/if}
+{if $static_id} 
+    <li class="normal"><a href="/management/staticpage/staticpage_history/static_id={$static_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}{*更新履歴*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/staticpage/staticpage_list/">{$module_nm}</a>
+<a href="/management/staticpage/staticpage_list/">{'/modules/staticpage/label/staticpage_list'|translate}</a>
+{'/modules/staticpage/label/staticpage_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 外部HTML >> 外部HTML一覧 >> 外部HTML編集 *}
+<p class="page_info">
+<a href="/staticpage/file_name={$formData.file_name}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/staticpage/staticpage_edit/static_id=$static_id"}
+
+{if $static_id} 
+    {lang_selector meta=$docmeta link="/management/staticpage/staticpage_edit/static_id=$static_id"}
+{/if}
+  <form enctype="multipart/form-data" action="/management/staticpage/staticpage_edit/" method="post">
+    <input name="MODE" type="hidden" value="" />
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="MAX_FILE_SIZE" type="hidden" value="1048576" />
+    <input name="static_id" type="hidden" value="{$formData.static_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/title'|translate}{*タイトル*}</th>
+        <td><input size="25" maxlength="50" id="text" name="title" type="text" value="{$formData.title|escape}"/></td>
+      </tr>
+      <tr>
+        <th>{'/label/parent_page'|translate}{*親ページ*}<span class="required">※</span></th>
+        <td>
+        {if $docmeta.is_primary}
+            <select id="parent_id" name="parent_id">{html_options options=$arrPage selected=$formData.parent_id}</select>
+        {else}  
+            {$arrPage[$latestRow.parent_id]}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/file_name'|translate}{*ファイル名*}</th>
+        <td>
+        {if $docmeta.is_primary}
+            {$smarty.const.ROOT_URL}/staticpage/<input name="file_name" type="text" value="{$formData.file_name|escape}"/><br>
+            <span class="hint">{'/modules/staticpage/msg/input_file_name_by_alphanumeric'|translate}{*半角英数字で入力してください。/ . などは使用できません。*}</span>
+        {else}  
+            {$smarty.const.ROOT_URL}/staticpage/{$latestRow.file_name|escape}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/headerfooter'|translate}{*ヘッダ・フッタ*}</th>
+        <td>
+        {if $docmeta.is_primary}
+            <input type="radio" name="not_hf_flg" value="0" {if !$formData.not_hf_flg}checked="checked"{/if} />{'/label/attach'|translate}{*付ける*}
+            <input type="radio" name="not_hf_flg" value="1" {if $formData.not_hf_flg}checked="checked"{/if} />{'/label/not_attach'|translate}{*付けない*}
+        {else}
+            {if !$formData.not_hf_flg}
+                {'/label/attach'|translate}{*付ける*}
+            {else}
+                {'/label/not_attach'|translate}{*付けない*}
+            {/if}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/display_form'|translate}{*表示形式*}</th>
+        <td>
+        {if $docmeta.is_primary}
+            <input id="sitemap_flg" name="sitemap_flg" type="checkbox" value="1" {if $formData.sitemap_flg != "0"}checked="checked"{/if}/>{'/label/site_map'|translate}{*サイトマップ*}
+            <input id="menu_flg" name="menu_flg" type="checkbox" value="1" {if $formData.menu_flg != "0"}checked="checked"{/if}/>{'/label/menu'|translate}{*メニュー*}
+            <input id="mobile_flg" name="mobile_flg" type="checkbox" value="1" {if $formData.mobile_flg != "0"}checked="checked"{/if}/>{'/label/mobile_phone'|translate}{*携帯*}
+        {else}
+            {if $latestRow.sitemap_flg != "0"}{'/label/site_map'|translate}{*サイトマップ*}　{/if}
+            {if $latestRow.menu_flg != "0"}{'/label/menu'|translate}{*メニュー*}　{/if}
+            {if $latestRow.mobile_flg != "0"}{'/label/mobile_phone'|translate}{*携帯*}　{/if}
+        {/if}
+        </td>
+      </tr>
+    </table>
+
+    {rcms_include file="common/editor_info.html"}
+
+    <div class="not_list_main" style="width:100%;background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+      <div class="wysiwyg_area">
+        {$sw_html}
+      </div>
+    </div>
+    <div class="clear"></div>
+
+{if $docmeta.is_primary}
+
+    {if $auth.staticpage_admin.update}
+      <table width="100%">
+        <tr>
+          <th width="150">{'/label/editing_limit'|translate}{*編集制限*}</th>
+          <td>
+            <input type="radio" name="editable_flg" id="editable_flg_off" value="off" onclick="display('editable_group_list', 'none');" {if $formData.editable_flg != 'on'}checked="checked"{/if}/><label for="editable_flg_off">{'/label/unlimited'|translate}{*制限無し*}</label><input type="radio" name="editable_flg" id="editable_flg_on" value="on" onclick="display('editable_group_list', '');" {if $formData.editable_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="editable_flg_on">{'/label/limited'|translate}{*制限有り*}</label>
+            <div id="editable_group_list" style="margin: 10px 0 0 10px; {if $formData.editable_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/msg/select_group_for_update_and_delete'|translate}{*更新・削除を許可するグループを選択してください。(複数選択できます)*}</p>
+              <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.editable_group}</select>
+            </div>
+          </td>
+        </tr>
+      </table>
+    {/if}
+{/if}
+
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" id=$formData.static_id data=$formData}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

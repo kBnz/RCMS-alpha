@@ -1,0 +1,60 @@
+{module name="shopping_list_digest"}
+<h2 class="module_title"><span>商品一覧</span></h2>
+<div class="module_contents">
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="management/messages_box.html" messages=$messages}
+
+<form action="/{$page_sysnm}/" method="post" name="shopping_list_form">
+    <input type="hidden" name="MODE" value="ADD_CART" />
+    <input type="hidden" name="pageID" value="{$pageID|escape}">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE|escape}">
+    <input type="hidden" name="shopping_id" value="">
+    <input type="hidden" name="amount" value="">
+    
+<table cellspacing="0" class="list">
+    <tr>
+        <th>画像</th>
+        <th>商品名</th>
+        <th>値段</th>
+        <th>内容</th>
+        <th width="220"></th>
+    </tr>
+{foreach from=$shoppingList item=row}
+    <tr>
+        <td>{if $row.image}
+              {if $row.detail_flg}{*詳細あり*}
+              <a href="{$smarty.const.ROOT_URL}/shopping_detail/id={$row.shopping_id}"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+              {else}{*詳細なし*}
+              <a href="{$row.image_src_s}" target="_blank"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+              {/if}
+            {/if}
+        </td>
+        {if $row.detail_flg}
+        <td><a href="/shopping_detail/id={$row.shopping_id}">{$row.subject}</a></td>
+        {else}
+        <td>{$row.subject}</td>
+        {/if}
+        <td>{$row.price}円</td>
+        <td>{$row.contents|mb_truncate:150}</td>
+        <td>
+          数量：<select id="amount_{$row.shopping_id}">{html_options options=$row.amount_option}</select>
+          <input type="button" value="カートに追加する" onclick="add2cart({$row.shopping_id})" />
+        </td>
+    </tr>
+{/foreach}
+</table>
+</form>
+{if !$using_season}
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+{/if}
+</div>
+<script type="text/javascript">
+{literal}
+function add2cart (shopping_id) {
+    document.shopping_list_form.amount.value      = document.getElementById('amount_' + shopping_id).value;
+    document.shopping_list_form.shopping_id.value = shopping_id;
+    document.shopping_list_form.submit();
+}
+{/literal}
+</script>
+{/module}

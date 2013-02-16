@@ -1,0 +1,108 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/bbs/label/post_list'|translate}{*投稿記事一覧*}</h2>
+<ul>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs'|translate}</a>
+<a href="/management/bbs/bbs_list/pageID={$pageID}">{'/modules/bbs/label/bbs_list'|translate}</a>
+{'/modules/bbs/label/post_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 掲示板 >> 掲示板一覧 >> 投稿記事一覧  *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.forum_title|escape}</h3>
+<ul class="minitabs">
+  <li><a href="/management/bbs/bbs_edit/bbs_header_id={$header.bbs_header_id}">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_list/bbs_header_id={$header.bbs_header_id}" class="active">{'/modules/bbs/label/post'|translate}{*投稿記事*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_category_list/bbs_header_id={$header.bbs_header_id}">{'/modules/bbs/label/classification_labels'|translate}{*分類ラベル*}</a></li>
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/bbs/bbs_detail_list/">
+    <input type="hidden" name="bbs_header_id" value="{$bbs_header_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.bbs.delete}
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'bbs_seq[]');" /></th>
+{/if}
+        <th>{'/label/publish_status'|translate}{*公開*}</th>
+        <th>{'/label/title'|translate}{*タイトル*}</th>
+        {if $arrBbsDetailCategoly|@count>0}
+        <th>{'/modules/bbs/label/classification_labels'|translate}</th>
+        {/if}
+        <th>{'/label/content'|translate}{*内容*}</th>
+        <th>{'/label/person_who_posted'|translate}{*投稿者*}</th>
+        <th>{'/label/ip_address'|translate}{*IPアドレス*}</th>
+        <th>{'/label/post_date'|translate}{*投稿日時*}</th>
+      </tr>
+      {foreach item=row from=$bbs_detail_list name=bbs_list}
+      <tr{if $row.dflg == 1} style="color:#CCCCCC;"{/if}>
+{if $auth.bbs.delete}
+        <td>
+          <input type="checkbox" name="bbs_seq[]" value="{$row.seq}" />
+        </td>
+{/if}
+        <td nowrap>
+        {if $row.dflg == 1}
+          {'/label/delete'|translate}{* 削除 *}
+        {else}
+          {$row.open_status|rcms_publicimg}
+          {if $row.open_flg eq 2}<br>{$row.open_flg_txt}{/if}
+        {/if}
+        </td>
+        <td><a href="/management/bbs/bbs_detail_edit/bbs_header_id={$bbs_header_id}&bbs_id={$row.seq}">{$row.title|escape}</a></td>
+        {if $arrBbsDetailCategoly|@count>0}
+        <td>{$arrBbsDetailCategoly[$row.bbs_detail_category_id]}</td>
+        {/if}
+        <td>{$row.note|escape|nl2br|mbtruncate:40}</td>
+        <td>{$row.name|escape}</td>
+        <td>{$row.ip_address|escape}</td>
+        <td>{$row.create_date|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}</td>
+      </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+  {if $auth.bbs.update || $auth.bbs.delete}
+    {buttonbox}
+      <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+      {if $auth.bbs.update}
+        <button type="submit" onclick="this.form.MODE.value='OPEN'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='CLOSE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+      {/if}
+      {if $auth.bbs.delete}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+      {/if}
+    {/buttonbox}
+  {/if}
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

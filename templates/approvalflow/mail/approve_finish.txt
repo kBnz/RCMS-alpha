@@ -1,0 +1,19 @@
+※このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+
+{$approve_date|pg_dateformat}に、{$approve_member_nm}さんによって下記データが承認されました。
+
+■申請日
+
+　{$apply_date|pg_dateformat}
+
+■申請者
+
+　{$apply_member_nm}
+
+■リンク
+
+　{$link}
+
+■更新コメント
+
+　{$comment}

@@ -1,0 +1,99 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}基本設定</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">コミュニケーション</a>
+<a href="/management/inquiry/inquiry_list/">{$module_nm}</a>
+基本設定
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="cart_edit_form" id="cart_edit_form" action="/management/cart/cart_edit/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table width="100%">
+      <tr>
+        <th>header文言</th>
+        <td><textarea name="header_text" cols="60" rows="5" style="font-size:100%">{$data.header_text|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>footer文言</th>
+        <td><textarea name="footer_text" cols="60" rows="5" style="font-size:100%">{$data.footer_text|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>thanks文言</th>
+        <td><textarea name="thanks_text" cols="60" rows="5" style="font-size:100%">{$data.thanks_text|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th width="200">在庫情報メッセージ </th>
+        <td>
+    在庫が閾値以上：<input type="text" name="msg_over_threshold" size="75" value="{$data.msg_over_threshold|escape}" /><br />
+    在庫が閾値未満：<input type="text" name="msg_under_threshold" size="75" value="{$data.msg_under_threshold|escape}" /><br />
+    在庫無し：<input type="text" name="msg_no_stock" size="75" value="{$data.msg_no_stock|escape}" />
+  </td>
+      </tr>
+      <tr>
+        <th>配送先メールアドレス</th>
+        <td>
+          <textarea name="contact_address" cols="60" rows="6" style="font-size:100%">{$data.contact_address|escape}</textarea>
+          <p class="hint">お問い合わせがあった場合、このアドレスに通知されます</p>
+          {html_radios name=contact_flg options=$arrCart_contact_flg selected=$data.contact_flg}
+        </td>
+      </tr>
+      <tr>
+        <th>注文受付返信メール</th>
+        <td>
+          <p class="hint">注文があった場合に注文者へ送信するメールです</p>
+          <!--textarea name="contact_address" cols="60" rows="6" style="font-size:100%">{$data.contact_address|escape}</textarea-->
+          {html_radios name=thanksmail_flg options=$arrCart_thanksmail_flg selected=$data.thanksmail_flg}
+        </td>
+      </tr>
+      <tr>
+        <th>送料</th>
+        <td><input type="text" name="carriage" value="{$data.carriage}" />円</td>
+      </tr>
+      <tr>
+        <th>送料備考</th>
+        <td><textarea name="carriage_remarks" cols="60" rows="5" style="font-size:100%">{$data.carriage_remarks|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>決済方法</th>
+        <td><p class="hint">改行区切りで複数登録可能です。</p>
+            <textarea name="settlement" cols="60" rows="5" style="font-size:100%">{$data.settlement|escape}</textarea></td>
+      </tr>
+    {section name=ext_loop loop=$smarty.const.CART_EXT_COLUMN_CNT}
+      {assign var="i" value=$smarty.section.ext_loop.iteration|string_format:"%02d"}
+      {assign var="ext_title" value="ext_title_$i"}
+          <tr>
+            <th>自由項目タイトル{$smarty.section.ext_loop.iteration}</th>
+            <td><input type="text" name="{$ext_title}" value="{$data.$ext_title|escape}" size="60"/> </td>
+          </tr>
+    {/section}
+
+    </table>
+
+    {buttonbox}
+      {if ($inquiry_id == "" && $auth.inquiry.insert) || ($inquiry_id != "" && $auth.inquiry.update)}
+        <button type="submit">更新する</button>
+      {/if}
+      {if $inquiry_id != '' && $auth.inquiry.delete}
+        <button type="button" onclick="confirm_delete();">削除する</button>
+      {/if}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,16 @@
+{assign var=file_nm value=$item.name|replace:"]":""|replace:"[":"-"}
+<p>
+  {fileupload id=$file_nm url='/direct/topics/file_upload/' default=$item.file_url default_L=$item.file_url_L hidden_nm='tmpfile_'|cat:$item.name file_type='jpg' max_file_size=$item.options.max_file_size}{/fileupload}
+</p>
+{if !$item.options.ext_no_image_explain}
+<div id="textarea_{$item.name}">
+  {'/label/image_explain'|translate}:
+  {if !$docmeta.is_primary && $ext_columns_disp_primary.group[$cols_key][$item_key].value!=''}
+<p class="major_language">
+    <span class="step">{$ext_columns_disp_primary.group[$cols_key][$item_key].value|escape}</span>
+    </p>
+  {/if}
+  <textarea name="{$item.name}" rows="2" cols="60">{if $docmeta.is_primary}{$item.value|escape}{elseif !$toopics_id}{$item.value|escape}{/if}</textarea>
+</div>
+{/if}
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}

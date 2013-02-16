@@ -1,0 +1,16 @@
+{if $item.web}
+  <h2>{$item.web->title}</h2>
+
+  <img src="{$item.web->thumbnail_url}" alt="{$item.web->title}"/><br/>
+  {$item.web->description|nl2br}<br/>
+  <div style="text-align:right;">
+    <a href="{$item.web->watch_url}">ニコニコ動画上で見る</a>
+  </div>
+
+  {if $item.db.note && $item.db.open_flg}
+    <dl>
+      <dt>コメント&nbsp;：&nbsp;</dt><dd>{$item.db.note}</dd>
+    </dl>
+  {/if}
+  <hr/>
+{/if}

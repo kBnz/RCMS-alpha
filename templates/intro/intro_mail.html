@@ -1,0 +1,31 @@
+{module name="intro_mail"}
+<h2 class="module_title"><span>紹介メール</span></h2>
+<div class="module_contents">
+<form method="post" action="#">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if !$messages}
+  <p>このページを紹介するメールを送信する事ができます。</p>
+
+  <dl>
+    <dt>あなたの名前：</dt>
+    <dd><input name="from_name" type="text" value="{$from_name}" style="width:80%" /></dd>
+    <dt>あなたのメールアドレス：</dt>
+    <dd><input name="from_mail" type="text" value="{$from_mail}"  style="width:80%" /></dd>
+    <dt>送信先メールアドレス<br />(複数のアドレスを入力出来ます。改行で区切ってください)：</dt>
+    <dd><textarea name="to_mail" rows="2" style="width:80%">{$to_mail}</textarea></dd>
+    <dt>題名：</dt>
+    <dd><input name="subject" type="text" value="{$subject}"  style="width:80%" /></dd>
+    <dt>紹介文：</dt>
+    <dd><label for="紹介文"><textarea rows="4" name="contents"  style="width:80%">{$contents}</textarea></label></dd>
+  </dl>
+  <input type="submit" value="紹介文送信" />
+  <input type="hidden" name="id" value="{$id}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+{/if}
+</form>
+</div>
+{/module}

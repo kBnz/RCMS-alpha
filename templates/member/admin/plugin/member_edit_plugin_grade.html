@@ -1,0 +1,74 @@
+<div>
+  <h3>{'/label/grade'|translate}{*学年*}</h3>
+  ※{'/modules/member/msg/explaination_for_register_season_and_grade'|translate}{*2006年度に4年生であれば、2005年度=>3年生、2004年度=>2年生、2003年度=>1年生という形で登録してください。*}
+  <table width="100%">
+    <tr>
+      <th>{'/label/season'|translate}{*年度*}</th>
+      <th>{'/label/grade'|translate}{*学年*}</th>
+      <th></th>
+    </tr>
+    {section name="grade" loop=$formData.grade}
+      {assign var=i value=$smarty.section.grade.index}
+      <tr align="center">
+        <td>
+          <select style="width:70px" id="grade_season[{$i}]" onchange="onChangeGradeSeason(this.value, {$i})" name="grade_season[{$i}]">
+            {html_options options=$arrGradeSeason selected=$formData.grade_season[$i]}
+          </select>
+        </td>
+        <td>
+          <select style="width:70px" id="grade[{$i}]" onchange="onChangeGrade(this.value, {$i})" name="grade[{$i}]">
+            {html_options options=$arrGrade selected=$formData.grade[$i]}
+          </select>
+        </td>
+        <td><input type="button" onclick="clearGrade({$i})" value="{'/label/clear'|translate}{*クリア*}"/></td>
+      </tr>
+    {/section}
+    <tr align="center">
+      <td>
+        <select style="width:70px" name="grade_graduate_year">
+          {html_options options=$arrGradeSeason selected=$formData.grade_graduate_year}
+        </select>
+      </td>
+      <td>{'/label/graduation'|translate}{*卒業*}</td>
+    </tr>
+  </table>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function onChangeGrade(value, order_no) {
+    j = order_no + 1;
+    for(i = value - 1; i > 0; i--) {
+        select = document.getElementById('grade['+j+']');
+        select.value = i;
+        j++;
+    }
+}
+
+function onChangeGradeSeason(value, order_no) {
+    j = order_no;
+    grade = document.getElementById('grade['+j+']');
+    if(grade.value) {
+        gap = value - grade.value;
+        j++;
+        grade = document.getElementById('grade['+j+']');
+        while(grade.value) {
+            season = document.getElementById('grade_season['+j+']');
+            season.value = Number(gap) + Number(grade.value);
+            j++;
+            grade = document.getElementById('grade['+j+']');
+        }
+    }
+}
+
+function clearGrade(order_no) {
+    var season = document.getElementById('grade_season['+order_no+']');
+    season.value = "";
+    var grade = document.getElementById('grade['+order_no+']');
+    grade.value = "";
+} // clearGrade()
+
+{/literal}
+-->
+</script>

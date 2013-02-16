@@ -1,0 +1,28 @@
+<html>
+<head>
+<script type="text/javascript">
+<!--
+{literal}
+function photo_edit(url){
+var link = 'photoeditor_edit.php?photo_url='+url+'&dummy';
+window.open(link,'photoedit','width=1000,height=500,scrollbars=yes,toolbar=yes,resizable=yes');
+}
+-->
+{/literal}
+</script>
+</head>
+<body>
+<table>
+<tr>
+<td>
+<a href="javascript:void(0);" onclick="photo_edit('{$data.photo_url}')">{'/label/edit'|translate}{*編集*}</a>
+</td>
+</tr>
+<tr>
+<td>
+<img src="{$data.photo_url}" alt="test image" id="testImage"/>
+</td>
+</tr>
+</table>
+</body>
+</html>

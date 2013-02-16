@@ -1,0 +1,18 @@
+{if $shops}
+{module name="api_hotpepper_relation"}
+<h2 class="module_title"><span>関連ホットペッパー情報</span></h2>
+<div class="module_contents">
+  <table>
+    <tbody>
+      {foreach from=$shops item=shop}
+      <tr>
+        <td class="photo"><a href="{$shop.detail}"><img src="{$shop.thumbnail}" alt="{$shop.shop_name}"></a></td>
+        <td><a href="{$shop.detail}">{$shop.shop_name}</a><br><p class="ahPhotoCredit">写真提供：ホットペッパー.jp</p></td>
+      </tr>
+      {/foreach}
+    </tbody>
+  </table>
+  <p><a href="http://www.hotpepper.jp/" onclick="return !window.open(this.href)"><img src="http://api.hotpepper.jp/content/images/hp_api_s.gif" alt="ホットペッパー Webサービス" width="155" height="20" border="0" title="ホットペッパー Webサービス"></a></p>
+</div>
+{/module}
+{/if}

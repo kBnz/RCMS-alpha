@@ -1,0 +1,809 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<style type="text/css">
+#modulesTable table {
+  width: 100%;
+}
+#modulesTable table .title {
+  white-space: nowrap;
+}
+#modulesTable table .param, #modulesTable table .contents_title {
+  width: 250px;
+}
+.paramHelpBtn {
+  margin-left: 10px;
+}
+.paramHelp {
+  display: none;
+  background-color: #fff;
+  margin: 5px 5px;
+  padding: 5px;
+  border: 1px dashed #999;
+}
+.paramHelp dt {
+  font-weight: bold;
+}
+.paramHelp dd {
+  padding: 0;
+  margin: 5px 0 15px 15px;
+}
+.paramHelp dd strong {
+  margin-right: 15px;
+  font-weight: bold;
+}
+</style>
+
+<script type="text/javascript">
+<!--
+
+var LABEL_BORDER = "2px solid #00c";
+var CURRENT_BORDER = "1px solid #efefef";
+var BETWEEN_BG = "white";
+
+var movingItem = null;
+var targetItem = null;
+var insert_color;
+var myPage = {};
+myPage.modules = {/literal}{$moduleInfo|@json_encode}{literal};
+myPage.layout_positions = ['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}];
+var moduleList = null;
+
+/* 初期化処理 */
+Event.observe(window, 'load', function() {
+    moduleList = new ModuleList(myPage.layout_positions);
+
+    for (var i = 0 ;; i++) {
+        var module_type_obj = $("module_type[" + i + "]");
+        if (!module_type_obj) {
+            break;
+        }
+        var place = $("place[" + i + "]").value;
+        moduleList.add(new Module(i), place);
+        observeEvents(i);
+        paintParamHelp(i);
+        showHideParamHelpBtn(i);
+    }
+    var max_no = i;
+
+    function addModule() {
+        var table = $('modulesTable');
+        var row = table.insertRow(table.rows.length);
+        row.id = 'moduleRow[' + max_no + ']';
+
+        var col = row.insertCell(row.cells.length);
+        col.appendChild(document.createTextNode(max_no));
+        col.appendChild(create('input', {type: 'hidden', name: 'weight[' + max_no + ']', id: 'weight[' + max_no + ']', value: '0'}));
+        col.appendChild(create('input', {type: 'hidden', name: 'place[' + max_no + ']', id: 'place[' + max_no + ']'}));
+
+        col = row.insertCell(row.cells.length);
+        var body = create('table', {'class': 'modulesTableSub'});
+        col.appendChild(body);
+
+        var row2 = body.insertRow(body.rows.length);
+
+        var col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("コンテンツ:"));
+
+        var sel = create('select', {name: 'module_type[' + max_no + ']', id: 'module_type[' + max_no + ']'});
+        var opts = $('module_type[0]').options;
+        for (var i = 0 ; i < opts.length ; i++) {
+            sel.options[sel.options.length] = new Option(opts[i].label, opts[i].value);
+        }
+        sel.id = 'module_type[' + max_no + ']';
+        sel.name = 'module_type[' + max_no + ']';
+        sel.selectedIndex = 0;
+        col2 = row2.insertCell(row2.cells.length);
+        col2.width = "30%";
+        col2.appendChild(sel);
+
+        sel = create('select', {name: 'contents_type[' + max_no + ']', id: 'contents_type[' + max_no + ']'});
+        col2 = row2.insertCell(row2.cells.length);
+        col2.width = "30%";
+        col2.appendChild(sel);
+
+        sel = create('select', {name: 'template[' + max_no + ']', id: 'template[' + max_no + ']'});
+        col2 = row2.insertCell(row2.cells.length);
+        col2.width = "30%";
+        col2.appendChild(sel);
+
+        row2 = body.insertRow(body.rows.length);
+        col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("パラメータ:"));
+        col2 = row2.insertCell(row2.cells.length);
+        col2.colSpan = 3;
+        col2.appendChild(create('input', {type: 'text', name: 'param[' + max_no + ']', id: 'param[' + max_no + ']', 'className': 'param'}));
+        col2.appendChild(create('a', {href: 'javascript:void(0)', id: 'paramHelpBtn[' + max_no + ']', className: 'paramHelpBtn'}, "ヘルプ"));
+        col2.appendChild(create('div', {id: 'paramHelp[' + max_no + ']', className:'paramHelp'}));
+
+        row2 = body.insertRow(body.rows.length);
+        col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("独自タイトル:"));
+        col2 = row2.insertCell(row2.cells.length);
+        col2.colSpan = 3;
+        col2.appendChild(create('input', {type: 'text', name: 'contents_title[' + max_no + ']', id: 'contents_title[' + max_no + ']', 'className': 'param'}));
+
+        row2 = body.insertRow(body.rows.length);
+        col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("携帯・表示順:"));
+        col2 = row2.insertCell(row2.cells.length);
+        col2.colSpan = 3;
+        col2.appendChild(create('input', {type: 'checkbox', name: 'mobile_flg2[' + max_no + ']', id: 'mobile_flg2[' + max_no + ']', value: "1", checked: 'checked'}));
+        col2.appendChild(create('input', {type: 'text', name: 'mobile_order_no2[' + max_no + ']', id: 'mobile_order_no2[' + max_no + ']', size: "2"}));
+
+        col = row.insertCell(row.cells.length);
+        col.appendChild(create('input', {type: 'button', name: 'delBtn[' + max_no + ']', id: 'delBtn[' + max_no + ']', value: '削除'}));
+
+        moduleList.add(new Module(max_no));
+        observeEvents(max_no);
+        changeModuleType(max_no);
+        max_no++;
+    }
+    Event.observe($('addModuleBtn'), 'click', addModule);
+
+    // 新規の行追加 (サブコンテンツが0件 もしくは 最終行が入力済みだったら)
+    if (max_no == 1 || moduleList.get(max_no - 1).moduleType()) {
+        addModule();
+    }
+
+    changeLayoutAllCols();
+    Event.observe($('page_template'), 'change', changeLayoutAllCols);
+
+    function create(tag, atts) {
+        var ele = document.createElement(tag);
+        for (var i in atts) {
+            ele[i] = atts[i];
+        }
+        if (arguments.length == 3) {
+            ele.appendChild(document.createTextNode(arguments[2]));
+        }
+        return ele;
+    }
+
+    function observeEvents(no) {
+        var me = this;
+        Event.observe('module_type[' + no + ']', 'change', function() {
+            changeModuleType(no);
+        });
+        Event.observe('contents_type[' + no + ']', 'change', function() {
+            changeContentsType(no);
+        });
+        Event.observe('template[' + no + ']', 'change', function() {
+            refreshLayout();
+        });
+        var helpBtn = $('paramHelpBtn[' + no + ']');
+        if (helpBtn) {
+            Event.observe(helpBtn, 'click', function() {
+                expandParamHelp(no);
+            });
+        }
+        var delBtn = $('delBtn[' + no + ']');
+        if (delBtn) {
+            // メインモジュールには削除ボタンがない
+            Event.observe(delBtn, 'click', function() {
+                moduleList.remove(no);
+                $('modulesTable').deleteRow($('moduleRow[' + no + ']').rowIndex);
+                refreshLayout();
+            });
+        }
+    }
+
+    // モジュールタイプが変わったときにコンテンツとテンプレートの選択肢を入れ替える
+    function changeModuleType(no) {
+        var module = moduleList.get(no);
+        if (module.isEnable()) {
+            setOptions("contents_type" + "[" + no + "]", myPage.modules[module.moduleType()].contents);
+        }
+        else {
+            setOptions("contents_type" + "[" + no + "]", {});
+        }
+        changeContentsType(no);
+    } // changeModuleType()
+
+    // コンテンツタイプが変わったときにテンプレートの選択肢を入れ替える
+    function changeContentsType(no) {
+        var module = moduleList.get(no);
+        if (module.isEnable()) {
+            setOptions("template" + "[" + no + "]", myPage.modules[module.moduleType()].contents[module.contentsType()].tpl);
+        }
+        else {
+            setOptions("template" + "[" + no + "]", {});
+        }
+        paintParamHelp(no);
+        showHideParamHelpBtn(no);
+        refreshLayout();
+    } // changeContentsType()
+
+    function setOptions(ele, obj) {
+        var ele = $(ele);
+        while (ele.options.length > 0) {
+            ele.options[0] = null;
+        }
+        var i = 0;
+        for (var key in obj) {
+            ele.options[i] = new Option(obj[key].name, key);
+            i++;
+        }
+        ele.selectedIndex = 0 ;
+        if (ele.options.length <= 1) {
+            // 選択肢が1件以下のときは表示しない
+            ele.style.display = "none";
+        }
+        else {
+            ele.style.display = "block";
+        }
+    } // setOptions()
+
+    function changeLayoutAllCols() {
+        var elm = $("page_template");
+        var val = elm.options[elm.selectedIndex].value;
+        $("changelayoutAll").innerHTML = layout_tables[val];
+        refreshLayout();
+    }
+
+    function showHideParamHelpBtn(no) {
+        var module = moduleList.get(no);
+        var hasHelp = false;
+        if (module.isEnable()) {
+            if (myPage.modules[module.moduleType()].contents[module.contentsType()].params.length > 0) {
+                hasHelp = true;
+            }
+        }
+        var btn = $('paramHelpBtn[' + no + ']');
+        btn.style.display = hasHelp ? '' : 'none';
+        if (!hasHelp) {
+            expandParamHelp(no, 'none');
+        }
+    }
+
+    /** 2番目の指定があったらその値で開閉する*/
+    function expandParamHelp(no) {
+        var msgBox = $('paramHelp[' + no + ']');
+        var val = msgBox.style.display != 'block' ? 'block' : '';
+        if (arguments.length == 2) {
+            val = arguments[1];
+        }
+        msgBox.style.display = val;
+    }
+
+    /** ヘルプをhtmlに埋め込む */
+    function paintParamHelp(no) {
+        var module = moduleList.get(no);
+        var buf = [];
+        if (module.isEnable()) {
+            var params = myPage.modules[module.moduleType()].contents[module.contentsType()].params;
+            if (params.length > 0) {
+                buf.push('<dl>');
+                for (var i = 0 ; i < params.length ; i++) {
+                    buf.push("<dt>", params[i]['key'], "</dt>");
+                    buf.push("<dd>");
+                    buf.push("<pre>", params[i]['description'], "</pre>");
+                    if (params[i]['default'] != '') {
+                        buf.push("<p>", "<strong>", "初期値:", "</strong>", params[i]['default'], "</p>");
+                    }
+                    if (params[i]['multiple']) {
+                        buf.push("<p>", "<strong>", "複数設定:", "</strong>", "可能", "</p>");
+                    }
+                    buf.push("</dd>");
+                }
+                buf.push('</dl>');
+            }
+        }
+        var msgBox = $('paramHelp[' + no + ']');
+        $('paramHelp[' + no + ']').innerHTML = buf.join('') || "ヘルプはありません。";
+    }
+});
+
+var ModuleList = Class.create();
+ModuleList.prototype = {
+    initialize: function(layout_positions) {
+        this.layout = {};
+        for (var i = 0 ; i < layout_positions.length ; i++) {
+            this.layout[layout_positions[i]] = [];
+        }
+    },
+    move: function(from, to) {
+        if (from == null || to == null) {
+            return;
+        }
+        var mover = this.layout[from.place][from.row];
+        this.layout[from.place].splice(from.row, 1);
+        if ((from.place == to.place) && (to.row > from.row)) {
+            to.row--;
+        }
+        this.layout[to.place].splice(to.row, 0, mover);
+    },
+    add: function(module, place) {
+        place = place || 'sub_module1';
+        var idx = this.layout[place].length;
+        if (arguments.length == 3) {
+            idx = Math.max(0, arguments[2]);
+        }
+        if (idx >= this.layout[place].length) {
+            this.layout[place].push(module);
+        }
+        else {
+            this.layout[place].splice(idx, 0, module);
+        }
+    },
+    remove: function(no) {
+        for (var place in this.layout) {
+            for (var j = 0 ; j < this.layout[place].length ; j++) {
+                if (this.layout[place][j].no == no) {
+                    this.layout[place].splice(j, 1);
+                    return;
+                }
+            }
+        }
+    },
+    get: function(no) {
+        for (var place in this.layout) {
+            for (var j = 0 ; j < this.layout[place].length ; j++) {
+                if (this.layout[place][j].no == no) {
+                    return this.layout[place][j];
+                }
+            }
+        }
+        return null;
+    }
+};
+
+var Module = Class.create();
+Module.prototype = {
+    initialize: function(no) {
+        this.no = no;
+    },
+    name: function(message) {
+        var moduleType = this.moduleType();
+        var contentsType = this.contentsType();
+        var template = this.template();
+        var text = "";
+        if (this.no > 0) {
+            text += "(" + this.no +")<br/>";
+        }
+        text += myPage.modules[moduleType].name + "<br/>";
+        text += myPage.modules[moduleType].contents[contentsType].name + "<br/>";
+        text += myPage.modules[moduleType].contents[contentsType].tpl[template].name + "<br/>";
+        return text;
+    },
+    isEnable: function() {
+        return this.moduleType() != '';
+    },
+    moduleType: function() {
+        var sel = $("module_type" + "[" + this.no + "]");
+        return sel.options[sel.selectedIndex].value;
+    },
+    contentsType: function() {
+        var sel = $("contents_type" + "[" + this.no + "]");
+        return sel.options[sel.selectedIndex].value;
+    },
+    template: function() {
+        var sel = $("template" + "[" + this.no + "]");
+        return sel.options[sel.selectedIndex].value;
+    }
+}
+
+function refreshLayout() {
+    var layout = moduleList.layout;
+    for (var place in layout) {
+        var html = [];
+        html.push('<table onmouseup="layoutmouseup()">');
+        html.push('<tr>');
+        html.push(
+            '<td class="layoutcol" onmouseover="over(event, ',
+            "'" + place + "',",
+            layout[place].length,
+            ')" onmouseout="out(event,',
+            "'" + place + "',",
+            layout[place].length,
+            ')"',
+            '>'
+        );
+        html.push('<table>');
+        for (var j = 0 ; j < layout[place].length ; j++) {
+            if (!layout[place][j].isEnable()) {
+                continue;
+            }
+            html.push('<tr>');
+            html.push(
+                '<td id="b_' + place + '_' + j + '"',
+                'onselectstart="return false" ',
+                'onmouseover="over(event,', "'" + place + "',", j, ')" ',
+                'onmouseout="out(event,', "'" + place + "',", j, ')">'
+            );
+            html.push(
+                '<div ',
+                'onmousedown="move(', "'" + place + "',", j, ')" ',
+                'id="c_' + place + '_' + j + '" ',
+                'class="label">'
+            );
+            html.push(
+                '<div id="l_' + place + '_' + j + '">',
+                layout[place][j].name(),
+                '</div>'
+            );
+            html.push('</div>');
+            html.push('</td>');
+            html.push('</tr>');
+        }
+        html.push('<tr>');
+        html.push(
+            '<td id="b_' + place + '_' + j + '"',
+            'onselectstart="return false" ',
+            'onmouseover="over(event,', "'" + place + "',", j, ')" ',
+            'onmouseout="out(event,', "'" + place + "',", j, ')">'
+        );
+        html.push('<div class="endlabel">&nbsp;</div>');
+        html.push('</td>');
+        html.push('</tr>');
+
+        html.push('</td></tr></table>');
+        if ($("place_" + place)) {
+            $("place_" + place).innerHTML = html.join("");
+        }
+    }
+}
+
+var layout_tables = {};
+{/literal}
+{foreach from=$arrTemplateType key=key item=row}
+layout_tables[{$key}] = '{rcms_includelayout no=$key}';
+{/foreach}
+{literal}
+
+function showElt(id) {
+    var ele = $(id);
+    if (ele) {
+        ele.style.display = "";
+    }
+}
+
+function hideElt(id) {
+    var ele = $(id);
+    if (ele) {
+        ele.style.display = "none";
+    }
+}
+
+function move(place, row) {
+    if (place == 'main_module') {
+        // メインは移動できない
+        return;
+    }
+    $("c_" + place + "_" + row).style.border = CURRENT_BORDER;
+    movingItem = {place: place, row: row};
+    insert_color = "#00c" ;
+}
+
+function over(e, place, row) {
+    var ip = insertpoint(place, row);
+    if (ip >= 0) {
+        $("b_" + place + "_" + ip).style.background = insert_color;
+        targetItem = {place: place, row: ip};
+    }
+    else {
+        targetItem = null;
+    }
+    if (window.event) {
+        window.event.cancelBubble = true;
+    }
+    else if (
+        e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+
+function out(e, place, row) {
+    var ip = insertpoint(place, row);
+    if (ip >= 0) {
+        $("b_" + place + "_" + ip).style.background = BETWEEN_BG;
+    }
+    targetItem = null;
+    if (window.event) {
+        window.event.cancelBubble = true;
+    }
+    else if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+
+function layoutmouseup() {
+    if (movingItem && targetItem) {
+        moduleList.move(movingItem, targetItem);
+        refreshLayout() ;
+    }
+    else {
+        if (movingItem) {
+            $("c_" + movingItem.place + "_" + movingItem.row).style.border = LABEL_BORDER;
+        }
+        if (targetItem) {
+            $("b_" + targetItem.place + "_" + targetItem.row).style.background = BETWEEN_BG;
+        }
+    }
+    targetItem = null;
+    movingItem = null;
+}
+
+function insertpoint(place, row) {
+    var point = -1;
+    if (place == 'main_module') {
+        return point;
+    }
+    if (movingItem != null) {
+        // 移動中
+        if ((place == movingItem.place) && ((row == movingItem.row) || (row == movingItem.row + 1))) {
+            ;
+        }
+        else {
+            point = row;
+        }
+    }
+    return point;
+}
+
+
+function submitExec(f, mode) {
+    var layout = moduleList.layout;
+    for (var place in layout) {
+        for (var j = 0 ; j < layout[place].length ; j++) {
+            $("place[" + layout[place][j].no + "]").value = place;
+            $("weight[" + layout[place][j].no + "]").value = layout[place].length - j;
+        }
+    }
+    f.MODE.value = mode;
+}
+
+function confirmDelete(f) {
+    if (confirm('本当に削除しますか')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+//-->
+{/literal}
+</script>
+
+{*  ----------------------------------------------------------------------------- *}
+{*  ============================= ここから画面表示 ============================== *}
+
+<div class="list_right_bt">
+<h2 class="accesscount">{$module_nm}編集</h2>
+<ul>
+  {if $auth.develop.insert}
+    <li class="add"><a href="/management/develop/page_edit/"><span>ページ追加</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/page_list/">{'/modules/develop'|translate}</a>
+<a href="/management/develop/page_list/">ページ編集</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="tabnavi">
+  <li class="regist_000" id="here"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_setup',this);return false;" id="a_setup"><div>設定</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_layout',this);return false;" id="a_layout"><div>配置</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_css',this);return false;" id="a_css"><div>CSS編集</div></a></li>
+</ul>
+
+<form action="/management/develop/page_edit/" method="post" name="page_data_form" id="page_data_form">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+{if $pageForm.page_sysnm != ""}
+  <input type="hidden" name="page_page_sysnm" value="{$pageForm.page_sysnm}" />
+{/if}
+
+{*  ============================= 設定ブロック ============================== *}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div id="blk_setup" style="position:relative; display:block;">
+<div class="list_main">
+  <p><span class="required">※</span>は必須事項　<span class="hint">携帯用表示順はページ内で小さい順に並びます。</span></p>
+  <input type="hidden" id="contents_id[0]" name="contents_id[0]" value="{$contForm[0].contents_id}" />
+  <input type="hidden" id="weight[0]" name="weight[0]" value="0" />
+  <input type="hidden" id="place[0]" name="place[0]" value="main_module" />
+  <table width ="100%">
+    <tr>
+      <th>ページ名称<span class="required">※</span></th>
+      <td><input id="page_nm" name="page_nm" type="text" value="{$pageForm.page_nm}" /></td>
+      <th>メインモジュールタイプ<span class="required">※</span></th>
+      <td>
+        <select id="module_type[0]" name="module_type[0]">
+          {html_options options=$cont_op selected=$contForm[0].module_type}
+        </select><br>
+        携帯・表示順:
+        <input type="checkbox" id="mobile_flg2[0]" name="mobile_flg2[0]" value="1" {if $contForm[0].mobile_flg}checked="checked"{/if}/>
+        <input id="mobile_order_no2[0]" name="mobile_order_no2[0]" type="text" size="2" value="{$contForm[0].mobile_order_no}"/>
+      </td>
+    </tr>
+    <tr>
+      <th>ページシステム名称<span class="required">※</span></th>
+      <td>
+          <input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm}"/>
+      </td>
+      <th>メインコンテンツタイプ<span class="required">※</span></th>
+      <td>
+        <select id="contents_type[0]" name="contents_type[0]">
+          {html_options options=$arrItitContentsType[0] selected=$contForm[0].contents_type}
+        </select>
+        {if $pageForm.fundamental_flg == 1 && $pageForm.page_sysnm ne 'top'}
+        <br><span class="hint">変更するとページがうまく動かなくなる場合がありますので、なるべく変更しないでください。</span>
+        {/if}
+
+      </td>
+    </tr>
+    <tr>
+      <th>テンプレート<span class="required">※</span></th>
+      <td>
+        <select id="page_template" name="page_template">
+          {html_options options=$arrTemplateType selected=$pageForm.page_template}
+        </select>
+      </td>
+      <th>メインテンプレート<span class="required">※</span></th>
+      <td>
+        <select id="template[0]" name="template[0]">
+          {html_options options=$arrItitTemplate[0] selected=$contForm[0].template}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <th>親ページ<span class="required">※</span></th>
+      <td>
+        <select id="parent_page_sysnm" name="parent_page_sysnm">{html_options options=$arrPage selected=$pageForm.parent_page_sysnm}</select>
+      </td>
+      <th>パラメータ</th>
+      <td>
+        <input type="text" size="40" id="param[0]" name="param[0]" value="{$contForm[0].param|escape}" />
+        <a href="javascript:void(0)" id="paramHelpBtn[0]" class="paramHelpBtn">ヘルプ</a>
+        <div id="paramHelp[0]" class="paramHelp"></div>
+      </td>
+    </tr>
+    <tr>
+      <th></th>
+      <td></td>
+      <th>表示設定</th>
+      <td>
+        <input id="sitemap_flg" name="sitemap_flg" type="checkbox" value="1" {if $pageForm.sitemap_flg}checked{/if}/>サイトマップ
+        <input id="menu_flg" name="menu_flg" type="checkbox" value="1" {if $pageForm.menu_flg}checked{/if}/>メニュー
+        <input id="mobile_flg" name="mobile_flg" type="checkbox" value="1" {if $pageForm.mobile_flg}checked{/if}/>携帯
+      </td>
+    </tr>
+  </table>
+  <table width="100%" id="modulesTable">
+    <tr>
+      <th>No</th>
+      <th>コンテンツ設定</th>
+      <th>削除</th>
+    </tr>
+{section start=1 name="loopname" loop=$contForm}
+  {assign var=i value=$smarty.section.loopname.index}
+    <tr id="moduleRow[{$i}]">
+      <td>
+        {$i}
+        <input type="hidden" id="contents_id[{$i}]" name="contents_id[{$i}]" value="{$contForm[loopname].contents_id}" />
+        <input type="hidden" id="weight[{$i}]" name="weight[{$i}]" value="{$contForm[loopname].weight|escape}" />
+        <input type="hidden" id="place[{$i}]" name="place[{$i}]" value="{$contForm[loopname].place|escape}" />
+      </td>
+      <td width="100%">
+        <table>
+          <tr>
+            <td class="title">コンテンツ:</td>
+            <td width="30%">
+              <select id="module_type[{$i}]" name="module_type[{$i}]">
+                {html_options options=$cont_op selected=$contForm[loopname].module_type}
+              </select>
+            </td>
+            <td width="30%">
+              <select id="contents_type[{$i}]" name="contents_type[{$i}]" style="margin-left:5px;{if count($arrItitContentsType[$i]) <= 1}display:none;{/if}">
+                {html_options options=$arrItitContentsType[$i] selected=$contForm[loopname].contents_type}
+              </select>
+            </td>
+            <td width="30%">
+              <select id="template[{$i}]" name="template[{$i}]" {if count($arrItitTemplate[$i]) <= 1}style="display:none;"{/if}>
+                {html_options options=$arrItitTemplate[$i] selected=$contForm[loopname].template}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="title">パラメータ:</td>
+            <td colspan="3">
+              <input type="text" class="param" id="param[{$i}]" name="param[{$i}]" value="{$contForm[loopname].param|escape}" size="5" />
+              <a href="javascript:void(0)" id="paramHelpBtn[{$i}]" class="paramHelpBtn">ヘルプ</a>
+              <div id="paramHelp[{$i}]" class="paramHelp"></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="title">独自タイトル:</td>
+            <td colspan="3">
+              <input type="text" class="contents_title" id="contents_title[{$i}]" name="contents_title[{$i}]" value="{$contForm[loopname].contents_title|escape}" />
+            </td>
+          </tr>
+          <tr>
+            <td class="title">携帯・表示順:</td>
+            <td colspan="3">
+              <input type="checkbox" id="mobile_flg2[{$i}]" name="mobile_flg2[{$i}]" value="1" {if $contForm[loopname].mobile_flg}checked="checked"{/if}/>
+              <input id="mobile_order_no2[{$i}]" name="mobile_order_no2[{$i}]" type="text" value="{$contForm[loopname].mobile_order_no|escape}" size="2"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <input type="button" id="delBtn[{$i}]" value="削除" />
+      </td>
+    </tr>
+{/section}
+  </table>
+
+  <p style="margin-top: 5px">
+    <input type="button" id="addModuleBtn" value="追加" />
+    <span style="margin-left: 20px" class="hint3"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_layout', $('a_layout'));return false;">コンテンツを設定したら配置を確認</a></span>
+  </p>
+</div><!--//list_main-->
+</div><!--//blk_setup-->
+{*  ============================= //設定ブロック ========================= *}
+
+
+{*  ============================= 配置ブロック =========================== *}
+<div id="blk_layout" style="position:relative; display:none;">
+  <div id="changelayoutAll"></div>
+</div>
+<div class="clear"></div>
+{*  ============================= //配置ブロック ========================= *}
+
+{*  ============================= CSS編集ブロック =========================== *}
+<div id="blk_css" style="position:relative; display:none;">
+<div class="list_main">
+このページに適応したいCSS情報を入力してください。<br />
+<textarea name="user_css" rows="10" cols="60">{$pageForm.user_css}</textarea>
+</div>
+</div>
+<div class="clear"></div>
+{*  ============================= //CSS編集ブロック =========================== *}
+
+{*  ============================= 送信ボタン ============================= *}
+  {buttonbox}
+    {if $auth.develop.update && $pageForm.page_sysnm != ""}
+      <button type="submit" onclick="submitExec(this.form, 'UPDATE')">更新する</button>
+      <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+    {elseif $auth.develop.insert && $pageForm.page_sysnm == ""}
+      <button type="submit" onclick="submitExec(this.form, 'INSERT')">追加する</button>
+    {/if}
+  {/buttonbox}
+{*  ============================= //送信ボタン ============================ *}
+</form>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_setup"; //初期表示ブロック
+var a_obj = $("a_setup"); //カレント表示タブ(初期)
+function tabnaviCtl(nm, anchorObj){
+  if(blk_name != nm){
+    $(blk_name).style.display = "none";
+    blk_name = nm;
+    $(nm).style.display = "block";
+    a_obj.style.backgroundPosition = "center top";
+    a_obj = anchorObj;
+    anchorObj.style.backgroundPosition = "center bottom";
+  }
+}
+{/literal}
+//-->
+</script>
+
+{rcms_include file="management/footer.html"}

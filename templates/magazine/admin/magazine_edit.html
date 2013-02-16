@@ -1,0 +1,223 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{'/modules/magazine/label/magazine_edit'|translate}{* 簡易メルマガ基本設定*}</h2>
+  <ul>
+    {if $magazine_id && $rauth->canInsert("/magazine/item/")}
+      <li class="add"><a href="/management/magazine/magazine_sendmail_edit/magazine_id={$magazine_id}"><span>{'/label/create_mail_btn'|translate}{*メール追加*}</span></a></li>
+    {/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine/label/magazine_list'|translate}</a>
+{'/modules/magazine/label/magazine_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 >> 簡易メルマガ　基本設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{if $data.magazine_name}{$data.magazine_name}{else}<span style="">{'/modules/magazine/label/create_new_mail_magazine'|translate}{*メールマガジン作成*}</span>{/if}</h3>
+
+
+{*rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/magazine/magazine_edit/magazine_id=$magazine_id"*}
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{if $magazine_id}   
+    {*lang_selector meta=$docmeta link="/management/magazine/magazine_edit/magazine_id=$magazine_id"*}
+{/if}
+
+    <form action="/management/magazine/magazine_edit/" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="magazine_id" value="{$magazine_id}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{if $docmeta.is_primary}
+        {if $data.photo_url}<img src="{$data.photo_url}" style="display:block;margin-bottom:5px;" />{/if}
+        {if $data.photo_file != ""}<input type="hidden" name="photo_file" value="{$data.photo_file}" />{/if}
+        {'/label/upload_image'|translate}{*画像アップロード*}<input type="file" name="magazine_photo" /><input name="del_magazine_photo" id="del_magazine_photo" type="checkbox" value="1" /><label for="del_magazine_photo">{'/label/delete_image'|translate}{*画像削除*}</label>
+{/if}
+        <table width="100%" style="margin-top:10px;">
+            <tr>
+                <th style="width:200px">{'/modules/magazine/label/mail_magazine_name'|translate}{*メールマガジン名*}</th>
+                <td><input type="text" name="magazine_name" size="50" value="{$data.magazine_name|escape}" /><span class="required">{'/label/required'|translate}{*必須*}</span></td>
+            </tr>
+            <tr>
+                <th>{'/modules/magazine/label/mail_magazine_info'|translate}{*メールマガジン情報*}</th>
+                <td><textarea name="magazine_info" cols="60" rows="5">{$data.magazine_info|escape}</textarea></td>
+            </tr>
+{if $docmeta.is_primary}
+            <tr>
+                <th>{'/label/mail_address'|translate}{*メールアドレス*}</th>
+                <td>
+                    <input type="text" name="magazine_address" size="50" value="{$data.magazine_address|escape}" /><span class="required">{'/label/required'|translate}{*必須*}</span>
+                    <p class="hint">{'/msg/sender_email'|translate}{*メールの送信元です*}</p>
+                    <input type="checkbox" name="set_error_address" onClick="Element.toggle('error_address');" {if $data.error_address ne ''}checked{/if}>エラーメールを別アドレスに設定する
+                    <div id="error_address" {if $data.error_address eq ''}style="display:none;"{/if}><input type="text" name="error_address" size="50" value="{$data.error_address|escape}" /></div>
+                </td>
+            </tr>
+{/if}
+            <tr>
+                <th>{'/label/sender_name'|translate}{*送信者*}</th>
+                <td>
+                    <input type="text" name="publisher" size="50" value="{$data.publisher|escape}" />
+                    <p class="hint">{'/modules/magazine/msg/displayed_name'|translate}</p>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/signature'|translate}{*署名*}</th>
+                <td><textarea name="signature" cols="60" rows="5">{$data.signature|escape}</textarea></td>
+            </tr>
+{if $docmeta.is_primary}
+            <tr>
+                <th>{'/label/magazine/no_title_number'|translate}{*タイトルへの連番*}</th>
+                <td><input type="checkbox" name="no_title_number_flg" value="1" {if $data.no_title_number_flg}checked{/if}>{'/label/magazine/no_title_number_flg'|translate}{*付与しない*}</td>
+            </tr>
+        <tr>
+          <th width="200">{'/label/magazine/default_destination'|translate}{* デフォルトのあて先 *} <span class="required">※</span></th>
+          <td><div id="desItems"></div>
+    {if $auth.member.select}
+              <input type="button" value="{'/label/add_destination_btn'|translate}" onclick="showDestinationEdit()">{* あて先を追加.. *}
+              <input type="button" value="{'/label/confirm_destination_btn'|translate}" onclick="showDestinationList()">{* あて先を確認 *}
+              <table width="100%" border="0">
+                <tr><th>
+                  <iframe src="" width="100%" height="0" id="destination_list" frameborder="0" style="background: #eee; display: none;"></iframe>
+                </th></tr>
+              </table>
+              <div style="display:none;" id="destinationArea">
+              <select id="destinationList" size="6">{html_options options=$destinationList}</select>
+              <input type="button" value="{'/label/add_btn'|translate}{*追加する*}" onclick="onclickAddButton()">
+              </div>
+    {/if}
+          </td>
+        </tr>
+            <tr>
+                <th>{'/label/status_katakana'|translate}{*ステータス*}</th>
+                <td>{html_radios name="status" options=$magazine_status_options selected=$data.status}<span class="required">{'/label/required'|translate}{*必須*}</span></td>
+            </tr>
+            <tr>
+                <th>{'/label/back_number'|translate}{*バックナンバー*}</th>
+                <td>{html_radios name="bn_flg" options=$arrOpFlg selected=$data.bn_flg}<span class="required">{'/label/required'|translate}{*必須*}</span></td>
+            </tr>
+            <tr>
+                <th>{'/label/tracking'|translate}{*トラッキング*}</th>
+                <td><input type="checkbox" name="tracking_flg" value="1" {if $data.tracking_flg}checked{/if}>{'/label/enable_flg'|translate}{*有効にする*}</td>
+            </tr>
+{/if}
+        </table>
+
+      {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    </form>
+</div>
+</div>
+
+<script type="text/javascript">
+{literal}
+function showDestinationEdit() {
+    if(document.getElementById('destinationArea').style.display == "none") {
+      document.getElementById('destinationArea').style.display = "";
+    } else {
+      document.getElementById('destinationArea').style.display = "none";
+    }
+}
+
+var items = document.getElementById('desItems');
+var select = document.getElementById('destinationList');
+var itemArray = new Object();
+
+function onclickAddButton() {
+    ix = select.selectedIndex;
+    if(ix == -1) {
+        return;
+    }
+
+    addItemId = select.options[ix].value;
+    addItemName = select.options[ix].label;
+
+    if(isDup(addItemId)) {
+        //  既にあて先に指定されています
+        alert("{/literal}{'/modules/magazine/msg/already_appointed'|translate}{literal}");
+        return;
+    }
+    addDes(addItemId, addItemName);
+}
+
+function addDes(addItemId, addItemName) {
+    var str1 = document.createTextNode(addItemName);
+
+    var elm1 = document.createElement("a");
+    elm1.href = "javascript:;";
+    var str2 = document.createTextNode("[{/literal}{'/label/delete'|translate}{literal}]");//削除
+    elm1.appendChild(str2);
+    if (elm1.addEventListener) {
+        elm1.addEventListener('click', function() {delDes(addItemId);}, true);
+    } else {
+        elm1.attachEvent('onclick', function() {delDes(addItemId);});
+    }
+
+    var elm2 = document.createElement("input");
+    elm2.type = "hidden";
+    elm2.name = "destination[" + addItemId + "]" ;
+    elm2.id = "destination[" + addItemId + "]" ;
+    elm2.value = addItemId ;
+
+    addItem = document.createElement("span");
+    addItem.id = "destinationItem_"+addItemId;
+
+    addItem.appendChild(str1);
+    addItem.appendChild(elm1);
+    addItem.appendChild(elm2);
+
+    items.appendChild(addItem);
+    itemArray[addItemId] = addItemId;
+}
+
+function delDes(itemId) {
+    var delItem = document.getElementById('destinationItem_'+itemId);
+    items.removeChild(delItem);
+    itemArray[itemId] = '';
+}
+
+function isDup(itemId) {
+    if(itemArray[addItemId]) {
+        return true;
+    }
+    return false;
+}
+
+function showDestinationList() {
+    var request = '&destination_id=';
+    for(val in itemArray) {
+        if(itemArray[val] != '') {
+            request += itemArray[val]+',';
+        }
+    }
+    {/literal}
+    document.getElementById('destination_list').src = '/direct/magazine/magazine_destination_list/magazine_id={$magazine_id}'+request;
+    document.getElementById('destination_list').style.display = "";
+    {literal}
+}
+
+{/literal}
+    {foreach from=$selectedDestinationList item=destination}
+    {if $destination.id != '' && $destination.name != ''}
+    addDes('{$destination.id}', '{$destination.name}');
+    {/if}
+    {/foreach}
+//-->
+</script>
+
+{rcms_include file="management/footer.html"}

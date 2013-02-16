@@ -1,0 +1,107 @@
+{module name="game_top"}
+<h2 class="module_title"><span>試合情報一覧</span></h2>
+<div class="module_contents">
+{if $using_season}
+  <form action="/leaguebaseball_list/" method="get">
+    {rcms_seasonOptions name=season selected=$season firstOption=true}
+    <input type="submit" value="検索">
+  </form>
+{/if}
+
+{if $game_disp_type eq 'monthly'}
+{* 年の移動ナビ *}
+<ul class="naviYear">
+  <li class="pre"><a href="/{$page_sysnm}/year={$this_year-1}&month=12"><span class="arrow">&lt;&lt;</span>{$this_year-1}年</a></li>
+  <li class="next"><a href="/{$page_sysnm}/year={$this_year+1}&month=1">{$this_year+1}年<span class="arrow">&gt;&gt;</span></a></li>
+</ul>
+<div style="clear:both"></div>
+
+{* 月の移動ナビ *}
+<ul class="naviMonth">
+<li {if $this_month == "1"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=1">1月</a></li>
+<li {if $this_month == "2"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=2">2月</a></li>
+<li {if $this_month == "3"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=3">3月</a></li>
+<li {if $this_month == "4"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=4">4月</a></li>
+<li {if $this_month == "5"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=5">5月</a></li>
+<li {if $this_month == "6"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=6">6月</a></li>
+<li {if $this_month == "7"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=7">7月</a></li>
+<li {if $this_month == "8"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=8">8月</a></li>
+<li {if $this_month == "9"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=9">9月</a></li>
+<li {if $this_month == "10"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=10">10月</a></li>
+<li {if $this_month == "11"} class="current"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=11">11月</a></li>
+<li {if $this_month == "12"} class="current last"{else} class="last"{/if}><a href="/{$page_sysnm}/year={$this_year}&month=12">12月</a></li>
+</ul>
+<div style="clear:both"></div>
+{/if}
+
+  <table class="list">
+    <tr>
+      <th>大会／試合形式</th>
+      <th>日時</th>
+      <th>対戦</th>
+      <th>結果</th>
+      <th>会場</th>
+    </tr>
+{section name=mydata loop=$gameList}
+    <tr class="">
+      <td>
+          {$gameList[mydata].league_type} {$gameList[mydata].league_type2}
+      </td>
+      <td><a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">{$gameList[mydata].ymd_str}</a></td>
+      <td><a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">{$gameList[mydata].home_team_nm}{$gameList[mydata].home_team_grade}&nbsp;vs&nbsp;{$gameList[mydata].away_team_nm}{$gameList[mydata].away_team_grade}</a></td>
+      <td>
+<a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+{if $gameList[mydata].league_status eq '2' || $gameList[mydata].league_status eq '3'}
+  {if $gameList[mydata].vs_result_home eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_home eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_home eq 'even'}
+△
+  {/if}
+{$gameList[mydata].home_team_total}
+-
+{$gameList[mydata].away_team_total}
+  {if $gameList[mydata].vs_result_away eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_away eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_away eq 'even'}
+△
+  {/if}
+{elseif $gameList[mydata].league_status eq '4'}
+（雨天中止）
+{/if}
+
+</a>
+      </td>
+      <td>          	
+        {if $gameList[mydata].place_id != "" && $gameList[mydata].place_id != -1}
+          <a href="/location_detail/id={$gameList[mydata].place_id}">{$gameList[mydata].place}</a>
+        {else}
+          {$gameList[mydata].place}
+        {/if}
+      </td>
+    </tr>
+{/section}
+  </table>
+{if !$using_season}
+<div class="relation_link">
+{$current_page}/{$all_page}ページを表示(合計:{$all_cnt}件)
+[
+{if $game_pos > 0}
+<a href="/leaguebaseball_list/?game_pos={$current_page-1}">前のページ</a>
+{else}
+前のページ
+{/if}
+{if $game_pre_pos != ''}
+<a href="/leaguebaseball_list/?game_pos={$current_page+1}">次のページ</a>
+{else}
+次のページ
+{/if}
+]
+</div>
+{/if}
+  ※試合の予定が決まり次第、順次追加します。
+</div>
+{/module}

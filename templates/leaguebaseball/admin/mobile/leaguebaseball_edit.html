@@ -1,0 +1,148 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>>>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}一覧</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$module_nm}編集</h2>
+  {if $auth.$mt.insert}
+  >><a href="/management/{$mt}/{$ct}/">試合追加</a>
+  {/if}
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+  <form name="game_edit" id="game_edit" action="/management/{$mt}/{$ct}/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="league_id" value="{$league_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="self_mem" value="{$self_mem}" />
+    <input type="hidden" name="opp_mem" value="{$opp_mem}" />
+    <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+
+▼ｼｰｽﾞﾝ<span style="color:red;">※</span><br/>
+<select name="season">{rcms_seasonOptions selected=$data.season}</select><br/>
+▼日付<span style="color:red;">※</span><br/>
+<input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" {istyle type="n"} /><br/>
+▼試合開始時間<br/>
+<input type="text" name="ko_time" value="{$data.ko_time|escape}" /><br/>
+▼試合会場<span style="color:red;">※</span><br/>
+<input type="text" name="place" value="{$data.place|escape}" /><br/>
+▼試合形式<span style="color:red;">※</span><br/>
+<input type="text" name="league_type" value="{$data.league_type|escape}" /><br/>
+<input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked="checked"{/if} />公式戦<br/>
+▼ﾄｰﾅﾒﾝﾄ<br/>
+<input type="text" name="league_type2" value="{$data.league_type2|escape}" /><br/>
+▼対戦相手<span style="color:red;">※</span><br/>
+<select name="team">
+<option value="">------</option>
+{html_options options=$arrTeam_mobile selected=$data.team}
+</select>
+<input type="text" name="team_grade" value="{$data.team_grade|escape}" size="4" /><input type="radio" name="home_team" value="0" {if $data.home_team eq '0'}checked="checked"{/if}>ホーム<br />
+　vs<br />
+<select name="opponent">
+<option value="">------</option>
+{html_options options=$arrTeam_mobile selected=$data.opponent}
+</select>
+<input type="text" name="opponent_grade" value="{$data.opponent_grade|escape}" size="4" /><input type="radio" name="home_team" value="1" {if $data.home_team eq '1'}checked="checked"{/if}>ホーム<br/>
+※2つめの入力欄にはA､B､OB等のﾁｰﾑの種類を入力してください。<br/>
+▼試合結果（得点）<br/>
+#先攻<br/>
+1回:<input type="text" name="first1" value="{$data.first1}" size="3" {istyle type="n"} /><br/>
+2回:<input type="text" name="first2" value="{$data.first2}" size="3" {istyle type="n"} /><br/>
+3回:<input type="text" name="first3" value="{$data.first3}" size="3" {istyle type="n"} /><br/>
+4回:<input type="text" name="first4" value="{$data.first4}" size="3" {istyle type="n"} /><br/>
+5回:<input type="text" name="first5" value="{$data.first5}" size="3" {istyle type="n"} /><br/>
+6回:<input type="text" name="first6" value="{$data.first6}" size="3" {istyle type="n"} /><br/>
+7回:<input type="text" name="first7" value="{$data.first7}" size="3" {istyle type="n"} /><br/>
+8回:<input type="text" name="first8" value="{$data.first8}" size="3" {istyle type="n"} /><br/>
+9回:<input type="text" name="first9" value="{$data.first9}" size="3" {istyle type="n"} /><br/>
+{if $data.first10!="" || $data.first11!="" || $data.first12!="" || $data.first13!="" || $data.first14!="" || $data.first15!="" || $data.first16!="" || $data.first17!="" || $data.first18!=""}
+10回:<input type="text" name="first10" value="{$data.first10}" size="3" {istyle type="n"} /><br/>
+11回:<input type="text" name="first11" value="{$data.first11}" size="3" {istyle type="n"} /><br/>
+12回:<input type="text" name="first12" value="{$data.first12}" size="3" {istyle type="n"} /><br/>
+13回:<input type="text" name="first13" value="{$data.first13}" size="3" {istyle type="n"} /><br/>
+14回:<input type="text" name="first14" value="{$data.first14}" size="3" {istyle type="n"} /><br/>
+15回:<input type="text" name="first15" value="{$data.first15}" size="3" {istyle type="n"} /><br/>
+16回:<input type="text" name="first16" value="{$data.first16}" size="3" {istyle type="n"} /><br/>
+17回:<input type="text" name="first17" value="{$data.first17}" size="3" {istyle type="n"} /><br/>
+18回:<input type="text" name="first18" value="{$data.first18}" size="3" {istyle type="n"} /><br/>
+{/if}
+計:<input type="text" name="first_Total" value="{$data.first_Total}" size="3" {istyle type="n"} /><br/>
+安:<input type="text" name="first_hit" value="{$data.first_hit}" size="3" {istyle type="n"} /><br/>
+失:<input type="text" name="first_error" value="{$data.first_error}" size="3" {istyle type="n"} /><br/>
+<br/>
+#後攻<br/>
+1回:<input type="text" name="second1" value="{$data.second1}" size="3" {istyle type="n"} /><br/>
+2回:<input type="text" name="second2" value="{$data.second2}" size="3" {istyle type="n"} /><br/>
+3回:<input type="text" name="second3" value="{$data.second3}" size="3" {istyle type="n"} /><br/>
+4回:<input type="text" name="second4" value="{$data.second4}" size="3" {istyle type="n"} /><br/>
+5回:<input type="text" name="second5" value="{$data.second5}" size="3" {istyle type="n"} /><br/>
+6回:<input type="text" name="second6" value="{$data.second6}" size="3" {istyle type="n"} /><br/>
+7回:<input type="text" name="second7" value="{$data.second7}" size="3" {istyle type="n"} /><br/>
+8回:<input type="text" name="second8" value="{$data.second8}" size="3" {istyle type="n"} /><br/>
+9回:<input type="text" name="second9" value="{$data.second9}" size="3" {istyle type="n"} /><br/>
+{if $data.second10!="" || $data.second11!="" || $data.second12!="" || $data.second13!="" || $data.second14!="" || $data.second15!="" || $data.second16!="" || $data.second17!="" || $data.second18!=""}
+10回:<input type="text" name="second10" value="{$data.second10}" size="3" {istyle type="n"} /><br/>
+11回:<input type="text" name="second11" value="{$data.second11}" size="3" {istyle type="n"} /><br/>
+12回:<input type="text" name="second12" value="{$data.second12}" size="3" {istyle type="n"} /><br/>
+13回:<input type="text" name="second13" value="{$data.second13}" size="3" {istyle type="n"} /><br/>
+14回:<input type="text" name="second14" value="{$data.second14}" size="3" {istyle type="n"} /><br/>
+15回:<input type="text" name="second15" value="{$data.second15}" size="3" {istyle type="n"} /><br/>
+16回:<input type="text" name="second16" value="{$data.second16}" size="3" {istyle type="n"} /><br/>
+17回:<input type="text" name="second17" value="{$data.second17}" size="3" {istyle type="n"} /><br/>
+18回:<input type="text" name="second18" value="{$data.second18}" size="3" {istyle type="n"} /><br/>
+{/if}
+計:<input type="text" name="second_Total" value="{$data.second_Total}" size="3" {istyle type="n"} /><br/>
+安:<input type="text" name="second_hit" value="{$data.second_hit}" size="3" {istyle type="n"} /><br/>
+失:<input type="text" name="second_error" value="{$data.second_error}" size="3" {istyle type="n"} /><br/>
+<br/>
+▼試合結果（個人成績）<br/>
+勝利投手:<input type="text" name="win_pitcher" value="{$data.win_pitcher|escape}" /><br/>
+敗戦投手:<input type="text" name="lose_pitcher" value="{$data.lose_pitcher|escape}" /><br/>
+セーブ:<input type="text" name="save" value="{$data.save|escape}" /><br/>
+先攻バッテリー:<input type="text" name="self_pitcher" value="{$data.self_pitcher|escape}" />-<input type="text" name="self_catcher" value="{$data.self_catcher|escape}" /><br/>
+後攻バッテリー:<input type="text" name="opp_pitcher" value="{$data.opp_pitcher|escape}" />-<input type="text" name="opp_catcher" value="{$data.opp_catcher|escape}" /><br/>
+本塁打(先攻):<input type="text" name="self_homerun" value="{$data.self_homerun|escape}" /><br/>
+本塁打(後攻):<input type="text" name="opp_homerun" value="{$data.opp_homerun|escape}" /><br/>
+三塁打(先攻):<input type="text" name="self_three_base" value="{$data.self_three_base|escape}" /><br/>
+三塁打(後攻):<input type="text" name="opp_three_base" value="{$data.opp_three_base|escape}" /><br/>
+二塁打(先攻):<input type="text" name="self_two_base" value="{$data.self_two_base|escape}" /><br/>
+二塁打(後攻):<input type="text" name="opp_two_base" value="{$data.opp_two_base|escape}" /><br/>
+<br/>
+▼主審<br/>
+<input type="text" name="umpire" value="{$data.umpire|escape}" /><br/>
+▼一塁塁審<br/>
+<input type="text" name="umpire_1" value="{$data.umpire_1|escape}" /><br/>
+▼二塁塁審<br/>
+<input type="text" name="umpire_2" value="{$data.umpire_2|escape}" /><br/>
+▼三塁塁審<br/>
+<input type="text" name="umpire_3" value="{$data.umpire_3|escape}" /><br/>
+▼レフト線審<br/>
+<input type="text" name="umpire_l" value="{$data.umpire_l|escape}" /><br/>
+▼ライト線審<br/>
+<input type="text" name="umpire_r" value="{$data.umpire_r|escape}" /><br/>
+▼コメント<br/>
+<textarea name="league_comment">{$data.league_comment|escape}</textarea><br/>
+▼ステータス<span style="color:red;">※</span><br/>
+{html_radios name="league_status" options=$arrGameStatus selected=$data.league_status}<br/>
+<br/>
+
+      {rcms_include file="management/mobile/open_date_box.html" id=$league_id data=$data}
+
+      {if $auth.$mt.update}
+        <input type="submit" value="更新する" /><br />
+      {/if}
+  </form>
+<br/>
+      {if $auth.$mt.delete && $league_id != ''}
+        <form  action="/management/common/mobile_delete_yesno/" method="POST">
+        <input type="hidden" name="delete_action"     value="/management/{$mt}/{$ct}/league_id={$league_id}&MODE=DELETE&DG_CODE={$DG_CODE}&{$smarty.const.SID}" />
+        <input type="hidden" name="not_delete_action" value="/management/{$mt}/{$ct}/league_id={$league_id}&{$smarty.const.SID}" />
+        <input type="hidden" name="module_nm"         value="{$module_nm}" />
+        <input type="submit" value="削除する" />
+        </form>
+      {/if}
+{rcms_include file="management/mobile/footer.html"}

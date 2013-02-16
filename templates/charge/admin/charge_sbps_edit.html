@@ -1,0 +1,167 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+</script>
+{/literal}
+
+
+<div class="list_right_bt">
+<h2>Softbank-Payment課金</h2>
+<ul>
+  {if $auth.charge.insert}
+  <li class="add"><a href="/management/charge/charge_sbps_edit/"><span>追加</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_sbps_list/">Softbank-Payment課金一覧</a>
+<a href="/management/charge/charge_sbps_edit/">Softbank-Payment課金編集</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="charge/admin/minitabs.html" page_type="sbps"}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+
+
+  <form action="/management/charge/charge_sbps_edit/" method="post" name="charge_edit" id="charge_edit">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    {if $formData.charge_sbps_id != ""}
+      <input type="hidden" name="charge_sbps_id" value="{$formData.charge_sbps_id}" />
+    {/if}
+
+    <table width="100%">
+      <tr>
+        <th>課金方法</th>
+        <td>
+          SBPS
+        </td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>
+          {if $formData.charge_sbps_id != ""}{$formData.charge_sbps_id}{else}新規作成{/if}
+        </td>
+      </tr>
+      <tr>
+        <th>名前</th>
+        <td>
+          <input size="80" name="name" type="text" value="{$formData.name|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>期間(月)</th>
+        <td>
+          <input size="5" name="term" type="text" value="{$formData.term|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>マーチャントID</th>
+        <td>
+          <input size="30" name="merchant_id" type="text" value="{$formData.merchant_id|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>サービスID</th>
+        <td>
+          <input size="30" name="service_id" type="text" value="{$formData.service_id|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>SPS払出ハッシュキー</th>
+        <td>
+          <input size="30" name="key_for_checksum" type="text" value="{$formData.key_for_checksum|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>3DES 暗号化キー</th>
+        <td>
+          <input size="30" name="encrypted_key" type="text" value="{$formData.encrypted_key|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>3DES 初期化キー</th>
+        <td>
+          <input size="30" name="encrypted_key2" type="text" value="{$formData.encrypted_key2|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Basic認証ID</th>
+        <td>
+          <input size="30" name="basic_id" type="text" value="{$formData.basic_id|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Basic認証PWD</th>
+        <td>
+          <input size="30" name="basic_pwd" type="text" value="{$formData.basic_pwd|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>決済方法</th>
+        <td>
+          <input size="30" name="pay_method" type="text" value="{$formData.pay_method|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>商品ID</th>
+        <td>
+          <input size="30" name="item_id" type="text" value="{$formData.item_id|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>商品名</th>
+        <td>
+          <input size="30" name="item_name" type="text" value="{$formData.item_name|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>料金</th>
+        <td>
+          <input size="30" name="amount" type="text" value="{$formData.amount|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>税</th>
+        <td>
+          <input size="30" name="tax" type="text" value="{$formData.tax|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>メモ</th>
+        <td>
+          <textarea name="memo" rows="5" cols="80">{$formData.memo}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <th>所属グループ</th>
+        <td>
+          <ul>
+          {foreach from=$all_group_list item=item key=key}
+            <li>
+              <input type="checkbox" value="{$key}" name="group_id[]" id="group_id_{$key}" {if $key|in_array:$selected_group_list}checked="checked"{/if} />
+              <label for="group_id_{$key}">{$item|escape}</label>
+            </li>
+          {/foreach}
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

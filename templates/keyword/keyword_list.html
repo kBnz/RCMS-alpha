@@ -1,0 +1,34 @@
+{module name="keyword_list"}
+<h2 class="module_title"><span>{if $resultSummary}{'/modules/keyword/label/search_keyword'|translate}{*キーワード検索*}{else}{'/modules/keyword/label/keyword_list'|translate}{*キーワード一覧*}{/if}</span></h2>
+<div class="module_contents">
+{if $resultSummary}{* 検索結果 *}
+    {if $keyword_list}
+        <span style="font-size:80%;float:right;">
+        {if $keyword_s_word}「<span style="font-weight:bold;">{$keyword_s_word}</span>」{/if}
+        {'/label/hit_items_and_display_a_from_b'|translate:$resultSummary.totalCnt:$resultSummary.start:$resultSummary.resultCnt}
+        {*を検索　{$resultSummary.totalCnt}件該当[{$resultSummary.start}-{$resultSummary.resultCnt}件表示]*}
+        </span><br />
+        {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+        {foreach from=$keyword_list item=row name=keyword_list}
+        <div class="searchItem">
+          <p class="title"><a href="/keyword_detail/id={$row.keyword_id}">{$row.keyword|strip_tags:false|mbtruncate:100}</a>[{$row.japanese_syllabary|strip_tags:false|mbtruncate:100}]</p>
+          <p class="digest">{$row.digest.description|strip_tags:false|mbtruncate:100}</p>
+        </div>
+        {/foreach}
+        <p class="page_links">{$resultSummary.pageLink}</p>
+    {else}
+        <br />
+        <p>{'/label/not_found'|translate}{*見つかりませんでした。*}</p>
+    {/if}
+{else}
+    {if $keyword_list|@count > 0}
+        <ul class="keyword_list">
+        {foreach from=$keyword_list item=row}
+        <li><a href="/keyword_detail/id={$row.keyword_id}">{$row.keyword|strip_tags:false|mbtruncate:100}</a> [<span>{$row.japanese_syllabary|strip_tags:false|mbtruncate:100}</span>]</li>
+        {/foreach}
+        </ul>
+    {/if}
+    {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+{/if}
+</div>
+{/module}

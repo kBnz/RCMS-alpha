@@ -1,0 +1,5 @@
+<ul class="minitabs">
+  <li><a href="/management/fileserver/fileserver_list/"{if $page_type eq 'fileserver_list'} class="active"{/if}>{$module_nm}</a></li>
+  <li><a href="/management/fileserver/fileserver_download_history/"{if $page_type eq 'fileserver_download_history'} class="active"{/if}>{'/modules/fileserver/label/download_history'|translate}</a></li>
+  <li><a href="/management/fileserver/fileserver_csv_download/{if $s_file_id}?s_file_id={$s_file_id}{/if}"{if $page_type eq 'fileserver_csv_download'} class="active"{/if}>{'/modules/fileserver/label/csv_download'|translate}</a></li>
+</ul>

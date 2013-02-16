@@ -1,0 +1,33 @@
+{module name="menu_mypage_blog_list" if=$list}
+
+<h2 class="module_title"><span>マイページ リンク</span></h2>
+<div class="module_contents">
+
+<ul class="mypage_content_list">
+{foreach from=$list item=header}
+  <li>
+    <a href="{$header.link}">{$header.title}</a>
+    <ul class="items">
+      {foreach from=$header.items item=row}
+        <li>
+          <a href="{$row.link}">{$row.title}</a>
+          <ul class="info">
+            <li>{$row.post_ymdhi|pg_dateformat}</li>
+            <li><a href="{$row.edit_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/label/edit'|translate}</a></li>
+            <li><a href="{$row.comment_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/label/comments'|translate}({$row.comment_count})</a></li>
+            <li><a href="{$row.trackback_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/label/trackback'|translate}({$row.trackback_count})</a></li>
+          </ul>
+        </li>
+      {/foreach}
+      <li>
+    </ul>
+    <ul class="info">
+      <li><a href="{$header.item_list_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/modules/menu/label/more'|translate}</a></li>
+      <li><a href="{$header.item_edit_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/label/add_new'|translate}</a></li>
+    </ul>
+  </li>
+{/foreach}
+</ul>
+
+</div>
+{/module}

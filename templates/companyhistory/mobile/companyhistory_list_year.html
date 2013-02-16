@@ -1,0 +1,29 @@
+<h2>{'/modules/companyhistory/label/company_history'|translate}</h2>{* 会社沿革 *}
+{foreach from=$arrSeason item=row name=season}
+  {if $row == $season}
+    {$row}
+  {else}
+    <a href="?season={$row}">{$row}</a>
+  {/if}
+  {if not $smarty.foreach.season.last}
+  |
+  {/if}
+{/foreach}
+<br/>
+<br/>
+
+{foreach from=$companyhistoryList item=row}
+▼
+{if $row.disp_flg == 0}
+  {$row.ymd|pg_dateformat:"%Y/%m/%d"}
+{elseif $row.disp_flg == 1}
+  {$row.ymd|pg_dateformat:"%Y/%m"}
+{else}
+  {$row.companyhistory_date_text}
+{/if}
+<br/>
+{$row.contents|nl2br}
+<br/>
+<br/>
+{/foreach}
+<hr/>

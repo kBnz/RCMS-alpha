@@ -1,0 +1,72 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">{'/modules/reserve'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">モジュール一覧</a>
+コンテンツ一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">【{$header.module_type_nm}】</h3>
+<ul class="minitabs">
+  <li><a href="/management/reserve/reserve_edit/reserve_header_id={$header.reserve_header_id}">基本設定</a></li>
+  <li><a href="/management/reserve/reserve_list/reserve_header_id={$header.reserve_header_id}" class="active">コンテンツ一覧</a></li>
+</ul>
+
+<div class="list_main">
+
+{if $search}
+<!--検索部分-->
+<form name="reserve_list_form" method="POST" action="/management/reserve/reserve_list/reserve_header_id={$header.reserve_header_id}">
+
+<div class="search_box">
+{foreach from = $search item=item key=column_nm}
+  {if $item.search == "true"}
+    <span>{$item.name}:
+    <input type="text" name="{$column_nm}" value="{$fieldData.$column_nm}"/>
+    {if $item.type == "date"}{*入力ヒント*}
+      <span class="hint2">(例 2006-05-01)</span>
+    {elseif $item.type == "time"}
+      <span class="hint2">(例 08:10)</span>
+    {/if}
+    </span>
+  {/if}
+{/foreach}
+
+<input type="submit" name="search" value="検索する" />
+</div>
+{/if}
+
+<!-- 一覧表示部分 -->
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th style="width:80px">予約件数</th>
+      <th>題名</th>
+    </tr>
+  {foreach item=row from=$reserve_list name=reserve_list_nm}
+    {if $smarty.foreach.reserve_list_nm.first}
+      <tr>
+        <td style="text-align:right"><a href="/management/reserve/reserve_write_list/reserve_header_id={$header.reserve_header_id}">{$reserve_total_cnt}件</a></td>
+        <td>(すべて)</td>
+      </tr>
+    {/if}
+      <tr>
+        <td style="text-align:right"><a href="/management/reserve/reserve_write_list/reserve_header_id={$header.reserve_header_id}&module_id={$row.module_id}">{$row.reserve_cnt}件</a></td>
+        <td>{$row.reserve_list_title}</td>
+      </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

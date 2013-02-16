@@ -1,0 +1,212 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<link href="/css/management/selector.css" rel="stylesheet" type="text/css" media="screen,print">
+<script language="javascript" type="text/javascript" src="/js/pager.js"></script>
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_member_edit'|translate}</h2>{* ブログメンバー設定 *}
+<ul>
+<li class="normal"><a href="/management/blog/blog_owner_edit/blog_id={$header.blog_id}"><span>{'/modules/blog/label/change_owner'|translate}{* オーナー変更 *}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+<a href="/management/blog/blog_edit/blog_id={$header.blog_id}">{'/modules/blog/label/blog_settings'|translate}</a>
+{'/modules/blog/label/blog_member_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> ブログ設定 >> ブログメンバー設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+  <form name="blog_member_edit" id="blog_member_edit" action="/management/blog/blog_member_edit/" method="POST">
+    <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+    <input type="hidden" name="MODE" value="" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <table width="100%" id="selector" class="not_list_main blog_memberSearch" style="background-color:#EEEEEE; border:solid #D5D5D5 1px;">
+      <tr>
+        <td colspan="3">
+          {'/label/group'|translate}{* グループ *}：<select name="s_group_id">{html_options options=$searchGroup selected=$s_group_id}</select>
+          {'/label/member_id'|translate}{* メンバーID *}：<input type="text" name="s_member_id" value="{$s_member_id}"/>
+          {'/label/name'|translate}{* 名前 *}：<input type="text" name="s_name" value="{$s_name}"/>
+          &nbsp;&nbsp;<input type="submit" value="{'/label/search'|translate}" onclick="document.blog_member_edit.MODE.value='SEARCH';" />{* 検索 *}
+        </td>
+      </tr>
+    </table>
+    <table width="100%" id="selector" class="not_list_main" >
+      <tr>
+        <td valign="top" width="49%" class="member_list">
+
+{if $alternate_member|@count <= $alternate_max}
+  {assign var=totalcnt1 value=$alternate_member|@count}
+{else}
+  {assign var=totalcnt1 value=$alternate_max}
+{/if}
+{assign var=totalcnt2 value=$member_list|@count}
+
+<!-- ブログメンバー補充リスト -->
+          <h3>{'/modules/blog/label/member_list'|translate}{* メンバー一覧 *}</h3>
+          <p id="nav_info1"></p>
+          <div>
+            <input id="page_nav_first1" type="button" onclick="bm_al.first();" value="{'/label/first'|translate}" />{* 最初へ *}
+            <input id="page_nav_prev1" type="button" onclick="bm_al.prev();" value="{'/label/prev'|translate}" />{* 前へ *}
+            <input id="page_nav_next1" type="button" onclick="bm_al.next();" value="{'/label/next'|translate}" />{* 次へ *}
+            <input id="page_nav_last1" type="button" onclick="bm_al.last();" value="{'/label/last'|translate}" />{* 最後へ *}
+          </div>
+
+          {if $alternate_member|@count > $alternate_max}
+            <p style="color:red">{'/modules/blog/msg/too_many_data_cant_display_all'|translate:$alternate_max}</p>
+            {* ○○件以上データがあります。他のメンバーを表示したい場合は絞り込みを行ってください。 *}
+          {/if}
+          <table id="bm_al" width="100%">
+            <tr><th>{'/label/member_id'|translate}{* メンバーID *}</th><th>{'/label/name'|translate}{* 名前 *}</th><th>{'/label/add'|translate}{* 追加 *}</th></tr>
+
+          {section loop=$alternate_member name=bm_al max=$alternate_max}
+<tr id="bm_al{$alternate_member[bm_al].member_id}" style="display:none">
+<td>{$alternate_member[bm_al].member_id}</td><td>{$alternate_member[bm_al].name}</td>
+
+<td><input type="button" onclick="bm.addItem({$alternate_member[bm_al].member_id}, new Array('{$alternate_member[bm_al].member_id}','{$alternate_member[bm_al].name}'), '{'/label/cancel_btn'|translate}')" value="{'/label/add_btn'|translate}"/></td>{* 追加する *}
+</tr>
+              {if $smarty.section.bm_al.last}
+              {/if}
+          {/section}
+
+          </table>
+<!-- //ブログメンバー補充リスト -->
+
+        </td>
+        <td valign="top" width="2%"></td>
+        <td valign="top" width="49%">
+
+<!-- ブログメンバー既存or編集中 -->
+          <h3>{'/modules/blog/label/member_can_post_entries'|translate}{* ブログ編集参加中メンバー *}</h3>
+          <p id="nav_info2"></p>
+          <p>
+            <input id="page_nav_first2" type="button" onclick="bm_sl.first();" value="{'/label/first'|translate}" />{* 最初へ *}
+            <input id="page_nav_prev2" type="button" onclick="bm_sl.prev();" value="{'/label/prev'|translate}" />{* 前へ *}
+            <input id="page_nav_next2" type="button" onclick="bm_sl.next();" value="{'/label/next'|translate}" />{* 次へ *}
+            <input id="page_nav_last2" type="button" onclick="bm_sl.last();" value="{'/label/last'|translate}" />{* 最後へ *}
+          </p>
+          <table id="bm_sl" width="100%">
+            <tr><th>{'/label/member_id'|translate}{* メンバーID *}</th><th>{'/label/name'|translate}{* 名前 *}</th><th>{'/label/role'|translate}</th>{* 役割 *}</tr>
+
+          {section loop=$member_list name=bm_sl}
+<tr id="bm_sl{$member_list[bm_sl].member_id}" style="display:none">
+<input id="bm_sl_id{$member_list[bm_sl].member_id}" type="hidden" name="bm_sl_selected_id[]" value="{$member_list[bm_sl].member_id}" />
+<input id="bm_sl_sts{$member_list[bm_sl].member_id}" type="hidden" name="bm_sl_sts[{$member_list[bm_sl].member_id}]"; value="{$member_list[bm_sl].status}" />
+{if $member_list[bm_sl].status == "no_auth"}
+<td colspan="2">{'/label/no_view_authority'|translate}{*権限なし*}</td>
+{else}
+<td>{$member_list[bm_sl].member_id}</td>
+<td>{$member_list[bm_sl].name}</td>
+{/if}
+<td>
+  {if $member_list[bm_sl].role == "owner"}
+    {'/modules/blog/label/blog_owner'|translate}{* ブログオーナー *}
+  {else}
+    {if $member_list[bm_sl].status == "no_auth"}
+         {'/modules/blog/label/blog_writer'|translate}{* ブログ記者 *}
+    {elseif $member_list[bm_sl].status == "init"}
+        <input id="bm_sl_del{$member_list[bm_sl].member_id}" type="button" onclick="bm.delItem({$member_list[bm_sl].member_id});" value="{'/modules/blog/label/blog_writer'|translate}"/>{* ブログ記者 *}
+        <input id="bm_sl_cdel{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.cancelDelItem({$member_list[bm_sl].member_id});" value="{'/label/delete_btn'|translate}" />{* 削除する *}
+    {elseif $member_list[bm_sl].status == 'del'}
+        <input id="bm_sl_del{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.delItem({$member_list[bm_sl].member_id});" value="{'/modules/blog/label/blog_writer'|translate}"/>{* ブログ記者 *}
+        <input id="bm_sl_cdel{$member_list[bm_sl].member_id}" type="button" onclick="bm.cancelDelItem({$member_list[bm_sl].member_id});" value="{'/label/delete_btn'|translate}" />{* 削除する *}
+    {else}
+        <input type="button" onclick="bm.cancelAddItem({$member_list[bm_sl].member_id});" value="{'/label/cancel_btn'|translate}"/>{* キャンセルする *}
+    {/if}
+  {/if}
+</td>
+</tr>
+          {/section}
+
+          </table>
+
+          <input type="submit" value="{'/label/update_btn'|translate}" onclick="document.blog_member_edit.MODE.value='UPDATE';" />{* 更新する *}
+          <input type="submit" value="{'/label/cancel_btn'|translate}" onclick="document.blog_member_edit.MODE.value='';" />{* キャンセルする *}
+
+<!-- //ブログメンバー既存or編集中 -->
+
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+</div>
+
+<script type="text/javascript">
+
+// ===== Pager & Selector =====
+// インスタンス生成
+
+var bm_al = new Pager("bm_al", {$totalcnt1}, 15, 2);
+var bm_sl = new Pager("bm_sl", {$totalcnt2}, 15, 2);
+var bm_initList = new Array({foreach from=$member_list item=item name=bm_initList}"{$item.member_id}"{if !$smarty.foreach.bm_initList.last},{/if}{/foreach});
+var bm = new ItemSelector(bm_al, bm_sl, "bm", bm_initList);
+
+var member_unit = "{'/label/member_unit'|translate}";{* 人 *}
+var page_unit = "{'/label/page_unit'|translate}";{* ページ *}
+
+{literal}
+
+bm_al.speed = 0;
+bm_sl.speed = 0;
+
+document.getElementById("page_nav_first1").disabled = true;
+document.getElementById("page_nav_prev1").disabled = true;
+document.getElementById("page_nav_next1").disabled = true;
+document.getElementById("page_nav_last1").disabled = true;
+document.getElementById("page_nav_first2").disabled = true;
+document.getElementById("page_nav_prev2").disabled = true;
+document.getElementById("page_nav_next2").disabled = true;
+document.getElementById("page_nav_last2").disabled = true;
+
+bm_al.onChangePage = function() {
+    //ボタンのonoffとか操作する。
+    var cu = this.getCurrentPageNo();
+    var fi = document.getElementById("page_nav_first1");
+    var pr = document.getElementById("page_nav_prev1");
+    var ne = document.getElementById("page_nav_next1");
+    var la = document.getElementById("page_nav_last1");
+    var nv = document.getElementById("nav_info1");
+    fi.disabled = (cu == this.getFirstPageNo());
+    pr.disabled = (cu == this.getFirstPageNo());
+    ne.disabled = (cu == this.getLastPageNo());
+    la.disabled = (cu == this.getLastPageNo());
+    nv.innerHTML = this.getRowCount() + member_unit + "  " + cu + "/" + this.getLastPageNo() + page_unit ;
+
+}
+bm_sl.onChangePage = function() {
+    //ボタンのonoffとか操作する。
+    var cu = this.getCurrentPageNo();
+    var fi = document.getElementById("page_nav_first2");
+    var pr = document.getElementById("page_nav_prev2");
+    var ne = document.getElementById("page_nav_next2");
+    var la = document.getElementById("page_nav_last2");
+    var nv = document.getElementById("nav_info2");
+    fi.disabled = (cu == this.getFirstPageNo());
+    pr.disabled = (cu == this.getFirstPageNo());
+    ne.disabled = (cu >= this.getLastPageNo());
+    la.disabled = (cu >= this.getLastPageNo());
+    nv.innerHTML = this.getRowCount() + member_unit + "  " + cu + "/" + this.getLastPageNo() + page_unit ;
+}
+bm_al.initView(1);
+bm_sl.initView(1);
+
+
+</script>
+
+{/literal}
+
+{rcms_include file="management/footer.html"}

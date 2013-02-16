@@ -1,0 +1,92 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/layout/layout_list/">{'/modules/layout'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】デザイン >> レイアウト *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  <form method="POST" action="/management/layout/layout_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+      <table width="100%">
+        <tr>
+          <th nowrap rowspan="2" align="center">{'/label/template_name'|translate}{*テンプレート名*}</th>
+          <th nowrap colspan="2" align="center">{'/label/website_width'|translate}{*サイト全体の幅*}</th>
+          <th nowrap colspan="3" align="center">{'/label/module_width'|translate}{*モジュール幅*}</th>
+        </tr>
+        <tr>
+          <th nowrap class="sub">{'/label/contents_position'|translate}{*配置*}</th>
+          <th nowrap class="sub">{'/label/width'|translate}{*横幅*}</th>
+          <th nowrap class="sub">{'/label/left_side'|translate}{*左側*}</th>
+          <th nowrap class="sub">{'/label/right_side'|translate}{*右側*}</th>
+          <th nowrap class="sub">{'/label/margin'|translate}{*余白*}</th>
+        </tr>
+      {foreach from=$layoutList key=key item=item name=list_nm}
+        <tr>
+          <th nowrap class="sub">{$item.title}</th>
+          <td nowrap>
+              <select name="site_align[{$item.layout_id}]">
+                  <option value="left" {if $item.site_align eq 'left'}selected{/if}>left</option>
+                  <option value="center" {if $item.site_align eq 'center'}selected{/if}>center</option>
+                  <option value="right" {if $item.site_align eq 'right'}selected{/if}>right</option>
+              </select>
+          </td>
+          <td nowrap>
+              <input type="text" name="site_width[{$item.layout_id}]" value="{$item.site_width}" size="4">
+              <select name="site_width2[{$item.layout_id}]" style="width:45px;">
+                  <option value="px" {if $item.site_width2 eq 'px'}selected{/if}>px</option>
+                  <option value="%" {if $item.site_width2 eq '%'}selected{/if}>%</option>
+              </select>
+          </td>
+          <td nowrap>
+{if $item.left_width_flg}
+              <input type="text" name="left_width[{$item.layout_id}]" value="{$item.left_width}" size="4">
+              <select name="left_width2[{$item.layout_id}]" style="width:45px;">
+                  <option value="px" {if $item.left_width2 eq 'px'}selected{/if}>px</option>
+                  <option value="%" {if $item.left_width2 eq '%'}selected{/if}>%</option>
+              </select>
+{/if}
+          </td>
+          <td nowrap>
+{if $item.right_width_flg}
+              <input type="text" name="right_width[{$item.layout_id}]" value="{$item.right_width}" size="4">
+              <select name="right_width2[{$item.layout_id}]" style="width:45px;">
+                  <option value="px" {if $item.right_width2 eq 'px'}selected{/if}>px</option>
+                  <option value="%" {if $item.right_width2 eq '%'}selected{/if}>%</option>
+              </select>
+{/if}
+          </td>
+          <td nowrap>
+{if $item.space_flg}
+              <input type="text" name="space[{$item.layout_id}]" value="{$item.space}" size="5">
+{/if}
+          </td>
+        </tr>
+      {/foreach}
+      </table>
+      <div>
+      <input type="checkbox" name="site_width_100_flg" value="1" {if $site_width_100_flg}checked{/if}>{'/modules/layout/msg/set_header_menu_and_footer_100'|translate}{*ヘッダ、メニュー、フッタを100%にして、コンテンツをサイト幅に合わせる*}<br>
+      <input type="checkbox" name="header_image_resize_flg" value="1" {if $header_image_resize_flg}checked{/if}>{'/modules/layout/msg/resize_header_image_to_design'|translate}{*ヘッダ画像をデザインに合わせてリサイズする*}<br>
+      <span class="hint">{'/modules/layout/msg/header_image_is_not_resized'|translate}{*全体幅の指定が「%」で指定されている場合は、ヘッダ画像はリサイズされません。*}</span></div><br>
+
+{if $auth.layout.update}
+    {buttonbox}
+      <button type="submit">{'/label/update_btn'|translate}{* 更新する *}</button>
+    {/buttonbox}
+{/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

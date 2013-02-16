@@ -1,0 +1,191 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+function disabledChange(id) {
+    if(document.getElementById(id).disabled) {
+        document.getElementById(id).disabled = "";
+    } else {
+        document.getElementById(id).disabled = "true";
+    }
+}
+function disabledChange_date(cOBJ) {
+    tName = ["dflg1", "dflg2", "sta_date", "calendar1", "end_date", "calendar2", "rep_type1", "rep_type2", "rep_type3"];
+    for (i=0; i<tName.length; i++) document.getElementById(tName[i]).disabled = !cOBJ.checked;
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/member/label/member_analysis'|translate}{*メンバー解析*}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/member/member_list/">{'/modules/member'|translate}</a>
+{'/modules/member/label/member_analysis'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー管理 >> メンバー >> メンバー解析 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="list_main">
+  <h3>{'/modules/member/label/total_member'|translate}{*全メンバー数*}</h3>
+  <table width="100%">
+    <tr>
+      <th width="20%">{'/modules/member/label/total_member'|translate}{*全メンバー数*}</th>
+      <td>{$all_member_num} {'/label/member_unit'|translate}{*人*}</td>
+    </tr>
+    <tr>
+      <th>{'/modules/member/label/active_member_1month'|translate}{*アクティブメンバー（１ヶ月以内にログイン）数*}</th>
+      <td>{$active_member_num} {'/label/member_unit'|translate}{*人*}</td>
+    </tr>
+  </table>
+
+{if $analysis_parameter_list}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'from_date', btnId: 'from_date-btn', boxId: 'from_date-pop', tableId: 'from_date-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'to_date', btnId: 'to_date-btn', boxId: 'to_date-pop', tableId: 'to_date-table'});
+});
+{/literal}
+</script>
+
+  <form action="/management/member/member_analysis/" method="post" name="member_analysis" id="member_analysis">
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <h3>{'/modules/member/label/member_analysis'|translate}{*メンバー解析*}</h3>
+    <table width="100%" border="0">
+      <tr>
+        <th width="40%">{'/label/item_name'|translate}{*項目名*}</th>
+        <th width="20%">{'/label/condition_use'|translate}{*条件使用の有無*}</th>
+        <th width="40%">{'/label/condition'|translate}{*条件*}</th>
+      </tr>
+      {foreach item=parameter from=$analysis_parameter_list}
+      {assign var="key_name" value=$parameter.key_name}
+      {assign var="valid_name" value="valid_"|cat:$parameter.key_name}
+      <tr>
+        <th>{$parameter.disp_name}</th>
+        <td><input type="checkbox" name="{$valid_name}" id="{$valid_name}" value="1" {if $formData.$valid_name}checked{/if} onchange=disabledChange('{$parameter.key_name}') />
+        <label for="{$valid_name}">{'/msg/enable'|translate}{*有効にする*}</label></td>
+        <td>
+        {if $parameter.type == 'option'}
+          <select name="{$parameter.key_name}" id="{$parameter.key_name}" {if !$formData.$valid_name}disabled="true"{/if}>{html_options options=$parameter.options selected=$formData.$key_name}</select>
+        {/if}
+        </td>
+      {/foreach}
+      </tr>
+      <tr>
+        <th>{'/modules/member/label/reg_cancel_time'|translate}{*登録・退会期間*}</th>
+        <td><input type="checkbox" name="valid_regist" id="valid_regist" value="1" {if $formData.valid_regist}checked{/if} onchange=disabledChange_date(this) />
+            <label for="valid_regist">{'/msg/enable'|translate}{*有効にする*}</label>
+        </td>
+        <td>
+
+              <input type="radio" name="dflg" id="dflg1" value="0" {if $formData.dflg == 0 || $formData.dflg == ""}checked{/if} {if !$formData.valid_regist}disabled{/if}/>{'/modules/member/label/time_of_registration'|translate}{*登録した期間*}
+              <input type="radio" name="dflg" id="dflg2" value="1" {if $formData.dflg == 1}checked{/if} {if !$formData.valid_regist}disabled{/if}/>{'/modules/member/label/time_of_cancellation'|translate}{*退会した期間*}<br>
+              {'/label/start'|translate}{*開始*}：
+              <input type="text" name="from_date" id="from_date" value="{$formData.from_date|escape}" autocomplete="off" />
+              <button type="button" id="from_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+              <div class="pop_calendar" id="from_date-pop"></div>
+              {'/label/end'|translate}{*終了*}：
+              <input type="text" name="to_date" id="to_date" value="{$formData.to_date|escape}" autocomplete="off" />
+              <button type="button" id="to_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+              <div class="pop_calendar" id="to_date-pop"></div>
+        </td>
+      </tr>
+    </table>
+
+    <br style="clear:both;" />
+
+    <table width="650px" border="0">
+      <tr><th {if $total_cnt >= 0}colspan="2"{/if}>
+    <input type="button" value="{'/label/show_analysis_rslt_btn'|translate}" onclick="document.member_analysis.action='/management/member/member_analysis/';document.member_analysis.MODE.value='';document.member_analysis.upBtn.click();return false;" /><br />
+    </th></tr>
+    {if $total_cnt >= 0}
+    <tr>
+      <th width="40%">{'/label/analysis_result'|translate}{*解析結果の表示*}</th>
+      <td width="60%" align="right">
+{if $auth.member_download.select}
+          <a href="/management/member/member_download/" onclick="document.member_analysis.action='/management/member/member_download/';document.member_analysis.upBtn.click();return false;" >
+          {'/label/download'|translate}{*ダウンロード*}
+         </a>
+{/if}
+      </td>
+    </tr>
+    <tr>
+      <th width="40%">{'/modules/member/label/mbr_meet_condition'|translate}{*条件を満たすメンバー*}</th><td width="60%" align="right">{$total_cnt} {'/label/member_unit'|translate}{*人*}</td>
+    </tr>
+    <tr>
+      <th width="40%">{'/modules/member/label/act_mbr_meet_condition'|translate}{*条件を満たすアクティブメンバー*}</th><td width="60%" align="right">{$active_cnt} {'/label/member_unit'|translate}{*人*}</td>
+    </tr>
+    {/if}
+    </table>
+
+{if $formData.valid_regist}
+<br style="clear:both;" />
+
+<caption>{if $formData.dflg == 0}{'/modules/member/label/new_reg_process'|translate}{*新規登録の推移*}{elseif $formData.dflg == 1}{'/modules/member/label/cancel_process'|translate}{*退会の推移*}{/if}</caption>
+<table width="650px" border="0" cellspacing="2" cellpadding="0">
+    <tr><th rowspan="2">{'/label/date'|translate}{*日付*}</th><th colspan="2">{'/modules/member/label/mbr_meet_condition'|translate}{*条件を満たすメンバー*}</th></tr>
+    <tr><th colspan="2">{'/modules/member/label/act_mbr_meet_condition'|translate}{*条件を満たすアクティブメンバー*}</th></tr>
+    {section name=loopname loop=$count_data}
+    <tr>
+      <td rowspan="2"width = "200px">{$count_data[loopname].total.date|replace:"-":"/"}</td>
+      <td width="50px">{$count_data[loopname].total.cnt} {'/label/member_unit'|translate}{*人*}</td>
+      <td width="400px">
+        <img src="{imageurl}/modules/accesscount/graph_border.gif" width="{$count_data[loopname].total.width}px" height="10px">
+      </td>
+    </tr>
+    <tr>
+      <td>{$count_data[loopname].active.cnt} {'/label/member_unit'|translate}{*人*}</td>
+      <td>
+        <img src="{imageurl}/modules/accesscount/graph_border.gif" width="{$count_data[loopname].active.width}px" height="10px">
+      </td>
+    </tr>
+    {/section}
+</table>
+{/if}
+     <!--spaw submit対応 消さないで-->
+     <div style="display:none">
+       <input type="submit" name="upBtn" />
+     </div>
+  </form>
+{/if}
+
+{if $analysis_result_list}
+<h3>{'/modules/member/label/summary_of_each_extensions'|translate}{*拡張項目毎で集計*}</h3>
+<table width="100%">
+{foreach item=item from=$analysis_result_list}
+    <tr>
+    <th width="30%">{$item.name}</th>
+    <td>
+        <table width="100%">
+        {foreach item=result from=$item.result}
+        {if $result.name}
+            <tr>
+            <th width="70%">{$result.name}</th>
+            <td align="right">{$result.cnt}{'/label/member_unit'|translate}{*人*}</td>
+            <td align="right">{$result.per}%</td>
+            </tr>
+        {/if}
+        {/foreach}
+        </table>
+    </td>
+    </tr>
+{/foreach}
+</table>
+{/if}
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

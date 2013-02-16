@@ -1,0 +1,23 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{*	新しいモジュールのURLは menu/config.php に設定してね *}
+
+<h3 id="menu_title">{'/label/menus/contents'|translate}</h3>
+<div class="main_contents">
+	<ul id="mainnav">
+	{foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+			{if $FOR_MENU.conf_tab[$module] eq 'contents'}
+					{if $FOR_MENU.auth[$module].select}
+							<li class="mainnav_{$module}"><a href="{$FOR_MENU.management_menus[$module].link}"><span>{$module|translate_modules|default:$FOR_MENU.contName[$module]}</span></a></li>
+	{*
+							<li class="mainnav_{$module}"><a href="{$FOR_MENU.management_menus[$module].link}"><span>{$FOR_MENU.contName[$module]}</span></a></li>
+	*}
+					{/if}
+			{/if}
+	{/foreach}
+	</ul>
+</div><!-- main_contents -->
+
+
+{rcms_include file="management/footer.html"}

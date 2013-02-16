@@ -1,0 +1,39 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2 class="mailtemplateedit">{'/modules/mailtemplateedit/label/mailtemplateedit_list'|translate}{*メールひな形一覧*}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/mailtemplateedit/mailtemplateedit_list/">{'/modules/mailtemplateedit'|translate}</a>
+{'/modules/mailtemplateedit/label/mailtemplateedit_list'|translate}
+{/pankuzu}
+{*【パンくず】 サイト基本設定 >> メールひな形編集 >> メールひな形一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+<table width="100%">
+  <tr><th>{'/label/edit'|translate}{*編集*}</th><th>{'/label/module'|translate}{*モジュール*}</th><th>{'/label/template_katakana'|translate}{*テンプレート*}</th></tr>
+{foreach from=$template_list item=row}
+  <tr>
+    <td><a href="/management/mailtemplateedit/mailtemplateedit_edit/mail_tpl_id={$row.mail_tpl_id}">{'/label/edit'|translate}{*編集*}</a></td>
+    <td>{$row.module_nm}
+        {* i18n対応 mailtemplateeditモジュールでは$bagオブジェクトを使用しないため、関連する共通部品を使えない。イレギュラー対応としてベタ書き。 *}
+        <ul class="doc_lang_status_simple doc_lang_status">
+        {foreach from=$row._lang_status item=item key=key}
+        <li class="{if !$item}none{elseif $item}latest{/if}">
+            <a href="/management/mailtemplateedit/mailtemplateedit_edit/mail_tpl_id={$row.mail_tpl_id}&_doc_lang={$key}">{$key}</a>
+        </li>
+        {/foreach}
+        </ul>
+    </td>
+    <td>{$row.mail_tpl_nm}</td>
+  </tr>
+{/foreach}
+</table>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

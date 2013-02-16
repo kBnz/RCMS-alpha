@@ -1,0 +1,12 @@
+{if $bbs_list|@count > 0}
+<h2>{'/modules/bbs/label/bbs_list_by_category'|translate}{*カテゴリ毎掲示板一覧*}</h2>
+{foreach from=$bbs_list item=row name=bbs_list}
+  <h3>{$row.category_nm}</h3>
+    <ul>
+    {foreach from=$row.bbs_list item=bbs name=bbs}
+    <li><a href="/bbs_show/bbs_header_id={$bbs.bbs_header_id}">{$bbs.forum_title}({$bbs.cnt})</a></li>
+    {/foreach}
+    </ul>
+{/foreach}
+<hr/>
+{/if}

@@ -1,0 +1,115 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'from_dt', btnId: 'from_dt-btn', boxId: 'from_dt-pop', tableId: 'from_dt-table'});
+    DUI.calendar.PopupWindow({title:"日付", textId: 'to_dt', btnId: 'to_dt-btn', boxId: 'to_dt-pop', tableId: 'to_dt-table'});
+});
+
+function confirmDelete(f) {
+    if(confirm('選択された動画を削除します。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+<ul>
+{if $auth.movie.insert}
+<li class="add"><a href="/management/movie/movie_edit/"><span>動画追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/movie_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/movie/movie_list/">{$module_nm}</a>
+{$module_nm}一覧
+{/pankuzu}
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">一覧へのアクセス数：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="list_main">
+<div class="main_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/movie/movie_list/">
+    <fieldset class="search_box">
+      動画名称:<input type="text" name="movie_name" value="{$movie_name|escape}" />
+      期間:
+      <input type="text" name="from_dt" id="from_dt" value="{$from_dt|escape}" autocomplete="off" />
+      <button type="button" id="from_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+      <div class="pop_calendar" id="from_dt-pop"></div>
+      から
+      <input type="text" name="to_dt" id="to_dt" value="{$to_dt|escape}" autocomplete="off" />
+      <button type="button" id="to_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+      <div class="pop_calendar" id="to_dt-pop"></div>
+      <input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/movie/movie_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.movie.update || $auth.movie.delete}
+          <th scope="col"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'movie_id[]')"></th>
+        {/if}
+        <th>公開</th>
+        <th>動画名称</th>
+        <th>日付</th>
+        <th>PV</th>
+        <th>最終更新日時</th>
+      </tr>
+      {foreach from=$movie_list item=row}
+      <tr>
+        {if $auth.movie.update || $auth.movie.delete}
+          <td><input type="checkbox" name="movie_id[]" value="{$row.movie_id}" /></td>
+        {/if}
+        <td>{$row.open_flg|rcms_publicimg}</td>
+        <td>
+          <a href="/management/movie/movie_edit/movie_id={$row.movie_id}&pageID={$currentPageID}">{$row.movie_name|escape}</a>
+        </td>
+        <td>
+          {$row.ymd|pg_dateformat:"%Y/%m/%d(%%w%%)"}
+        </td>
+        <td>
+          {$row.access_cnt}pv
+        </td>
+        <td>
+          {$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}
+        </td>
+      </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.movie.update || $auth.movie.delete}
+      {buttonbox}
+        <p>選択した動画を一括で</p>
+        {if $auth.movie.update}
+          <button type="submit" onclick="this.form.MODE.value='PUBLIC'" />公開にする</button>
+          <button type="submit" onclick="this.form.MODE.value='PRIVATE'" />非公開にする</button>
+        {/if}
+        {if $auth.movie.delete}
+          <button type="button" onclick="confirmDelete(this.form)" />削除する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,264 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+<script type="text/javascript">
+<!--
+{literal}
+Event.observe(window, 'load', function() {
+    
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'cre_ymd', btnId: 'cre_ymd-btn', boxId: 'cre_ymd-pop', tableId: 'cre_ymd-table'});
+});
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/bbs/label/post_detail'|translate}{*投稿記事詳細*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/bbs/bbs_list/pageID={$pageID}">{'/modules/bbs'|translate}</a>
+<a href="/management/bbs/bbs_list/pageID={$pageID}">{'/modules/bbs/label/bbs_list'|translate}</a>
+<a href="/management/bbs/bbs_detail_list/bbs_header_id={$bbs_header_id}">{'/modules/bbs/label/post_list'|translate}</a>
+{'/modules/bbs/label/post_detail'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 掲示板 >> 掲示板一覧 >> 投稿記事一覧 >> 投稿記事詳細 *}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.forum_title|escape}</h3>
+<ul class="minitabs">
+  <li><a href="/management/bbs/bbs_edit/bbs_header_id={$header.bbs_header_id}">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_list/bbs_header_id={$header.bbs_header_id}" class="active">{'/modules/bbs/label/post'|translate}{*投稿記事*}</a></li>
+  <li><a href="/management/bbs/bbs_detail_category_list/bbs_header_id={$header.bbs_header_id}">{'/modules/bbs/label/classification_labels'|translate}{*分類ラベル*}</a></li>
+</ul>
+
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/bbs/bbs_detail_edit/" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="bbs_header_id" value="{$bbs_header_id}" />
+    <input type="hidden" name="bbs_id" value="{$bbs_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="100px">{'/label/person_who_posted'|translate}{*投稿者*}</th>
+{if $auth.bbs.update}
+        <td><input type="text" name="name" value="{$bbsData.name}" style="width:400px;" />
+        <span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">{'/msg/less_than_letters'|translate:30}{*30文字以内*}</span>
+        </td>
+{else}
+        <td>{$bbsData.name}</td>
+{/if}
+      </tr>
+      <tr>
+        <th>{'/label/post_date'|translate}{*投稿日時*}</th>
+{if $auth.bbs.update}
+        <td>
+        <input name="cre_ymd" id="cre_ymd" type="text" size="20" value="{$bbsData.cre_ymd|escape}" />
+        <button type="button" id="cre_ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="cre_ymd-pop"></div>
+        <lable style="margin-left:10px">{'/label/time'|translate}{*時刻*}:</label>
+        <select style="width:45px" name="cre_h">{html_options options=$time_h_options selected=$bbsData.cre_h}</select>　:　<select style="width:45px" name="cre_m">{html_options options=$time_m_options selected=$bbsData.cre_m}</select>
+        <span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">({'/label/example'|translate}{*例*} 2006/07/22 10:30)</span>
+        <input name="create_date" id="create_date" type="hidden" value="{$bbsData.create_date}" />
+        </td>
+{else}
+        <td>{$bbsData.create_date|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M"}</td>
+{/if}
+      </tr>
+      <tr>
+        <th>{'/label/title'|translate}{*タイトル*}</th>
+{if $auth.bbs.update}
+        <td><input type="text" name="title" value="{$bbsData.title|escape}" style="width:400px;" />
+        <span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">{'/msg/less_than_letters'|translate:50}{*50文字以内*}</span>
+        </td>
+{else}
+        <td>{$bbsData.title|escape}</td>
+{/if}
+      </tr>
+      <tr>
+        <th>{'/label/content'|translate}{*内容*}</th>
+{if $auth.bbs.update}
+        <td><span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">{'/msg/less_than_letters'|translate:2000}{*2000文字以内*}</span><br />
+            <textarea name="note"  style="width:500px;" rows="20">{$bbsData.note|escape}</textarea><br>
+            {if $bbsData.uploadimg ne ''}
+                {if $bbsData.uploadimg|substr:-4 eq '.pdf'}
+            <a href="{$smarty.const.BBS_UPLOAD_URL}{$bbsData.uploadimg}?{$stamp}" target="_blank">PDF</a>
+                {else}
+            <a href="{$smarty.const.BBS_UPLOAD_URL}{$bbsData.uploadimg}?{$stamp}" target="_blank"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$bbsData.uploadimg}?{$stamp}" /></a>
+                {/if}
+            {/if}<br /><br />
+            {'/label/upload_image'|translate}{*画像アップロード*}<input type="file" name="bbs_photo" /><input name="del_bbs_photo" id="del_bbs_photo" type="checkbox" value="1" /><label for="del_bbs_photo">{'/label/delete_image'|translate}{*画像削除*}</label>
+{else}
+        <td>{$bbsData.note|escape|nl2br}<br>
+            {if  $bbsData.uploadimg ne ''}
+                {if $bbsData.uploadimg|substr:-4 eq '.pdf'}
+            <a href="{$smarty.const.BBS_UPLOAD_URL}{$bbsData.uploadimg}?{$stamp}" target="_blank">PDF</a>
+                {else}
+            <a href="{$smarty.const.BBS_UPLOAD_URL}{$bbsData.uploadimg}?{$stamp}" target="_blank"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$bbsData.uploadimg}?{$stamp}"></a>
+                {/if}
+            {/if}<br>
+{/if}
+            {if $youtubeData}{foreach from=$youtubeData.1 item=youtube_id}
+<object width="425" height="344">
+<param name="movie" value="http://www.youtube.com/v/$1&hl=ja&fs=1"></param>
+<param name="allowFullScreen" value="true"></param>
+<embed src="http://www.youtube.com/v/{$youtube_id}&hl=ja&fs=1" type="application/x-shockwave-flash" allowfullscreen="true" width="425" height="344">
+</embed>
+</object><br>
+            {/foreach}{/if}
+        </td>
+      </tr>
+      <tr>
+        <th>URL</th>
+{if $auth.bbs.update}
+        <td><input type="text" name="url" value="{$bbsData.url|escape}" style="width:400px;" /></td>
+{else}
+        <td>{$bbsData.url|escape}</td>
+{/if}
+      </tr>
+      <tr>
+        <th>{'/label/mail_address'|translate}{*メールアドレス*}</th>
+{if $auth.bbs.update}
+        <td><input type="text" name="mail" value="{$bbsData.mail|escape}" style="width:400px;" /></td>
+{else}
+        <td>{$bbsData.mail|escape}</td>
+{/if}
+      </tr>
+{if $arrBbsDetailCategoly|@count>0}
+      <tr>
+        <th>{'/modules/bbs/label/classification_labels'|translate}</th>
+{if $auth.bbs.update}
+        <td>
+        <select name="bbs_detail_category_id">
+        <option value=""></option>
+        {html_options options=$arrBbsDetailCategoly selected=$bbsData.bbs_detail_category_id}</select>
+        </td>
+{else}
+        <td>{$arrBbsDetailCategoly[$bbsData.bbs_detail_category_id]|escape}</td>
+{/if}
+      </tr>
+{/if}
+
+{if $auth.bbs.update}
+
+    {if $BBS_ExtensionColumns|@count>0}
+    {foreach from=$BBS_ExtensionColumns item=bbs_ext_col}
+    {if $bbs_ext_col.disp_name}
+    {assign var=type value=$bbs_ext_col.type}
+    {assign var=is_require value=$bbs_ext_col.require}
+    {assign var=db_name value=$bbs_ext_col.db_name}
+    {assign var=disp_name value=$bbs_ext_col.disp_name}
+    <tr>
+        <th>
+            {$disp_name}
+        </th>
+        <td>
+            {if $type == $smarty.const.BBS_EXT_COL_TYPE_TEXT}
+            {*テキスト*}
+
+            <input type="text" name="{$db_name}" id="{$db_name}" class="{$db_name}" value="{$bbsData.$db_name|escape}" />
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_TEXTAREA}
+            {*テキストエリア*}
+
+            <textarea name="{$db_name}" class="{$db_name}" id="class="{$db_name}"">{$bbsData.$db_name|escape}</textarea>
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_DATE}
+            {*日付*}
+
+            {assign var="ext_y" value=$db_name|cat:"_y"}
+            {assign var="ext_m" value=$db_name|cat:"_m"}
+            {assign var="ext_d" value=$db_name|cat:"_d"}
+
+            <select name="{$db_name}_y"><option value="">
+            {'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrYear selected=$bbsData.$ext_y|escape}
+            </select>
+            /
+            <select name="{$db_name}_m"><option value="">
+            {'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrMonth selected=$bbsData.$ext_m|escape}
+            </select>
+            /
+            <select name="{$db_name}_d"><option value="">
+            {'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrDate selected=$bbsData.$ext_d|escape}
+            </select>
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_CHECKBOX}
+            {*チェックボックス*}
+
+            {html_checkboxes  name=$db_name options=$bbs_ext_col.options selected=$bbsData.$db_name|escape separator="<br />"}
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_SELECTBOX}
+            {*セレクトボックス*}
+
+            <select name="{$db_name}">
+            <option value="">{'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$bbs_ext_col.options selected=$bbsData.$db_name|escape}
+            </select>
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_RADIO}
+            {*ラジオボタン*}
+            {html_radios name=$db_name options=$bbs_ext_col.options selected=$bbsData.$db_name separator=" "}
+
+            {/if}
+
+            {if $is_require}<span class="required">{'/label/required'|translate}{*必須*}</span>{/if}
+        </td>
+    </tr>
+    {/if}
+    {/foreach}
+    {/if}
+{/if}
+
+      <tr>
+        <th>{'/label/ip_address'|translate}{*IPアドレス*}</th>
+        <td>{$bbsData.ip_address|escape}</td>
+      </tr>
+{if $auth.bbs.update}
+      <tr>
+        <th valign="top">{'/label/access_limit'|translate}</th>{* アクセス制限 *}
+        <td><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select></td>
+      </tr>
+
+      <tr>
+        <th>{'/label/publish_settings'|translate}{*公開設定*}</th>
+        <td>{html_radios name="open_flg" options=$arrBbsOpenFlg selected=$bbsData.open_flg}</td>
+      </tr>
+{/if}
+    </table>
+
+
+    {if $auth.bbs.update || $auth.bbs.delete}
+      {editTagsBox docmeta=$docmeta}{/editTagsBox}
+
+      {buttonbox}
+        {if $auth.bbs.update}
+          <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        {if $auth.bbs.delete}
+          <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,6 @@
+{foreach from=$alerts name=msg_nm item=msg}
+{if $smarty.foreach.msg_nm.first}
+警告:<br/>
+{/if}
+{$msg}<br/>
+{/foreach}

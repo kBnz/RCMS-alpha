@@ -1,0 +1,105 @@
+<h2>
+{$gameData.game_type} {$gameData.game_type2}　
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+{'/label/schedule'|translate}{*予定*}
+{elseif $gameData.game_status eq '2'}
+{'/modules/game/label/process'|translate}{*途中経過*}
+{elseif $gameData.game_status eq '3'}
+{'/modules/game/label/game_result'|translate}{*試合結果*}
+{/if}
+{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade} vs {$gameData.team_nm}{$gameData.opponent_grade}
+</h2><br/>
+[{'/label/score'|translate}{*ｽｺｱ*}]<br/>
+{if $gameData.game_status eq '2' ||  $gameData.game_status eq '3'}
+{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade} vs {$gameData.team_nm}{$gameData.opponent_grade}<br/>
+{$gameData.score_detail_arr.Self_Total}({$gameData.score_detail_arr.Self_Half1}/{$gameData.score_detail_arr.Self_Half2})
+-
+{$gameData.score_detail_arr.Opp_Total}({$gameData.score_detail_arr.Opp_Half1}/{$gameData.score_detail_arr.Opp_Half2})
+{/if}
+<br/>
+[{'/label/date'|translate}{*日付*}]
+{$gameData.ymd_str}<br/>
+{if $gameData.ko_time}
+[Kick off]
+{$gameData.ko_time}<br/>
+{/if}
+{if $gameData.place}
+[{'/label/game_site'|translate}{*試合会場*}]
+{$gameData.place}<br/>
+{/if}
+{if $gameData.referee}
+[{'/label/referee'|translate}{*レフリー*}]
+{$gameData.referee}<br/>
+{/if}
+{if $gameData.touch_judge1 || $gameData.touch_judge2 || $gameData.touch_judge3}
+[{'/label/touch_judge'|translate}{*タッチジャッジ*}]
+{$gameData.touch_judge1}/{$gameData.touch_judge2}/{$gameData.touch_judge3}<br/>
+{/if}
+<br/>
+
+
+[{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}]<br/>
+T:{$gameData.score_detail_arr.Self_T1}-{$gameData.score_detail_arr.Self_T2}<br/>
+G:{$gameData.score_detail_arr.Self_G1}-{$gameData.score_detail_arr.Self_G2}<br/>
+PG:{$gameData.score_detail_arr.Self_P1}-{$gameData.score_detail_arr.Self_P2}<br/>
+DG:{$gameData.score_detail_arr.Self_D1}-{$gameData.score_detail_arr.Self_D2}<br/>
+<br/>
+[{$gameData.team_nm}{$gameData.opponent_grade}]<br/>
+T:{$gameData.score_detail_arr.Opp_T1}-{$gameData.score_detail_arr.Opp_T2}<br/>
+G:{$gameData.score_detail_arr.Opp_G1}-{$gameData.score_detail_arr.Opp_G2}<br/>
+PG:{$gameData.score_detail_arr.Opp_P1}-{$gameData.score_detail_arr.Opp_P2}<br/>
+DG:{$gameData.score_detail_arr.Opp_D1}-{$gameData.score_detail_arr.Opp_D2}<br/>
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+{/if}
+
+{if count($gameMembers.self)}
+  {$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}<br/>
+  {section name=self_member loop=$gameMembers.self}
+    {if $gameMembers.self[self_member].member_order}
+{$gameMembers.self[self_member].member_order}.{$gameMembers.self[self_member].position}
+{if $gameMembers.self[self_member].member_id ne ''}<a href="/member_detail/id={$gameMembers.self[self_member].member_id}">{/if}{$gameMembers.self[self_member].member_name}{if $gameMembers.self[self_member].member_grade}({$gameMembers.self[self_member].member_grade}){/if}{if $gameMembers.self[self_member].member_id ne ''}</a>{/if}
+<br/>
+{if $gameMembers.self[self_member].change_info}{$gameMembers.self[self_member].change_info}<br/>{/if}
+
+    {/if}
+  {/section}
+{/if}
+<br/>
+
+{if count($gameMembers.opp)}
+  {$gameData.team_nm}{$gameData.opponent_grade}<br/>
+  {section name=opp_member loop=$gameMembers.opp}
+    {if $gameMembers.opp[opp_member].member_order}
+{$gameMembers.opp[opp_member].member_order}.{$gameMembers.opp[opp_member].position}
+{$gameMembers.opp[opp_member].member_name}{if $gameMembers.opp[opp_member].member_grade}({$gameMembers.opp[opp_member].member_grade}){/if}
+<br/>
+{if $gameMembers.opp[opp_member].change_info}{$gameMembers.opp[opp_member].change_info}<br/>{/if}
+    {/if}
+  {/section}
+{/if}
+<div style="text-align:right;font-size:small;">
+<a href="/gamerugby_list/">{'/label/game_list'|translate}{*試合情報一覧*}</a>
+</div>
+
+{if $gameTopicsList|@count > 0}
+<hr/>
+{/if}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2>{$gameTopicsList[game_topics].subject}</h2>
+<div style="text-align:right;font-size:small;">
+{$gameTopicsList[game_topics].ymd_str}
+</div>
+{$gameTopicsList[game_topics].contents}
+{/section}
+{if $gameTopicsList|@count > 0}
+<div style="text-align:right;font-size:small;">
+<a href="/gamerugby_list/">{'/label/game_list'|translate}{*試合情報一覧*}</a>
+</div>
+{/if}
+<hr/>
+

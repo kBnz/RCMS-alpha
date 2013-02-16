@@ -1,0 +1,89 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+
+<div class="list_right_bt">
+<h2>{'/modules/pageredirect'|translate}{*ページリダイレクト設定*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/pageredirect/pageredirect_list/">{'/modules/pageredirect'|translate}</a>
+{'/modules/pageredirect/label/pageredirect_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> ページリダイレクト >> ページリダイレクト *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+
+  <form action="/management/pageredirect/pageredirect_list/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/update_by_csv'|translate}{*CSVで更新*}</th>
+        <td>
+          <input type="file" name="pageredirect_csv"/>
+          <p class="hint">{'/msg/maximum_file_size'|translate:30}{*アップロードできる最大サイズは30Mバイトまでです。*}</p>
+          <a href="/management/pageredirect/pageredirect_dl/">{'/label/download'|translate}{*ダウンロード*}({$data_cnt})</a>
+          <div class="hint">{'/modules/pageredirect/msg/csv_example'|translate}</div>
+        </td>
+      </tr>
+    </table>
+
+{buttonbox}
+      {* 更新処理 *}
+      {if $rauth->canUpdate("/pageredirect/item/", $docmeta.lang)}
+      {* 更新権限がある *}
+          <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+      {/if}
+      {if $rauth->canDelete("/pageredirect/item/", $docmeta.lang)}
+      {* 削除権限がある *}
+          <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+      {/if}
+
+{/buttonbox}
+
+  </form>
+
+    <h3>{'/modules/pageredirect/label/now_settings'|translate}</h3>{* 現在の設定内容 *}
+{pager info=$pageInfo}
+          <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+              <th>{'/modules/pageredirect/label/old_page'|translate}</th>
+              <th>=></th>
+              <th>{'/modules/pageredirect/label/new_page'|translate}</th>
+            </tr>
+    {foreach from=$pageredirect_list item=item}
+            <tr>
+              <td>{$item.page_redirect_url}</td>
+              <td>=></td>
+              <td>{$item.page_forward_url}</td>
+            </tr>
+     {/foreach}
+          </table>
+{pager info=$pageInfo}
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

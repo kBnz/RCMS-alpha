@@ -1,0 +1,123 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/link/label/link_list'|translate}{*リンク一覧*}</h2>
+<ul>
+{if $auth.link.insert}
+<li class="add"><a href="/management/link/link_edit/"><span>{'/modules/link/label/create_new_link_btn'|translate}{*リンク追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/link/link_list/">{'/modules/link'|translate}</a>
+{'/modules/link/label/link_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> リンク >> リンク一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="link/admin/minitabs.html" page_type=$ct}
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/link/link_list/" method="post">
+    <input type="hidden" name="pageID" value="" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <fieldset class="search_box">
+      <div>
+        {'/label/link_character_string'|translate}{*リンク文字列*}：<input size="20" name="link_string" type="text" value="{$formData.link_string|escape}" />
+        {'/label/link_url'|translate}{*リンク先URL*}：<input size="20" name="link_url" type="text" value="{$formData.link_url|escape}" />
+      </div>
+      <div>
+        <select name="link_category_id">{html_options options=$arrLink_category selected=$formData.link_category_id}</select>
+        {'/label/publish_settings'|translate}{*公開設定*}：<select name="open_flg">{html_options options=$searchOpflg selected=$formData.open_flg}</select>
+        {'/label/status_of_applying'|translate}{*申請状況*}：<select name="status">{html_options options=$searchStatus selected=$formData.status}</select>
+        <input type="submit" value="{'/label/search_btn'|translate}{*検索する*}" />
+      </div>
+    </fieldset>
+
+    {pager info=$pageInfo}
+    <table width="100%">
+      <tr>
+{if $auth.link.update}
+        <th><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'link_id[]');" /></th>
+{/if}
+        <th>{'/label/publish'|translate|sort_link:open_flg:$sort_url:$sort:$desc}{*公開*}</th>
+        <th>{'/label/category'|translate|sort_link:link_category_id:$sort_url:$sort:$desc}{*カテゴリー*}</th>
+        <th>{'/label/image_and_char'|translate|sort_link:link_string:$sort_url:$sort:$desc}{*画像 / 文字列*}</th>
+        <th>{'/label/link_character_string'|translate|sort_link:link_url:$sort_url:$sort:$desc}{*リンク文字列*}</th>
+        <th>{'/label/status_of_applying'|translate|sort_link:status:$sort_url:$sort:$desc}{*申請状況*}</th>
+        <th>{'/label/last_updated_time'|translate|sort_link:update_ymdhi:$sort_url:$sort:$desc}{*最終更新日時*}</th>
+        <th>{'/label/sort'|translate|sort_link:grade:$sort_url:$sort:$desc}</th>
+      </tr>
+  {foreach from=$link_list item=row}
+      <tr>
+        {if $auth.link.update}
+        <td><input type="checkbox" name="link_id[]" value="{$row.link_id}" /></td>
+        {/if}
+        <td align="center">{$row.open_flg|rcms_publicimg}</td>
+        <td>{$row.link_category_name|escape}</td>
+        <td><a href="/management/link/link_edit/link_id={$row.link_id}&pageID={$currentPageID}">{$row.link_image_url}<br />{$row.link_string|escape}</a></td>
+        <td><a href="{$row.link_url}" target="_blank">{$row.link_url}</a></td>
+        <td>{if $row.application_type}
+              {if $row.status != ""}{$arrSubmitStatus[$row.status]}{/if}<br/>
+              ({$arrApplicationType[$row.application_type]})
+            {/if}
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat}</td>
+        <td>
+        {if $auth.link.update}
+        <input type="text" name="order_no[{$row.link_id}]" size="3" value="{$row.grade}" onBlur="return changeHankaku(this, 'number');" />
+        {else}
+        {$row.order_no}
+        <input type="hidden" name="order_no[{$row.link_id}]" value="{$row.grade}" />
+        {/if}
+        </td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+  {if $auth.link.update || $auth.link.delete}
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+      {if $auth.link.update}
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+      {/if}
+      {if $auth.link.delete}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{*削除する*}
+      {/if}
+      {* 並び順更新ボタンは右寄せ *}
+      {if $auth.link.update}
+      </ul><ul style="float:right;"><button type="submit" onclick="this.form.MODE.value='change_order'">{'/label/change_order_btn'|translate}</button>
+      {/if}
+    {/buttonbox}
+  {/if}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,16 @@
+{if $tagList}
+{module name="tag_search"}
+<h2 class="module_title"><span>{'/modules/tag/label/tag_search'|translate}{*項目で絞り込む*}</span></h2>
+<div class="module_contents">
+<form action="/{$page_sysnm}/" method="GET">
+{foreach from=$tagList item=checkRow}
+<h3><span>{'/msg/search_by_any_word'|translate:$checkRow.tag_nm}{*●●で絞り込む*}</span></h3>
+<label><input name="tag_id[]" value="{$checkRow.tag_id}" type="checkbox" {foreach from=$smarty.request.tag_id item=req_tag_id}{if $req_tag_id==$checkRow.tag_id}checked="checked"{/if}{/foreach} ><a href="/{$page_sysnm}/?tag_id[]={$checkRow.tag_id}">{$checkRow.tag_nm}</a></label>
+{rcms_include file="tag/tag_set_relation_with_member.html" Login_member_id=$Login_member_id tag_id=$checkRow.tag_id}
+<br />
+{/foreach}
+<input type="submit" value="{'/label/search'|translate}{*検索*}" >
+</form>
+</div>
+{/module}
+{/if}

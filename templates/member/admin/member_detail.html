@@ -1,0 +1,136 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+<h2>{'/modules/member/label/detail_settings'|translate}{*メンバー詳細設定*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/member/member_list/">{'/modules/member'|translate}</a>
+{'/modules/member/label/detail_settings'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー管理 >> メンバー >> メンバー詳細設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents member_detail">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<ul class="sub_tab">
+  <li id="here"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_order',this);return false;" id="a_order">{'/label/display_order'|translate}{*表示順序*}</a></li>
+  <li><a href="javascript:void(0)" onclick="tabnaviCtl('blk_noimage',this);return false;" id="a_noimage">NO IMAGE</a></li>
+</ul>
+<div class="clearFloat"><br></div>
+
+<div class="list_main">
+
+<form action="/management/member/member_detail/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="order_string" id="order_string" />
+  <div id="blk_order" style="position:relative; display:block;">
+
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tbody id="item_list_content">
+        {foreach from=$orderArray item=row key=key}
+          <tr id="order-{$row.field}">
+            <th width="20%">
+              {$row.disp_nm}
+            </th>
+            <td>
+              <select name="asc_{$row.field}">{html_options options=$arrOrderAsc selected=$row.asc}</select>
+            </td>
+            <td>
+              <a href="javascript:;" onclick="swapSibling(-1, 'order-{$row.field}')"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+              <a href="javascript:;" onclick="swapSibling(1, 'order-{$row.field}')"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+            </td>
+          </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    <p class="hint">{'/modules/member/msg/display_order_of_list'|translate}{*メンバー一覧で表示されるメンバーの表示される順番です。上に設定した項目から優先的に並び替えます*}</p>
+    <p class="hint">{'/modules/member/msg/asc_desc_order'|translate}{*昇順・・・小さい順　降順・・・大きい順*}</p>
+    {buttonbox}
+      <button type="submit" id="member_detail1_btn">{'/label/update_btn'|translate}{*更新する*}</button>
+    {/buttonbox}
+  </div>
+</form>
+
+<form enctype="multipart/form-data" action="/management/member/member_detail/" method="post" id="member_detail2">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" id="MODE" value="UPLOAD" />
+  <div id="blk_noimage" style="position:relative; display:none;">
+    <input name="noimage" type="file" /><br>
+    <table>
+      <tr>
+        <th>NO IMAGE</th>
+        <td><img  src="/files/member/noimage.jpg?{$date}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/thumbnail'|translate}{*サムネイル*}</th>
+        <td><img  src="/files/member/noimage_s.jpg?{$date}" /></td>
+      </tr>
+    </table>
+    <p class="hint">{'/modules/member/msg/for_no_img_user'|translate}{*画像が登録されていないメンバーの画像はこの画像が表示されます*}</p>
+    {buttonbox}
+      <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+      <button type="button" onclick="confirmDefault(this.form)">{'/label/return_to_default_btn'|translate}{*デフォルトに戻す*}</button>
+    {/buttonbox}
+  </div>
+</form>
+
+</div><!-- list_main -->
+
+
+{literal}
+<script type="text/javascript">
+<!--
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_order"; //初期表示ブロック
+var a_obj = document.getElementById("a_order"); //カレント表示タブ(初期)
+function tabnaviCtl(nm, anchorObj){
+  if(blk_name != nm){
+    document.getElementById(blk_name).style.display = "none";
+    blk_name = nm;
+    document.getElementById(nm).style.display = "block";
+    a_obj.style.backgroundPosition = "left top";
+    a_obj = anchorObj;
+    anchorObj.style.backgroundPosition = "left bottom";
+  }
+}
+
+function confirmDefault(f) {
+	//NO IMAGEの画像をデフォルトに戻します
+    if(confirm('{/literal}{'/msg/set_no_image_for_default'|translate}{literal}')) {
+        f.MODE.value = 'DEFAULT';
+        f.submit();
+    }
+}
+
+Event.observe(window, 'load', function() {
+    // 送信時に並び順を設定する
+    Event.observe($('member_detail1_btn'), 'click', function() {
+        var parent = $('item_list_content');
+        var buf = [];
+        var ch = parent.firstChild;
+        for (var ch = parent.firstChild ; ch != null ; ch = ch.nextSibling) {
+            if(ch.id==null){continue;}
+            if (ch.id.substring(0,6)=='order-') {
+                buf.push(ch.id.substring('order-'.length));
+            }
+        }
+        $('order_string').value = buf.join(",");
+    });
+});
+
+-->
+// -->
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

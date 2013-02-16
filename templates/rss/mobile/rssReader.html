@@ -1,0 +1,8 @@
+{foreach from=$rssData.channel item=channel key=channelKey}
+  <h1>{$channel.title}</h1>
+  {foreach from=$rssData.item.$channelKey item=item name=loop}
+    {if $smarty.foreach.loop.iteration <= 10}{* 最新10件のみ表示 *}
+      {$smarty.foreach.loop.iteration + 1}<a href="{$item.link}">{$item.title}</a><br />
+    {/if}
+  {/foreach}
+{/foreach}

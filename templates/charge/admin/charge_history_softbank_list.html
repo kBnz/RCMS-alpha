@@ -1,0 +1,69 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+<!--
+-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>Softbank課金履歴一覧</h2>
+<ul>
+  <li class="normal"><a href="/management/charge/charge_history_softbank_diff/charge_softbank_id={$charge_softbank_id}"><span>突合</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_softbank_list/">Softbank課金</a>
+<a href="/management/charge/charge_history_softbank_list/charge_softbank_id={$charge_softbank_id}">Softbank課金履歴一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="charge/admin/minitabs.html" page_type='softbank'}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+  <form action="/management/{$mt}/{$ct}/" method="get">
+    <input type="hidden" name="charge_softbank_id" value="{$smarty.request.charge_softbank_id|escape}" />
+    UID:<input type="text" name="uid" value="{$smarty.request.uid|escape}" size="14">
+    メンバーID:<input type="text" name="member_id" value="{$smarty.request.member_id|escape}" size="14">
+    <input type="submit" value="検索" name="subflg">
+  </form>
+  <form action="/management/{$mt}/{$ct}/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="charge_softbank_id" value="{$smarty.request.charge_softbank_id|escape}" />
+
+  {pager info=$pageInfo}
+  <table style="width: 100%">
+    <tr>
+      <th>履歴ID</th>
+      <th>uid</th>
+      <th>メンバー</th>
+      <th>登録日</th>
+      <th>解約日</th>
+      <th>登録日時/更新日時</th>
+    </tr>
+{foreach from=$charge_history_list item=row}
+  <tr>
+    <td><a href="/management/charge/charge_history_softbank_edit/charge_history_softbank_id={$row.charge_history_softbank_id}">{$row.charge_history_softbank_id}</a></td>
+    <td>{$row.jphone_uid}</td>
+    <td>{if $row.member_id}<a target="_blank" href="/management/member/member_edit/member_id={$row.member_id}">{$row.member_id}:{$row.member_name|escape}</a>{/if}</td>
+    <td>{$row.start_date|pg_dateformat:"%Y/%m/%d(%%w%%)"}</td>
+    <td>{$row.end_date|pg_dateformat:"%Y/%m/%d(%%w%%)"}</td>
+    <td>{$row.inst_ymdhi|pg_dateformat:"%m/%d(%%w%%) %H:%M"}/{$row.update_ymdhi|pg_dateformat:"%m/%d(%%w%%) %H:%M"}</td>
+  </tr>
+
+{/foreach}
+  </table>
+  {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

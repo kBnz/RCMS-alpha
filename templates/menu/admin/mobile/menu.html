@@ -1,0 +1,50 @@
+{rcms_include file="management/mobile/header.html"}
+<h1 class="for_mng">{'/modules/admin_top'|translate}{*管理TOP*}</h1>
+<hr class="for_mng"/>
+<h2 class="for_mng">{'/label/view'|translate}{*アクセス数*}</h2>
+{'/label/this_month'|translate}：{$monthly_total_cnt}PV<br/>{* 今月 *}
+{'/label/yesterday'|translate}：{$yesterday_total_cnt}PV<br/>{* 昨日 *}
+<div style="text-align:right;font-size:small;">
+<a href="/management/accesscount/accesscount_list/">{'/modules/accesscount'|translate}{*アクセス統計*}</a>
+</div>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'/label/contents'|translate}{*コンテンツ*}</h2>
+<ul>
+{foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+    {if $FOR_MENU.conf_tab[$module] eq 'contents'}
+        {if $FOR_MENU.auth[$module].select && ($module eq 'blog' || $module|substr:0:4 eq 'game' || $module|substr:0:6 eq 'league' || $module|substr:0:6 eq 'topics' || $module|substr:0:7 eq 'catalog' || $module eq 'calendar' || $module eq 'staticcontents' || $module eq 'coupon')}
+            <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]|escape}</a></li>
+        {/if}
+    {/if}
+{/foreach}
+</ul>
+<br/>
+<hr class="for_mng"/>
+<h2 class="for_mng">{'/label/member'|translate}{*メンバー*}</h2>
+<ul>
+
+{foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+    {if $FOR_MENU.conf_tab[$module] eq 'member'}
+        {if $FOR_MENU.auth[$module].select && $module eq 'member'}
+            <li><a href="/management/member/member_edit/member_id={$smarty.session.member_id}">{$module|translate_modules|default:$FOR_MENU.contName[$module]|escape}</a></li>
+        {/if}
+    {/if}
+{/foreach}
+</ul>
+<br/>
+<hr class="for_mng"/>
+<h2 class="for_mng">{'/label/menus/design'|translate}{*デザイン*}</h2>
+<ul>
+
+{foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+    {if $FOR_MENU.conf_tab[$module] eq 'design'}
+        {if $FOR_MENU.auth[$module].update && $module eq 'mobile'}
+            <li><a href="/management/mobile/setup/">{$module|translate_modules|default:$FOR_MENU.contName[$module]|escape}</a></li>
+        {/if}
+    {/if}
+{/foreach}
+
+</ul>
+<br/>
+{rcms_include file="management/mobile/footer.html"}

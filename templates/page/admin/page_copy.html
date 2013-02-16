@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2 class="page">{'/modules/page/label/page_copy'|translate}{*ページ設定コピー*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page/label/page_list'|translate}</a>
+{'/modules/page/label/page_copy'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> ページ設定 >> ページ設定一覧  >> ページ設定コピー*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/page/page_copy/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+{if !$errors && $smarty.server.REQUEST_METHOD == 'POST'}
+  <div style="margin:20px 0; text-align:center">
+    <input type="button" value="{'/label/edit_new_page_btn'|translate}{*新しいページを編集する*}" onclick="window.location='/management/page/page_edit/page_page_id={$formData.page_id}'" />
+  </div>
+{/if}
+<div class="list_main">
+  <table width="100%">
+    <tr>
+      <th>{'/label/copy_resource_page'|translate}{*コピー元ページ*}</th>
+      <td><select name="from_page_id">{html_options options=$pageOptions selected=$formData.from_page_id}</select></td>
+    </tr>
+    <tr>
+      <th>{'/label/new_page_name'|translate}{*新しいページ名*}</th>
+      <td>
+        <input name="to_page_nm" type="text" value="{$formData.to_page_nm|escape}" style="width: 300px"/><br>
+        <span class="hint">{'/modules/page/msg/give_a_descriptive_page_name'|translate}{*わかりやすい名称を設定しましょう。*}</span>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/new_page_system_name'|translate}{*新しいページシステム名称*}(URL)</th>
+      <td>
+        <input name="to_page_sysnm" type="text" value="{$formData.to_page_sysnm|escape}" style="width: 300px"/><br>
+          <span class="hint">{'/modules/page/msg/explain_page_system_name'|translate:$smarty.const.ROOT_URL}</span>
+		  {*{$smarty.const.ROOT_URL}/[ここの部分になります。]/<br>（漢字などでもOK。ただし、モバイルからの閲覧ができない場合があります。）*}
+      </td>
+    </tr>
+  </table>
+{rcms_auth target="insert:/page/item/"}
+    {buttonbox}
+        <button type="submit">{'/label/do_copy'|translate}{*コピー*}</button>
+    {/buttonbox}
+{/rcms_auth}
+</div>
+
+</form>
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,33 @@
+{if $canDisplay}
+
+<a id="comment_form"></a>
+<h2>{'/modules/blog/label/subscription_register'|translate}</h2>
+
+    {if $subscribe_finish}
+    {'/msg/accepted_subscription_request'|translate}
+    {elseif $unsubscribe_finish}
+    {'/msg/have_been_unsubscribed'|translate}
+    {else}
+    <form name="blog_subscription_register_form" action="/{$page_sysnm}/#module{$contents_id}" method="POST">
+
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+        <dl>
+            <dt>{'/label/mail'|translate}：</dt>
+            <dd><input name="email1" type="text" value="{$formData.email1}" {istyle type="en"} /></dd>
+            <dt>{'/label/mail'|translate}({'/label/for_confirmation'|translate}{*確認用*}):</dt>
+            <dd><input name="email2" type="text" value="{$formData.email2}" {istyle type="en"} /></dd>
+        </dl>
+
+        <input type="radio" name="MODE" value="REGIST" checked="checked" />{'/label/subscribe'|translate}{*購読*}
+        <input type="radio" name="MODE" value="DELETE" /><label for="radio_select_action">{'/label/unsubscribe'|translate}{*購読解除*}
+
+        <input type="submit" />
+
+    </form>
+    {/if}
+<hr/>
+{/if}

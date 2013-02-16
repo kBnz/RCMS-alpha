@@ -1,0 +1,79 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    if (confirm('選択されたメールを削除します。\nよろしいですか？')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+//-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">メンバー管理</a>
+<a href="/management/membermail/membermail_list/">{$module_nm}</a></a>
+{$module_nm}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/membermail/membermail_list2/">
+    <fieldset class="search_box">
+      {'/label/keyword'|translate}{*キーワード*}：<input type="text" name="keyword" value="{$smarty.request.keyword}" />
+
+    <input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/membermail/membermail_list2/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.membermail.update || $auth.membermail.delete}
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'membermail_id[]')" /></th>
+{/if}
+        <th width="130">送信日時</th>
+        <th>送信先</th>
+        <th>題名</th>
+      </tr>
+    {foreach from=$membermail_list item=row}
+      <tr>
+        {if $auth.membermail.update || $auth.membermail.delete}
+          <td><input type="checkbox" name="member_mail_id[]" value="{$row.member_mail_id}" /></td>
+        {/if}
+        <td>{$row.send_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+        <td>{$row.to_member_nm}</td>
+        <td>
+          <a href="/management/membermail/membermail_disp/member_mail_id={$row.member_mail_id}">{$row.subject}</a>
+        </td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+      <p>選択した項目を一括で</p>
+      {if $auth.membermail.delete}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

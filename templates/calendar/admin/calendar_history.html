@@ -1,0 +1,26 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+{if $auth.calendar.insert}
+<li class="add"><a href="/management/calendar/calendar_edit/"><span>予定追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/calendar_detail/id={$event_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/calendar/calendar_list/">{'/modules/calendar/label/calendar_list'|translate}</a>
+<a href="/management/calendar/calendar_edit/event_id={$event_id}">{'/modules/calendar/label/calendar_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カレンダー >> 予定編集 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/calendar/calendar_edit/event_id=$event_id" pageInfo=$pageInfo}
+</div>
+{rcms_include file="management/footer.html"}

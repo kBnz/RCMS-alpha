@@ -1,0 +1,126 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+function checked(f) {
+    var cb = f.elements["magazine_id[]"];
+    var checked = false;
+    if (cb.length) {
+        for(var i = 0 ; i < cb.length ; i++) {
+            checked = checked | cb[i].checked;
+        }
+    }
+    else {
+        checked = cb.checked;
+    }
+    return checked;
+}
+function magazine(f) {
+    f.MODE.value = 'RUN';
+    f.submit();
+}
+
+function confirmClose(f) {
+    f.MODE.value = 'STOP';
+    f.submit();
+}
+
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/magazine/label/magazine_list'|translate}</h2>{*簡易メルマガ一覧*}
+<ul>
+  {if $rauth->canInsert("/magazine/item/")}
+  <li class="add"><a href="/management/magazine/magazine_edit/"><span>{'/modules/magazine/label/create_magazine_btn'|translate}{*メルマガ追加*}</span></a></li>
+  {/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a>
+{'/modules/magazine/label/magazine_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<p class="hint">
+{'/modules/magazine/msg/max_title_and_subscriber'|translate:$smarty.const.magazine_max_title:$smarty.const.magazine_max_reader}
+</p>
+{*メールマガジンの運用可能タイトルは{$smarty.const.magazine_max_title}タイトルまでになります。また、1日最大で{$smarty.const.magazine_max_reader}通まで送信できます。*}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{*rcms_include file="common/admin/shonin_list.html"*}{* 承認待ち一覧 *}
+
+  <form name="magazine_list_form" method="POST" action="/management/magazine/magazine_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th style="width:40px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'magazine_id[]')" /></th>
+        <th style="width:50px;">{'/label/activation_status'|translate}</th>{*運用状態*}
+        <th style="width:200px;">{'/label/title'|translate}</th>{*タイトル*}
+        <th>{'/label/delivery_mail'|translate}</th>{*配信メール*}
+        <th>{'/label/back_number'|translate}</th>{*バックナンバー*}
+        <th>{'/label/draft'|translate}</th>{*下書き*}
+        <th>{'/label/subscriber'|translate}</th>{*購読者*}
+        <th>{'/label/create_mail'|translate}</th>{*メール作成*}
+      </tr>
+  {foreach item=magazine_data from=$mm_list}
+    {assign var=magazine_id value=$magazine_data.magazine_id}
+      <tr>
+        <td><input type="checkbox" name="magazine_id[]" value="{$magazine_data.magazine_id}"  {if !$rauth->canDelete("/magazine/item/$magazine_id") && !$rauth->canUpdate("/magazine/item/$magazine_id")}disabled="disabled"{/if} /></td>
+        <td>
+    {if $magazine_data.status eq $smarty.const.MAGAZINE_RUN}
+          <img title="{'/label/activate'|translate}{*運用中*}" src="/images/management/check.gif" border="0" />
+    {elseif $magazine_data.status eq $smarty.const.MAGAZINE_STOP}
+          <img title="{'/label/pause'|translate}{*休止中*}" src="/images/management/batu.gif" border="0" />
+    {/if}
+        </td>
+        <td>
+        <a href="/management/magazine/magazine_edit/magazine_id={$magazine_data.magazine_id}">{$magazine_data.magazine_name|escape}</a>
+        {*rcms_include file="common/admin/language_status.html" meta=$docmetas[$magazine_id] link="/management/magazine/magazine_edit/magazine_id=$magazine_id"*}
+        </td>
+        <td><a href="/management/magazine/magazine_sendmail_list/magazine_id={$magazine_data.magazine_id}&status=0">{$magazine_data.send_mail_cnt}{'/label/item'|translate}{*件*}</a></td>
+        <td><a href="/management/magazine/magazine_sendmail_list/magazine_id={$magazine_data.magazine_id}&status=20">{$magazine_data.bn_cnt}{'/label/item'|translate}{*件*}</a></td>
+        <td><a href="/management/magazine/magazine_sendmail_list/magazine_id={$magazine_data.magazine_id}&status=30">{$magazine_data.draft_mail_cnt}{'/label/item'|translate}{*件*}</a></td>
+        <td><a href="/management/magazine/magazine_member_list/magazine_id={$magazine_data.magazine_id}">{$magazine_data.member_cnt}{'/label/member_unit'|translate}{*人*}</a></td>
+        <td><a href="/management/magazine/magazine_sendmail_edit/magazine_id={$magazine_data.magazine_id}">{'/label/create_mail'|translate}{*メール作成*}</a></td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+          <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+          <button type="button" onclick="magazine(this.form)">{'/label/activate_btn'|translate}</button>{*運用中にする*}
+          <button type="button" onclick="confirmClose(this.form)">{'/label/pause_btn'|translate}</button>{*休止中にする*}
+          <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{*削除する*}
+    {/buttonbox}
+  </form>
+  {* 公開非公開・表示順のフォーム *}
+  <form action="/management/magazine/magazine_list/" method="post" name="switch_form">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="id" value="" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="val" value="" />
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

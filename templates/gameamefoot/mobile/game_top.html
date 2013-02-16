@@ -1,0 +1,47 @@
+<h2>試合形式別一覧</h2>
+
+{section name=mydata loop=$gameTopList}
+<a href="/gameamefoot_typelist/game_type={$smarty.section.mydata.index}">{$gameTopList[mydata].game_type}</a><br/>
+[最近の試合予定]<br/>
+{if $gameTopList[mydata].near_game.game_id == '' && $gameTopList[mydata].last_game.game_id == ''}
+試合の予定はありません
+{else}
+{if $gameTopList[mydata].near_game.game_id}
+<a href="/gameamefoot_detail/id={$gameTopList[mydata].near_game.game_id}">
+{$gameTopList[mydata].near_game.ymd}<br>
+{$gameTopList[mydata].near_game.team_grade}
+vs {$gameTopList[mydata].near_game.team_nm}{$gameTopList[mydata].near_game.opponent_grade}<br>
+{$gameTopList[mydata].near_game.place}
+</a>
+{/if}
+<br/>
+[最新の試合結果]<br/>
+{if $gameTopList[mydata].last_game.game_id}
+<a href="/gameamefoot_detail/id={$gameTopList[mydata].last_game.game_id}">
+{$gameTopList[mydata].last_game.ymd}<br/>
+{$gameTopList[mydata].last_game.team_grade}
+{if $gameTopList[mydata].last_game.score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameTopList[mydata].last_game.score_detail_arr.Self_Total}-
+{$gameTopList[mydata].last_game.score_detail_arr.Opp_Total}
+{if $gameTopList[mydata].last_game.score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameTopList[mydata].last_game.score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{$gameTopList[mydata].last_game.team_nm}{$gameTopList[mydata].last_game.opponent_grade}<br/>
+{$gameTopList[mydata].last_game.place}
+</a> 
+{/if}
+{/if}
+<hr/>
+{/section}
+
+

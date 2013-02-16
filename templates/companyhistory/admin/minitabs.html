@@ -1,0 +1,4 @@
+<ul class="minitabs">
+  <li><a href="/management/companyhistory/companyhistory_list/"{if $page_type eq 'companyhistory_list'} class="active"{/if}>{'/modules/companyhistory/label/company_history'|translate}</a></li>{* 会社沿革 *}
+{* 権限はsite権限 *}{if $auth.site.select}  <li><a href="/management/companyhistory/setup/"{if $page_type eq 'setup'} class="active"{/if}>{'/label/basic_settings'|translate}</a></li>{/if}{* 基本設定 *}
+</ul>

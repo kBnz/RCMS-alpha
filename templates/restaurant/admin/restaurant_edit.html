@@ -1,0 +1,303 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<script type="text/javascript">
+<!--
+Event.observe(window, 'load', function() {
+    // 送信時に並び順を設定する
+    Event.observe($('restaurant_edit'), 'submit', function() {
+        var rows = $('item_list_content').rows;
+        var buf = [];
+        for (var i = 0 ; i < rows.length ; i++) {
+            buf.push(rows[i].id);
+        }
+        $('order_string').value = buf.join(",");
+    });
+});
+
+var tmp_member_name;
+var tmp_member_id;
+var showing_no = '';
+
+function confirm_delete(){
+    if(confirm("削除してもよろしいですか？")){
+        document.game_edit.MODE.value='DELETE';
+        document.game_edit.submit();
+    }
+}
+-->
+</script>
+{/literal}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+<ul>
+  <li class="normal"><a href="/management/restaurant/restaurant_history/restaurant_id={$restaurant_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="view"><a href="/restaurant_detail/id={$restaurant_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant/restaurant_edit/{if $restaurant_id != ""}restaurant_id={$restaurant_id}{/if}">{$module_nm}</a>
+{$module_nm}編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>　<a href="/restaurant_detail/id={$restaurant_id}">総アクセス数:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html"}
+  {rcms_include file="management/errors_box.html"}
+  <form name="restaurant_edit" id="restaurant_edit" action="/management/restaurant/restaurant_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="restaurant_id" value="{$restaurant_id}" />
+    <input type="hidden" name="item_order" value="{$data.item_order}" />
+    <input type="hidden" name="order_string" id="order_string" value="{$data.order_string}"/>
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="img1_type" value="{$data.img1_type}" />
+    <input type="hidden" name="img1_file" value="{$data.img1_file}" />
+    <input type="hidden" name="img1_s_file" value="{$data.img1_s_file}" />
+    <input type="hidden" name="prev_img1_type" value="{$data.prev_img1_type}" />
+    <input type="hidden" name="img2_type" value="{$data.img2_type}" />
+    <input type="hidden" name="img2_file" value="{$data.img2_file}" />
+    <input type="hidden" name="img2_s_file" value="{$data.img2_s_file}" />
+    <input type="hidden" name="prev_img2_type" value="{$data.prev_img2_type}" />
+    <input type="hidden" name="img3_type" value="{$data.img3_type}" />
+    <input type="hidden" name="img3_file" value="{$data.img3_file}" />
+    <input type="hidden" name="img3_s_file" value="{$data.img3_s_file}" />
+    <input type="hidden" name="prev_img3_type" value="{$data.prev_img3_type}" />
+    <input type="hidden" name="img4_type" value="{$data.img4_type}" />
+    <input type="hidden" name="img4_file" value="{$data.img4_file}" />
+    <input type="hidden" name="img4_s_file" value="{$data.img4_s_file}" />
+    <input type="hidden" name="prev_img4_type" value="{$data.prev_img4_type}" />
+
+    {capture name=restaurant_nm}
+          <th>店名<span class="required">※</span></th>
+          <td><input type="text" name="restaurant_nm" value="{$data.restaurant_nm|escape}" size="50" /></td>
+    {/capture}
+    {capture name=address}
+          <th>住所</th>
+          <td>
+              <p>郵便番号:<span class="hint">(半角数字）</span><br />
+              <input size="4" maxlength="3" id="zip_main" name="zip_main" type="text" value="{$data.zip_main}" onBlur="changeHankaku(this, 'number')" />
+              &nbsp;-&nbsp;
+              <input size="5" maxlength="4" id="zip_sub" name="zip_sub" type="text" value="{$data.zip_sub}" onBlur="changeHankaku(this, 'number')" /></p>
+            <p>都道府県:<br />
+            <select id="tdfk_cd" name="tdfk_cd">{html_options options=$arrTdfk selected=$data.tdfk_cd}</select></p>
+            <p>住所:<br />
+            <input id="address1" name="address1" value="{$data.address1}" size="50"><br><span class="hint">例）新宿区市谷田町2-17</span><br>
+            <input id="address2" name="address2" value="{$data.address2}" size="50"><br><span class="hint">例）八重洲市谷ビル10F</span>
+            </p>
+          </td>
+    {/capture}
+
+    {capture name=access}
+          <th>アクセス</th>
+          <td><textarea name="access" rows="7" cols="50">{$data.access|escape}</textarea></td>
+    {/capture}
+    {capture name=tel}
+          <th>TEL</th>
+          <td><input type="text" name="tel" value="{$data.tel|escape}" /></td>
+    {/capture}
+    {capture name=fax}
+          <th>FAX</th>
+          <td><input type="text" name="fax" value="{$data.fax|escape}" /></td>
+    {/capture}
+    {capture name=business_hours}
+          <th>営業時間</th>
+          <td><textarea name="business_hours" rows="3" cols="50">{$data.business_hours|escape}</textarea></td>
+    {/capture}
+    {capture name=regular_holiday}
+          <th>定休日</th>
+          <td><textarea name="regular_holiday" rows="3" cols="50">{$data.regular_holiday|escape}</textarea></td>
+    {/capture}
+    {capture name=average_budget}
+          <th>平均予算（お一人様）</th>
+          <td><textarea name="average_budget" rows="3" cols="50">{$data.average_budget|escape}</textarea></td>
+    {/capture}
+    {capture name=total_seats}
+          <th>総席数</th>
+          <td><textarea name="total_seats" rows="2" cols="50">{$data.total_seats|escape}</textarea></td>
+    {/capture}
+    {capture name=max_people}
+          <th>宴会最大人数</th>
+          <td><textarea name="max_people" rows="2" cols="50">{$data.max_people|escape}</textarea></td>
+    {/capture}
+    {capture name=parking}
+          <th>駐車場</th>
+          <td><textarea name="parking" rows="2" cols="50">{$data.parking|escape}</textarea></td>
+    {/capture}
+    {capture name=creditcard}
+          <th>クレジットカード</th>
+          <td><textarea name="creditcard" rows="3" cols="50">{$data.creditcard|escape}</textarea></td>
+    {/capture}
+    {capture name=equipment}
+          <th>設備・サービス</th>
+          <td><textarea name="equipment" rows="3" cols="50">{$data.equipment|escape}</textarea></td>
+    {/capture}
+    {capture name=email}
+          <th>メールアドレス</th>
+          <td><textarea name="email" rows="1" cols="50">{$data.email|escape}</textarea></td>
+    {/capture}
+    {capture name=bikou}
+          <th>備考</th>
+          <td><textarea name="bikou" rows="3" cols="50">{$data.bikou|escape}</textarea></td>
+    {/capture}
+    {capture name=pr1}
+          <th>PRタイトル</th>
+          <td><textarea name="pr1" rows="3" cols="50">{$data.pr1|escape}</textarea></td>
+    {/capture}
+    {capture name=pr2}
+          <th>PR内容</th>
+          <td><textarea name="pr2" rows="5" cols="50">{$data.pr2|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_01}
+          <th>自由項目１<input type="text" name="ext_title_01" value="{$data.ext_title_01|escape}" /> </th>
+          <td><textarea name="ext_txt_01" rows="3" cols="50">{$data.ext_txt_01|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_02}
+          <th>自由項目２<input type="text" name="ext_title_02" value="{$data.ext_title_02|escape}" /> </th>
+          <td><textarea name="ext_txt_02" rows="3" cols="50">{$data.ext_txt_02|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_03}
+          <th>自由項目３<input type="text" name="ext_title_03" value="{$data.ext_title_03|escape}" /> </th>
+          <td><textarea name="ext_txt_03" rows="3" cols="50">{$data.ext_txt_03|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_04}
+          <th>自由項目４<input type="text" name="ext_title_04" value="{$data.ext_title_04|escape}" /> </th>
+          <td><textarea name="ext_txt_04" rows="3" cols="50">{$data.ext_txt_04|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_05}
+          <th>自由項目５<input type="text" name="ext_title_05" value="{$data.ext_title_05|escape}" /> </th>
+          <td><textarea name="ext_txt_05" rows="3" cols="50">{$data.ext_txt_05|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_06}
+          <th>自由項目６<input type="text" name="ext_title_06" value="{$data.ext_title_06|escape}" /> </th>
+          <td><textarea name="ext_txt_06" rows="3" cols="50">{$data.ext_txt_06|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_07}
+          <th>自由項目７<input type="text" name="ext_title_07" value="{$data.ext_title_07|escape}" /> </th>
+          <td><textarea name="ext_txt_07" rows="3" cols="50">{$data.ext_txt_07|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_08}
+          <th>自由項目８<input type="text" name="ext_title_08" value="{$data.ext_title_08|escape}" /> </th>
+          <td><textarea name="ext_txt_08" rows="3" cols="50">{$data.ext_txt_08|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_09}
+          <th>自由項目９<input type="text" name="ext_title_09" value="{$data.ext_title_09|escape}" /> </th>
+          <td><textarea name="ext_txt_09" rows="3" cols="50">{$data.ext_txt_09|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_10}
+          <th>自由項目１０<input type="text" name="ext_title_10" value="{$data.ext_title_10|escape}" /> </th>
+          <td><textarea name="ext_txt_10" rows="3" cols="50">{$data.ext_txt_10|escape}</textarea></td>
+    {/capture}
+    
+    {capture name=img1_type}
+          <th>画像１</th>
+          <td>
+            {if $data.img1_s_url}
+            <img src="{$data.img1_s_url}"><br>
+            <input type="checkbox" name="del_img1" value="1">画像を削除<br>
+            {/if}
+            <input type="file" name="img1">
+          <br><textarea name="img1_text" rows="2" cols="50">{$data.img1_text}</textarea>
+          </td>
+    {/capture}
+    {capture name=img2_type}
+          <th>画像２</th>
+          <td>
+            {if $data.img2_s_url}
+            <img src="{$data.img2_s_url}"><br>
+            <input type="checkbox" name="del_img2" value="1">画像を削除<br>
+            {/if}
+            <input type="file" name="img2">
+          <br><textarea name="img2_text" rows="2" cols="50">{$data.img2_text}</textarea>
+          </td>
+    {/capture}
+    {capture name=img3_type}
+          <th>画像３</th>
+          <td>
+            {if $data.img3_s_url}
+            <img src="{$data.img3_s_url}"><br>
+            <input type="checkbox" name="del_img3" value="1">画像を削除<br>
+            {/if}
+            <input type="file" name="img3">
+          <br><textarea name="img3_text" rows="2" cols="50">{$data.img3_text}</textarea>
+          </td>
+    {/capture}
+    {capture name=img4_type}
+          <th>画像４</th>
+          <td>
+            {if $data.img4_s_url}
+            <img src="{$data.img4_s_url}"><br>
+            <input type="checkbox" name="del_img4" value="1">画像を削除<br>
+            {/if}
+            <input type="file" name="img4">
+          <br><textarea name="img4_text" rows="2" cols="50">{$data.img4_text}</textarea>
+          </td>
+    {/capture}
+
+    
+      <h3>店舗情報</h3>
+      <table width="100%">
+          <thead id="item_list_header">
+            <tr>
+              <th colspan="2" align="middle" scope="col"></th>
+              <th scope="col">表示順</th>
+            </tr>
+          </thead>
+          <tbody id="item_list_content">
+          {foreach from=$disp_items item=disp_tag}
+             <tr id="{$disp_tag}">
+                  {$smarty.capture.$disp_tag}
+                  <td>
+                     <a href="javascript:;" onclick="swapSibling(-1, '{$disp_tag}')"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+                     <a href="javascript:;" onclick="swapSibling(1, '{$disp_tag}')"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+                  </td>
+             </tr>
+          {/foreach}
+         </tbody id="item_list_content">
+      </table>
+      <div id="hidden_items" class="edit_close">
+      <h3>その他の項目</h3>
+      <p><a href="javascript:void(0)" onclick="display('hidden_items');display('hidden_items2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+      </div>
+      <div id="hidden_items2" class="edit_open" style="display:none;">
+          <h3><span class="link_button">その他の項目</span></h3>
+          <p class="close"><a href="javascript:void(0)" onclick="display('hidden_items');display('hidden_items2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+          <table>
+                {foreach from=$hidden_items item=hidden_tags}
+                    <tr>
+                         {$smarty.capture.$hidden_tags}
+                    </tr>
+                {/foreach}
+        </table>
+      </div><!-- //relation_edit2 -->
+
+      <a id="relation_data" name="relation_data"></a>
+      {rcms_include file="management/relation_edit.html"}
+
+      <div class="clear"></div>
+
+      {rcms_include file="management/open_date_box.html" id=$restaurant_id data=$data}
+
+      {if $auth.restaurant.update}
+        {buttonbox}
+          <button type="submit">更新する</button>
+        {/buttonbox}
+      {/if}
+  </form>
+</div><!--//list_main-->
+</div><!--//main_contents-->
+</div>
+
+{rcms_include file="management/footer.html"}

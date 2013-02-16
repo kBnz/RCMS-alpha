@@ -1,0 +1,30 @@
+{if $sendokflg}
+
+<a id="comment_form"></a>
+<h2>{'/label/mail'|translate}{*メール*}</h2>
+
+<form name="form1" method="post" action="/{$page_sysnm}/">
+{if $msg}
+  <span style="color:red;">{$msg}</span><br/>
+{/if}
+{if $sendflg}
+{else}
+  {'/modules/member/msg/send_fan_letter_to'|translate:$to_name}
+    {*ここから{$to_name}君へﾌｧﾝﾚﾀｰを送ることができます*}<br>
+  
+    <dt>{'/label/name'|translate}{*名前*}：</dt>
+    <dd><input name="from_name" type="text" value="{$from_name}" /></dd>
+    <dt>{'/label/mail_address'|translate}{*メールアドレス*}：</dt>
+    <dd><input name="from_mail" type="text" value="{$from_mail}" {istyle type="en"} /></dd>
+    <dt>{'/label/subject'|translate}{*件名*}：</dt>
+    <dd><input name="subject" type="text" value="{$subject}" /></dd>
+    <dt>{'/label/send_mail'|translate}{*内容*}：</dt>
+    <dd><textarea name="contents" row="" cols="" >{$contents}</textarea></dd>
+  </dl>
+      <input type="submit" name="subflg" value="{'/label/send_fan_letter'|translate}{*ファンレター送信*}" />
+      <input type="hidden" name="id" value="{$id}" /><br/>
+      >{$smarty.const.MEMBER_MAIL_ALERT}
+{/if}
+</form>
+<hr/>
+{/if}

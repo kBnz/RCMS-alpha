@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/survey_copy'|translate}{*アンケートコピー*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey/label/survey_list'|translate}</a>
+{'/modules/survey/label/survey_copy'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> >> アンケート一覧 >> アンケートコピー  *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/survey/survey_copy/" method="POST">
+  <input type="hidden" name="survey_id" value="{$header.survey_id}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th width="200">{'/modules/survey/label/survey_name'|translate}{*アンケート名*}({'/label/copy_original'|translate}{*コピー元*})</th>
+      <td><a href="/management/survey/survey_edit/survey_id={$header.survey_id}">{$header.title|escape}</a></td>
+    </tr>
+    <tr>
+      <th>{'/label/copy_cnt'|translate}{*コピー数*}</th>
+      <td><input type="text" name="copy_cnt" value="{$formData.copy_cnt|default:"0"}" /></td>
+    </tr>
+    <tr>
+      <th>{'/label/copy_to'|translate}{*コピー先*}：{'/modules/survey/label/survey_name'|translate}{*アンケート名*}</th>
+      <td>
+        <input type="radio" name="title_flg" value="1" {if $formData.title_flg == 1}checked="checked"{/if} />{'/label/same_as_original'|translate}{*コピー元と同じ*}<br />
+        <input type="radio" name="title_flg" value="2" {if $formData.title_flg == 2}checked="checked"{/if} />{'/label/with_series_number'|translate}{*連番付き*}<br />
+        <p class="hint">例){$header.title|escape}～{'/label/copy'|translate}1～、{$header.title|escape}～{'/label/copy'|translate}2～</p>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/copy_to'|translate}{*コピー先*}：{'/label/publish_status'|translate}{*公開状態*}</th>
+      <td>
+        {html_radios name=public options=$publicOptions selected=$formData.public}
+      </td>
+    </tr>
+  </table>
+  {buttonbox}
+    <button type="submit">{'/label/do_copy'|translate}{*コピーする*}</button>
+  {/buttonbox}
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

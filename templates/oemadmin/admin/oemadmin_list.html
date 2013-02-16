@@ -1,0 +1,102 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+<!--
+function confirmOpen() {
+    document.oem_list_form.MODE.value = 'OPEN';
+    document.oem_list_form.submit();
+}
+
+function confirmClose() {
+    document.oem_list_form.MODE.value = 'CLOSE';
+    document.oem_list_form.submit();
+}
+
+function confirmMake() {
+    document.oem_list_form.MODE.value = 'MAKE';
+    document.oem_list_form.submit();
+}
+
+//-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>OEM一覧</h2>
+<ul>
+{if $auth.oemadmin.insert}
+<li class="add"><a href="/management/oemadmin/oemadmin_edit/"><span>{$module_nm}追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/oemadmin/oemadmin_list/">{'/modules/oemadmin'|translate}</a>
+<a href="/management/oemadmin/oemadmin_list/">OEM一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="oemadmin/admin/minitabs.html"}
+
+<div class="list_main">
+
+<form action="/management/oemadmin/oemadmin_list/" method="post">
+運営者：<input type="text" name="name" value="{$smarty.request.name}" size="50"><br>
+ステータス：<select name="status">
+<option value="">選択↓</option>
+{html_options options=$arrOemStatus selected=$smarty.request.status}
+</select><br>
+<input type="submit" name="subflg" value="検索">
+</form>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{pager info=$pageInfo}
+
+  <form name="oem_list_form" method="POST" action="/management/oemadmin/oemadmin_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="pageID" value="{$smarty.request.pageID}" />
+    <input type="hidden" name="name" value="{$smarty.request.name}" />
+    <input type="hidden" name="status" value="{$smarty.request.status}" />
+
+<table width="100%">
+<tr>
+<th>{if $auth.oemadmin.update}<input type="checkbox" onClick="AllChecked(this.checked, this.form, 'oem_id[]');" />{/if}</th>
+<th>ID</th>
+<th>OEM名</th>
+<th>サイト一覧</th>
+<th>ステータス</th>
+<th>作成日時</th>
+</tr>
+{foreach from=$oem_list item=oem}
+<tr>
+<td>{if $auth.oemadmin.update}<input type="checkbox" name="oem_id[]" value="{$oem.oem_id}">{/if}</td>
+<td>{$oem.oem_id}</td>
+<td><a href="/management/oemadmin/oemadmin_edit/oem_id={$oem.oem_id}">{$oem.oem_nm}</a></td>
+<td><a href="/management/rcms/rcms_list/?oem_id={$oem.oem_id}">一覧</a></td>
+<td>{$arrOemStatus[$oem.status]}</td>
+<td>{$oem.inst_ymdhi|pg_dateformat:"%m/%d %H:%M"}</td>
+</tr>
+{/foreach}
+</table>
+  </form>
+
+{pager info=$pageInfo}
+
+{buttonbox}
+{if $auth.oemadmin.update}
+<p>選択したサイトを一括で</p>
+<button type="button" onclick="confirmOpen();">公開中にする</button>
+<button type="button" onclick="confirmMake();">構築中にする</button>
+<button type="button" onclick="confirmClose();">退会にする</button>
+{/if}
+{/buttonbox}
+
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

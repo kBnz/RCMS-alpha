@@ -1,0 +1,100 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+var tmp_member_name;
+var tmp_member_id;
+
+function inputMemberInfo(order_no) {
+    tmp_member_name = document.getElementById('member_name').value;
+    tmp_member_id = document.getElementById('member_id').value;
+    var element = document.getElementById('member_name');
+    document.getElementById('inputFrame').src = '/js/infoInput.php?type=gamemember';
+    document.getElementById('inputArea').style.visibility = "visible";
+    document.getElementById('inputArea').style.display = "";
+}
+
+function chkMemId(order_no) {
+    if(tmp_member_name != document.getElementById('member_name').value
+    && tmp_member_id == document.getElementById('member_id').value
+    && document.getElementById('member_name').value != "") {
+    // 名前が変わっているがidが変わっていない場合は手で入力したとみなす
+        document.getElementById('member_id').value = "";
+        document.getElementById('subInfo').style.display = "inline";
+    }
+    else if(document.getElementById('member_name').value == "") {
+        document.getElementById('subInfo').style.display = "none";
+    }
+}
+
+function writeWithKeybourd(order_no) {
+    document.getElementById('member_id').value = "";
+    document.getElementById('inputArea').style.visibility = "hidden";
+    if(document.getElementById('member_name').value != "") {
+        document.getElementById('subInfo').style.display = "inline";
+    }
+    else {
+        document.getElementById('subInfo').style.display = "none";
+    }
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2 class="login_history">{'/modules/login_history/label/login_history'|translate}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/login_history/login_history_list/">{'/modules/login_history/label/login_history'|translate}</a>
+{'/modules/login_history/label/login_history_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="login_history/admin/minitabs.html" page_type=$ct auth=$auth header=$data}
+
+<div class="list_main">
+
+  <form action="/management/login_history/login_history_list/">
+    <input type="hidden" name="s_member_id" id="member_id" value="{$data.s_member_id}" />
+    <input type="hidden" name="s_member_grade" id="member_grade" value="" />
+    <input type="text" name="s_member_name" id="member_name" value="{$data.s_member_name}" size="30" onblur="chkMemId(0)" onkeyup="writeWithKeybourd(0)" />
+    <input type="button" value="..." onclick="inputMemberInfo(0);" />
+    <span id="subInfo" style="display:none">(登録外)</span>
+    <div id="inputArea" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;z-index:1;">
+      <iframe name="inputFrame" id="inputFrame" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+    </div>
+
+    <input type="submit" value="検索" />
+  </form>
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th>{'/modules/login_history/label/name'|translate}</th>
+      <th>{'/label/member_group'|translate}</th>
+{if $member_data_ok}
+      <th>{'/label/email'|translate}</th>
+      <th>{'/label/login_id'|translate}</th>
+{/if}
+      <th>{'/modules/login_history/label/ip_address'|translate}</th>
+      <th>{'/modules/login_history/label/login_time'|translate}</th>
+    </tr>
+    {foreach item=login_history_data from=$login_history_list}
+    <tr>
+      <td><a href="/management/member/member_edit/member_id={$login_history_data.member_id}">{$login_history_data.name}</a></td>
+      <td>{$login_history_data.group_nm}</td>
+{if $member_data_ok}
+      <td>{$login_history_data.email}</td>
+      <td>{$login_history_data.login_id}</td>
+{/if}
+      <td>{$login_history_data.ip_address}</td>
+      <td>{$login_history_data.login_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+    {/foreach }
+  </table>
+  {pager info=$pageInfo}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

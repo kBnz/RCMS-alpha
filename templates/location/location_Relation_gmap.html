@@ -1,0 +1,118 @@
+{if $RelationLocation|@count > 0}
+{module name="location_Relation_gmap"}
+<div id="location_Relation_gmap">
+<h2 class="module_title"><span>{'/modules/location/label/related_location'|translate}{*関連ロケーション*}</span></h2>
+<div class="module_contents">
+  <div id="relationMap"></div>
+  <a href="" id="expand">{'/modules/location/msg/expand_the_map'|translate}{*地図を大きくする*}</a>
+  {if $RelationLocation|@count eq 1}
+    [{$RelationLocation.0.location_nm}]
+  {else}
+    <ul class="module-list" id="relations">
+      {foreach item=itemList from=$RelationLocation name=mydata}
+        <li class="module-list-item"><a href="javascript:void(0);" class="unSelected" id="rel_{$itemList.location_id}">{$itemList.location_nm}</a></li>
+      {/foreach}
+    </ul>
+  {/if}
+</div>
+</div>
+{/module}
+
+
+<script type="text/javascript" src="{if $ssl_flg}https://maps-api-ssl.google.com{else}http://maps.google.com{/if}/maps/api/js?sensor=false&language={$mylang}"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+{literal}
+    
+Event.observe(window, 'load', function () {
+    var relations = new Array();
+    var selected = null;
+
+    {/literal}{foreach item=itemList from=$RelationLocation name=mydata}
+    relations[{$itemList.location_id}] = {ldelim}'gmap_x':'{$itemList.gmap_x}',
+                                                   'gmap_y':'{$itemList.gmap_y}'{rdelim};
+    {/foreach}{literal}
+
+    // 地図の大きさを設定
+    var dim = $('location_Relation_gmap').getDimensions();
+    $("relationMap").style.width = String(dim.width - 20) + "px";
+    $("relationMap").style.height = "200px";
+
+{/literal}
+  {if $RelationLocation|@count > 1}
+{literal}
+
+    // 関連情報のonclickを設定
+    var relationLinks = $A($("relations").getElementsByTagName("a"));
+    relationLinks.each (function (e) {
+    
+        Event.observe(e, 'click', function () {
+            updateMap(e);
+        }, false);
+        
+    });
+    
+    updateMap(relationLinks[0]);
+
+    function updateMap(element) {
+
+        var id = element.id.split('_')[1];
+        var rel = relations[id];
+
+        var myOptions = {
+          zoom: 15,
+          center: new google.maps.LatLng(rel.gmap_y, rel.gmap_x),
+          mapTypeControl: false,
+          navigationControl: true,
+          navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+          mapTypeId:google.maps.MapTypeId.ROADMAP      
+        }
+        map = new google.maps.Map($("relationMap"),myOptions);      
+                           
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(rel.gmap_y, rel.gmap_x),
+            map: map
+        });
+
+        
+        $("expand").href = "/location_detail/id=" + id;
+
+        if (selected) {
+            selected.className = "unSelected";
+        }
+        selected = element;
+        selected.className = "selected";
+        selected.style.fontWeight = "bold";
+        selected.style.textDecoration = "none";
+    }
+{/literal}
+  {else}
+{literal}
+
+        var id = {/literal}{$RelationLocation.0.location_id}{literal};
+        var rel = relations[id];
+        
+        var myOptions = {
+          zoom: 15,
+          center: new google.maps.LatLng(rel.gmap_y, rel.gmap_x),
+          mapTypeControl: false,
+          navigationControl: true,
+          navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+          mapTypeId:google.maps.MapTypeId.ROADMAP      
+        }
+
+        map = new google.maps.Map($("relationMap"),myOptions);  
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(rel.gmap_y, rel.gmap_x),
+            map: map
+        });
+        $("expand").href = "/location_detail/id=" + id; 
+{/literal}
+  {/if}
+{literal}
+
+}, false);
+{/literal}
+</script>
+{/if}

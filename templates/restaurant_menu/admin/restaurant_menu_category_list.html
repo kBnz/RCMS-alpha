@@ -1,0 +1,88 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+    if(confirm('選択されたカテゴリを削除します。\n削除するカテゴリに含まれるコンテンツは「未分類」となります。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm} カテゴリ一覧</h2>
+<ul>
+{rcms_auth target="insert:/restaurant_menu/category/"}
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_category_edit/"><span>料理分類追加</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant_menu/restaurant_menu_category_list/">{$module_nm}</a>
+{$module_nm} カテゴリ一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 承認待ち一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="POST" action="/management/restaurant_menu/restaurant_menu_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table width="100%" cellspacing="2">
+      <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'restaurant_menu_category_id[]');"></th>
+       <th width="40">公開</th>
+       <th>カテゴリ名</th>
+       <th>メニュー数</th>
+        <th>並び順</th>
+      </tr>
+{foreach from=$restaurant_menu_category_list item=row}
+    {assign var=category_id value=$row.restaurant_menu_category_id}
+
+    <tr>
+        <td><input type="checkbox" name="restaurant_menu_category_id[]" value="{$row.restaurant_menu_category_id}" {rcms_auth not=true target="delete:/restaurant_menu/category/$category_id"}disabled="disabled"{/rcms_auth} /></td>
+      <td>{$row.open_flg|rcms_publicimg}</td>
+        <td>
+            <a href="/management/restaurant_menu/restaurant_menu_category_edit/restaurant_menu_category_id={$row.restaurant_menu_category_id}">{$row.category_nm}</a>
+            {rcms_include
+                file="common/admin/language_status.html" 
+                meta=$docmetas[$category_id] 
+                link="/management/restaurant_menu/restaurant_menu_category_edit/restaurant_menu_category_id=$category_id"
+            }   
+        </td>
+        <td>
+            {if $row.menu_cnt}<a href="/management/restaurant_menu/restaurant_menu_list/restaurant_menu_category_id={$category_id}">{$row.menu_cnt}メニュー</a>
+            {else}0メニュー{/if}
+        </td>
+        <td>{$row.order_no}</td>
+    </tr>
+{/foreach}
+    </table>
+
+{buttonbox}
+  <p>選択したカテゴリを一括で</p>
+    <button type="submit" onclick="this.form.MODE.value='OPEN'">公開にする</button>
+    <button type="submit" onclick="this.form.MODE.value='CLOSE'">非公開にする</button>
+    <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+{/buttonbox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

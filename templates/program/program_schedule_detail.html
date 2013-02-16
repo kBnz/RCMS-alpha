@@ -1,0 +1,25 @@
+{module name="program_schedule_detail"}
+<h2 class="module_title"><span>詳細予定</span></h2>
+<div class="module_contents">
+
+{if $schedule_data}
+<table border="0" cellspacing="1" width="70%" class="program_schedule_detail">
+<tr><th>クラス名</th><td>{$schedule_data.program_nm}{if $schedule_data.program_subnm}&nbsp({$schedule_data.program_subnm}){/if}</td></tr>
+<tr><th>内容</th><td>{$schedule_data.content|nl2br}</td></tr>
+<tr><th>日付け</th><td>{$schedule_data.day}</td></tr>
+<tr><th>開始時刻</th><td>{$schedule_data.from_time}</td></tr>
+<tr><th>終了時刻</th><td>{$schedule_data.to_time}</td></tr>
+<tr><th>担当者</th><td>{$schedule_data.teacher}</td></tr>
+<tr><th>お知らせ</th><td>{$schedule_data.comment|nl2br}</td></tr>
+{if $schedule_data.accept_condition != ""}
+<tr><th>予約受付</th><td>{$schedule_data.accept_condition}</td></tr>
+{/if}
+</table>
+{else}
+該当する予定はまだ登録されていません。
+{/if}
+<div class="relation_link">
+<a href="/program_schedule_day/day={$schedule_data.on_day}">{$schedule_data.day}のスケジュールへ</a>|<a href="/program_schedule_week/week={$schedule_data.on_day}">週間スケジュールへ</a>|<a href="/program_schedule_list/year={$schedule_data.year}&month={$schedule_data.month}&id={$schedule_data.program_id}">{$schedule_data.program_nm}の予定一覧へ</a>
+</div>
+</div>
+{/module}

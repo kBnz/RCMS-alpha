@@ -1,0 +1,15 @@
+<h2>[emoji:110]{'/modules/inquiry/label/inquiry_list_for_user'|translate}{*お問い合わせ一覧*}</h2>
+{foreach from=$inquiry_list item=item name=inquiry_list}
+  {if $smarty.foreach.inquiry_list.first}
+    <ul>
+  {/if}
+  <li>
+    <a href="/inquiry_detail/id={$item.inquiry_id}">{$item.inquiry_name}</a><br/>
+    {$item.inquiry_info}
+  </li>
+  {if $smarty.foreach.inquiry_list.last}
+    </ul>
+  {/if}
+{/foreach}
+<hr/>
+

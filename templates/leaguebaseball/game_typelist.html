@@ -1,0 +1,53 @@
+{module name="game_typeList"}
+<h2 class="module_title"><span>{$league_type_nm}</span></h2>
+<div class="module_contents">
+<table class="list">
+{section name=mydata loop=$gameList}
+  {if $smarty.section.mydata.first}
+        <tr>
+          <th>日時</th>
+          <th>対戦チーム</th>
+          <th>スコア</th>
+          <th>試合会場</th>
+        </tr>
+  {/if}
+        <tr>
+          <td>{$gameList[mydata].ymd_str} {$gameList[mydata].ko_time}</td>
+          <td>{$gameList[mydata].home_team_nm}{$gameList[mydata].home_team_grade}-{$gameList[mydata].away_team_nm}{$gameList[mydata].away_team_grade}</td>
+          <td>
+          <a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+          {if $gameList[mydata].league_status eq '2' || $gameList[mydata].league_status eq '3'}
+            {if $gameList[mydata].vs_result_home eq 'win'}
+          ○
+            {elseif $gameList[mydata].vs_result_home eq 'lose'}
+          ●
+            {elseif $gameList[mydata].vs_result_home eq 'even'}
+          △
+            {/if}
+          {$gameList[mydata].home_team_total}
+          -
+          {$gameList[mydata].away_team_total}
+            {if $gameList[mydata].vs_result_away eq 'win'}
+          ○
+            {elseif $gameList[mydata].vs_result_away eq 'lose'}
+          ●
+            {elseif $gameList[mydata].vs_result_away eq 'even'}
+          △
+            {/if}
+          {elseif $gameList[mydata].league_status eq '4'}
+          （雨天中止）
+          {/if}
+
+          </a></td>
+          <td>          	
+            {if $gameList[mydata].place_id != "" && $gameList[mydata].place_id != -1}
+              <a href="/location_detail/id={$gameList[mydata].place_id}">{$gameList[mydata].place}</a>
+            {else}
+              {$gameList[mydata].place}
+            {/if}
+          </td>
+        </tr>
+{/section}
+  </table>
+</div>
+{/module}

@@ -1,0 +1,17 @@
+<h2>{$catalogData.subject}</h2>
+<div style="text-align:right;">{$catalogData.category_nm}</div>
+  {if $catalogData.errors}
+    {$catalogData.errors}
+  {else}
+    {foreach from = $user_profile.profile item=item key=key name=catalog_item}
+      {if $catalogData[$item.col_header]}
+          {if $key ne "image" && $key ne "contents"}■{$item.name}:<br/>{/if}
+          {$catalogData[$item.col_header]|nl2br}
+          <br/><br/>
+      {/if}
+    {/foreach}
+  {/if}
+
+<div style="text-align:right;font-size:small;"><a href="/catalog_list{if $catalog_group_id != 1}{$catalog_group_id}{/if}/contents_type={$catalogData.contents_type}">{'/modules/catalog/label/group_nm_list'|translate:$catalogData.category_nm}{* [カテゴリ名]一覧 *}</a><br/>
+</div>
+<hr/>

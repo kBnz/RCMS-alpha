@@ -1,0 +1,8 @@
+<h2>{'/modules/location/label/location_category_list_for_user'|translate}{* ’n}ƒJƒeƒSƒŠˆê—— *}</h2>
+
+<ul data-role="listview">
+{foreach from=$categories key=id item=category}
+<li><a href="/location_list/location_category_id={$id}">{$category|escape}({$loc_count_list[$id]})</a></li>
+{/foreach}
+</ul>
+<hr/>

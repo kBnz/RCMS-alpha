@@ -1,0 +1,13 @@
+<h2>{'/modules/member/label/member_intro'|translate}{*メンバー紹介*}</h2>
+<a href="/member_detail/id={$memberList.0.member_id}">
+{if $memberList.0.image_s_exist}
+<img src="{$smarty.const.MEMBER_PHOTO_S_URL}/{$memberList.0.member_id}.jpg" alt="{$memberList.0.disp_name}" />
+{elseif $exists_noimage}
+<img src="/files/member/noimage.jpg" alt="noimage" />
+{/if}
+</a>
+{'/label/name'|translate}{*名前*}: <a href="/member_detail/id={$memberList.0.member_id}">{$memberList.0.disp_name}</a><br/>
+<div style="text-align:right;font-size:small;">
+<a href="/member_list/">{'/modules/member/label/member_list'|translate}{*メンバー一覧*}</a>
+</div>
+<hr/>

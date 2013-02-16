@@ -1,0 +1,38 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+function outputCSV(myForm){
+    alink=myForm.output_csv;
+    mlink=alink.options[alink.selectedIndex].value;
+    if(mlink!="-"){
+    location.href=mlink; 
+}
+}
+</script>
+{/literal}
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/output/output_list/">{'/modules/output'|translate}</a>
+<a href="/management/output/output_csv_list/">出力CSV一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+<div class="main_contents">
+<div id="output_csv_list" class="list_main">
+<p>出力したいタイトルを選んで、「出力する」ボタンを押下して下さい。</p>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<br/>
+<h3>CSV出力</h3>
+<form name="output_csv_list" action="/management/output/output_csv_list/" method="post">
+<select name="output_csv"><option>-</option>{html_options options=$arrMenu}</select>
+<button type="button" onclick="outputCSV(this.form)">出力する</button>
+</form>
+</div>
+</div>
+<br>
+{rcms_include file="management/footer.html"}

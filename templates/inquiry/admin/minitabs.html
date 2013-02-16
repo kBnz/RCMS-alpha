@@ -1,0 +1,26 @@
+<ul class="minitabs">
+
+{if $header.inquiry_id}
+
+    {if $rauth->canUpdate("/inquiry/item/"|cat:$header.inquiry_id)}
+        <li id="minitab_inquiry_edit"><a href="/management/inquiry/inquiry_edit/inquiry_id={$header.inquiry_id}"{if $page_type eq 'inquiry_edit'} class="active"{/if}>{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    {/if}
+
+    {if $rauth->canUpdate("/inquiry/display/"|cat:$header.inquiry_id)}
+    <li id="minitab_inquiry_disp_edit"><a href="/management/inquiry/inquiry_disp_edit/inquiry_id={$header.inquiry_id}"{if $page_type eq 'inquiry_disp_edit'} class="active"{/if}>{'/modules/inquiry/label/inquiry_disp_edit'|translate}</a></li>
+    {/if}
+
+    <li id="minitab_inquiry_bn_list"><a href="/management/inquiry/inquiry_bn_list/inquiry_id={$header.inquiry_id}"{if $page_type eq 'inquiry_bn_list' || $page_type eq 'inquiry_reply_edit' } class="active"{/if}>{'/modules/inquiry/label/inquiry_mail'|translate}{*問い合わせメール*}</a></li>
+
+    {if $rauth->canUpdate("/inquiry/mail/[@inquiry_id="|cat:$header.inquiry_id|cat:"]") && $mail_flg}
+    <li id="minitab_inquiry_send_mail"><a href="/management/inquiry/inquiry_send_mail/inquiry_id={$header.inquiry_id}"{if $page_type eq 'inquiry_send_mail'} class="active"{/if}>{'/label/create_mail'|translate}{*メール作成*}</a></li>
+    {/if}
+
+{else}
+
+    {if $rauth->canInsert("/inquiry/item/")}
+        <li id="minitab_inquiry_edit"><a href="/management/inquiry/inquiry_edit/inquiry_id={$header.inquiry_id}"{if $page_type eq 'inquiry_edit'} class="active"{/if}>{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    {/if}
+
+{/if}
+</ul>

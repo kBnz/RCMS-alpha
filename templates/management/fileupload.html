@@ -1,0 +1,166 @@
+{headblock}
+<link href="/js/jqueryUploadify/2.1.4/uploadify.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/js/jqueryUploadify/2.1.4/jquery.uploadify.v2.1.4.min.js"></script>
+{literal}
+<script type="text/javascript">google.load("swfobject", "2");</script>
+<script type="text/javascript" src="/js/jwplayer/jwplayer.js"></script>
+<script type="text/javascript">
+function file_upload(no,url,hideen_nm,file_type,multi,options) {
+
+    var fileDesc;
+    var fileExt;
+    var buttonImg;
+    var width;
+
+    if(file_type == 'jpg'){
+        fileDesc = 'JPG Image Files (*.jpg), GIF(*.gif), PNG(*.png)';
+        fileExt = '*.jpg;*.gif;*.png;';
+        if (j$('#filesUploaded_preview'+no).find('a').attr('href')==''){
+        // 登録時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_img1.png'|lang_img_path}{literal}';
+            width = 110;
+        }else{
+        // 更新時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_img2.png'|lang_img_path}{literal}';
+            width = 120;
+        }
+    }else if(file_type == 'mp3'){
+        fileDesc = 'Audio Files (*.mp3,*.m4a)';
+        fileExt = '*.mp3;*.m4a';
+        if (j$('#filesUploaded_preview'+no).find('a').attr('href')==''){
+        // 登録時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file.png'|lang_img_path}{literal}';
+            width = 100;
+        }else{
+        // 更新時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file2.png'|lang_img_path}{literal}';
+            width = 140;
+        }
+    }else if(file_type == 'mp4'){
+        fileDesc = 'Movie Files (*.mp4)';
+        fileExt = '*.mp4';
+        if (j$('#filesUploaded_preview'+no).find('a').attr('href')==''){
+        // 登録時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file.png'|lang_img_path}{literal}';
+            width = 100;
+        }else{
+        // 更新時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file2.png'|lang_img_path}{literal}';
+            width = 140;
+        }
+    }else if(file_type == 'pdf'){
+        fileDesc = 'MS-Word/MS-Excel/PowerPoint Files (*.doc,*.xls,*.ppt,*.pdf)';
+        fileExt = '*.doc;*.xls;*.ppt;*.pdf';
+        if (j$('#filesUploaded_preview'+no).find('a').attr('href')==''){
+        // 登録時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file.png'|lang_img_path}{literal}';
+            width = 100;
+        }else{
+        // 更新時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file2.png'|lang_img_path}{literal}';
+            width = 140;
+        }
+    }else if(file_type == 'swf'){
+        fileDesc = 'FLASH Files/PowerPoint Files (*.swf,*.ppt)';
+        fileExt = '*.swf;*ppt';
+        if (j$('#filesUploaded_preview'+no).find('a').attr('href')==''){
+        // 登録時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file.png'|lang_img_path}{literal}';
+            width = 100;
+        }else{
+        // 更新時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file2.png'|lang_img_path}{literal}';
+            width = 140;
+        }
+    }else if(file_type == 'files'){
+        fileDesc = 'All Files (*.*)';
+        fileExt = '*.*';
+        if (j$('#filesUploaded_preview'+no).find('a').attr('href')==''){
+        // 登録時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file.png'|lang_img_path}{literal}';
+            width = 100;
+        }else{
+        // 更新時
+            buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file2.png'|lang_img_path}{literal}';
+            width = 140;
+        }
+    }else{
+        fileDesc = NULL;
+        fileExt = NULL;
+        buttonImg = '{/literal}{$image_host}{'/js/jqueryUploadify/btn_browse_file.png'|lang_img_path}{literal}';
+        width = 100;
+    }
+
+    var options = j$.extend({
+        'sizeLimit'      : 0,
+        'uploader'       : '/js/jqueryUploadify/2.1.4/uploadify.swf',
+        'script'         : url,
+        'cancelImg'      : '{/literal}{$image_host}{literal}/js/jqueryUploadify/cancel.png',
+        'buttonImg'      : buttonImg,
+        'width'          : width,
+        'height'         : 25,
+        'auto'           : true,
+        'multi'          : multi,
+        'queueID'        : 'fileQueue'+no,
+        'fileDesc'       : fileDesc,
+        'fileExt'        : fileExt,
+        'wmode'          : '',
+        'onComplete'     : function(event, queueID, fileObj, reposnse, data) {
+             j$('#filesUploaded_preview'+no).html(reposnse);
+             j$('#filesUploaded_msg'+no).html('<span style="color:red;">{/literal}{'/msg/change_reflected yet'|translate}{literal}</span>');
+             file_upload_ch_obj(j$('#filesUploaded_preview'+no),hideen_nm);
+             j$('#filesUploaded_title'+no).val(fileObj.name);
+        }
+    }, options);
+
+    j$("#uploadify"+no).uploadify(options);}
+
+    function file_upload_ch_obj(obj,hideen_nm){
+        var skip_flg = 0;
+
+        if(!skip_flg){
+                obj.children("a[href$='jpg'],a[href$='jpeg'],a[href$='gif'],a[href$='png']").each(function() {
+                    obj.html('<a id="'+j$(this).attr("id")+'_a" href="'+j$(this).attr("href")+'?'+(new Date()).getTime()+'" target="_blank"><img id="'+j$(this).attr("id")+'" src="'+j$(this).attr("href")+'?'+(new Date()).getTime()+'" style="max-width:200px;"></a>');
+                    obj.append('<input type="hidden" name="'+hideen_nm+'" value="'+j$(this).attr("href").replace( /\/s_/ig , "\/")+'">');
+                    skip_flg = 1;
+                    return true;
+                });
+        }
+
+        if(!skip_flg){
+                obj.children("a[href$='mp3']").each(function() {
+                    obj.html('<div id="mediaplayer'+j$(this).attr("id")+'"></div><br><a target="_blank" id="'+j$(this).attr("id")+'_a" href="'+j$(this).attr("href")+'">{/literal}{'/label/file_format'|translate}{literal}</a>');
+                    obj.append('<input type="hidden" name="'+hideen_nm+'" value="'+j$(this).attr("href")+'">');
+                    swfobject.embedSWF("/js/player_mp3/player_mp3_maxi.swf","mediaplayer"+j$(this).attr("id"),200,20,"8","/js/swfobject2/expressInstall.swf",{mp3:j$(this).attr("href"),showvolume:1});
+                    skip_flg = 1;
+                    return true;
+                });
+        }
+
+        if(!skip_flg){
+                obj.children("a[href$='mp4']").each(function() {
+                    obj.html('<div id="mediaplayer'+j$(this).attr("id")+'"></div><scr'+'ipt type="text/javascript">jwplayer("mediaplayer'+j$(this).attr("id")+'").setup({file: "'+j$(this).attr("href")+'",image: "'+j$(this).attr("href")+'.jpg",width:"480px",height:"360px",stretching:"exactfit"});</scr'+'ipt>');
+                    obj.append('<input type="hidden" name="'+hideen_nm+'" value="'+j$(this).attr("href")+'">');
+                    skip_flg = 1;
+                    return true;
+                });
+        }
+
+        if(!skip_flg){
+                obj.children("a").each(function() {
+                    if (j$(this).attr("href")!=''){
+                        obj.html('<a target="_blank" id="'+j$(this).attr("id")+'_a" href="'+j$(this).attr("href")+'">{/literal}{'/label/file_format'|translate}{literal}</a>');
+                        obj.append('<input type="hidden" name="'+hideen_nm+'" value="'+j$(this).attr("href").replace( /\/s_/ig , "\/")+'">');
+                    }else{
+                        obj.html('');
+                    }
+                    skip_flg = 1;
+                    return true;
+                });
+        }
+    }
+
+</script>
+{/literal}
+
+{/headblock}

@@ -1,0 +1,64 @@
+<h2>{if $const.data_source && $source}{$source.name}{else}外部データ検索{/if}</h2>
+  {* 検索フォーム *}
+    {if $showForm}
+    <form action="/{$page_sysnm}/#module{$contents_id}" id="module{$contents_id}">
+        {if !$const.axis}
+          検索方法:
+          <select name="axis">
+            {html_options options=$axes selected=$axis}
+          </select>
+        {/if}
+        {if !$const.data_source}
+          データソース:
+          <select name="data_source">
+            {foreach from=$sources item=src}
+              <option value="{$src.id}"{if $sourceId == $src.id} selected="selected"{/if}>{$src.name}</option>
+            {/foreach}
+          </select>&nbsp;
+        {/if}
+        {if $axis == 'keyword'}
+          キーワード:
+          <input type="text" name="query[searchTerms]" value="{$query.searchTerms}" />&nbsp;
+        {elseif $axis == 'position'}
+          {if !$const.latitude}
+            緯度:
+            <input type="text" name="query[latitude]" value="{$query.latitude}" {istyle type="n"} />&nbsp;
+          {/if}
+          {if !$const.longitude}
+            経度:
+            <input type="text" name="query[longitude]" value="{$query.longitude}" {istyle type="n"} />&nbsp;
+          {/if}
+        {elseif $axis == 'datetime'}
+          {if !$const.date}
+            日付:
+            <input type="text" name="query[date]" value="{$query.date}" {istyle type="n"} />&nbsp;
+          {/if}
+          {if !$const.time}
+            時間:
+            <input type="text" name="query[time]" value="{$query.time}" {istyle type="n"} />&nbsp;
+          {/if}
+        {/if}
+        <input type="submit" name="api_general_search_exec" value="検索" />
+    </form>
+    <br/>※一度に表示できる件数には限りがあります。目的のデータが見つからないときは、キーワードを追加して絞り込んでください。<br/>
+  {/if}
+
+  {* 検索結果 *}
+  {if $source && $query}
+
+    <dl>
+      {foreach from=$items item=item}
+          {if $item->isFindable()}
+            <dt><a href="/api_general_detail/xid={$source.id}%3A{$item->getId()}">{$item->getName()}</a></dt>
+          {elseif $item->getUrl()}
+            <dt><a href="{$item->getUrl()}" onclick="return !window.open(href)">{$item->getName()}</a></dt>
+          {else}
+            <dt>{$item->getName()}</dt>
+          {/if}
+          <dd>{$item->getSummary()|mbtruncate:100|escape}</dd>
+      {/foreach}
+    </dl>
+
+    <br/>{$source.credit}
+  {/if}
+<hr/>

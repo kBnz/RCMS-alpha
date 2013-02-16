@@ -1,0 +1,398 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<style>
+label {
+    padding-left: 5px;
+}
+ul.init_group_id li{
+    line-height: 1.5em;
+}
+ul.outputcolumns li{
+    line-height: 1.5em;
+}
+</style>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/member/label/batch_process'|translate}{*一括処理*}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/member/member_list/">{'/modules/member'|translate}</a>
+{'/modules/member/label/batch_process'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー管理 >> メンバー >> 一括処理 *}
+
+<div class="clear"></div>
+
+<div class="main_contents member_lump">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<ul class="sub_tab">
+    <li id="here"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_upload',this);return false;" id="a_upload">{'/label/upload'|translate}{*アップロード*}</a></li>
+    <li><a href="javascript:void(0)" onclick="tabnaviCtl('blk_update',this);return false;" id="a_update">{'/modules/member/label/grade_lump_update'|translate}{*学年一括更新*}</a></li>
+    <li><a href="javascript:void(0)" onclick="tabnaviCtl('blk_comment',this);return false;" id="a_update">{'/label/comments_info'|translate}{*コメント情報*}</a></li>
+</ul>
+<div class="clearFloat"><br></div>
+    {* アップロード *}
+    <div id="blk_upload" style="position:relative; display:block;">
+        <div class="list_main">
+
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $successful}
+    <table width="300px;">
+        <tr>
+            <th>{'/label/insert'|translate}{*新規追加*}</th>
+            <td>{$insert_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+        <tr>
+            <th>{'/label/update'|translate}{*更新*}</th>
+            <td>{$update_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+    </table>
+{/if}
+
+{if $upList|@count > 0}
+<table>
+    {foreach from=$upList item=row}
+        <tr>
+            <td>{$row.name1}</td>
+            <td>{$row.name2}</td>
+            <td>{$row.email}</td>
+     </tr>
+ {/foreach}
+</table>
+{/if}
+
+
+<h3>{'/modules/member/msg/download_member_list'|translate}{*メンバーの一覧のダウンロード*}</h3>
+<form id="member_download_all" method="post" action="/management/member/member_download_all/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" id="MODE" value="" />
+
+    <p class="hint">{'/modules/member/msg/download_upload_5000'|translate:$smarty.const.MEMBER_CSV_OUTPUT_OFFSET}{*メンバーIDがあれば上書きし、なければ新規に登録します。ダウンロードとアップロードは5000件ずつ行ってください。*}</p>
+    <table style="width:100%">
+    <tr>
+        <th width="150px">{'/label/download_each_group'|translate}{*グループ毎にダウンロード*}</th>
+        <td>
+        <p><a href="javascript:void(0)" onclick="display('group_select');return false;" >{assign var=lblOutGro value='/label/output_groups'|translate}{'/msg/selecting_item_message'|translate:$lblOutGro}{*出力するグループを選択する*}</a></p>
+            <table style="width:100%;display:none;" id="group_select">
+                <tr>
+                    <td>
+                        <p class="hint">{'/msg/select_no_item_error'|translate:$lblOutGro}{*出力するグループを指定してください。*}</p>
+                        <input type="checkbox" onclick="AllGroupChecked(this.checked, this.form, 'init_group_id[]');" />{'/label/all_check'|translate}
+                        <ul class="init_group_id">
+                        <li><input type="checkbox" name="no_group_id" id="no_group_id" value="1" checked="checked" /><label for="no_group_id">{'/modules/member/label/no_belonging_group_members'|translate}</label>({$no_group_id_cnt})</li>
+                        {foreach from=$group_list key=key item=row}
+                        <li><input type="checkbox" name="init_group_id[]" id="init_group_id_{$key}" value="{$key}" checked="checked" onclick="setOutputCSV(this.form);" /><label for="init_group_id_{$key}">{$row|escape}</label>({$groups_cnt[$key]+0})</li>
+                        {/foreach}
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th width="150px">
+        </th>
+        <td>
+            <div id="output_pattern">loading...</div>{* CSVの出力パターンを表示します *}
+        </td>
+    </tr>
+    </table>
+
+    <table style="width:100%">
+        <th width="150px">{'/label/output_column_setting'|translate}{*出力列設定*}</th>
+        <td>
+        <p><a href="javascript:void(0)" onclick="display('col_select');return false;" >{assign var=lblOutCol value='/label/output_columns'|translate}{'/msg/selecting_item_message'|translate:$lblOutCol}{*出力する列を選択する*}</a></p>
+        <ul class="outputcolumns"  id="col_select" style="display:none;">
+        <p class="hint">{'/msg/select_no_item_error'|translate:$lblOutCol}{*出力する列を指定してください。*}</p>
+        <input type="checkbox" onclick="AllChecked(this.checked, this.form, 'outputcolumns[]');" />{'/label/all_check'|translate}
+        {foreach from=$headerColumns key=key item=row}
+        <li><input type="checkbox" name="outputcolumns[]" id="outputcolumns_{$key}" value="{$row.key}" checked="checked" /><label for="outputcolumns_{$key}">{$row.name|escape}</label></li>
+        {/foreach}
+        </ul>
+        </td>
+    </table>
+
+    {buttonbox}
+        {if $auth.member.update}
+            <button type="submit" id="download_button" onclick="confirmDownload(this.form);return false;">{'/label/download'|translate}{*ダウンロード*}</button>
+        {/if}
+    {/buttonbox}
+</form>
+<br>
+<h3>{'/label/upload'|translate}{*アップロード*}</h3>
+<form method="post" action="/management/member/member_lump/" ENCTYPE="multipart/form-data" id="member_lump_form">
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" id="MODE" value="" />
+        <table style="width:100%">
+            <tr id="tr_file_settings">
+                <th>{'/label/file_settings'|translate}{*ファイル指定*}</th>
+                <td>
+                    <input type="file" size="50" name="MEMBER_CSV" />
+                    <p><a href="/management/member/member_upload_sample/">{'/msg/download_sample'|translate}{*サンプルをダウンロード*}</a></p>
+                </td>
+            </tr>
+            <tr id="tr_overwrite_type">
+                <th>{'/label/csv_update_setting'|translate}{*値がない場合の動作*}</th>
+                <td>
+                    <input type="radio" name="overwrite_type" id="overwrite_type_0" value="0" {if !$formData.update_conf}checked="checked"{/if}/><label for="overwrite_type_0">{'/msg/do_not_update_empty'|translate}{*無視する*}</label><br />
+                    <input type="radio" name="overwrite_type" id="overwrite_type_1" value="1" {if $formData.update_conf}checked="checked"{/if}/><label for="overwrite_type_1">{'/msg/do_update_empty'|translate}{*値なしで更新する*}</label>
+                </td>
+            </tr>
+            <tr id="tr_password_settings">
+                <th>{'/label/password_settings'|translate}{*パスワード設定*}</th>
+                <td>
+                    <p class="hint">{'/modules/member/msg/password_generated_randomly'|translate}{*パスワードが空白の場合に自動でランダムな値を設定します。*}</p>
+                    <input type="radio" name="pad_pass" id="pad_pass_0" value="0" {if !$formData.pad_pass}checked="checked"{/if}/><label for="pad_pass_0">{'/msg/do_nothing'|translate}{*何もしない*}</label><br />
+                    <input type="radio" name="pad_pass" id="pad_pass_1" value="1" {if $formData.pad_pass}checked="checked"{/if}/><label for="pad_pass_1">{'/label/generate_randomly'|translate}{*ランダムに生成する*}</label>
+                </td>
+            </tr>
+            <tr id="tr_registered_groups">
+                <th>{'/label/registered_groups'|translate}{*登録グループ*}</th>
+                <td>
+                    <p class="hint">{'/modules/member/msg/specify_default_group'|translate}{*メンバーが初期に所属するグループを指定してください。*}</p>
+                    <ul class="init_group_id">
+                    {foreach from=$group_list key=key item=row}
+                        <li><input type="checkbox" name="init_group_id[]" id="init_group_id_{$key}" value="{$key}" {if $key|in_array:$formData.init_group_id}checked="checked"{/if}/><label for="init_group_id_{$key}">{$row|escape}</label>({$groups_cnt[$key]+0})</li>
+                    {/foreach}
+                    </ul>
+                </td>
+            </tr>
+            <tr id="tr_login_permission">
+            <th>{'/label/permission_for_login'|translate}{*ログインの許可*}</th>
+                <td>
+                    <p class="hint">{'/modules/member/msg/select_login_permission'|translate}{*新規メンバーにログインを許可するか、設定してください。*}</p>
+                    {html_radios name="login_ok_flg" options=$arrMemberregistLoginOK selected=$login_ok_flg separator="　"}
+                </td>
+            </tr>
+        </table>
+        {buttonbox}
+            {if $auth.member.update}
+                <button type="submit" id="upload_button" onclick="this.form.MODE.value='UPLOAD'">{'/label/send_btn'|translate}{*送信する*}</button>
+            {/if}
+        {/buttonbox}
+    </div>
+    </div>
+    {* ここまでアップロード *}
+    {* 一括更新 *}
+    <div id="blk_update" style="position:relative; display:none;">
+        <h3 class="title">{'/modules/member/msg/current_year'|translate}{*現在の年度*}: {$season}</h3>
+        <p class="hint">{'/modules/member/msg/increase_member_year'|translate}{*選択した学年のメンバーを一括して学年を一つ増やします。現在の年度を変更するには*}<a href="/management/site/site_edit/">{'/label/site_management'|translate}{*サイト管理*}</a></p>
+
+        <div class="list_main">
+        <table style="width:100%">
+            {foreach from=$arrGrade item=i key=grade}
+                <tr>
+                    <td><input type="checkbox" name="grade_update[{$grade}]" value=1{if !$updateMemberCount[$grade]} disabled{/if}>
+                        {assign var="index" value=$grade+1}
+                        {if $arrGrade[$index]}
+                        {'/modules/member/msg/update_to_grade'|translate:$season-1:$i:$season:$arrGrade[$index]}{*{$season-1}年度の{$i}を一括で「{assign var="index" value=$grade+1}{$season}年度の{$arrGrade[$index]}」に更新*}
+                        {else}
+                        {'/modules/member/msg/update_to_graduation'|translate:$season-1:$i:$season}{*{$season-1}年度の{$i}を一括で「{$season}年度卒業{/if}」に更新*}
+                        {/if}
+                        <span class="hint2">({if $updateMemberCount[$grade]}{'/msg/hit'|translate:$updateMemberCount[$grade]}{else}{'/msg/hit'|translate:0}{/if}){*該当$updateMemberCount[$grade]件*}</span>
+                    </td>
+                </tr>
+            {/foreach}
+        </table>
+
+        {buttonbox}
+        {if $auth.member.update}
+            <button type="submit" id="grade_update_button" onclick="this.form.MODE.value='GRADE_UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        {/buttonbox}
+    </div>
+    </div>
+    {* ここまで一括更新 *}
+    <div id="blk_comment" style="position:relative; display:none;">
+        <div class="list_main">
+        <table>
+            <tr style="display:block;" id="subdata_row99">
+                <th width="50">{'/modules/member/label/order'|translate}{*順番*}</th><th width="550">{'/label/title'|translate}{*タイトル*}</th><th width="50">{'/label/delete'|translate}{*削除*}</th>
+            </tr>
+            {section name=subdata loop=$subdata_maxcnt}
+                {assign var=i value=$smarty.section.subdata.index}
+                {if $i < $subdata_cnt}
+                    <tr style="display:block;" id="subdata_row{$i}">
+                        <td width="50">
+                            {if $arrSubData[$i] != ""}<input type="hidden" name="subdata_id[{$i}]" value="{$arrSubData[$i].member_subdata_id}"/>{/if}
+                            <select name="subdata_order_no[{$i}]">{html_options options=$arrSubDataOrder selected=$arrSubData[$i].order_no}</select>
+                        </td>
+                        <td width="550">
+                            <input size="50" maxlength="50" name="subdata_title[{$i}]" type="text" value="{$arrSubData[$i].title}"/>
+                        </td>
+                        <td width="50">
+                            <input name="subdata_dflg[{$i}]" type="checkbox" value="1" id="subdata[dflg][{$i}]" {if $arrSubData[$i].dflg == "1"}checked{/if} /><label for="subdata[dflg][{$i}]">{'/label/delete'|translate}{*削除*}</label>
+                        </td>
+                    </tr>
+                {else}
+                    <tr style="display:none;"  id="subdata_row{$smarty.section.subdata.index}">
+                        <td width="50">
+                            <select name="subdata_order_no[{$i}]">{html_options options=$arrSubDataOrder}</select>
+                        </td>
+                        <td width="550">
+                            <input size="50" maxlength="50" name="subdata_title[{$i}]" type="text" value=""/>
+                        </td>
+                        <td width="50">
+                            <input name="subdata_dflg[{$i}]" type="checkbox" value="1" id="subdata[dflg][{$i}]" /><label for="subdata[dflg][{$i}]">{'/label/delete'|translate}{*削除*}</label>
+                        </td>
+                    </tr>
+                    {if $smarty.section.subdata.index eq $subdata_cnt}
+                        <tr id="subdata_row{$smarty.section.subdata.index}_btn">
+                            <td colspan="3">
+                                <button type="button" onclick="add_subdata_row('subdata_row{$smarty.section.subdata.index}','subdata_row{$smarty.section.subdata.index+1}')">{'/label/add_new_btn'|translate}{*新規追加*}</button>
+                            </td>
+                        </tr>
+                    {elseif $smarty.section.subdata.last}
+                        <tr style="display:none;" id="subdata_row{$smarty.section.subdata.index}_btn">
+                            <td colspan="3">
+                                <button type="button" onclick="add_subdata_row('subdata_row{$smarty.section.subdata.index}','')">{'/label/add_new_btn'|translate}{*新規追加*}</button>
+                            </td>
+                        </tr>
+                    {else}
+                        <tr style="display:none;" id="subdata_row{$smarty.section.subdata.index}_btn">
+                            <td colspan="3">
+                                <button type="button" onclick="add_subdata_row('subdata_row{$smarty.section.subdata.index}','subdata_row{$smarty.section.subdata.index+1}')">{'/label/add_new_btn'|translate}{*新規追加*}</button>
+                            </td>
+                        </tr>
+                    {/if}
+                {/if}
+            {/section}
+        </table>
+        <p class="hint">{'/modules/member/msg/add_comment_title'|translate}{*登録したコメントのタイトルがメンバー編集時に自動的に追加されます*}</p>
+        {buttonbox}
+        {if $auth.member.update}
+            <button type="submit" id="comment_update_button" onclick="this.form.MODE.value='COMMENT_UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        {/buttonbox}
+    </div>
+    </div>
+</form>
+</div>
+
+{assign var=lblCol value='/label/output_columns'|translate}
+{assign var=lblGroup value='/label/output_groups'|translate}
+{literal}
+<script type="text/javascript">
+<!--
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_upload"; //初期表示ブロック
+var a_obj = document.getElementById("a_upload"); //カレント表示タブ(初期)
+
+
+
+function tabnaviCtl(nm, anchorObj){
+    if(blk_name != nm){
+        document.getElementById(blk_name).style.display = "none";
+        blk_name = nm;
+        document.getElementById(nm).style.display = "block";
+        a_obj.style.backgroundPosition = "left top";
+        a_obj = anchorObj;
+        anchorObj.style.backgroundPosition = "left bottom";
+    }
+}
+
+// コメント行の追加
+function add_subdata_row(row_nm,next_row_nm) {
+        document.getElementById(row_nm).style.display = "block";
+        document.getElementById(row_nm+'_btn').style.display = "none";
+        if (next_row_nm != "") {
+                document.getElementById(next_row_nm+'_btn').style.display = "block";
+        }
+}
+
+function confirmDownload(f){
+
+    var blnCheck = 0;
+    for (i = 0; i < f.elements['init_group_id[]'].length; i++ ) {
+        if (f.elements['init_group_id[]'][i].checked == true) {
+        // 1つでもチェックされていればOK
+            blnCheck = 1;
+            break;
+        }
+    }
+
+    if (blnCheck == 0){
+        if (f.elements['no_group_id'].checked == false) {
+        // グループ指定無しだが、「所属グループ無し」が指定されている場合はOK
+            alert('{/literal}{'/msg/select_no_item_error'|translate:$lblGroup}{literal}');
+            return false;
+        }
+    }
+
+    var blnCheck = 0;
+    for (i = 0; i < f.elements['outputcolumns[]'].length; i++ ) {
+        if (f.elements['outputcolumns[]'][i].checked == true) {
+        // 1つでもチェックされていればOK
+            blnCheck = 1;
+            break;
+        }
+    }
+
+    if (blnCheck == 0){
+        alert('{/literal}{'/msg/select_no_item_error'|translate:$lblCol}{literal}');
+        return false;
+    }
+
+    f.MODE.value='DOWNLOAD';
+    f.submit();
+}
+
+Event.observe(window, 'load', function() {
+
+    setOutputCSV($('member_download_all'));
+
+    Event.observe($('no_group_id'), 'click', function() {
+        setOutputCSV($('member_download_all'));
+    });
+
+});
+
+function setOutputCSV(f){
+
+    $('output_pattern').innerHTML = "loading...";
+    var queryString = '';
+    for (i = 0; i < f.elements['init_group_id[]'].length; i++ ) {
+    // チェックボックスがONの時はその値を設定する。
+        if (f.elements['init_group_id[]'][i].checked == true) {
+            queryString += '&init_group_id[]='+f.elements['init_group_id[]'][i].value;
+        }
+    }
+
+    if (f.elements['no_group_id'].checked == true) {
+        queryString += '&no_group_id='+f.elements['no_group_id'].value;
+    }
+
+    new Ajax.Updater("output_pattern", '/management/member/member_lump_output_pattern/', {method: 'get', parameters: queryString});
+}
+
+function AllGroupChecked(check, form, ele) {
+    if (!form) return;
+
+    var cb = form.elements[ele];
+    if (!cb) return;
+
+    if (!cb.length) {
+        cb = [cb];
+    }
+    for (var i = 0 ; i < cb.length ; i++) {
+        if (!cb[i].disabled) {
+            cb[i].checked = check;
+        }
+    }
+    form.elements['no_group_id'].checked = check;
+    setOutputCSV(form);
+}
+
+// -->
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

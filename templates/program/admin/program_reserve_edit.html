@@ -1,0 +1,122 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirm_delete(){
+    if (confirm("削除してもよろしいですか？")) {
+        document.program_reserve_edit.MODE.value='DELETE';
+        document.program_reserve_edit.submit();
+    }
+}
+//管理者コメント欄制御用関数
+function switchTextfield(){
+    if(document.getElementById('admin_note').style.display == "none"){
+        document.getElementById('admin_note').style.display = "block";
+        document.getElementById('open').style.display = "none";
+    }
+    else{
+        document.getElementById('admin_note').style.display = "none";
+        document.getElementById('open').style.display = "block";
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>予約編集</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+<a href="/management/program/program_reserve_list/">予約一覧</a>
+<a href="/management/program/program_reserve_daily/day={$day}">一日スケジュール</a>
+予約編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">【{$header.module_type_nm}】{if $content_title}{$content_title}{/if}</h3>
+<ul class="minitabs">
+ <li><a href="/management/program/program_list/">クラス一覧</a></li>
+ <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+ <li><a href="/management/program/program_schedule_list/">スケジュール一覧</a></li>
+ <li><a href="/management/program/program_reserve_list/" class="active">予約一覧</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="program_reserve_edit" id="program_reserve_edit" action="/management/program/program_reserve_edit/" method="POST">
+    <input type="hidden" name="reserve_header_id" value="{$reserve_header_id}" />
+    <input type="hidden" name="reserve_id" value="{$reserve_id}" />
+    <input type="hidden" name="module_id" value="{$module_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $reserve_id}UPDATE{else}INSERT{/if}" />
+
+    <table width="100%">
+    {foreach from=$user_input_items item=item key=key}
+      <tr>
+        <th width="120px">{$header.$key}</th>
+        {assign var=form_nm value=$key|replace:"ext_title":"ext"}
+        {if $item.input_type == $smarty.const.RESERVE_INPUT_TEXTAREA}
+          <td><div><textarea name="{$form_nm}" cols="30" rows="5">{$formData.$form_nm}</textarea></div></td>
+        {elseif $item.input_type == $smarty.const.RESERVE_INPUT_TEXT}
+          <td><input type="text" name="{$form_nm}" value="{$formData.$form_nm}" size="30" /></td>
+        {/if}
+      </tr>
+    {/foreach}
+      <tr>
+        <th width="120px">申し込み日時</th>
+        <td>
+          {if $formData.inst_ymdhi}
+            {$formData.inst_ymdhi|pg_dateformat:"%Y/%m/%d %H:%M:%S"}
+          {else}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>管理側のメモ</th>
+        <td>{$formData.admin_note|nl2br}
+          {if $auth.reserve.update}
+            <div style="display:block;" id="open"><a href="javascript:void(0)" onclick="switchTextfield()">書き込む</a></div>
+            <div  style="display: none;" id="admin_note">
+              <textarea name="admin_note" cols="30" rows="5" >{$formData.admin_note}</textarea>
+              <p>
+                下の更新ボタンを押さないと保存されないので気をつけてください。
+                <a href="javascript:void(0)" onclick="switchTextfield()">閉じる</a>
+              </p>
+            </div>
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>処理状況</th>
+        {if $formData.syori_flg}
+          <td>{html_radios name="syori_flg" options=$arrSyoriFlg selected=$formData.syori_flg}</td>
+        {else}
+          <td>{html_radios name="syori_flg" options=$arrSyoriFlg selected=$smarty.const.RESERVE_SYORI_NOTDONE}</td>
+        {/if}
+      </tr>
+      <tr>
+        <th width="120px">最終更新日</th>
+        <td>{if $formData.update_ymdhi}{$formData.update_ymdhi|pg_dateformat:"%Y/%m/%d %H:%M:%S"}{/if}</td>
+      </tr>
+    </table>
+
+    {buttonbox}
+      {if $auth.reserve.update && $reserve_id != ''|| $auth.reserve.insert && $reserve_id == ''}
+        <button type="submit">更新する</button>
+      {/if}
+      {if $auth.reserve.delete && $reserve_id != ''}
+        <button type="button" onclick="confirm_delete()">削除する</button>
+      {/if}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,42 @@
+{module name="shopping_list_digest"}
+<h2 class="module_title"><span>商品一覧</span></h2>
+<div class="module_contents">
+
+{foreach from=$shoppingList item=row}
+<div class="ShoppingItem"{if $row.parent_id ne 0}style="padding-left: 5em"{/if}>
+  <h3>{$row.subject}</h3>
+    <p >
+    <table >
+    {foreach from=$user_profile_list[$row.contents_type].profile item=item key=key name=shopping_item}
+        {if $smarty.foreach.shopping_item.first}
+        <tr>
+            <td rowspan={$user_profile_list[$row.contents_type].size}>A{$row.$key}</td><td align="center"></td>
+        </tr>
+        {else}
+        <tr>
+            <td align ="left">
+            {if $key == 'image'}
+                {if $row.detail_flg}{*詳細あり*}
+                B<a href="{$smarty.const.ROOT_URL}/shopping_detail/id={$row.shopping_id}"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+                {else}{*詳細なし*}
+                C<a href="{$row.image_src_s}" target="_blank"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+                {/if}
+            {else}
+            D{$item.name}：{$row.$key}
+            {/if}
+            {if $key == 'price'}円{/if}
+            </td>
+        </tr>
+        {/if}
+    {/foreach}
+    </table>
+  {if $row.group_nm != ""}<span class="group">グループ：[{$row.group_nm}]</span>{/if}
+    </p>
+</div>
+{/foreach}
+
+{if !$using_season}
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+{/if}
+</div>
+{/module}

@@ -1,0 +1,20 @@
+{module name="shopping_category_list"}
+<h2 class="module_title">カテゴリ</h2>
+<div class="module_contents">
+<ul>
+  <li>
+     <a href="/{$link_page_sysnm}/">
+      <span>【このグループの全商品】</span>
+     </a>
+  </li>
+{foreach from=$shopping_category_list item=row}
+  <li>{if $row.parent_id != 0}└{/if}
+     <a href="/{$link_page_sysnm}/contents_type={$row.contents_type}">
+       {$row.category_nm}<span>({$row.cnt})</span>
+     </a>
+  </li>
+{/foreach}
+</ul>
+
+</div><!--//module_contents-->
+{/module}

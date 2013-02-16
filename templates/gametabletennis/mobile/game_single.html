@@ -1,0 +1,68 @@
+{* $i ... 0 -> シングルス, 1 -> ダブルス *}
+{section name=i start=0 loop=2}{assign var="i" value=$smarty.section.i.index}
+
+{if $singleList[$i]}
+<h3>{$arrTabletennisGameType[$i]}</h3>
+
+  {foreach from=$singleList[$i] item=row}
+<p>{$row.round}</p>
+
+    <div style="background-color:{$smarty.const.TEAMCOLOR_tabletennis};">
+      {* $j は $i = 0(シングルス) なら 1 のみ、$i = 1(ダブルス) なら 1, 2 *}
+      {section name=j start=1 loop=$i+2}{assign var="j" value=$smarty.section.j.index}
+        {if $row.members.self[1][$j].member_id != "" && $row.members.self[1][$j].member_id != -1}
+          <a href="/member_detail/id={$row.members.self[1][$j].member_id}">{$row.members.self[1][$j].name}</a>
+        {else}
+          {$row.members.self[1][$j].name}
+        {/if}
+        {if $row.members.self[1][$j].info != ""}({$row.members.self[1][$j].info}){/if}
+        {if !$smarty.section.j.last}<br />{/if}
+      {/section}
+    </div>
+    vs
+    <div style="background-color: #999999; color: #ffffff;">
+      {section name=j start=1 loop=$i+2}{assign var="j" value=$smarty.section.j.index}
+        {$row.members.opp[1][$j].name}{if $row.members.opp[1][$j].info != ""}({$row.members.opp[1][$j].info}){/if}
+        {if !$smarty.section.j.last}<br />{/if}
+      {/section}
+    </div>
+    <br>
+
+    <div style="border-bottom: 1px solid #000000 !important;">
+    <span style="text-align: center; background-color:{$smarty.const.TEAMCOLOR_tabletennis};">
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_NORMAL}
+        {$row.Self_Won}
+      {/if}
+    </span>
+    -
+    <span style="text-align: center; background-color: #999999; color: #ffffff;">
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_NORMAL}
+        {$row.Opp_Won}
+      {/if}
+    </span>
+    </div><br>
+
+      {if $row.win_by_default == $smarty.const.GAME_TABLETENNIS_WIN_BY_DEFAULT}
+        不戦勝
+      {elseif $row.win_by_default == $smarty.const.GAME_TABLETENNIS_LOSE_BY_DEFAULT}
+        不戦敗
+      {else}
+          <div style="border-bottom: 1px solid #000000;">
+              {foreach from=$row.games item=game}
+                    <span style="border: 1px solid #ffffff; background-color:{$smarty.const.TEAMCOLOR_tabletennis};">{$game.self}</span>
+                    -
+                    <span style="border: 1px solid #ffffff; background-color: #999999; color: #ffffff;">{$game.opp}</span>
+                <br>
+              {/foreach}
+            <br>
+          </div>
+      {/if}
+    </div>
+    <br>
+
+<br><hr>
+  {/foreach}
+
+{/if}
+
+{/section}

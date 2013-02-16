@@ -1,0 +1,26 @@
+{module name="keyword_detail"}
+<h2 class="module_title"><span>{if $keyword_list.keyword}{$keyword_list.keyword}{else}{$word}{/if}({$keyword_list.japanese_syllabary})</span></h2>
+<div class="module_contents">
+
+{if $keyword_list.keyword}
+  {if $dsp_description != ""}
+    <p>{$dsp_description|nl2br}</p>
+  {else}
+    <p>{$keyword_list.description|nl2br}</p>
+  {/if}
+  {if $keyword_list.link_name_1 != "" || $keyword_list.link_name_2 != "" || $keyword_list.link_name_3 != "" || $keyword_list.link_name_4 != "" || $keyword_list.link_name_5 != ""}
+    <h3>［{'/label/related_keyword_link'|translate}{*関連キーワードリンク*}］</h3>
+    <ul>
+    {if $keyword_list.link_name_1 != ""}<li><a href="{$keyword_list.link_1}" target="_blank">{$keyword_list.link_name_1}</a></li>{/if}
+    {if $keyword_list.link_name_2 != ""}<li><a href="{$keyword_list.link_2}" target="_blank">{$keyword_list.link_name_2}</a></li>{/if}
+    {if $keyword_list.link_name_3 != ""}<li><a href="{$keyword_list.link_3}" target="_blank">{$keyword_list.link_name_3}</a></li>{/if}
+    {if $keyword_list.link_name_4 != ""}<li><a href="{$keyword_list.link_4}" target="_blank">{$keyword_list.link_name_4}</a></li>{/if}
+    {if $keyword_list.link_name_5 != ""}<li><a href="{$keyword_list.link_5}" target="_blank">{$keyword_list.link_name_5}</a></li>{/if}
+    </ul>
+  {/if}
+{else}
+  <p>{$keyword_message|nl2br}</p>
+{/if}
+</div>
+{/module}
+

@@ -1,0 +1,339 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{headblock}
+{literal}
+<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css">
+<script src="/js/codemirror/lib/codemirror.js"></script>
+<script src="/js/codemirror/lib/overlay.js"></script>
+<script src="/js/codemirror/mode/xml/xml.js"></script>
+<script src="/js/codemirror/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror/mode/css/css.js"></script>
+<link rel="stylesheet" href="/js/codemirror/theme/default.css">
+<link rel="stylesheet" href="/js/codemirror/theme/night.css">
+<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<style type="text/css">
+span.usepage a {
+  font-size: 0.8em;
+  margin-right: 15px; 
+  color: green;
+}
+.CodeMirror {border: 1px solid black;}
+.cm-s-default .cm-smarty {color: #A11;}
+.cm-s-night .cm-smarty {color: #FF8000;}
+.cm-smarty-cmt {color: green;}
+.cm-smarty-val {color: blue;}
+.cm-s-default .cm-smarty-if,.cm-s-default .cm-smarty-foreach  {color: #A11;font-weight:bold;}
+.cm-s-night .cm-smarty-if,.cm-s-night .cm-smarty-foreach  {color: #FF8000;font-weight:bold;}
+.cm-s-default span.cm-tag  {color: #000;}
+.cm-s-default span.cm-string  {color: #808000;}
+.cm-s-default span.cm-comment,.cm-s-night span.cm-comment  {color: green;}
+.cm-s-default span.cm-attribute,.cm-s-night span.cm-attribute  {color: #93f;}
+.cm-s-default span.cm-error,.cm-s-night span.cm-error  {color: #000;}
+.searched {background: yellow;}
+
+.CodeMirror-scroll {
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom:10px;
+}
+.CodeMirror {
+        line-height:130%;
+        font-size: 1.2em;
+}
+div.list_main {
+        width:98%;
+}
+div.main_contents {
+        width:100%;
+        margin:10px;
+}
+div#content{
+    width:100%;
+}
+</style>
+{/literal}
+{/headblock}
+
+{assign var=templateedit_id value=$formData.templateedit_id}
+<div class="list_right_bt">
+<h2>{'/modules/templateedit/label/templateedit_edit'|translate}</h2>
+<ul>
+<li class="add">
+    <a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a>
+</li>
+{if $formData.templateedit_id}
+<li class="normal"><a href="/management/templateedit/templateedit_history/templateedit_id={$formData.templateedit_id}"><span>{'/label/update_history'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/templateedit/templateedit_list/">{'/modules/templateedit'|translate}</a>
+{'/modules/templateedit/label/templateedit_edit'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/templateedit/templateedit_edit/templateedit_id=$templateedit_id"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form name="templateedit_edit_form" id="templateedit_edit_form" method="POST" action="/management/templateedit/templateedit_edit/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="templateedit_id" value="{$formData.templateedit_id}" />
+  <input type="hidden" name="module_tpl_id" value="{$smarty.request.module_tpl_id}" />
+  <input type="hidden" name="page_id" value="{$page_id}" />
+  <input type="hidden" name="target_type" value="{$target_type}" />
+  <input type="hidden" name="mobile_flg" value="{$smarty.request.mobile_flg}" />
+  <input type="hidden" name="module_id" value="{$module_id}" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+  {if $templateedit_id}
+    {lang_selector meta=$docmeta link='/management/templateedit/templateedit_edit/templateedit_id='|cat:$templateedit_id}
+  {/if}
+
+  <table width="100%">
+    <tr>
+      <th>{'/modules/templateedit/label/kind_of_template'|translate}{* テンプレートの種類 *}</th><td colspan="3">{'/label/module'|translate}{* モジュール *}:{$st_data.module_title}　{'/label/contents'|translate}{* コンテンツ *}:{$st_data.module_php_nm}　{'/modules/templateedit/label/template'|translate}{* テンプレート *}:{$st_data.module_tpl_nm}</td>
+    </tr>
+    <tr>
+      <th>{'/modules/templateedit/label/coverage'|translate}{* 適用範囲 *}</th>
+      <td width="30%">{$target_nm|escape}<br>
+      {if $use_page_list|@count > 0}
+      <span class="usepage">
+          {foreach from=$use_page_list item=page}
+              <a href="{if $page.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $page.page_sysnm ne 'top'}{$page.page_sysnm}/{/if}" target="_blank">{$page.page_nm|escape}</a>
+          {/foreach}
+      </span>
+      {/if}
+      </td>
+      <th>{'/label/device'|translate}{* デバイス *}</th>
+      <td width="30%">{if $formData.mobile_flg eq 1 || $smarty.request.mobile_flg eq 1}{'/modules/templateedit/label/for_mobile'|translate}{* モバイル用 *}{elseif $formData.mobile_flg eq 2 || $smarty.request.mobile_flg eq 2}{'/modules/templateedit/label/for_smartphone'|translate}{* スマートフォン用 *}{elseif $formData.mobile_flg eq 3 || $smarty.request.mobile_flg eq 3}{'/modules/templateedit/label/for_facebook'|translate}{* Facebook用 *}{else}{'/modules/templateedit/label/for_PC'|translate}{* PC用 *}{/if}</td>
+    </tr>
+    <tr>
+      <th>{'/label/update_time'|translate}{* 更新日時 *}</th><td>{$formData.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}({if $formData.templateedit_id eq ''}{'/label/add_new'|translate}{* 新規追加 *}{elseif $formData.default_flg eq '1'}{'/label/default'|translate}{* デフォルト *}{else}{'/modules/templateedit/label/customized'|translate}{* カスタマイズ済 *}{/if})</td>
+      <th>{'/label/updated_by'|translate}{* 更新者 *}</th><td>{$formData.admin_nm}</td>
+    </tr>
+  </table>
+
+<!--
+  {if $templateedit_id}
+    <p><a href="/management/templateedit/templateedit_edit/templateedit_id={$templateedit_id}&_doc_lang={$docmeta.lang}&translate=1">{ldelim}translate{rdelim}の部分を翻訳して再読み込みする</a></p>
+  {else}
+    <p><a href="/management/templateedit/templateedit_edit/module_tpl_id={$smarty.request.module_tpl_id}&target_type={$target_type}&page_id={$page_id}&module_id={$module_id}&mobile_flg={$smarty.request.mobile_flg}&translate=1">{ldelim}translate{rdelim}の部分を翻訳して再読み込みする</a></p>
+  {/if}
+-->
+<input type="checkbox" name="" value="1" onclick="switchTheme(this.checked);">色を反転させる
+｜
+<input type="checkbox" name="" value="1" onclick="switchCoedMirror(this.checked);">ハイライトしない
+｜
+<input type="text" style="width: 5em" id="query" value="">
+<button type="button" onclick="CodeMirrorSearch()">検索</button>
+｜
+<input type="text" style="width: 5em" id="query2">=>
+<input type="text" style="width: 5em" id="replace">
+<button type="button" onclick="CodeMirrorReplace()">置換</button>
+<button type="button" onclick="j$('div.CodeMirror').focus();j$('div.CodeMirror').select();">全て選択</button>
+<!--
+<button type="button" onclick="editor.undo()">戻る</button>
+<button type="button" onclick="editor.redo()">進む</button>
+-->
+  <textarea name="template_text" id="template_text">{$formData.template_text|escape}</textarea><br>
+  <div class="hint">{'/modules/templateedit/msg/you_can_customize'|translate}{* 通常はシステム側の用意されたテンプレートが利用されますが、カスタマイズもできます。 *}</div>
+  {buttonbox}
+        {if $templateedit_id != ""}
+
+      {if $docmeta.is_waiting}
+        {* これは承認待ちドキュメント *}
+
+        {if $rauth->canUpdate("/templateedit/item/$templateedit_id", $docmeta.lang)}
+          {if $rauth->unlimitedUpdate("/templateedit/item/$templateedit_id", $docmeta.lang)}
+            {* 許可する権限がある *}
+            <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>
+            <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>
+          {elseif $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+          {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+          {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+            {else}
+                {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+
+      {else}
+        {* これは通常ドキュメント *}
+
+        {if $docmeta.has_waiting}
+          {* 承認待ちドキュメントがある場合は何もできない *}
+            {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+            <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+        {else}
+          {* 通常ドキュメントに対する更新処理 *}
+          {if $rauth->canUpdate("/templateedit/item/$templateedit_id", $docmeta.lang)}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+            {if $formData.default_flg ne '1'}
+              <button type="button" onclick="resetConfirm(this.form)">{'/modules/templateedit/label/reset'|translate}{* 初期に戻す *}</button>
+            {/if}
+          {/if}
+          {if $rauth->canDelete("/templateedit/item/$templateedit_id", $docmeta.lang)}
+            {* 削除権限がある *}
+            <button type="button" onclick="deleteConfirm(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+          {/if}
+        {/if}
+      {/if}
+    {else}
+      {if $rauth->canInsert("/templateedit/item/")}
+        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/add_btn'|translate}</button>
+      {/if}
+    {/if}
+
+  {/buttonbox}
+
+  </form>
+</div>
+</div>
+
+{literal}
+<script type="text/javascript">
+function resetConfirm(f) {
+    var msg = "{/literal}{'/modules/templateedit/msg/reset_confirm'|translate}{* これまで編集した内容を破棄して、\nRCMSの初期テンプレートを読み込みます。\nよろしいですか？ *}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "RESET";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+
+function deleteConfirm(f) {
+    var msg = "{/literal}{'/modules/templateedit/msg/delete_confirm'|translate}{* 選択されたカスタマイズテンプレートを削除してもよろしいですか？ *}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "DELETE";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+
+CodeMirror.defineMode("smarty", function(config, parserConfig) {
+  var smartyOverlay = {
+    token: function(stream, state) {
+      if (stream.match("{*")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "*" && stream.next() == "}") break;
+        return "smarty-cmt";
+      }else if (stream.match("{$")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-val";
+      }else if (stream.match("{if")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-if";
+      }else if (stream.match("{/if")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-if";
+      }else if (stream.match("{else")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-if";
+      }else if (stream.match("{foreach")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-foreach";
+      }else if (stream.match("{/foreach")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty-foreach";
+      }else if (stream.match("{")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}") break;
+        return "smarty";
+      }
+      while (stream.next() != null && !stream.match("{", false) && !stream.match("{*", false)) {}
+      return null;
+    }
+  };
+  return CodeMirror.overlayParser(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), smartyOverlay);
+});
+
+var editor = CodeMirror.fromTextArea(
+                 document.getElementById("template_text"),
+                 {
+                     mode: "smarty",
+                     indentUnit: 4,
+                     indentWithTabs: false,
+                     tabMode: "shift",
+                     enterMode: "keep",
+                     electricChars: false,
+                     lineNumbers: true,
+                     firstLineNumber: 1,
+                     gutter: false,
+                     fixedGutter:false,
+                     matchBrackets: true
+                  });
+
+var lastPos = null, lastQuery = null, marked = [];
+
+function unmark() {
+  for (var i = 0; i < marked.length; ++i) marked[i]();
+  marked.length = 0;
+}
+
+function CodeMirrorSearch() {
+  unmark();                     
+  var text = document.getElementById("query").value;
+  if (!text) return;
+  for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+    marked.push(editor.markText(cursor.from(), cursor.to(), "searched"));
+
+  if (lastQuery != text) lastPos = null;
+  var cursor = editor.getSearchCursor(text, lastPos || editor.getCursor());
+  if (!cursor.findNext()) {
+    cursor = editor.getSearchCursor(text);
+    if (!cursor.findNext()) return;
+  }
+  editor.setSelection(cursor.from(), cursor.to());
+  lastQuery = text; lastPos = cursor.to();
+}
+
+function CodeMirrorReplace() {
+  unmark();
+  var text = document.getElementById("query2").value,
+      replace = document.getElementById("replace").value;
+  if (!text) return;
+  for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+    cursor.replace(replace);
+}
+
+function switchCoedMirror(checked){
+    if(checked){
+        editor.setOption("mode", false);
+    }else{
+        editor.setOption("mode", "smarty");
+    }
+}
+function switchTheme(checked){
+    if(checked){
+        editor.setOption("theme", 'night');
+    }else{
+        editor.setOption("theme", 'default');
+    }
+}
+
+
+</script>
+{/literal}
+{rcms_include file="management/footer.html"}

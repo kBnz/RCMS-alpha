@@ -1,0 +1,237 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+    <h2>{'/modules/templateedit/label/templateedit_list'|translate}{* テンプレート一覧 *}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/templateedit/templateedit_list/">{'/modules/templateedit'|translate}</a>
+{'/modules/templateedit/label/templateedit_list'|translate}{* テンプレート一覧 *}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+    <div class="list_main">
+        <div id="template_resizable_wrapper">
+            <div id="template_handler"></div>
+            <div id="template_left_list">
+                {rcms_include file="management/messages_box.html" messages=$messages}
+                {rcms_include file="management/errors_box.html" errors=$errors}
+                <div class="template_search_form">
+                    <form action="/management/templateedit/templateedit_list/" method="get">
+                        <input type="search" name="keyword" value="{$smarty.request.keyword}">
+                        <input type="submit" name="subflg" value="{'/label/search'|translate}{* 検索 *}">
+                    </form>
+                    <form name="templateedit_edit_form" id="templateedit_edit_form" method="get" action="/management/templateedit/templateedit_edit/" target="_blank">
+                        <select name="page_id" id="page_id">{html_options options=$arrPage selected=$smarty.request.page_id}</select><br />
+                        <input type="radio" name="mobile_flg" value="0" checked>{'/modules/templateedit/label/for_PC'|translate}{* PC用 *}
+                        <input type="radio" name="mobile_flg" value="1" >{'/modules/templateedit/label/for_mobile'|translate}{* モバイル用 *}
+                        <input type="radio" name="mobile_flg" value="2" >{'/modules/templateedit/label/for_smartphone'|translate}{* スマートフォン用 *}
+                        {if $module_installed.social}
+                        <input type="radio" name="mobile_flg" value="3" >{'/modules/templateedit/label/for_facebook'|translate}{* Facebook用 *}
+                        {/if}
+                    </form>
+                </div>
+                <div class="scroll_list">
+                    {if $changedFileList|@count > 0}
+                        <table>
+                            <thead>
+                                <tr>
+        {if false}
+                                    <th>{'/label/edit'|translate}{* 編集 *}</th>
+                                    <th>{'/label/device'|translate}{* デバイス *}</th>
+                                    <th>{'/modules/templateedit/label/coverage'|translate}</th>
+                                    <th>{'/label/module'|translate}{* モジュールタイプ *}</th>
+                                    <th>{'/modules/templateedit/label/contents_type'|translate}{* コンテンツタイプ *}</th>
+        {/if}
+                                    <th>{'/modules/templateedit/label/template'|translate}{* テンプレート *}</th>
+        {if false}
+                                    <th>{'/label/update_time'|translate}{* 更新日時 *}</th>
+        {/if}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach item=item from=$changedFileList}
+                                    <tr>
+        {if false}
+                                        <td {if $item.use_page_list|@count > 0}rowspan="2"{/if}>
+                                            <a href="javascript:void(0);" onClick="window.open('/management/templateedit/templateedit_edit/templateedit_id={$item.templateedit_id}&page_modify_mode=1','','width=930,height=800,scrollbars=1,resizable=yes');return false;">
+                                                {'/label/edit'|translate}{* 編集 *}
+                                            </a>
+                                        </td>
+                                        <td {if $item.use_page_list|@count > 0}rowspan="2"{/if}>
+                                            {if $item.mobile_flg eq 1}
+                                                {'/label/mobile'|translate}{* モバイル *}
+                                            {elseif $item.mobile_flg eq 2}
+                                                {'/modules/templateedit/label/for_smartphone'|translate}{* スマートフォン *}
+                                            {elseif $item.mobile_flg eq 3}
+                                                {'/modules/templateedit/label/for_facebook'|translate}{* Facebook *}
+                                            {else}
+                                                {'/modules/templateedit/label/PC'|translate}{* PC *}
+                                            {/if}
+                                        </td>
+                                        <td {if $item.use_page_list|@count > 0}rowspan="2"{/if}>{$item.target_nm|escape}</td>
+                                        <td>{$item.module_title}</td>
+                                        <td>{$item.module_php_nm}</td>
+        {/if}
+                                        <td>{$item.module_tpl_nm}</td>
+        {if false}
+                                        <td>{$item.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+                                    </tr>
+                                    {if $item.use_page_list|@count > 0}
+                                        <tr>
+                                            <td colspan="4" class="usepage">
+                                            {foreach from=$item.use_page_list item=page}
+                                                <a href="{if $page.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $page.page_sysnm ne 'top'}{$page.page_sysnm}/{/if}" target="_blank">{$page.page_nm|escape}</a>
+                                            {/foreach}
+                                            </td>
+                                        </tr>
+                                    {/if}
+        {/if}
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    {/if}
+                </div>
+            </div>
+            <div id="template_right_contents">
+                <div class="template_table_knob"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+(function($) {
+    function confirmSubmit() {
+        var contentsval = document.getElementById('contents_type').value;
+        if(contentsval == '') {
+            alert('編集するテンプレートを選択してください');
+            return false;
+        }
+        return true;
+    }
+    
+    $(document).ready(function() {
+        // rcmsResizableCellsの登録
+        $("#template_resizable_wrapper").rcmsResizableCells({
+            cell1: "#template_left_list",
+            cell2: "#template_right_contents",
+            handle: "#template_handler",
+            cell1MinWidth: 200,
+            cell1MaxWidth: 600,
+            direction: "horizon",
+            position: "relative",
+            switchBtn: ".template_table_knob"
+        });
+
+        $(window).on("load resize", cellSizeChange);
+
+        // 各セルのサイズ定義(resizableCells対応)
+        function cellSizeChange() {
+            var configSize = $(window).height() - 125;
+            $("div.scroll_list").height(configSize - $(".template_search_form").height());
+            $("#template_handler").height(configSize);
+            $("#template_right_contents").height(configSize);
+        }
+
+        // モジュールタイプが変わったときにコンテンツとテンプレートの選択肢を入れ替える
+        function changeModuleType() {
+            var module_type   = document.getElementById("module_type").value;
+            if (module_type == 'common'){
+                var moduleList = [["0","{/literal}{'/label/common'|translate}{literal}"]];
+                contentstypeLoatedhandler(moduleList);
+            }else{
+                getModuleData(module_type, "", "type", contentstypeLoatedhandler);
+            }
+        }
+    
+        function changeContentsType() {
+            var module_type   = document.getElementById("module_type").value ;
+            var contents_type = document.getElementById("contents_type").value ;
+            // テンプレート一覧
+            $.getJSON(
+                "/direct/templateedit/templates/",
+                    {'module_nm':module_type,'contents_type':contents_type},
+                    function(rs) {
+                        var opt = document.getElementById("template") ;
+                        for (var i = opt.options.length ; i >= 0 ; i--) {
+                            opt.options[i] = null;
+                        }
+                        for (var i = 0 ; i < rs.length ; i++) {
+                            opt.options[i] = new Option(rs[i].name, rs[i].id);
+                        }
+                    }
+            );
+            // コンテンツ一覧
+            $.getJSON(
+                "/direct/templateedit/contents/",
+                    {'module_nm':module_type,'contents_type':contents_type},
+                    function(rs) {
+                        var opt = document.getElementById("module_id") ;
+                        for (var i = opt.options.length ; i >= 0 ; i--) {
+                            opt.options[i] = null;
+                        }
+                        for (var i = 0 ; i < rs.length ; i++) {
+                            opt.options[i] = new Option(rs[i].name, rs[i].id);
+                        }
+                        if (rs.length) {
+                            $('#target_type_content_li').show();
+                        }
+                        else {
+                            $('#target_type_content_li').hide();
+                            if ($('target_type_content').checked) {
+                                $('target_type_all').checked = true;
+                            }
+                        }
+                    }
+            );
+        }
+    
+        function contentstypeLoatedhandler(data, args) {
+            var opt = document.getElementById("contents_type") ;
+            for (var i = opt.options.length ; i >= 0 ; i--) {
+                opt.options[i] = null;
+            }
+            for (var i = 0 ; i < data.length ; i++) {
+                opt.options[i] = new Option(data[i][1], data[i][0]);
+            }
+            changeContentsType();
+        }
+    
+        $('#module_type').change(function() {
+            changeModuleType();
+        });
+        $('#contents_type').change(function() {
+            changeContentsType();
+        });
+    
+        // 個別のページを選択する場合に、ラジオボタンを自動で変更する
+        $('#page_id').click(function() {
+            $('#target_type_page').attr('checked','checked');
+        });
+        $('#module_id').click(function() {
+            $('#target_type_content').attr('checked','checked');
+        });
+    
+        // initialize
+        changeModuleType();
+    {/literal}{if $smarty.request.contents_type}{literal}
+    
+        $('#contents_type').val('{/literal}{$smarty.request.contents_type}{literal}');
+    {/literal}{/if}{literal}
+    {/literal}{if $smarty.request.module_tpl_id}{literal}
+    
+        $('#template').val('{/literal}{$smarty.request.module_tpl_id}{literal}');
+    {/literal}{/if}{literal}
+    });
+})(jQuery);
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

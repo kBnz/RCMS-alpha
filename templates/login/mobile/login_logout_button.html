@@ -1,0 +1,9 @@
+{if $Login_member_id}{* 未ログインのときに表示する *}
+<h2 class="module_title"><span>{'/label/logout'|translate}{*ログアウト*}</span></h2>
+<a id="logout_button{$contents_id}"></a>
+<form action="/direct/login/logout/" method="get">
+<input type="submit" value="{'/label/logout'|translate}{*ログアウト*}"/>
+</form>
+<br/>
+<hr/>
+{/if}

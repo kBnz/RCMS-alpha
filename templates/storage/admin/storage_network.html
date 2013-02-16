@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/storage/storage_list/">{'/modules/storage'|translate}</a>
+{/pankuzu}
+<div class="clear"></div>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<h3>外部ストレージのネットワーク設定に関して</h3>
+RCMSのシステム外にあるレンタルサーバなどを仮想的にRCMSのファイル置き場として利用できます。<br>
+<br>
+【設定手順】<br>
+
+１、レンタルサーバなどで外部にサーバを用意する。<br>
+２、用意したサーバで{$smarty.const.ROOT_URL}を利用できるように設定する。その際にDNSの設定のみ行わないでください。<br>
+３、用意したサーバのIPアドレスを下部で設定。<br>
+４、設定が反映すれば完了。<br>
+<br>
+<a href="{$smarty.const.ROOT_URL}/-/" target="_blank">{$smarty.const.ROOT_URL}/-/</a> 以下が用意したサーバ側の領域です。<br>
+用意したサーバ側でも/-/となるようにフォルダを作成して、そこにファイル等を設定してください。<br>
+<div class="hint">用意したサーバ側にCGIやHTMLも設置できますが、RCMSでのログ統計やアクセス制限等は適用されないのでご注意ください。</div>
+<br>
+<h3>IPアドレス設定</h3>
+  <form action="/management/storage/storage_network/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="MODE" value="UPDATE">
+    <table>
+      <tr>
+        <th>IPアドレス</th>
+          <td>
+            <input type="text" name="ip_address" size="40" value="{$ip_address}">
+          </td>
+          <td>
+          </td>
+      </tr>
+    </table>
+{if $enable_flg}
+        {if $auth.storage.update}
+          {buttonbox}
+            <button type="submit">更新する</button>
+          {/buttonbox}
+        {/if}
+{/if}
+  </form>
+
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,22 @@
+{if $page_sysnm eq 'top'}
+
+{if $is_SmartPhone}<ul class="top_menu">{/if}
+
+ {foreach name="menu_list" item="menu" from=$global_menu_list}
+  {if $menu.page_sysnm ne 'top'}{*  TOPは表示しない  *}
+
+  {if $smarty.foreach.menu_list.iteration <= 10}
+    {if $is_SmartPhone}<li>{else}[emoji:{$smarty.foreach.menu_list.iteration+123}]{/if}<a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}" accesskey="{$smarty.foreach.menu_list.iteration-1}" class="arrow">{$menu.page_nm}</a>
+  {elseif $smarty.foreach.menu_list.iteration == 11}
+    {if $is_SmartPhone}<li>{else}[emoji:{$smarty.foreach.menu_list.iteration+123}]{/if}<a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}" accesskey="0" class="arrow">{$menu.page_nm}</a>
+  {else}
+    {if $is_SmartPhone}<li>{else}□{/if}<a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}" class="arrow">{$menu.page_nm}</a>
+  {/if}{if $is_SmartPhone}</li>{else}<br/>{/if}
+
+  {/if}
+ {/foreach}
+
+{if $is_SmartPhone}</ul>{/if}
+
+{/if}
+<hr/>

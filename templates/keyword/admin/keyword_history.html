@@ -1,0 +1,26 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{* 更新履歴一覧 *}</h2>
+<ul>
+{if $auth.keyword.insert}
+<li class="add"><a href="/management/keyword/keyword_edit/"><span>{'/label/add_keyword'|translate}{*用語追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/keyword_detail/id={$module_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/keyword/keyword_list/">{'/modules/keyword'|translate}</a>
+<a href="/management/keyword/keyword_list/">{'/modules/keyword/label/keyword_list'|translate}</a>
+<a href="/management/keyword/keyword_edit/keyword_id={$keyword_id}">{'/modules/keyword/label/keyword_edit'|translate}</a>
+{'/label/update_history_list'|translate}{* 更新履歴一覧 *}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >>  キーワード辞典 >> キーワード一覧 >> キーワード編集 >> 更新履歴一覧*}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/keyword/keyword_edit/keyword_id=$module_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

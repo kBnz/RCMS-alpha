@@ -1,0 +1,22 @@
+{*  注意事項
+<script type="text/javascript" src="/js/modules/comment/commentfoot.js"></script>
+を必ず一回読み込ませること
+*}
+
+{if $Login_member_id}{* 開発メモ::　2009/08/10とりあえずログイン必須としておく 将来的にオープンIDや管理画面での設定で投稿可能を制御できるようにする *}
+<div class="module_contents"><div id="footprint_input_{$comment_footprint_module}_{$comment_footprint_id}"></div></div>
+
+
+<script type="text/JavaScript">
+<!--
+
+// 呼び出し時に実行
+var module = '{$comment_footprint_module}';
+var id = {$comment_footprint_id};
+var queryString = '?module=' + module + '&id=' + id;
+ajaxCommentFootProc(queryString, module, id,'{'/label/points'|translate}','{'/label/post_is_complete'|translate}');
+
+//-->
+</script>
+
+{/if}

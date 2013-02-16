@@ -1,0 +1,103 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/topics/label/topics_group_list'|translate}</h2>{* 記事グループ一覧 *}
+<ul>
+{rcms_auth target="insert:/topics/group/"}
+<li class="add"><a href="/management/topics/topics_group_edit/"><span>{'/modules/topics/label/add_group_btn'|translate}</span></a></li>{* 記事グループ追加 *}
+{/rcms_auth}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+{'/modules/topics/label/topics_group_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="GET" action="/management/topics/topics_group_list/">
+    <fieldset class="search_box">
+      <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select>
+      <input type="submit" value="{'/label/search'|translate}" />{* 検索 *}
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/topics/topics_group_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+        <th style="width:10px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'topics_group_id[]');" /></th>
+        <th width="26">{'/label/publish'|translate}</th>{* 公開 *}
+        <th>{'/label/group_id'|translate}</th>{* グループID *}
+        <th style="width:350px" colspan="2">{'/label/group_name'|translate}</th>{* グループ名 *}
+        <th>{'/label/sort'|translate}</th>{* 表示順 *}
+        <th>{'/label/updatetime'|translate}</th>{* 最終更新日 *}
+      </tr>
+    {foreach from=$topics_group_list item=row}
+      {assign var=group_id value=$row.topics_group_id}
+      <tr>
+        <td>
+          <input type="checkbox" name="topics_group_id[]" value="{$row.topics_group_id}" {if not ($rauth->canUpdate("/topics/group/$group_id") || $rauth->canDelete("/topics/group/$group_id"))}disabled="disabled"{/if} />
+        </td>
+        <td>
+          {$row.open_status|rcms_publicimg}
+        </td>
+        <td>{$row.topics_group_id|escape}</td>
+        <td>
+          {$row.group_nm|escape}
+          {rcms_include file="common/admin/language_status.html" meta=$docmetas[$group_id] link="/management/topics/topics_group_edit/topics_group_id=$group_id"}
+        </td>
+        <td style="width:150px">
+{if $row.data_limit eq 1}
+        <a href="/management/topics/topics_list/topics_group_id={$row.topics_group_id}">{'/modules/topics/label/topics_edit'|translate}</a>{* 記事編集 *}
+{else}
+          <a href="/management/topics/topics_edit/topics_group_id={$row.topics_group_id}">{'/modules/topics/label/create_topic'|translate}</a>{* 記事作成 *}
+        | <a href="/management/topics/topics_list/topics_group_id={$row.topics_group_id}">{'/modules/topics/label/topics_list'|translate}</a>{* 記事一覧 *}
+{/if}
+        | <a href="/management/topics/topics_group_edit/topics_group_id={$row.topics_group_id}">{'/label/setting'|translate}</a>{* 設定 *}
+        </td>
+        <td>{$row.order_no|escape}</td>
+        <td>{$row.update_ymdhi|pg_dateformat2:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo msg=""}
+
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="submit" onclick="this.form.MODE.value='public'">{'/label/publish_btn'|translate}</button>{* 公開にする *}
+      <button type="submit" onclick="this.form.MODE.value='private'">{'/label/unpublish_btn'|translate}</button>{* 非公開にする *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

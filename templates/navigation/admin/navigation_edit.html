@@ -1,0 +1,201 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript" src="/js/swfobject.js"></script>
+<script type="text/javascript">
+<!--
+{literal}
+//画像orテキスト切り替え
+function contents_type_change(){
+    if($('contents_type0').checked){
+        $('contents_img').style.display = 'none';
+        $('contents_text1').style.display = 'block';
+        $('contents_text2').style.display = 'none';
+        $('contents_flash').style.display = 'none';
+        $('contents_imgtag').style.display = 'none';
+        $('contents_img_form1').style.display = 'none';
+        $('contents_img_form2').style.display = 'none';
+        $('contents_img_size_form').style.display = 'none';
+        $('contents_alt_text_form').style.display = 'none';
+        $('contents_img_form1_name_img').style.display = 'none';
+        $('contents_img_form1_name_swf').style.display = 'none';
+    }else if($('contents_type1').checked){
+        $('contents_img').style.display = 'none';
+        $('contents_text1').style.display = 'block';
+        $('contents_text2').style.display = 'block';
+        $('contents_flash').style.display = 'none';
+        $('contents_imgtag').style.display = 'none';
+        $('contents_img_form1').style.display = 'none';
+        $('contents_img_form2').style.display = 'none';
+        $('contents_img_size_form').style.display = 'none';
+        $('contents_alt_text_form').style.display = 'none';
+        $('contents_img_form1_name_img').style.display = 'none';
+        $('contents_img_form1_name_swf').style.display = 'none';
+    }else if($('contents_type2').checked){
+        $('contents_img').style.display = 'block';
+        $('contents_text1').style.display = 'block';
+        $('contents_text2').style.display = 'none';
+        $('contents_flash').style.display = 'none';
+        $('contents_imgtag').style.display = 'block';
+        $('contents_img_form1').style.display = 'block';
+        $('contents_img_form2').style.display = 'none';
+        $('contents_img_size_form').style.display = 'block';
+        $('contents_alt_text_form').style.display = 'block';
+        $('contents_img_form1_name_img').style.display = 'inline';
+        $('contents_img_form1_name_swf').style.display = 'none';
+    }else if($('contents_type3').checked){
+        $('contents_img').style.display = 'block';
+        $('contents_text1').style.display = 'block';
+        $('contents_text2').style.display = 'none';
+        $('contents_flash').style.display = 'none';
+        $('contents_imgtag').style.display = 'block';
+        $('contents_img_form1').style.display = 'block';
+        $('contents_img_form2').style.display = 'block';
+        $('contents_img_size_form').style.display = 'block';
+        $('contents_alt_text_form').style.display = 'block';
+        $('contents_img_form1_name_img').style.display = 'inline';
+        $('contents_img_form1_name_swf').style.display = 'none'
+    }else if($('contents_type4').checked){
+        $('contents_img').style.display = 'block';
+        $('contents_text1').style.display = 'block';
+        $('contents_text2').style.display = 'none';
+        $('contents_flash').style.display = 'block';
+        $('contents_imgtag').style.display = 'none';
+        $('contents_img_form1').style.display = 'block';
+        $('contents_img_form2').style.display = 'none';
+        $('contents_img_size_form').style.display = 'block';
+        $('contents_alt_text_form').style.display = 'none';
+        $('contents_img_form1_name_img').style.display = 'none';
+        $('contents_img_form1_name_swf').style.display = 'inline';
+    }
+}
+{/literal}
+//-->
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm}{'/label/edit'|translate}</h2>
+<ul>
+    {if $rauth->canInsert("/navigation/item/[@navigation_header_id=$navigation_header_id]")}
+    <li class="add"><a href="/management/navigation/navigation_edit/navigation_header_id={$formData.navigation_header_id}"><span>{'/label/add_btn'|translate}</span></a></li>
+    {/if}
+    {if $navigation_id}
+    <li class="normal"><a href="/management/navigation/navigation_history/navigation_id={$navigation_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>
+    {/if}
+</ul>
+</div>
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation/label/navigation_list'|translate}</a>
+<a href="/management/navigation/navigation_list/navigation_header_id={$formData.navigation_header_id}">{'/modules/navigation/label/item_list'|translate}</a>
+{'/modules/navigation/label/item_edit'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{if $navigation_nm}{$navigation_nm|escape}{else}{'/label/create_new'|translate}{/if}</h3>
+
+{rcms_include file="navigation/admin/minitabs.html" page_type=$ct}
+
+<div id="navigation_header_edit" class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/navigation/navigation_edit/navigation_header_id=$navigation_header_id&navigation_id=$navigation_id"}
+{if $navigation_id}
+    {lang_selector meta=$docmeta link="/management/navigation/navigation_edit/navigation_header_id=$navigation_header_id&navigation_id=$navigation_id"}
+{/if}
+  <form action="/management/navigation/navigation_edit/" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="navigation_id" value="{$formData.navigation_id}" />
+    <input type="hidden" name="navigation_header_id" value="{$formData.navigation_header_id}" />
+    <input type="hidden" name="contents_img1_ext" value="{$formData.contents_img1_ext}" />
+    <input type="hidden" name="contents_img2_ext" value="{$formData.contents_img2_ext}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    <input type="hidden" name="photo_file1" value="{$formData.photo_file1}" />
+    <input type="hidden" name="photo_s_file1" value="{$formData.photo_s_file1}" />
+    <input type="hidden" name="photo_file2" value="{$formData.photo_file2}" />
+    <input type="hidden" name="photo_s_file2" value="{$formData.photo_s_file2}" />
+
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+        <th>{'/label/content'|translate}<span class="required">{'/label/required'|translate}</span></th>{*内容　必須*}
+                <td>
+                    <input type="radio" id="contents_type0" name="contents_type" value="0" {if $formData.contents_type eq '0' || !$formData.contents_type}checked{/if} onClick="contents_type_change();"  />{'/label/text'|translate}{*テキスト*}
+                    <input type="radio" id="contents_type1" name="contents_type" value="1" {if $formData.contents_type eq '1'}checked{/if} onClick="contents_type_change();"  />{'/label/two_text_boxes'|translate}{*テキスト(2個)*}
+                    <input type="radio" id="contents_type2" name="contents_type" value="2" {if $formData.contents_type eq '2'}checked{/if} onClick="contents_type_change();"  />{'/label/image'|translate}
+                    <input type="radio" id="contents_type3" name="contents_type" value="3" {if $formData.contents_type eq '3'}checked{/if} onClick="contents_type_change();"  />{'/label/image_with_rollover'|translate}{*画像(ロールオーバー付)*}
+                    <input type="radio" id="contents_type4" name="contents_type" value="4" {if $formData.contents_type eq '4'}checked{/if} onClick="contents_type_change();" />Flash
+
+                    <!-- /contents_img -->
+                    <div id="contents_img" {if $formData.contents_type <= '1'}style="display:none;"{/if}><br>
+                      
+                      <div id="contents_flash"></div>
+                      {if $formData.contents_img1_ext == "swf" and $formData.contents_type eq '4'}
+                      <script type="text/javascript">
+                      <!--
+                          var so = new SWFObject("{$formData.navigation_file_name_1}", "contents_flash", "{$formData.contents_width}", "{$formData.contents_height}", "8", "#000000");
+                          so.write("contents_flash");
+                      //-->
+                      </script>
+                      {/if}
+                        <div id="contents_imgtag">
+                        {if $formData.contents_img1_ext and ($formData.contents_type eq '2' or $formData.contents_type eq '3')}<img src="{$formData.navigation_file_name_1}" 
+                        {if $formData.contents_img2_ext and ($formData.contents_type eq '2' or $formData.contents_type eq '3')}
+                          onMouseOver="this.src='{$formData.navigation_file_name_2}'" 
+                          onMouseOut="this.src='{$formData.navigation_file_name_1}'" 
+                        {/if}
+                        ><br>
+                        {/if}</div><!--/contents_imgtag-->
+                        <div id="contents_img_form1"{if $formData.contents_type <= '1'} style="display:none;"{/if}>
+                            <span id="contents_img_form1_name_img"{if $formData.contents_type <= '1' or $formData.contents_type == '4'} style="display:none;"{/if}>
+                                {'/label/title_image'|translate}{*画像*}
+                            </span>
+                            <span id="contents_img_form1_name_swf"{if $formData.contents_type <= '3'} style="display:none;"{/if}>
+                                {'/label/swf_file'|translate}{*swfファイル*}
+                            </span>
+                            ：<input type="file" name="contents_img" /><input type="checkbox" name="del_navigation_photo[contents_img]" value="1">{'/label/delete'|translate}<br>
+                        </div>
+                        <div id="contents_img_form2"{if $formData.contents_type ne '3' } style="display:none;"{/if}>{'/label/image_for_rollover'|translate}{*ロールオーバー用画像ファイル*}：<input type="file" name="contents_img2" /><input type="checkbox" name="del_navigation_photo[contents_img2]" value="1">{'/label/delete'|translate}<br></div>
+                        <div id="contents_img_size_form"{if $formData.contents_type <= '1'} style="display:none;"{/if}>
+                        {'/label/width'|translate}:<input type="text" name="contents_width" value="{$formData.contents_width|escape}" size="5" />px 
+                        {'/label/height'|translate}:<input type="text" name="contents_height" value="{$formData.contents_height|escape}" size="5" />px<br /></div>
+                        <div id="contents_alt_text_form"{if $formData.contents_type <= '1' || $formData.contents_type == '4' } style="display:none;"{/if}>{'/label/alt_text'|translate}{*代替テキスト*}<input type="text" name="alt_text" value="{$formData.alt_text|escape}" size="80" /><br /></div>
+                    </div><!-- /contents_img -->
+                    <!-- contents_text1 -->
+                    <div id="contents_text1"><br>
+                        {'/label/text'|translate}{*テキスト*}<input type="text" name="contents_text1" value="{$formData.contents_text1|escape}" size="80" />
+                    </div><!-- /contents_text1 -->
+                    <!-- contents_text2 -->
+                    <div id="contents_text2" {if $formData.contents_type ne '1'}style="display:none;"{/if}>
+                        {'/label/additional_text'|translate}{*追加テキスト*}<input type="text" name="contents_text2" value="{$formData.contents_text2|escape}" size="80" />
+                    </div><!-- /contents_text1 -->
+                </td>
+      </tr>
+      <tr>
+        <th>URL</th>
+        <td><input type="text" name="url" value="{$formData.url|escape}" size="80" /><br>
+        <input type="radio" name="target_type" value="0" {if $formData.target_type ne '1'}checked{/if}>{$navi_target_type_options.0}
+        <input type="radio" name="target_type" value="1" {if $formData.target_type eq '1'}checked{/if}>{$navi_target_type_options.1} </td>
+      </tr>
+      <tr>
+        <th>{'/label/link_to_module'|translate}{*リンク先モジュール*}</th>
+        <td><select name="module_nm"><option value="">-----</option>{html_options options=$module_list selected=$formData.module_nm}</select><br><span class="hint">{'/msg/link_to_module'|translate}{*選択されたモジュールが利用できない場合は表示されなくなります。選択しなくてもOKです。*}</span></td>
+      </tr>
+      <tr>
+        <th>{'/label/order_no'|translate}{*表示順*}</th>
+        <td><input type="text" name="order_no" value="{$formData.order_no|escape}" size="3" /><br>
+        <span class="hint">{'/msg/data_order'|translate}{*並び順は大きい順に並びます*}</span></td>
+      </tr>
+    </table>
+{if $docmeta.is_primary}
+    {rcms_include file="management/open_date_box.html" data=$formData id=$formData.navigation_id}
+{/if}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

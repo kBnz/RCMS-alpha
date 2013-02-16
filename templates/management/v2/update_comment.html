@@ -1,0 +1,48 @@
+{literal}
+<script type="text/javascript">
+(function() {
+
+    // 変数の定義
+    var id = "{/literal}{$id}{literal}";
+    var pk = "{/literal}{$pk}{literal}";
+    var mt = "{/literal}{$mt}{literal}";
+    var data_history_id = "{/literal}{$smarty.request.data_history_id}{literal}";
+
+    $(document).ready(function() {
+
+        var data = {};
+        data["module"] = mt;
+        data[pk]       = id;
+
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/menu/api_history/",
+            data     : data,
+            dataType : "json",
+            success  : lastHistory
+        });
+    });
+    
+    // 前回の更新履歴を出力する
+    function lastHistory(response) {
+        var lastData;
+        if(typeof response === "object"){
+            var results = response;
+        }else{
+            var results = $.parseJSON(response);
+        }
+        lastData = results[0];
+        $("#updatecomment_settings p.status_msg").text(lastData.update_comment);
+        $("#updatecomment_settings p.update_info").text(lastData.admin_nm + " " + lastData.change_ymdhi);
+    }
+})(jQuery);
+
+</script>
+{/literal}
+
+<div id="updatecomment_settings" class="metasettings">
+    <h1 class="title">{'/label/update_comment'|translate}{*更新コメント*}</h1>
+    <p class="status_msg"></p>
+    <p class="update_info"></p>
+    <textarea name="update_comment" placeholder="{'/label/comment_btn'|translate}{*コメントする*}"></textarea>
+</div>

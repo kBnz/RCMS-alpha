@@ -1,0 +1,504 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{rcms_include file="page/admin/page_jscss.html"}
+
+<div class="list_right_bt">
+<h2 class="accesscount">{'/modules/page/label/page_edit'|translate}{*ページ設定編集*}</h2>
+<ul>
+{if $rauth->canInsert('/page/item/')}
+    <li class="add"><a href="/management/page/page_edit/"><span>{'/modules/page/label/add_page_btn'|translate}{*ページ追加*}</span></a></li>
+    <li class="add"><a href="/management/page/page_copy/{if $pageForm.page_id}&from_page_id={$pageForm.page_id}{/if}"><span>{'/label/copy'|translate}{*コピー*}</span></a></li>
+{/if}
+  {if $pageForm.page_id ne ''}
+    <!--<li class="normal"><a href="/management/page/page_history/page_page_id={$pageForm.page_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>{* 更新履歴 *}-->
+    <li class="view"><a href="{$smarty.const.ROOT_URL}/{if $pageForm.page_sysnm_alias}{$pageForm.page_sysnm_alias}{else}{$pageForm.page_sysnm}{/if}/" target="_blank"><span>{'/label/view_page'|translate}{*ページ確認*}</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page/label/page_list'|translate}</a>
+{'/modules/page/label/page_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> ページ設定 >> ページ設定一覧  >> ページ設定編集*}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="tabnavi">
+  <li class="regist_000" id="here"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_setup',this);return false;" id="a_setup"><div>{'/modules/page/label/page_settings'|translate}{*基本設定*}</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_contents',this);return false;" id="a_contents"><div>{'/label/content_settings'|translate}{*コンテンツ設定*}</div></a></li>
+{if $docmeta.is_primary}
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_layout',this);return false;" id="a_layout"><div>{'/label/contents_position'|translate}{*配置*}</div></a></li>
+  <li class="regist_000"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_css',this);return false;" id="a_css"><div>{'/label/css_edit'|translate}{*CSS編集*}</div></a></li>
+{/if}
+</ul>
+
+<form action="/management/page/page_edit/" method="post" name="page_data_form" id="page_data_form">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+{if $latestRow.page_id != ""}
+  <input type="hidden" name="page_page_id" value="{$latestRow.page_id}" />
+{/if}
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+
+{*  ============================= 基本設定ブロック ============================== *}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/page/page_edit/page_page_id="|cat:$latestRow.page_id}
+  {if $latestRow.page_id}
+    {lang_selector meta=$docmeta link='/management/page/page_edit/page_page_id='|cat:$latestRow.page_id}
+  {/if}
+
+<div id="blk_setup" style="position:relative; display:block;">
+<div class="list_main">
+{if $rauth->canInsert('/page/item/')}
+    {if $latestRow.page_id == ""}
+    <p>
+    <span style="color:red;">{'/modules/page/msg/please_make_sure_if_page_already_exist'|translate}</span>
+    {*これから作ろうとしているページは既にあるページではないかをご確認ください。<br>例えば、ブログなどはほとんどページの追加を行う必要はありません。*}
+    </p>
+    {/if}
+{/if}
+  <p><span class="required">※</span>{'/label/required'|translate}{*必須*}</p>
+  <input type="hidden" id="contents_id[0]" name="contents_id[0]" value="{$contForm[0].contents_id}" />
+  <input type="hidden" id="weight[0]" name="weight[0]" value="0" />
+  <input type="hidden" id="place[0]" name="place[0]" value="main_module" />
+
+  <h3>{'/modules/page/label/page_settings'|translate}{*基本設定*}</h3>
+
+  <table width ="100%">
+    <tr>
+      <th style="width:150px">{'/label/page_name'|translate}{*ページ名*}<span class="required">※</span></th>
+      <td>
+        <input id="page_nm" name="page_nm" type="text" style="width:300px" value="{$pageForm.page_nm}" /> {if $latestRow.page_id}({'/label/page_id'|translate}{*ページID*}:{$pageForm.page_id}){/if}<br>
+        <span class="hint">{'/modules/page/msg/give_a_descriptive_page_name'|translate}{*わかりやすい名称を設定しましょう。*}</span>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/page_system_name'|translate}{*ページシステム名*}(URL){if $pageForm.page_id == ""}<span class="required">※</span>{/if}</th>
+      <td>
+        {if $pageForm.page_id == ""}
+          {$smarty.const.ROOT_URL} / <input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm2}"/> /<br>
+          <span class="hint">{'/modules/page/msg/explain_page_system_name'|translate:$smarty.const.ROOT_URL}</span>
+          {*{$smarty.const.ROOT_URL}/[ここの部分になります。]/<br>（漢字などでもOK。ただし、モバイルからの閲覧ができない場合があります。）*}
+        {else}
+          <input id="page_sysnm" name="page_sysnm" type="hidden" value="{$pageForm.page_sysnm2}"/>
+          <span style="font-size:130%;font-weight:bold;">{if $pageForm.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $pageForm.page_id ne 1}{$pageForm.page_sysnm2}/{/if}</span>
+        {/if}
+        {if $pageForm.page_id}
+            <table>
+            {if $pageForm.page_id ne 1}
+                <tr>
+                      <th>{'/label/page_system_name_alias'|translate}{*ページシステム名(エイリアス)*}</th>
+                      <td>
+                      {if $docmeta.is_primary}
+                          {if $pageForm.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if} / <input name="page_sysnm_alias" type="text" value="{$pageForm.page_sysnm_alias}"> /
+                      {else}
+                          <input id="page_sysnm_alias" name="page_sysnm_alias" type="hidden" value="{$pageForm.page_sysnm_alias}"/>
+                          {if $pageForm.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{$pageForm.page_sysnm_alias}/
+                      {/if}
+                      <br><span class="hint">{'/modules/page/msg/explain_page_system_name_alias'|translate:$smarty.const.ROOT_URL}</span>
+                      {*4階層まで設定することができます。{$smarty.const.ROOT_URL}/[1階層目]/[2階層目]/[3階層目]/[4階層目]/*}
+                    </td>
+                </tr>
+            {/if}
+                <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+                    <th>{'/label/page_forward_url'|translate}{*転送先URL*}</th>
+                    <td>
+                        <input id="page_forward_url" name="page_forward_url" type="text" value="{$pageForm.page_forward_url}" style="width:300px"><br>
+                        <span class="hint">{'/modules/page/msg/explain_page_forward_url'|translate}</span>
+                    </td>
+               </tr>
+            </table>
+        {/if}
+      </td>
+    </tr>
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th>{'/label/parent_page'|translate}{*親ページ*}<span class="required">※</span></th>
+      <td>
+        {if $pageForm.page_sysnm == 'top'}
+            {'/modules/page/msg/cannot_set_this_page_as_parent_page'|translate}{*このページは親ページを設定できません*}
+        {else}
+            <select id="parent_page_id" name="parent_page_id">{html_options options=$arrPage selected=$pageForm.parent_page_id}</select>
+        {/if}
+      </td>
+    </tr>
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th>{'/modules/page/label/template'|translate}{*段組・レイアウト*}<span class="required">※</span></th>
+      <td>
+        <select id="page_template" name="page_template">
+          {html_options options=$arrTemplateType selected=$pageForm.page_template}
+        </select>
+      </td>
+    </tr>
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th>{'/label/view_authority'|translate}{*閲覧権限*}</th>
+      <td>
+        <p><input id="page_require" name="page_require" type="checkbox" value="1" {if $pageForm.page_require == "1"}checked="checked"{/if} /><label for="page_require">{'/label/set_viewing_limit'|translate}{*閲覧制限を行う*}</label></p>
+        <select multiple="multiple" size="4" id="page_auth" name="page_auth[]">{html_options options=$arrAdmin selected=$pageForm.page_auth}</select>
+      </td>
+    </tr>
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th>{'/label/display_settings'|translate}{*表示設定*}</th>
+      <td>
+        {if $pageForm.page_id eq '1'}
+          <input id="sitemap_flg" name="sitemap_flg" type="hidden" value="1" />
+          <input id="menu_flg" name="menu_flg" type="hidden" value="1" />
+          <input id="menu_head_sub_flg" name="menu_head_sub_flg" type="checkbox" value="1" {if $pageForm.menu_head_sub_flg}checked="checked"{/if}/><label for="menu_head_sub_flg">{'/label/menu_head_sub'|translate}{*ヘッダサブメニュー*}</label>
+          <input id="menu_footer_flg" name="menu_footer_flg" type="checkbox" value="1" {if $pageForm.menu_footer_flg}checked="checked"{/if}/><label for="menu_footer_flg">{'/label/menu_footer'|translate}{*フッタメニュー*}</label>
+          <input id="open_flg" name="open_flg" type="hidden" value="1"/>
+          <input id="mobile_flg" name="mobile_flg" type="hidden" value="1"/>
+          <input id="smartphone_flg" name="smartphone_flg" type="hidden" value="1"/>
+          <input id="social_flg" name="social_flg" type="hidden" value="1"/>
+          <input id="mobileapp_flg" name="mobileapp_flg" type="hidden" value="1"/>
+        {else}
+          <input id="sitemap_flg" name="sitemap_flg" type="checkbox" value="1" {if $pageForm.sitemap_flg}checked="checked"{/if} /><label for="sitemap_flg">{'/label/site_map'|translate}{*サイトマップ*}</label>
+          <input id="menu_flg" name="menu_flg" type="checkbox" value="1" {if $pageForm.menu_flg}checked="checked"{/if}/><label for="menu_flg">{'/label/menu'|translate}{*メニュー*}</label>
+          <input id="menu_head_sub_flg" name="menu_head_sub_flg" type="checkbox" value="1" {if $pageForm.menu_head_sub_flg}checked="checked"{/if}/><label for="menu_head_sub_flg">{'/label/menu_head_sub'|translate}{*ヘッダサブメニュー*}</label>
+          <input id="menu_footer_flg" name="menu_footer_flg" type="checkbox" value="1" {if $pageForm.menu_footer_flg}checked="checked"{/if}/><label for="menu_footer_flg">{'/label/menu_footer'|translate}{*フッタメニュー*}</label>
+          <input id="open_flg" name="open_flg" type="checkbox" value="1" {if $pageForm.open_flg}checked="checked"{/if}/><label for="open_flg">{'/label/enable_flg'|translate}{*有効*}</label>
+          <input id="mobile_flg" name="mobile_flg" type="checkbox" value="1" {if $pageForm.mobile_flg}checked="checked"{/if}/><label for="mobile_flg">{'/label/mobile_phone'|translate}{*携帯*}</label>
+          <input id="smartphone_flg" name="smartphone_flg" type="checkbox" value="1" {if $pageForm.smartphone_flg}checked="checked"{/if}/><label for="smartphone_flg">{'/label/smart_phone'|translate}{*スマートフォン*}</label>
+          {if $module_installed.social}
+              <input id="social_flg" name="social_flg" type="checkbox" value="1" {if $pageForm.social_flg}checked="checked"{/if}/><label for="social_flg">{'/label/facebook'|translate}{*facebook*}</label>
+          {else}
+              <input id="social_flg" name="social_flg" type="hidden" value="1"/>
+          {/if}
+              <input id="mobileapp_flg" name="mobileapp_flg" type="checkbox" value="1" {if $pageForm.mobileapp_flg}checked="checked"{/if}/><label for="mobileapp_flg">{'/label/mobileapp'|translate}{*mobileapp*}</label>
+        {/if}
+        
+        {if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+          <input id="ssl_flg" name="ssl_flg" type="checkbox" value="1" {if $pageForm.ssl_flg}checked="checked"{/if}/><label for="ssl_flg">SSL</label>
+        {else}
+          <input id="ssl_flg" name="ssl_flg" type="hidden" value="0"/>
+        {/if}
+          <input id="not_hf_flg" name="not_hf_flg" type="checkbox" value="1" {if $pageForm.not_hf_flg}checked="checked"{/if}/><label for="not_hf_flg">{'/label/not_hf_flg'|translate}{*ヘッダフッタ非表示*}</label>
+          <input id="sitemap_all_list_flg" name="sitemap_all_list_flg" type="checkbox" value="1" {if $pageForm.sitemap_all_list_flg}checked="checked"{/if}/><label for="sitemap_all_list_flg">{'/modules/page/label/sitemap_all_list_flg'|translate}{*ヘッダフッタ非表示*}</label>
+        
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/meta_data'|translate}{*META情報*}</th>
+      <td>
+          <table>
+              <th>{'/label/meta_title'|translate}{*METAタイトル*}</th><td><input id="title" name="title" type="text" style="width:300px" value="{$pageForm.title}" /></td></tr>
+              <th>{'/label/meta_explanation'|translate}{*META説明文*}</th><td><input id="description" name="description" type="text" style="width:300px" value="{$pageForm.description}" /></td></tr>
+              <th>{'/label/meta_keyword'|translate}{*METAキーワード*}</th><td><input id="keywords" name="keywords" type="text" style="width:300px" value="{$pageForm.keywords}" /></td></tr>
+          </table>
+     </td>
+    </tr>
+  </table>
+
+</div><!--//list_main-->
+</div><!--//blk_setup-->
+{*  ============================= //基本設定ブロック ========================= *}
+
+{*  ============================= コンテンツ設定ブロック ============================== *}
+
+<div id="blk_contents" style="position:relative; display:none;">
+<div class="list_main">
+
+  <p><span class="required">※</span>{'/label/required'|translate}{*必須*}　<span class="hint">{'/modules/page/msg/explain_mobile_display_order'|translate}{*携帯用表示順はページ内で小さい順に並びます。*}</span></p>
+
+  <h3>{'/label/main_contents_settings'|translate}{*メインコンテンツ設定*}</h3>
+  <table width="100%">
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th style="width:150px;" nowrap>{'/label/contents'|translate}{* コンテンツ *}<span class="required">※</span>
+        {if $pageForm.fundamental_flg == 1 && $pageForm.page_sysnm ne 'top'}
+        <br><span class="hint">{'/modules/page/msg/pages_might_not_work_if_change_contens'|translate}{*変更するとページがうまく動かなくなる場合がありますので、なるべく変更しないでください。*}</span>
+        {/if}
+      </th>
+      <td width="30%">
+        <select id="module_type[0]" name="module_type[0]">
+          {html_options options=$cont_op selected=$contForm[0].module_type}
+        </select>
+      </td><td>
+        &gt;&gt;
+      </td><td width="30%">
+        <select id="contents_type[0]" name="contents_type[0]">
+          {html_options options=$arrItitContentsType[0] selected=$contForm[0].contents_type}
+        </select>
+      </td><td>
+        &gt;&gt;
+      </td><td width="30%">
+        <select id="template[0]" name="template[0]">
+          {html_options options=$arrItitTemplate[0] selected=$contForm[0].template}
+        </select>
+      </td>
+    </tr>
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th>{'/label/parameters'|translate}{*パラメータ*}</th>
+      <td colspan="5">
+        <input type="text" id="param[0]" name="param[0]" style="width:300px" value="{$contForm[0].param|escape}" />
+        <a href="javascript:void(0)" id="paramHelpBtn[0]" class="paramHelpBtn">{'/label/help'|translate}{*ヘルプ*}</a>
+        <div id="paramHelp[0]" class="paramHelp"></div>
+      </td>
+    </tr>
+
+    {if !$docmeta.is_primary}{* 副言語設定字はモジュールタイプ、コンテンツタイプが非表示になっているので、名称を表示する *}
+    <tr>
+    <th></th>
+        <td colspan="5">
+        {assign var=key_module_type value=$contForm[0].module_type}
+        {assign var=key_contents_type value=$contForm[0].contents_type}
+        {assign var=key_template value=$contForm[0].template}
+        【{'/label/module_type'|translate}{* モジュールタイプ *}】{$cont_op[$key_module_type]}
+        【{'/label/contents_type'|translate}{* コンテンツタイプ *}】{$arrItitContentsType[0][$key_contents_type]}
+        【{'/modules/page/label/template'|translate}{* テンプレート *}】{$arrItitTemplate[0][$key_template]}
+        {if $contForm[0].param}【{'/label/parameters'|translate}{* パラメータ *}】{$contForm[0].param}{/if}
+        </td>
+    </tr>
+    {/if}
+
+    <tr>
+      <th>{'/label/customized_title'|translate}{*独自タイトル*}</th>
+      <td colspan="5">
+        <input type="text" id="contents_title[0]" name="contents_title[0]" style="width:300px" value="{$contForm[0].contents_title|escape}" />
+      </td>
+    </tr>
+    <tr {if !$docmeta.is_primary}style="display:none;"{/if}>
+      <th>{'/label/mobile_display_order'|translate}{*携帯・表示順*}:</th>
+      <td colspan="5">
+        <input id="mobile_order_no2[0]" name="mobile_order_no2[0]" type="text" size="2" value="{$contForm[0].mobile_order_no}"/>
+        {if $pageForm.page_id eq '1'}
+            <input type="checkbox" id="mobile_flg2[0]" name="mobile_flg2[0]" value="1" {if $contForm[0].mobile_flg}checked="checked"{/if}/>
+            <label for="mobile_flg2[0]">{'/label/mobile_phone'|translate}{*携帯*}</label>
+        {else}
+            <input type="hidden" id="mobile_flg2[0]" name="mobile_flg2[0]" value="1"/>{* とりあえず、必ず表示 *}
+        {/if}
+        {if $pageForm.page_id eq '1'}
+            <input type="checkbox" id="smartphone_flg2[0]" name="smartphone_flg2[0]" value="1" {if $contForm[0].smartphone_flg}checked="checked"{/if}/>
+            <label for="smartphone_flg2[0]">{'/label/smart_phone'|translate}{*smart_phone*}</label>
+        {else}
+            <input type="hidden" id="smartphone_flg2[0]" name="smartphone_flg2[0]" value="1"/>{* とりあえず、必ず表示 *}
+        {/if}
+        {if $module_installed.social }
+            {if $pageForm.page_id eq '1'}
+                <input type="checkbox" id="social_flg2[0]" name="social_flg2[0]" value="1" {if $contForm[0].social_flg}checked="checked"{/if}/>{'/label/facebook'|translate}{*facebook*}
+            {else}
+                <input type="hidden" id="social_flg2[0]" name="social_flg2[0]" value="1"/>{* とりあえず、必ず表示 *}
+            {/if}
+        {else}
+            <input type="hidden" id="social_flg2[0]" name="social_flg2[0]" value="{$contForm[0].social_flg}"/>
+        {/if}
+        {if $pageForm.page_id eq '1'}
+            <input type="checkbox" id="mobileapp_flg2[0]" name="mobileapp_flg2[0]" value="1" {if $contForm[0].mobileapp_flg}checked="checked"{/if}/>
+            <label for="mobileapp_flg2[0]">{'/label/mobileapp'|translate}{*mobileapp*}</label>
+        {else}
+            <input type="hidden" id="mobileapp_flg2[0]" name="mobileapp_flg2[0]" value="1"/>{* とりあえず、必ず表示 *}
+        {/if}
+      </td>
+    </tr>
+  </table>
+
+  <h3>{'/label/sub_contents_settings'|translate}{*サブコンテンツ設定*}</h3>
+  <table width="100%" id="modulesTable">
+    <tr>
+      <th>No</th>
+      <th>{'/label/content_settings'|translate}{*コンテンツ設定*}</th>
+      <th>{'/label/action'|translate}{*行動*}</th>
+    </tr>
+{assign var=blnLimiteduser value=$rauth->unlimitedUpdate("/page/item/$page_id", $docmeta.lang)}
+{section start=1 name="loopname" loop=$contForm}
+  {assign var=i value=$smarty.section.loopname.index}
+  {assign var=contents_id value=$contForm[loopname].contents_id}
+    <tr id="moduleRow[{$i}]">
+      <td>
+        {$i}
+        <input type="hidden" id="contents_id[{$i}]" name="contents_id[{$i}]" value="{$contForm[loopname].contents_id}" />
+        <input type="hidden" id="weight[{$i}]" name="weight[{$i}]" value="{$contForm[loopname].weight|escape}" />
+        <input type="hidden" id="place[{$i}]" name="place[{$i}]" value="{$contForm[loopname].place|escape}" />
+      </td>
+      <td width="100%">
+        <table>
+          <tr {if !$docmeta.is_primary || !$blnLimiteduser}style="display:none;"{/if}>
+            <td class="title" {if !$docmeta.is_primary || !$blnLimiteduser}style="width:100px;"{/if}>{'/label/contents'|translate}{*コンテンツ*}:</td>
+            <td width="30%">
+              <select id="module_type[{$i}]" name="module_type[{$i}]">
+                {html_options options=$cont_op selected=$contForm[loopname].module_type}
+              </select>
+            </td>
+            <td>&gt;&gt;</td>
+            <td width="30%">
+              <select id="contents_type[{$i}]" name="contents_type[{$i}]" style="margin-left:5px;{if count($arrItitContentsType[$i]) <= 1}display:none;{/if}">
+                {html_options options=$arrItitContentsType[$i] selected=$contForm[loopname].contents_type}
+              </select>
+            </td>
+            <td>&gt;&gt;</td>
+            <td width="30%">
+              <select id="template[{$i}]" name="template[{$i}]" {if count($arrItitTemplate[$i]) <= 1}style="display:none;"{/if}>
+                {html_options options=$arrItitTemplate[$i] selected=$contForm[loopname].template}
+              </select>
+            </td>
+          </tr>
+          <tr {if !$docmeta.is_primary || !$blnLimiteduser}style="display:none;"{/if}>
+            <td class="title">{'/label/parameters'|translate}{*パラメータ*}:</td>
+            <td colspan="5">
+              <input type="text" class="param" id="param[{$i}]" name="param[{$i}]" value="{$contForm[loopname].param|escape}" size="5" />
+              <a href="javascript:void(0)" id="paramHelpBtn[{$i}]" class="paramHelpBtn">{'/label/help'|translate}{*ヘルプ*}</a>
+              <div id="paramHelp[{$i}]" class="paramHelp"></div>
+            </td>
+          </tr>
+
+          {if !$docmeta.is_primary || !$blnLimiteduser}{* 副言語設定字はモジュールタイプ、コンテンツタイプが非表示になっているので、名称を表示する *}
+          <tr>
+            <td class="title" {if !$docmeta.is_primary || !$blnLimiteduser}style="width:100px;"{/if}></td>
+            <td colspan="5">
+              {assign var=key_module_type value=$contForm[loopname].module_type}
+              {assign var=key_contents_type value=$contForm[loopname].contents_type}
+              {assign var=key_template value=$contForm[loopname].template}
+            【{'/label/module_type'|translate}{* モジュールタイプ *}】{$cont_op[$key_module_type]}
+            【{'/label/contents_type'|translate}{* コンテンツタイプ *}】{$arrItitContentsType[$i][$key_contents_type]}
+            【{'/modules/page/label/template'|translate}{* テンプレート *}】{$arrItitTemplate[$i][$key_template]}
+            {if $contForm[$i].param}【{'/label/parameters'|translate}{* パラメータ *}】{$contForm[$i].param}{/if}
+            </td>
+          </tr>
+          {/if}
+
+          <tr>
+            <td class="title">{'/label/customized_title'|translate}{*独自タイトル*}:</td>
+            <td colspan="5">
+              <input type="text" class="contents_title" id="contents_title[{$i}]" name="contents_title[{$i}]" value="{$contForm[loopname].contents_title|escape}" />
+            </td>
+          </tr>
+          <tr {if !$docmeta.is_primary || !$blnLimiteduser}style="display:none;"{/if}>
+            <td class="title">{'/label/mobile_display_order'|translate}{*携帯・表示順*}:</td>
+            <td colspan="5">
+              <input id="mobile_order_no2[{$i}]" name="mobile_order_no2[{$i}]" type="text" value="{$contForm[loopname].mobile_order_no|escape}" size="2"/>
+              <input type="checkbox" id="mobile_flg2[{$i}]" name="mobile_flg2[{$i}]" value="1" {if $contForm[loopname].mobile_flg}checked="checked"{/if}/>
+              {'/label/mobile_phone'|translate}{*携帯*}
+              /<input type="checkbox" id="smartphone_flg2[{$i}]" name="smartphone_flg2[{$i}]" value="1" {if $contForm[loopname].smartphone_flg}checked="checked"{/if}/>
+              {'/label/smart_phone'|translate}{*スマートフォン*}
+              {if $module_installed.social}
+                  /<input type="checkbox" id="social_flg2[{$i}]" name="social_flg2[{$i}]" value="1" {if $contForm[loopname].social_flg}checked="checked"{/if}/>{'/label/facebook'|translate}{*facebook*}
+              {else}
+                  <input type="hidden" id="social_flg2[{$i}]" name="social_flg2[{$i}]" value="{$contForm[loopname].social_flg}"/>
+              {/if}
+              /<input type="checkbox" id="mobileapp_flg2[{$i}]" name="mobileapp_flg2[{$i}]" value="1" {if $contForm[loopname].mobileapp_flg}checked="checked"{/if}/>
+              {'/label/mobileapp'|translate}{*スマホアプリ*}
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td {if !$docmeta.is_primary || !$blnLimiteduser}style="display:none;"{/if}>
+        <input type="button" id="delBtn[{$i}]" value="{'/label/delete_btn'|translate}{* 削除する *}" {if !$docmeta.is_primary || !$blnLimiteduser}style="display:none;"{/if} />
+      </td>
+    </tr>
+{/section}
+  </table>
+  <p style="margin-top: 5px;{if !$docmeta.is_primary || !$blnLimiteduser}display:none;{/if}" >
+    <input type="button" id="addModuleBtn" value="{'/label/add_btn'|translate}{*追加*}" />
+    <span style="margin-left: 20px" class="hint3"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_layout', $('a_layout'));return false;">{'/modules/page/msg/confirm_contents_position'|translate}{*コンテンツを設定したら配置を確認*}</a></span>
+  </p>
+
+</div><!--//list_main-->
+</div><!--//blk_contents-->
+{*  ============================= //コンテンツ設定ブロック ========================= *}
+
+
+
+{*  ============================= 配置ブロック =========================== *}
+<div id="blk_layout" style="position:relative; display:none;">
+  <div id="changelayoutAll"></div>
+</div>
+<div class="clear"></div>
+{*  ============================= //配置ブロック ========================= *}
+
+{*  ============================= CSS編集ブロック =========================== *}
+<div id="blk_css" style="position:relative; display:none;">
+<div class="list_main">
+{'/modules/page/msg/please_set_css_in_the_form_below'|translate}{*このページに適応したいCSS情報を入力してください。*}<br />
+<textarea name="user_css" rows="10" cols="60">{$pageForm.user_css|escape}</textarea>
+</div>
+</div>
+<div class="clear"></div>
+{*  ============================= //CSS編集ブロック =========================== *}
+
+{*  ============================= 送信ボタン ============================= *}
+{buttonbox}
+        {if $latestRow.page_id != ""}
+      {assign var=page_id value=$latestRow.page_id}
+      {if $docmeta.is_waiting}
+        {* これは承認待ちドキュメント *}
+
+        {if $rauth->canUpdate("/page/item/$page_id", $docmeta.lang)}
+          {if $rauth->unlimitedUpdate("/page/item/$page_id", $docmeta.lang)}
+            {* 許可する権限がある *}
+            <button type="submit" onclick="submitExec(this.form, 'ACCEPT')">{'/label/accept'|translate}{*承認する*}</button>
+            <button type="submit" onclick="submitExec(this.form, 'REJECT')">{'/label/reject'|translate}{*拒否する*}</button>
+          {elseif $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="submitExec(this.form, 'UPDATE')">{'/label/update_btn'|translate}{*更新する*}</button>
+          {else}
+          {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+          {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="submitExec(this.form, 'UPDATE')">{'/label/update_btn'|translate}{*更新する*}</button>
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+      {else}
+        {* これは通常ドキュメント *}
+
+        {if $docmeta.has_waiting}
+          {* 承認待ちドキュメントがある場合は何もできない *}
+            {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+            <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+        {else}
+          {* 通常ドキュメントに対する更新処理 *}
+          {if $rauth->canUpdate("/page/item/$page_id", $docmeta.lang)}
+            <button type="submit" onclick="submitExec(this.form, 'UPDATE')">{'/label/update_btn'|translate}{*更新する*}</button>
+          {/if}
+          {if $rauth->canDelete("/page/item/$page_id", $docmeta.lang)}
+            {* 削除権限がある *}
+            {if $pageForm.fundamental_flg == 1}
+
+            {else}
+              <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+            {/if}
+          {/if}
+        {/if}
+      {/if}
+    {else}
+      {if $rauth->canInsert("/page/item/")}
+        <button type="submit" onclick="submitExec(this.form, 'INSERT')">{'/label/add_btn'|translate}</button>
+      {/if}
+    {/if}
+{/buttonbox}
+{* 削除権限がある *}
+  {if $pageForm.fundamental_flg == 1}
+    <p><span class="required">({'/modules/page/msg/cant_delete_this_page'|translate}{*このページは削除できません*})</span></p>
+  {/if}
+</form>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_setup"; //初期表示ブロック
+var a_obj = $("a_setup"); //カレント表示タブ(初期)
+function tabnaviCtl(nm, anchorObj){
+  if(blk_name != nm){
+    $(blk_name).style.display = "none";
+    blk_name = nm;
+    $(nm).style.display = "block";
+    a_obj.style.backgroundPosition = "center top";
+    a_obj = anchorObj;
+    anchorObj.style.backgroundPosition = "center bottom";
+  }
+}
+{/literal}
+//-->
+</script>
+
+{rcms_include file="management/footer.html"}

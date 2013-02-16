@@ -1,0 +1,19 @@
+{module name="catalog_category_list"}
+<h2 class="module_title"><span>{'/label/category'|translate}{* カテゴリ *}</span></h2>
+<div class="module_contents">
+<ul>
+  <li>
+     <a href="/{$link_page_sysnm}{if $catalog_group_id}{$catalog_group_id}{/if}/">
+      <span>【{'/modules/catalog/label/all_catalogs_of_this_group'|translate}{* このグループの全カタログ *}】</span>
+     </a>
+  </li>
+{foreach from=$catalog_category_list item=row}
+  <li {if $smarty.request.contents_type eq $row.contents_type}class="this"{/if}>{if $row.parent_id != 0}└{/if}
+     <a href="/{$link_page_sysnm}/contents_type={$row.contents_type}">
+       {$row.category_nm}<span>({$row.cnt})</span>
+     </a>
+  </li>
+{/foreach}
+</ul>
+</div>
+{/module}

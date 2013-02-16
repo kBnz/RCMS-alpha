@@ -1,0 +1,100 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if (confirm('選択されたクライアントを削除します。\nよろしいですか？')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{if $auth.salesclient.insert}
+<li class="add"><a href="/management/salesclient/salesclient_edit/"><span>クライアント追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/salesclient_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/salesclient/salesclient_list/">{$module_nm}一覧</a>
+{/pankuzu}
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">一覧へのアクセス数：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/salesclient/salesclient_list/">
+    <fieldset class="search_box">
+      <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select>
+      <input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/salesclient/salesclient_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="opflg" value="{$opflg}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.salesclient.update || $auth.salesclient.delete}
+          <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'salesclient_id[]')"></th>
+        {/if}
+        <th width="26">公開</th>
+        <th>クライアント名</th>
+        <th>営業状況</th>
+        <th>担当営業</th>
+        <th width="60">アクセス数</th>
+        <th width="130">最終更新日時</th>
+      </tr>
+    {section name="i" loop=$salesclient_list}
+      <tr>
+        {if $auth.salesclient.update || $auth.salesclient.delete}
+          <td><input type="checkbox" name="salesclient_id[]" value="{$salesclient_list[i].salesclient_id}" /></td>
+        {/if}
+        <td>{$salesclient_list[i].open_flg|rcms_publicimg}</td>
+        <td>
+          <a href="/management/salesclient/salesclient_edit/salesclient_id={$salesclient_list[i].salesclient_id}">{$salesclient_list[i].salesclient_nm|escape}</a>
+        </td>
+        <td>{$salesclient_list[i].sales_status}</td>
+        <td>
+        {foreach item=member_list from=$salesclient_list[i].member}
+        {$member_list.disp_name}<br />
+        {/foreach}
+        </td>
+        <td>{$salesclient_list[i].access_cnt}pv</td>
+        <td>{$salesclient_list[i].update_ymdhi|pg_dateformat}</td>
+      </tr>
+    {/section}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.salesclient.update || $auth.salesclient.delete}
+      {buttonbox}
+        <p>選択したクライアントを一括で</p>
+        {if $auth.salesclient.update}
+          <button type="submit" onclick="this.form.MODE.value='PUBLIC'">公開にする</button>
+          <button type="submit" onclick="this.form.MODE.value='PRIVATE'">非公開にする</button>
+        {/if}
+        {if $auth.salesclient.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

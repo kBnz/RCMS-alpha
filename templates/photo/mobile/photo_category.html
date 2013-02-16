@@ -1,0 +1,17 @@
+<h2>{'/label/image_category'|translate}{*画像カテゴリ*}</h2>
+
+<div style="text-align:center;font-size:small;">
+{foreach from=$categoryList item=item}
+<h3>{$item.category_nm}</h3>
+{foreach from=$item.list item=photo}
+<a href="/photo_detail/id={$photo.photo_id}&type={$type}&search_id={$search_id}&season={$season}">{$photo.title}</a><br/>
+{$photo.ymd}<br/>
+<a href="/photo_detail/id={$photo.photo_id}&type={$type}&search_id={$search_id}&season={$season}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photo.photo_id}.jpg" alt="{$photo.title}" width="150" height="100" border="0"></a><br/>
+<br/>
+{/foreach}
+
+{/foreach}
+</div>
+
+<hr/>
+

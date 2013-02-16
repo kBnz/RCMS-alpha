@@ -1,0 +1,94 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if (confirm('選択されたイベントを削除します。\nよろしいですか？')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{if $auth.liveinfo.insert}
+<li class="add"><a href="/management/liveinfo/liveinfo_edit/"><span>イベント追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/liveinfo_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/liveinfo/liveinfo_list/">{$module_nm}</a>
+{$module_nm}一覧
+{/pankuzu}
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">一覧へのアクセス数：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/liveinfo/liveinfo_list/">
+    <fieldset class="search_box">
+      <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select>
+      <input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/liveinfo/liveinfo_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="opflg" value="{$opflg|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.liveinfo.update || $auth.liveinfo.delete}
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'liveinfo_id[]');" /></th>
+{/if}
+        <th width="26">公開</th>
+        <th>タイトル</th>
+        <th>公演日</th>
+        <th width="54">会場</th>
+        <th width="60">アクセス数</th>
+        <th>最終更新日時</th>
+      </tr>
+  {foreach from=$liveinfo_list item=row}
+      <tr class="row{$smarty.section.i.iteration%2}">
+        {if $auth.liveinfo.update || $auth.liveinfo.delete}
+          <td><input type="checkbox" name="liveinfo_id[]" value="{$row.liveinfo_id}" /></td>
+        {/if}
+        <td>{$row.open_flg|rcms_publicimg}</td>
+        <td><a href="/management/liveinfo/liveinfo_edit/liveinfo_id={$row.liveinfo_id}&pageID={$currentPageID}">{$row.title}</a></td>
+        <td>{$row.ymd}</td>
+        <td>{$row.location}</td>
+        <td>{$row.access_cnt}pv</td>
+        <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.liveinfo.update || $auth.liveinfo.delete}
+      {buttonbox}
+        <p>選択したイベントを一括で</p>
+        {if $auth.liveinfo.update}
+          <button type="submit" onclick="this.form.MODE.value='PUBLIC'">公開にする</button>
+          <button type="submit" onclick="this.form.MODE.value='PRIVATE'">非公開にする</button>
+        {/if}
+        {if $auth.liveinfo.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,18 @@
+<div class="bookmark">
+<iframe src="//www.facebook.com/plugins/like.php?href={$smarty.const.ROOT_URL|urlencode}{$smarty.server.PHP_SELF|escape|urlencode}&amp;layout=button_count&amp;show_faces=false&amp;width=100&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:100px; height:21px;text-align:right;"></iframe>
+<a href="//twitter.com/share" class="twitter-share-button" data-count="horizontal" {if $twitter_account}data-via="{$twitter_account}"{/if} data-lang="{$mylang}">Tweet</a>
+<script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+<a href="//mixi.jp/share.pl" class="mixi-check-button" data-key="7a4b3c1c756dde0be0884cbe47f5fbbe5e685e37">Check</a>
+<script type="text/javascript" src="//static.mixi.jp/js/share.js"></script>
+</div>
+{headblock}
+<style type="text/css">
+{literal}
+#container .bookmark{
+	padding: 5px 3px 0 0;
+	margin: 0;
+	text-align:right;
+}
+{/literal}
+</style>
+{/headblock}

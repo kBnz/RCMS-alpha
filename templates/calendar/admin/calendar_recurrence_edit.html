@@ -1,0 +1,463 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{*}
+この画面は、共通化から外れていますので、ボタン制御の共通化のためのeditActionBoxプラグインは使用できません。
+{*}
+
+{literal}
+<script type="text/javascript">
+{/literal}{if $docmeta.is_primary}{literal}
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"FROM", textId: 'from_date', btnId: 'from_date-btn', boxId: 'from_date-pop', tableId: 'from_date-table'});
+    DUI.calendar.PopupWindow({title:"TO", textId: 'to_date', btnId: 'to_date-btn', boxId: 'to_date-pop', tableId: 'to_date-table'});
+    RecurForm.init();
+});
+function control_event_date_time(){
+// 「終日」にチェックした場合、時刻を隠す
+    if ($("allDayFlg").checked) {
+        $('from_time').hide() ;
+        $('to_time').hide() ;
+    }else{
+        $('from_time').show() ;
+        $('to_time').show() ;
+    }
+}
+var RecurForm = {
+
+  // 初期化
+    init: function() {
+        this.form = document.forms["calendar_recurrence_edit"];
+        this.freq = $("recur_freq");
+        this.container = $("recur_container");
+        this.description_term = $("recur_description_term");
+        this.description_rule = $("recur_description_rule");
+        this.byDay = $("recur_byDay");
+        this.byWhich = $("recur_byWhich");
+        this.allDayFlg = $("allDayFlg");
+        this.from_time = $("from_time");
+        this.to_time = $("to_time");
+
+        // 初期値を処理
+        this.freqChanged();
+        this.toggle_event_date_time();
+    },
+
+    // イベント時間使用・不使用切り替え
+    toggle_event_date_time: function() {
+        if (this.allDayFlg.checked) {
+            this.from_time.hide() ;
+            this.to_time.hide() ;
+        }else{
+            this.from_time.show() ;
+            this.to_time.show() ;
+        }
+    },
+
+    // 繰り返し単位指定時
+    freqChanged: function() {
+        this.byDay.hide();
+        this.byWhich.hide();
+        switch ($F(this.freq)) {
+            case "WEEKLY":
+            this.byDay.show();
+            break;
+            case "MONTHLY":
+            this.byWhich.show();
+            break
+        }
+        this.updateDescription();
+    },
+    updateDescription: function() {
+        this.description_term.innerHTML = "loading...";
+        var queryString = '';
+        queryString+='?from_date=' + this.form.from_date.value;
+        queryString+='&to_date=' + this.form.to_date.value;
+        queryString+='&FREQ=' + this.form["recur[FREQ]"].value;
+        queryString+='&INTERVAL=' + this.form["recur[INTERVAL]"].value;
+
+        if (this.form["recur[FREQ]"].value == 'MONTHLY' && this.form["recur[byWhich]"].value == 'BYMONTHDAY'){
+        // 月次の日付指定の場合
+            queryString+='&BYMONTHDAY=' + this.form.from_date.value;
+        }else if (this.form["recur[FREQ]"].value == 'MONTHLY' && this.form["recur[byWhich]"].value == 'BYDAY'){
+        // 月次の曜日指定の場合
+            queryString+='&BYDAY=' + this.form.from_date.value;
+        }else{
+            for (i = 0; i < this.form.elements['recur[BYDAY][]'].length; i++ ) {
+            // チェックボックスがONの時はその値を設定する。
+                if (this.form.elements['recur[BYDAY][]'][i].checked == true) {
+                    queryString += '&BYDAY[]='+this.form.elements['recur[BYDAY][]'][i].value;
+                }
+            }
+        }
+        new Ajax.Updater("recur_description_term", '/management/calendar/calendar_recurrence_output_string/', {method: 'get', parameters: queryString});
+    },
+    // util
+    parseDate: function(date) {
+        var m = date.match(/^(\d{4})[-\/]?(\d{1,2})[-\/]?(\d{1,2})$/);
+        return m && [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
+    },
+    getWeekNo: function(date) {
+        var firstDay = new Date(date[0], date[1] - 1, 1).getDay();
+        return Math.floor((date[2] + firstDay - 1) / 7) + 1;
+    }
+};
+
+{/literal}{/if}{literal}
+// end of RecurForm
+</script>
+{/literal}
+
+<style>
+{literal}
+#recur_description {
+  width: 85%;
+  border: 2px solid #F60;
+  padding: 10px 0;
+  margin-bottom: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align:center;
+}
+#recur_description_rule {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+#recur_description_term {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* ボタン
+------------------------------------------------------------ */
+.buttonbox_calendar {
+        padding: 5px 10px 30px;
+        clear: both;
+}
+.buttonbox_calendar p {
+        float: left;
+        line-height: 22px;
+        margin: 0 5px 0 0;
+}
+.buttonbox_calendar li {
+        float: left;
+        margin-right: 3px;
+        height: 27px;
+        text-align: center;
+        background: url(/images/management/bt_orange_l.gif);
+}
+.buttonbox_calendar li button {
+        cursor: pointer;
+        display: block;
+        height: 27px;
+        border: none;
+        background: url(/images/management/bt_orange_r.gif) top right no-repeat !important;
+        padding: 0 5px 0 22px;
+}
+.buttonbox_calendar li:hover {
+        background: url(/images/management/bt_orange_l.gif) bottom left;
+}
+.buttonbox_calendar li:hover button {
+        background: url(/images/management/bt_orange_r.gif) bottom right no-repeat !important;
+}
+
+{/literal}
+</style>
+
+<div class="list_right_bt">
+<h2>{'/modules/calendar/label/calendar_recurrence_edit'|translate}{* 繰り返しイベント編集 *}</h2>
+<ul>
+{if $rauth->canInsert("/calendar/item/")}
+    <li class="add"><a href="/management/calendar/calendar_recurrence_edit/"><span>{'/modules/calendar/add_new_event_btn'|translate}{* イベント追加 *}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/calendar/calendar_list/">{'/modules/calendar/label/calendar_list'|translate}</a>
+{'/modules/calendar/label/calendar_recurrence_edit'|translate}{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カレンダー >> 繰り返しイベント編集 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <form name="calendar_recurrence_edit" id="calendar_recurrence_edit" action="/management/calendar/calendar_recurrence_edit/{if $event_recurrence_id}event_recurrence_id={$event_recurrence_id}{/if}" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    {if $event_recurrence_id}
+    {lang_selector meta=$docmeta link="/management/calendar/calendar_recurrence_edit/event_recurrence_id=$event_recurrence_id"}
+    {/if}
+
+{if $docmeta.is_primary}
+    <table width="100%"  {if $event_recurrence_id} style="display:none;"{/if}>
+    <tr>
+      <th>{'/modules/calendar/label/recurrence_term'|translate}{*繰り返し期間*}</th>
+      <td>
+        <div id="event_date">
+            <input type="text" name="from_date" id="from_date" value="{$data.from_date|escape}" autocomplete="off" size="15" onchange="RecurForm.freqChanged();" />
+            <button type="button" id="from_date-btn" ><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="from_date-pop"></div><span class="required">{'/label/required'|translate}</span>
+            ～
+            <input type="text" name="to_date" id="to_date" value="{$data.to_date|escape}" autocomplete="off" size="15" onchange="RecurForm.freqChanged();" />
+            <button type="button" id="to_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="to_date-pop"></div><span class="required">{'/label/required'|translate}</span>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <th>{'/modules/calendar/label/recurrence_interval'|translate}{*繰り返し間隔*}</th>
+      <td>
+        <div id="recur_container">
+        <input type="hidden" value="{$data.event_recurrence_id}" name="event_recurrence_id" id="event_recurrence_id" /> 
+            <p>{'/modules/calendar/msg/recurrence_explains'|translate}{*次の間隔で繰り返す*}</p>
+            <select name="recur[INTERVAL]" onchange="RecurForm.freqChanged();" >{html_options options=$INTERVAL selected=$data.INTERVAL}</select>{* 間隔の数字 *}
+            <select id="recur_freq" name="recur[FREQ]" onchange="RecurForm.freqChanged();">{html_options options=$FREQ selected=$data.FREQ}</select>{* 間隔の単位 *}
+            {'/modules/calendar/label/interval_by'|translate}
+            <span id="recur_byWhich"><select name="recur[byWhich]" onchange="RecurForm.freqChanged();">{html_options options=$byWhich selected=$data.byWhich}</select></span>{* 「月毎」を選択した場合の入力パターン選択 *}
+            <span id="recur_byDay">
+            {foreach from=$DAY item=day key=key}
+            <label><input name="recur[BYDAY][]" value="{$key}" {foreach from=$data.BYDAY item=item}{if $item==$key}checked="checked"{/if}{/foreach} type="checkbox" onchange="RecurForm.freqChanged();" />{$day}</label>
+            {/foreach}
+            </span>
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    {* 繰り返しパターン文字列*}
+    <div id="recur_description"><div id="recur_description_term"></div><div id="recur_description_rule"></div></div>
+{/if}
+
+    <table width="100%">
+
+    <tr>
+      <th>{'/modules/calendar/label/calendar_event'|translate}{* イベント *}</th>
+      <td><input type="text" name="event_txt" value="{$data.event_txt|escape}" size="80" /><span class="required">{'/label/required'|translate}</span></td>
+    </tr>
+
+{if $docmeta.is_primary}
+    <tr>
+      <th>{'/label/category'|translate}{* カテゴリ *}</th>
+      <td><select name="event_category_id">{html_options options=$arrCategoryId selected=$data.event_category_id}</select></td>
+    </tr>
+
+    <tr>
+      <th>{'/label/time'|translate}{*時間*}</th>
+      <td>
+        <div id="event_date">
+            <span id="from_time">
+            <select name="from_hour" id="from_hour">{html_options options=$hours selected=$data.from_hour}</select>{'/label/hour'|translate}{*時*}
+            <select name="from_minute" id="from_minute">{html_options options=$minutes selected=$data.from_minute}</select>{'/label/minute'|translate}{*分*}
+            ～
+            </span>
+            <span id="to_time">
+            <select name="to_hour" id="to_hour">{html_options options=$hours selected=$data.to_hour}</select>{'/label/hour'|translate}{*時*}
+            <select name="to_minute" id="to_minute">{html_options options=$minutes selected=$data.to_minute}</select>{'/label/minute'|translate}{*分*}
+            </span>
+            <label for="allDayFlg"></label><input type="checkbox" name="allDayFlg" id="allDayFlg" {if $data.allDayFlg}checked="checked"{/if}  onclick="control_event_date_time()" />{'/label/all_day'|translate}{* 終日 *}
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <th>{'/modules/calendar/label/absence_settings'|translate}{* 出欠設定 *}</th>
+      <td>
+        <input type="checkbox" name="attend_flg" id="attend_flg" value="1" {if $data.attend_flg}checked="checked"{/if} onChange="SetAttendChkBox()" />{'/modules/calendar/label/marking_absence'|translate}{* 出欠席をとる *}<br />
+        <table width="100%">
+        <tr>
+          <th>{'/label/viewing_limit'|translate}{* 閲覧制限 *}</th>
+          <td>
+            <input type="radio" name="attend_secure_flg" id="attend_secure_flg_off" value="off" onclick="display('attend_secure_level_list', 'none');" {if $data.attend_secure_flg != 'on'}checked="checked"{/if}/><label for="attend_secure_flg_off">{'/label/unlimited'|translate}{* 制限無し *}</label>
+            <input type="radio" name="attend_secure_flg" id="attend_secure_flg_on" value="on" onclick="display('attend_secure_level_list', '');" {if $data.attend_secure_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="attend_secure_flg_on">{'/label/limited'|translate}{* 制限有り *}</label>
+            <div id="attend_secure_level_list" style="margin: 10px 0 0 10px; {if $data.attend_secure_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/calendar/msg/select_viewing_group'|translate}{* 閲覧を許可するグループを選択してください。グループは複数選択できます。 *}</p>
+              <select name="attend_secure_level[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$data.attend_secure_level}</select>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/modules/calendar/label/absence_marking_limit'|translate}{* 投稿制限 *}</th>
+          <td>
+            <input type="radio" name="attend_editable_flg" id="attend_editable_flg_off" value="off" onclick="display('attend_editable_group_list', 'none');" {if $data.attend_editable_flg != 'on'}checked="checked"{/if}/><label for="attend_editable_flg_off">{'/label/unlimited'|translate}{* 制限無し *}</label>
+            <input type="radio" name="attend_editable_flg" id="attend_editable_flg_on" value="on" onclick="display('attend_editable_group_list', '');" {if $data.attend_editable_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="attend_editable_flg_on">{'/label/limited'|translate}{* 制限有り *}</label>
+            <div id="attend_editable_group_list" style="margin: 10px 0 0 10px; {if $data.attend_editable_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/calendar/msg/select_marking_absence_group'|translate}{* 出欠登録を許可するグループを選択してください。グループは複数選択できます。 *}</p>
+              <select name="attend_editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$data.attend_editable_group}</select>
+            </div>
+          </td>
+        </tr>
+        </table>
+      </td>
+    </tr>
+{else}
+<input type="hidden" value="{$data.event_category_id}" name="event_category_id" id="event_category_id" /> 
+{/if}
+    <tr>
+      <th>{'/modules/calendar/label/event_detail'|translate}{* イベントの詳細 *}</th>
+      <td>
+        {if $calendar_wysiwyg_use_flg}
+        {* wisiwigエディタを使用する場合 *}
+        {$sw_html}
+        {else}
+        <textarea name="event_detail" rows="10" cols="50">{$data.event_detail|escape}</textarea>
+        {/if}
+      </td>
+    </tr>
+  </table>
+
+{if $docmeta.is_primary}
+  <a id="relation_data" name="relation_data"></a>
+  {rcms_include file="management/relation_edit.html"}
+  {rcms_include file="management/open_date_box.html" id=$event_recurrence_id data=$data}
+{/if}
+
+  {if $event_recurrence_id}{*更新・削除の処理*}
+  <table  width="100%">
+    <tr>
+      <th>{'/label/update'|translate}</th>
+      <td>
+        {html_radios id=update_pattern name=update_pattern options=$calendar_recur_upd_patern selected=$data.update_pattern}
+      </td>
+      <td>
+        <div class="buttonbox_calendar">
+        <ul><li><button type="button" onclick="confirmUpdate();">{'/label/update_btn'|translate}</button></li></ul>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <th>{'/label/delete'|translate}</th>
+      <td>
+        {html_radios id=delete_pattern name=delete_pattern options=$calendar_recur_del_patern selected=$data.delete_pattern}
+      </td>
+      <td>
+        <div class="buttonbox_calendar">
+        <ul><li><button type="button" onclick="confirmDelete();">{'/label/delete_btn'|translate}</button></li></ul>
+        </div>
+      </td>
+    </tr>
+
+  </table>
+  {else}
+  <div class="buttonbox">
+  <ul><li><button type="submit" onclick="document.calendar_recurrence_edit.MODE.value='INSERT';">{'/label/add_btn'|translate}</button></li></ul>
+  </div>
+  {/if}
+
+{literal}
+<script type="text/javascript">
+{/literal}{if $docmeta.is_primary}{literal}
+
+//出欠をとらない場合はオプションを無効にする
+function SetAttendChkBox(){
+    if($("attend_flg").checked == false){
+        // 「制限なし」を選択状態にする
+        $("attend_secure_flg_off").checked = true;
+        $("attend_editable_flg_off").checked = true;
+        // グループリストを非表示にする
+        display('attend_secure_level_list', 'none');
+        display('attend_editable_group_list', 'none');
+        // オプションを選択不可にする
+        $("attend_secure_flg_off").disabled = true;
+        $("attend_secure_flg_on").disabled = true;
+        $("attend_editable_flg_off").disabled = true;
+        $("attend_editable_flg_on").disabled = true;
+    }else{
+        // オプションを選択不可にする
+        $("attend_secure_flg_off").disabled = false;
+        $("attend_secure_flg_on").disabled = false;
+        $("attend_editable_flg_off").disabled = false;
+        $("attend_editable_flg_on").disabled = false;
+    }
+}
+SetAttendChkBox();
+{/literal}{/if}
+{*メッセージ文字列*}
+{assign var="del1" value='/modules/calendar/msg/recur_event_del_all'|translate}
+{assign var="del2" value='/modules/calendar/msg/recur_event_del_future'|translate}
+{assign var="upd1" value='/modules/calendar/msg/recur_event_upd_all'|translate}
+{assign var="upd2" value='/modules/calendar/msg/recur_event_upd_future'|translate}
+var del_msg_1 = '{'/modules/calendar/msg/option_confirm'|translate:$del1}';
+var del_msg_2 = '{'/modules/calendar/msg/option_confirm'|translate:$del2}';
+var upd_msg_1 = '{'/modules/calendar/msg/option_confirm'|translate:$upd1}';
+var upd_msg_2 = '{'/modules/calendar/msg/option_confirm'|translate:$upd2}';
+{literal}
+
+function confirmDelete(){
+
+    // 選択項目取得
+    var pattern = 0;
+    for (var i = 0; i < document.calendar_recurrence_edit.delete_pattern.length; i++) {
+        if(document.calendar_recurrence_edit.delete_pattern[i].checked == true){
+            pattern = document.calendar_recurrence_edit.delete_pattern[i].value;
+            break;
+        }
+    }
+
+    if (pattern=={/literal}{$smarty.const.CALENDAR_RECUR_DEL_ALL}{literal}){
+    // 全部削除
+        var msg = del_msg_1;
+    }else if (pattern=={/literal}{$smarty.const.CALENDAR_RECUR_DEL_FUTURE}{literal}){
+    // 未来のみ削除
+        var msg = del_msg_2;
+    }
+
+    if (confirm(msg)) {
+        document.calendar_recurrence_edit.MODE.value='DELETE';
+        document.calendar_recurrence_edit.submit();
+    }
+    return false;
+}
+
+
+function confirmUpdate(){
+
+    // 選択項目取得
+    var pattern = 0;
+    for (var i = 0; i < document.calendar_recurrence_edit.update_pattern.length; i++) {
+        if(document.calendar_recurrence_edit.update_pattern[i].checked == true){
+            pattern = document.calendar_recurrence_edit.update_pattern[i].value;
+            break;
+        }
+    }
+
+    if (pattern=={/literal}{$smarty.const.CALENDAR_RECUR_UPD_ALL}{literal}){
+    // 全部更新
+        var msg = upd_msg_1;
+    }else if (pattern=={/literal}{$smarty.const.CALENDAR_RECUR_UPD_FUTURE}{literal}){
+    // 未来のみ更新
+        var msg = upd_msg_2;
+    }
+
+    if (confirm(msg)) {
+        document.calendar_recurrence_edit.MODE.value='UPDATE';
+        document.calendar_recurrence_edit.submit();
+    }
+    return false;
+}
+
+</script>
+{/literal}
+
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

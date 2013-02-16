@@ -1,0 +1,7 @@
+{module name="topics_search_box"}
+<h2>{'/modules/topics/label/search_topics'|translate}{*トピックス検索*}</h2>
+    <form action="/{if $action_page}{$action_page}{else}topics_list{/if}/" method="POST">
+      {'/label/keyword'|translate}{*キーワード*}<input type="text" name="topics_keyword" value="{$smarty.request.topics_keyword|escape}"/>
+      <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+    </form>
+{/module}

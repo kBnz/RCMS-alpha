@@ -1,0 +1,31 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+{/literal}
+//-->
+</script>
+<div class="list_right_bt">
+<h2>ファイル移動</h2>
+<ul>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/fileserver/fileserver_list/{if $folder_id}&folder_id={$folder_id}{/if}">ファイル管理</a>
+ファイル移動
+{/pankuzu}
+<div class="clear"></div>
+
+<div id="fileserver_file_move_fin" class="list_main" style="margin-top:25px;">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<div style="text-align:center;margin-top:10px">
+  <ul>
+    <li><a href="/management/fileserver/fileserver_list/folder_id={$folder_id}">フォルダ一覧へ戻る</a></li>
+  <ul>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

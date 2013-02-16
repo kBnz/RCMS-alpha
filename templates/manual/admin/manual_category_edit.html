@@ -1,0 +1,80 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/label/category_edit'|translate}{* カテゴリ編集 *}</h2>
+<ul>
+{if $rauth->canInsert('/manual/category/')}
+<li class="add"><a href="/management/manual/manual_category_edit/"><span>{'/modules/manual/label/new_category'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/manual/manual_list/">{'/modules/manual'|translate}</a>
+<a href="/management/manual/manual_category_list/">{'/label/categories_list'|translate}</a>
+{'/modules/manual/label/category_edit'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/manual/manual_category_edit/manual_category_id=$manual_category_id"}
+{if $manual_category_id}
+    {lang_selector meta=$docmeta link="/management/manual/manual_category_edit/manual_category_id=$manual_category_id"}
+{/if}
+
+<h3 class="title">{if $cateInfo.manual_category_id != ""}{$cateInfo.category_nm|escape}{else}{'/label/create_new_category_btn'|translate}{* カテゴリ新規作成 *}{/if}</h3>
+<div class="list_main">
+
+  <form action="/management/manual/manual_category_edit/{if $cateInfo.manual_category_id}manual_category_id={$cateInfo.manual_category_id}{/if}" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/label/category_name'|translate}{* カテゴリ名 *}</th>
+        <td>
+          <input type="text" style="width: 400px" name="category_nm" value="{$formData.category_nm}" /><span class="required">{'/label/required'|translate}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/parent_category'|translate}{* 親カテゴリ *}</th>
+        <td>
+        {if $docmeta.is_primary}
+            <select name="parent_id">{html_options options=$category_parent_options selected=$formData.parent_id}</select><span class="required">{'/label/required'|translate}</span>
+        {else}
+        {$category_parent_options[$cateInfo.parent_id]}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+         <th>{'/label/sort'|translate}</th>
+         <td>
+        {if $docmeta.is_primary}
+             <input type="text" name="order_no" size="5" value="{$formData.order_no}" onBlur="return changeHankaku(this, 'number');" />
+        {else}
+        {$cateInfo.order_no}
+        {/if}
+         </td>
+      </tr>
+      <tr>
+        <th>{'/label/memo'|translate}</th>
+        <td>
+        <textarea name="memo" style="height: 150px; width: 400px">{$formData.memo}</textarea>
+        <p class="hint">{'/modules/manual/msg/describe_purpose'|translate}</p>
+        </td>
+      </tr>
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

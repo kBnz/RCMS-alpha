@@ -1,0 +1,183 @@
+{if $use_v2}
+
+
+	{* 多言語対応だったら各言語へのリンクを用意する *}
+	{if $docmeta.langs|@count > 1}
+		<div class="lang_option">
+			<ul>
+{strip}
+				{foreach from=$docmeta.langs item=row}
+					<li class="{if $row.status}latest{else}none{/if}{if $row.lang == $docmeta.lang} current{/if}"><a href="{$row.link.link}">{$row.disp_lang|escape}</a></li>
+				{/foreach}
+{/strip}
+			</ul>
+		</div>
+	{/if}
+
+	{if $pageInfo}
+		{pager info=$pageInfo}
+	{else}
+		<p class="page_links">{$page_links}</p>
+	{/if}
+
+	{*申請履歴の件数をカウント*}
+	{assign var="apply_cnt" value="0"}
+	{foreach from=$list item=row}
+		{if $row.apply}
+		{assign var="apply_cnt" value=$apply_cnt+1}
+		{/if}
+	{/foreach}
+
+	<table width="100%" border="0" cellspacing="2" cellpadding="0">
+		<tr>
+			<th {if $apply_cnt}rowspan="2"{/if}>{'/label/version'|translate}{* 版 *}</th>
+			<th>{'/label/update_time'|translate}{*更新日付*}</th>
+			<th>{'/label/updated_by'|translate}{*更新者*}</th>
+			<th>{'/label/status_katakana'|translate}{*ステータス*}</th>
+
+			<th {if $apply_cnt}rowspan="2"{/if}>{'/label/comments'|translate}{*コメント*}</th>
+			<th {if $apply_cnt}rowspan="2"{/if}>{'/label/content'|translate}{*内容*}</th>
+
+		</tr>
+
+		{if $apply_cnt}
+		<tr>
+			<th>{'/modules/approvalflow/label/apply_approve_date'|translate}{*承認・拒否日付*}</th>
+			<th>{'/modules/approvalflow/label/applyer_approver'|translate}{*承認・拒否者*}</th>
+			<th>{'/label/application_result'|translate}{*申請結果*}</th>
+		</tr>
+		{/if}
+
+	{foreach from=$list item=row}
+		<tr>
+
+			<td {if $row.apply}rowspan="2"{/if}>
+			{if $row.status == $smarty.const.UPDATE_INSERT || $row.status == $smarty.const.UPDATE_UPDATE}
+				<a href="{$link}&data_history_id={$row.data_history_id}&_doc_lang={$row.lang}">{'/label/version_no'|translate:$row.version_no}{if $row.latest_flg eq '1'}({'/label/latest'|translate}{*最新*}){/if}</a>
+			{else}
+				{if $row.version_no}
+				{'/label/version_no'|translate:$row.version_no}{if $row.latest_flg eq '1'}({'/label/latest'|translate}{*最新*}){/if}
+				{/if}
+			{/if}
+			</td>
+			<td>{$row.change_ymdhi|pg_dateformat}</td>
+			<td>{if $row.admin_nm}{$row.admin_nm|escape}{else}{$row.admin_nm2|escape}{/if}{if $row.apply_finish_flg}({'/label/final_approver'|translate}){/if}</td>
+			<td>{$row.status_nm|escape}{if $row.apply_finish_flg}({'/label/approval_has_done'|translate}){/if}</td>
+
+			<td {if $row.apply}rowspan="2"{/if}>{$row.update_comment|escape|nl2br}</td>
+			<td {if $row.apply}rowspan="2"{/if}>{"/"|join:$row.changeColumns|escape}</td>
+
+		</tr>
+
+		{if $row.apply}
+		<tr>
+
+			<td>{$row.apply.change_ymdhi|pg_dateformat}</td>
+			<td>{if $row.apply.admin_nm}{$row.apply.admin_nm|escape}{else}{$row.apply.admin_nm2|escape}{/if}</td>
+			<td>{$row.apply.status_nm|escape}</td>
+
+		</tr>
+		{/if}
+	{/foreach}
+	</table>
+	{if $pageInfo}
+		{pager info=$pageInfo}
+	{else}
+		<p class="page_links">{$page_links}</p>
+	{/if}
+
+
+{else}
+
+
+	<div class="list_main">
+		{* 多言語対応だったら各言語へのリンクを用意する *}
+		{if $docmeta.langs|@count > 1}
+			<div class="doc_lang_status_box doc_lang_status">
+				<ul>
+	{strip}
+					{foreach from=$docmeta.langs item=row}
+						<li class="{if $row.status}latest{else}none{/if}{if $row.lang == $docmeta.lang} current{/if}"><a href="{$row.link.link}">{$row.disp_lang|escape}</a></li>
+					{/foreach}
+	{/strip}
+				</ul>
+				<div class="clear"></div>
+			</div>
+		{/if}
+
+		{if $pageInfo}
+			{pager info=$pageInfo}
+		{else}
+			<p class="page_links">{$page_links}</p>
+		{/if}
+
+		{*申請履歴の件数をカウント*}
+		{assign var="apply_cnt" value="0"}
+		{foreach from=$list item=row}
+			{if $row.apply}
+			{assign var="apply_cnt" value=$apply_cnt+1}
+			{/if}
+		{/foreach}
+
+		<table width="100%" border="0" cellspacing="2" cellpadding="0">
+			<tr>
+				<th {if $apply_cnt}rowspan="2"{/if}>{'/label/version'|translate}{* 版 *}</th>
+				<th>{'/label/update_time'|translate}{*更新日付*}</th>
+				<th>{'/label/updated_by'|translate}{*更新者*}</th>
+				<th>{'/label/status_katakana'|translate}{*ステータス*}</th>
+
+				<th {if $apply_cnt}rowspan="2"{/if}>{'/label/comments'|translate}{*コメント*}</th>
+				<th {if $apply_cnt}rowspan="2"{/if}>{'/label/content'|translate}{*内容*}</th>
+
+			</tr>
+
+			{if $apply_cnt}
+			<tr>
+				<th>{'/modules/approvalflow/label/apply_approve_date'|translate}{*承認・拒否日付*}</th>
+				<th>{'/modules/approvalflow/label/applyer_approver'|translate}{*承認・拒否者*}</th>
+				<th>{'/label/application_result'|translate}{*申請結果*}</th>
+			</tr>
+			{/if}
+
+		{foreach from=$list item=row}
+			<tr>
+
+				<td {if $row.apply}rowspan="2"{/if}>
+				{if $row.status == $smarty.const.UPDATE_INSERT || $row.status == $smarty.const.UPDATE_UPDATE}
+					<a href="{$link}&data_history_id={$row.data_history_id}&_doc_lang={$row.lang}">{'/label/version_no'|translate:$row.version_no}{if $row.latest_flg eq '1'}({'/label/latest'|translate}{*最新*}){/if}</a>
+				{else}
+					{if $row.version_no}
+					{'/label/version_no'|translate:$row.version_no}{if $row.latest_flg eq '1'}({'/label/latest'|translate}{*最新*}){/if}
+					{/if}
+				{/if}
+				</td>
+				<td>{$row.change_ymdhi|pg_dateformat}</td>
+				<td>{if $row.admin_nm}{$row.admin_nm|escape}{else}{$row.admin_nm2|escape}{/if}{if $row.apply_finish_flg}({'/label/final_approver'|translate}){/if}</td>
+				<td>{$row.status_nm|escape}{if $row.apply_finish_flg}({'/label/approval_has_done'|translate}){/if}</td>
+
+				<td {if $row.apply}rowspan="2"{/if}>{$row.update_comment|escape|nl2br}</td>
+				<td {if $row.apply}rowspan="2"{/if}>{"/"|join:$row.changeColumns|escape}</td>
+
+			</tr>
+
+			{if $row.apply}
+			<tr>
+
+				<td>{$row.apply.change_ymdhi|pg_dateformat}</td>
+				<td>{if $row.apply.admin_nm}{$row.apply.admin_nm|escape}{else}{$row.apply.admin_nm2|escape}{/if}</td>
+				<td>{$row.apply.status_nm|escape}</td>
+
+			</tr>
+			{/if}
+		{/foreach}
+		</table>
+		{if $pageInfo}
+			{pager info=$pageInfo}
+		{else}
+			<p class="page_links">{$page_links}</p>
+		{/if}
+	</div>
+
+
+
+{/if}

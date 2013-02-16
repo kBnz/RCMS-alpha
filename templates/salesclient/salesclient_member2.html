@@ -1,0 +1,27 @@
+{module name="salesclient_list"}
+<h2 class="module_title"><span>{$memberData.name1} {$memberData.name2} {$memberData.com_post} のクライアント情報</span></h2>
+<div class="module_contents">
+
+  <table class="list">
+    <tr>
+      <th>クライアント名</th>
+      <th>連絡先</th>
+      <th>住所</th>
+      <th>担当者名</th>
+    </tr>
+{section name=mydata loop=$salesclientList}
+    <tr {if $salesclientList[mydata].sales_status eq '既存'}style="background-color:pink;"{/if}>
+      <td>{$salesclientList[mydata].salesclient_nm}</td>
+      <td>{$salesclientList[mydata].tel}</td>
+      <td>{$salesclientList[mydata].address1}{$salesclientList[mydata].address2}</td>
+      <td>{$salesclientList[mydata].tanto1_nm} {$salesclientList[mydata].tanto1_tel}
+          {if $salesclientList[mydata].tanto2_nm ne ''}/{$salesclientList[mydata].tanto2_nm} {$salesclientList[mydata].tanto2_tel}{/if}
+          {if $salesclientList[mydata].tanto3_nm ne ''}/{$salesclientList[mydata].tanto3_nm} {$salesclientList[mydata].tanto3_tel}{/if}
+          {if $salesclientList[mydata].tanto4_nm ne ''}/{$salesclientList[mydata].tanto4_nm} {$salesclientList[mydata].tanto4_tel}{/if}
+          {if $salesclientList[mydata].tanto5_nm ne ''}/{$salesclientList[mydata].tanto5_nm} {$salesclientList[mydata].tanto5_tel}{/if}
+      </td>
+    </tr>
+{/section}
+  </table>
+</div>
+{/module}

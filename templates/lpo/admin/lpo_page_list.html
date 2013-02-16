@@ -1,0 +1,130 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if (confirm('選択されたページを削除します。\nよろしいですか？')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm}ページ一覧</h2>
+<ul>
+{if $auth.lpo.insert}
+<li class="add"><a href="/management/lpo/lpo_page_edit/?lpo_header_id={$lpo_header_id}"><span>ページ追加</span></a></li>
+<li class="add"><a href="/management/lpo/lpo_page_copy/?lpo_header_id={$lpo_header_id}"><span>ページコピー</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">サイト基本設定</a>
+<a href="/management/lpo/lpo_list/">{$module_nm}</a></a>
+{$module_nm}ランディングページ一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <div style="font-weight:bold;">{'/modules/lpo/label/lpo_header_nm'|translate}:{$lpo_header_nm}
+    {'/modules/lpo/label/lpo_type'|translate}:{$arrLpo_type[$lpo_type]} 
+  </div>
+
+
+<br>
+  <form method="get" action="/management/lpo/lpo_page_list/">
+    <fieldset class="search_box">
+      <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select>
+      <input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.lpo.update || $auth.lpo.delete}
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'lpo_page_id[]')" /></th>
+{/if}
+        <th width="26">公開</th>
+        <th>{'/modules/lpo/label/lpo_page_nm'|translate}</th>
+        <th>{$arrLpo_type[$lpo_type]}</th>
+        <th>遷移数/PV数(離脱率)</th>
+        <th width="130">最終更新日時</th>
+      </tr>
+      <tr>
+          <td></td>
+        <td></td>
+        <td>元ページ
+        </td>
+        <td>
+  <form method="POST" action="/management/lpo/lpo_page_list/">
+      {if $lpo_type eq '0' || $lpo_type eq '2'}
+          <input type="text" name="lpo_weight" value="{$base_page.lpo_weight}" size="4">
+          <input type="hidden" name="lpo_header_id" value="{$lpo_header_id}" />
+          <input type="hidden" name="lpo_page_id" value="{$base_page.lpo_page_id}" />
+          <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+          <input type="hidden" name="MODE" value="UPDATE" />
+          <input type="submit" value="更新" />
+      {elseif $lpo_type eq '1'}
+          ※当てはまらない場合にデフォルト表示
+      {/if}
+  </form>
+        </td>
+        <td>
+          {$base_page.next_page_pv} / {$base_page.page_pv} ( {$base_page.leave_per}% )
+        </td>
+        <td>{$base_page.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+  <form method="POST" action="/management/lpo/lpo_page_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="enable_flg" value="{$enable_flg|escape}" />
+    <input type="hidden" name="lpo_header_id" value="{$lpo_header_id}" />
+
+    {foreach from=$page_list item=row}
+      <tr>
+        {if $auth.lpo.update || $auth.lpo.delete}
+          <td><input type="checkbox" name="lpo_page_id[]" value="{$row.lpo_page_id}" /></td>
+        {/if}
+        <td>{$row.open_flg|rcms_publicimg}</td>
+        <td>
+          <a href="/management/lpo/lpo_page_edit/lpo_page_id={$row.lpo_page_id}">{$row.lpo_page_nm}</a>
+        </td>
+        <td>
+          {if $lpo_type eq '0' || $lpo_type eq '2'}{$row.lpo_weight}{elseif $lpo_type eq '1'}{$row.lpo_keyword}{/if}
+        </td>
+        <td>
+          {$row.next_page_pv} / {$row.page_pv} ( {$row.leave_per}% )
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+      <p>選択した項目を一括で</p>
+      {if $auth.lpo.update}
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">公開にする</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">非公開にする</button>
+      {/if}
+      {if $auth.lpo.delete}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,70 @@
+{* 拡張項目*}
+{if $topicsData.ext_columns.straight|@count > 0}
+<dl>
+{foreach from=$topicsData.ext_columns.straight item=ext_column name=disp_group}{*表示グループのループ*}
+    {assign var="disp_no" value="$item.disp_group_order}{* 表示番号 画面の上から数えて何番目か *}
+        {if $ext_column.type == 0}{*テキストボックスの場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 1}{*テキストエリアの場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value|nl2br}</dd>
+        {elseif $ext_column.type == 2}{*選択形式の場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 3}{*数値の場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 4}{*画像の場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{if $ext_column.file_url}<img src="{$ext_column.file_url}">{/if}<br/>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 5}{*の場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 7}{*link*}
+        <dt>{$ext_column.ext_title}</dt><dd><a href="{$ext_column.value.url}">{$ext_column.value.title|escape}</a></dd>
+        {elseif $ext_column.type == 6}{*wysiwyg*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 10}{*テーブルの場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>
+          <table>
+            {foreach from=$ext_column.show_value item=row}
+              <tr>
+                {foreach from=$row item=col}
+                  <{$col.tag}>{$col.value|escape}</{$col.tag}>
+                {/foreach}
+              </tr>
+            {/foreach}
+          </table>
+        </dd>
+        {elseif $ext_column.type == 20}{*Relationの場合*}
+        <dt>{$ext_column.ext_title}</dt><dd><a href="{$ext_column.link.link}">{$ext_column.link.contents_title|escape}</a></dd>
+        {elseif $ext_column.type == 21}{*htmlの場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+        {elseif $ext_column.type == 22}{*音声の場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}[<a href="{$ext_column.file_url}">{'/label/download'|translate}{*ダウンロード*}</a>]</dd>
+        {elseif $ext_column.type == 11}{*地図の場合*}
+            {if $ext_column.value.gmap_x && $ext_column.value.gmap_y }
+            <dt>{$ext_column.ext_title}</dt><dd>
+
+            <img src="/direct/location/gmap_mobile2/gmap_x={$ext_column.value.gmap_x}&gmap_y={$ext_column.value.gmap_y}&gmap_zoom={$ext_column.value.gmap_zoom}&gmap_type={$ext_column.value.gmap_type}" alt="{$ext_column.ext_title}" />
+            </dd>
+            {/if}
+        {elseif $ext_column.type == 24}{*路線情報の場合*}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.tdfk_nm} {$ext_column.line_nm} {$ext_column.station_nm}</dd>
+        {elseif $ext_column.type == 25}{*動画の場合*}
+<div id="topics_mediaplayer{$ext_column.repeatCnt}"></div>
+
+<script type="text/javascript" src="/js/jwplayer/jwplayer.js"></script>
+<script type="text/javascript">
+{literal}
+	jwplayer("topics_mediaplayer{/literal}{$ext_column.repeatCnt}{literal}").setup({
+		file: "{/literal}{$ext_column.file_url}{literal}",
+		image: "{/literal}{$ext_column.file_url}{literal}.jpg",
+		width:"480px",
+		height:"360px",
+		stretching: 'exactfit'
+	});
+{/literal}
+</script>
+        {else}
+        <dt>{$ext_column.ext_title}</dt><dd>{$ext_column.value}</dd>
+
+        {/if}
+{/foreach}
+</dl>
+{/if}

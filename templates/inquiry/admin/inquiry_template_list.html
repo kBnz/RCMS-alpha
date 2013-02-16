@@ -1,0 +1,84 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/JavaScript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。よろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/inquiry/label/inquiry_template_list'|translate}{*定型文一覧*}</h2>
+<ul>
+{if $rauth->canInsert("/inquiry/template/")}
+    <li class="add"><a href="/management/inquiry/inquiry_template_edit/"><span>{'/label/create_new_template_btn'|translate}{*定型文追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+{'/modules/inquiry/label/inquiry_template_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 定型文一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/inquiry/inquiry_list/">{'/modules/inquiry/label/inquiry_list'|translate}{*問い合わせ一覧*}</a></li>
+  <li><a href="/management/inquiry/inquiry_template_list/" class="active">{'/label/template_setting'|translate}{*定型文設定*}</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/inquiry/inquiry_template_list/">
+    <fieldset class="search_box">
+      <label for="s_subject">{'/label/template_title'|translate}{*定型文タイトル*}</label><input type="text" id="s_subject" name="s_subject" size="40" value="{$s_subject}" />
+      <input type="submit" value="{'/label/search_btn'|translate}{*検索する*}" style="margin-left: 20px" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/inquiry/inquiry_template_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="s_subject" value="{$s_subject|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th style="width:30px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'inquiry_template_id[]')" /></th>
+        <th>{'/label/template_title'|translate}{*定型文タイトル*}</th>
+        <th>{'/label/last_updated_time'|translate}{*最終更新日時*}</th>
+      </tr>
+      {foreach item=data from=$inquiry_template_list}
+        {assign var=inquiry_template_id value=$data.inquiry_template_id}
+        <tr>
+            <td><input type="checkbox" name="inquiry_template_id[]" value="{$data.inquiry_template_id}" {if !$rauth->canUpdate("/inquiry/template/$inquiry_template_id") && !$rauth->canDelete("/inquiry/template/$inquiry_template_id")}disabled="disabled"{/if} /></td>
+            <td>
+              <a href="/management/inquiry/inquiry_template_edit/inquiry_template_id={$data.inquiry_template_id}&pageID={$currentPageID}">{$data.template_nm}</a>
+            </td>
+            <td>{$data.update_ymdhi|pg_dateformat}</td>
+         </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+        <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}
+

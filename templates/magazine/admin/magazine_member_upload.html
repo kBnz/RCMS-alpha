@@ -1,0 +1,76 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/magazine/label/magazine_member_list'|translate}{*メールマガジン購読者一覧*}</h2>
+<ul>
+    {if $rauth->canInsert("/magazine/item/")}
+	    <li class="add"><a href="/management/magazine/magazine_sendmail_edit/magazine_id={$magazine_id}"><span>{'/label/create_mail_btn'|translate}{* メール作成 *}</span></a></li>
+	{/if}
+	{if $rauth->canSelect('/magazine/item/[@magazine_id=$magazine_id]')}
+		<li class="normal"><a href="/management/magazine/magazine_member_upload/magazine_id={$magazine_id}"><span>{'/label/upload'|translate}{*アップロード*}</span></a></li>
+		<li class="normal"><a href="/management/magazine/magazine_member_download/magazine_id={$magazine_id}"><span>{'/label/download'|translate}{*ダウンロード*}</span></a></li>
+	{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a> 
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a> 
+<a href="/management/magazine/magazine_list/">{'/modules/magazine/label/magazine_list'|translate}</a> 
+{'/modules/magazine/label/magazine_member_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 >> メールマガジン購読者一覧 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.magazine_name}</h3>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $successful}
+    <table width="300px;">
+        <tr>
+            <th>{'/label/insert'|translate}{*インサート*}</th>
+            <td>{$insert_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+        <tr>
+            <th>{'/label/update'|translate}{*アップデート*}</th>
+            <td>{$update_cnt}{'/label/item'|translate}{*件*}</td>
+        </tr>
+    </table>
+{/if}
+
+  <form method="POST" action="/management/magazine/magazine_member_upload/" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="magazine_id" value="{$magazine_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="mode" value="UPDATE" />
+    <table>
+    <tr>
+    <th>{'/label/upload_type'|translate}{*アップロード種別*}</th>
+    <td>
+    <label for="upload_type_0"><input type="radio" id="upload_type_0" name="upload_type" value="0" {if $smarty.request.upload_type ne 1}checked{/if}>{'/label/update_upload'|translate}{*アップロードデータに追加する*}</label>
+    <label for="upload_type_1"><input type="radio" id="upload_type_1" name="upload_type" value="1" {if $smarty.request.upload_type eq 1}checked{/if}>{'/label/all_change_upload'|translate}{*アップロードデータと入れ替える*}</label>
+    </td>
+    </tr>
+    <tr>
+    <th>{'/label/file_settings'|translate}{*ファイル指定*}</th>
+    <td>
+    <input type="file" size="50" name="member_csv" />
+    </td>
+    </tr>
+    </table>
+      {buttonbox}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button></button>
+      {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

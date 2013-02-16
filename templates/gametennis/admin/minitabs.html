@@ -1,0 +1,8 @@
+<ul class="minitabs">
+  <li><a href="/management/gametennis/gametennis_edit/game_id={$game_id}"{if $page_type eq 'gametennis_edit'} class="active"{/if}>{'/modules/game/label/game_information'|translate}{*試合情報*}</a></li>
+{if $game_id}
+  <li><a href="/management/gametennis/gametennis_single/game_id={$game_id}&game_type={$smarty.const.GAME_TENNIS_SINGLES}"{if $page_type eq 'gametennis_single' && $game_type == $smarty.const.GAME_TENNIS_SINGLES} class="active"{/if}>{'/modules/game/label/singles'|translate}{*シングルス*}</a></li>
+  <li><a href="/management/gametennis/gametennis_single/game_id={$game_id}&game_type={$smarty.const.GAME_TENNIS_DOUBLES}"{if $page_type eq 'gametennis_single' && $game_type == $smarty.const.GAME_TENNIS_DOUBLES} class="active"{/if}>{'/modules/game/label/doubles'|translate}{*ダブルス*}</a></li>
+  <li><a href="/management/gametennis/gametennis_team/game_id={$game_id}"{if $page_type eq 'gametennis_team'} class="active"{/if}>{'/label/team_competition'|translate}{*団体戦*}</a></li>
+{/if}
+</ul>

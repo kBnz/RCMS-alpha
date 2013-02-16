@@ -1,0 +1,155 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/develop/develop_use_list/">モジュール使用一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+<div class="search_box">
+  <table>
+    <tr>
+      <th>モジュール</th>
+      <td><select id="sel_module_nm"></select></td>
+    </tr>
+    <tr>
+      <th>php</th>
+      <td><select id="sel_module_php"></select></td>
+    </tr>
+    <tr>
+      <th>html</th>
+      <td><select id="sel_module_tpl"></select></td>
+    </tr>
+  </table>
+</div>
+
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+  <thead>
+    <tr>
+      <th>module</th>
+      <th>php</th>
+      <th>html</th>
+      <th>page_id<br/>page_nm<br/>page_sysnm</th>
+      <th>place<br/>weight</th>
+    </tr>
+  </thead>
+  <tbody id="contents_list"></tbody>
+</table>
+
+</div><!--//list_main-->
+
+<script type="text/javascript">
+{literal}
+Event.observe(window, 'load', function() {
+    var modules = {/literal}{$modules}{literal};
+    var contents = {/literal}{$contents}{literal};
+
+    var opts = $('sel_module_nm').options;
+    opts[opts.length] = new Option('-------', '');
+    for (var module_nm in modules) {
+        opts[opts.length] = new Option(module_nm, module_nm);
+    }
+
+    Event.observe($('sel_module_nm'), 'change', changeModuleNM);
+    Event.observe($('sel_module_php'), 'change', changeModulePHP);
+    Event.observe($('sel_module_tpl'), 'change', changeModuleTPL);
+
+    function changeModuleNM() {
+        var module_nm = $('sel_module_nm').options[$('sel_module_nm').selectedIndex].value;
+        var opts = $('sel_module_php').options;
+        opts.length = 0;
+        opts[opts.length] = new Option('-------', '');
+        var phps = modules[module_nm] ? modules[module_nm]['phps'] : {};
+        for (var module_php_id in phps) {
+            opts[opts.length] = new Option(phps[module_php_id].file + " (" + module_php_id + " : " + phps[module_php_id].name + ")", module_php_id);
+        }
+        changeModulePHP();
+    }
+    function changeModulePHP() {
+        var module_nm = $('sel_module_nm').options[$('sel_module_nm').selectedIndex].value;
+        var module_php_id = $('sel_module_php').options[$('sel_module_php').selectedIndex].value;
+        var opts = $('sel_module_tpl').options;
+        opts.length = 0;
+        opts[opts.length] = new Option('-------', '');
+        var tpls = null;
+        if (modules[module_nm] && modules[module_nm]['phps'][module_php_id]) {
+            tpls = modules[module_nm]['phps'][module_php_id]['tpls'];
+        }
+        tpls = tpls || {};
+        for (var module_tpl_id in tpls) {
+            opts[opts.length] = new Option(tpls[module_tpl_id].file + " (" + module_tpl_id + " : " + tpls[module_tpl_id].name + ")", module_tpl_id);
+        }
+        changeModuleTPL();
+    }
+    function changeModuleTPL() {
+        var module_nm = $('sel_module_nm').options[$('sel_module_nm').selectedIndex].value;
+        var module_php_id = $('sel_module_php').options[$('sel_module_php').selectedIndex].value;
+        var module_tpl_id = $('sel_module_tpl').options[$('sel_module_tpl').selectedIndex].value;
+//        alert(module_nm + ":" + module_php_id + ":" + module_tpl_id);
+        paintTable(module_nm, module_php_id, module_tpl_id);
+    }
+
+    function paintTable(module_nm, module_php_id, module_tpl_id) {
+        var table = $('contents_list');
+        while (table.rows.length > 0) {
+            table.deleteRow(0);
+        }
+
+        var list = [];
+        for (var module_nm2 in contents) {
+            if (module_nm && module_nm != module_nm2) {
+                continue;
+            }
+            for (var module_php_id2 in contents[module_nm2]) {
+                if (module_php_id && module_php_id != module_php_id2) {
+                    continue;
+                }
+                for (var module_tpl_id2 in contents[module_nm2][module_php_id2]) {
+                    if (module_tpl_id && module_tpl_id != module_tpl_id2) {
+                        continue;
+                    }
+                    var rows = contents[module_nm2][module_php_id2][module_tpl_id2];
+                    for (var i = 0 ; i < rows.length ; i++) {
+                        list.push(rows[i]);
+                    }
+                }
+            }
+        }
+        for (var i = 0 ; i < list.length ; i++) {
+            var data = list[i];
+            var row = table.insertRow(table.rows.length);
+            var cell = null;
+            cell = row.insertCell(row.cells.length);
+            cell.appendChild(document.createTextNode(data.module_type));
+            cell = row.insertCell(row.cells.length);
+            var file = modules[data.module_type]['phps'][data.module_php_id].file;
+            file = file.slice(file.indexOf('/') + 1);
+            cell.appendChild(document.createTextNode(file));
+            cell = row.insertCell(row.cells.length);
+            file = modules[data.module_type]['phps'][data.module_php_id]['tpls'][data.module_tpl_id].file;
+            file = file.slice(file.indexOf('/') + 1);
+            cell.appendChild(document.createTextNode(file));
+            cell = row.insertCell(row.cells.length);
+            cell.innerHTML =
+                data.page_id + '<br />' + data.page_nm + '<br />' + data.page_sysnm + '<br />' +
+                '<a target="_blank" href="/' + data.page_sysnm + '/">表示</a>｜' +
+                '<a target="_blank" href="/management/page/page_edit/page_page_id=' + data.page_id + '">編集</a>';
+            cell = row.insertCell(row.cells.length);
+            cell.appendChild(document.createTextNode(data.place + "#" + data.weight));
+        }
+    }
+
+    changeModuleNM();
+});
+{/literal}
+</script>
+{rcms_include file="management/footer.html"}
+

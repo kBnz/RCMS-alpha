@@ -1,0 +1,47 @@
+{literal}
+<!-- rcmsCustomizableTemplatePicker -->
+<script type="text/javascript">
+(function($){
+
+    /**
+    * rcmsFillBlankArea
+    * コンテンツとボタンエリアの間が空いていると詰める
+    * 
+    * 使い方
+    * "rcms_ui.html"にページのct登録後、"div#bottom_fixed"が含まれていれば適用する
+    */
+
+    $(document).ready(function(){
+        // 初期の大きさを登録
+        var initHeight = $("#bottom_fixed").height();
+
+        // ウインドウサイズに合わせて実行
+        $(window).on("load resize", fill);
+
+        // コンテンツ全体を囲んでいるdivの大きさが変わったら実行
+        $("div.list_main").on("resize", fill);
+
+        // 直前の要素の位置に合わせて大きさを変更
+        function fill() {
+            var target = $("#bottom_fixed");
+            var windowHeight = $(window).height();
+            var previous = target.prev();
+            var prevBottom = previous.position().top + previous.height();
+            // 直線の要素がウインドウサイズの半分より上にあったら間を詰める
+            if (windowHeight >= prevBottom * 2) {
+                var iframe = "{/literal}{$smarty.request.iframe_mode}{literal}";
+                //iframe_modeの有無で生じるずれを分岐
+                if (iframe == 1) {
+                    target.height(windowHeight - prevBottom - 30);
+                } else {
+                    target.height(windowHeight - prevBottom - 100);
+                }
+            } else {
+                target.height(initHeight);
+            }
+        }
+    });
+})(jQuery);
+
+</script>
+{/literal}

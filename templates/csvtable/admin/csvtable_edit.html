@@ -1,0 +1,203 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+<script type="text/javascript">
+{literal}
+function go_preview(f){
+    f.action = '/csvtable_detail/id={/literal}{$csvtable_id}{literal}';
+    f.MODE.value='preview';
+}
+
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+
+<div class="list_right_bt">
+<h2>{'/modules/csvtable/label/csvtable_edit'|translate}{*CSV表編集*}</h2>
+<ul>
+{if $rauth->canInsert("/csvtable/item/")}
+    <li class="add"><a href="/management/csvtable/csvtable_edit/"><span>{'/modules/csvtable/label/create_new_csvtable_btn'|translate}{*CSV表追加*}</span></a></li>
+{/if}
+  <li class="normal"><a href="/management/csvtable/csvtable_history/csvtable_id={$csvtable_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=csvtable&id={$csvtable_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/csvtable_detail/id={$csvtable_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/csvtable/csvtable_list/">{'/modules/csvtable'|translate}</a>
+<a href="/management/csvtable/csvtable_list/">{'/modules/csvtable/label/csvtable_list'|translate}</a>
+{'/modules/csvtable/label/csvtable_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> CSV表 >> CSV表一覧 >> CSV表編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{* 関連情報 *}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{'/label/item'|translate}{* 件 *}</a>　<a href="/csvtable_detail/id={$csvtable_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/csvtable/csvtable_edit/csvtable_id=$csvtable_id"}
+
+<div class="list_main">
+
+  <form name="csvtable_edit" id="csvtable_edit" action="/management/csvtable/csvtable_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="csvtable_id" value="{$csvtable_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="csvtable_file" value="{$data.csvtable_file}" />
+    <input type="hidden" name="csvtable_s_file" value="{$data.csvtable_s_file}" />
+    {if $data.csvtable_file != ""}
+      <input type="hidden" name="csvtable_file" value="{$data.csvtable_file}" />
+      <input type="hidden" name="csvtable_s_file" value="{$data.csvtable_s_file}" />
+    {/if}
+
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {if $csvtable_id}
+      {lang_selector meta=$docmeta link='/management/csvtable/csvtable_edit/csvtable_id='|cat:$csvtable_id}
+    {/if}
+
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/title'|translate}{*タイトル*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+        <td><input type="text" name="csvtable_nm" value="{$data.csvtable_nm|escape}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/format'|translate}{*形式*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+{if $docmeta.is_primary}
+        <td>
+            <table>
+              <tr>
+                <th>{'/label/rows'|translate}{*行*}</th>
+                <td>{'/label/rows_count'|translate}{*行数*}:<input type="text" name="row_num" value="{$data.row_num|escape}" size="3" />（{'/modules/csvtable/label/title_rows'|translate}{*うち、タイトル行数*}:<input type="text" name="row_th_num" value="{$data.row_th_num|escape}" size="3" />)</td>
+              </tr>
+              <tr>
+                <th>{'/label/columns'|translate}{*列*}</th>
+                <td>{'/label/columns_count'|translate}{*列数*}:<input type="text" name="col_num" value="{$data.col_num|escape}" size="3" />（{'/modules/csvtable/label/title_columns'|translate}{*うち、タイトル列数*}:<input type="text" name="col_th_num" value="{$data.col_th_num|escape}" size="3" />)</td>
+              </tr>
+            </table>
+            <span class="hint">{'/modules/csvtable/label/columns_and_row_adjust_zero'|translate}{*行数、列数を0にすると制限なしになります。*}</span>
+        </td>
+{else}
+        <td>
+            <table>
+              <tr>
+                <th>{'/label/rows'|translate}{*行*}</th>
+                <td>{'/label/row_count'|translate}{*行数*}:{$data.row_num}（{'/modules/csvtable/label/title_rows'|translate}{*うち、タイトル行数*}:{$data.row_th_num})</td>
+                <th>{'/label/columns'|translate}{*列*}</th>
+                <td>{'/label/columns_count'|translate}{*列数*}:{$data.col_num}（{'/modules/csvtable/label/title_columns'|translate}{*うち、タイトル列数*}:{$data.col_th_num})</td>
+              </tr>
+            </table>
+        </td>
+{/if}
+      </tr>
+      <tr>
+        <th>{'/label/update_by_csv'|translate}{*CSVで更新*}</th>
+        <td>
+          <input type="file" name="csvtable_csv"/>
+          <p class="hint">{'/msg/maximum_file_size'|translate:30}{*アップロードできる最大サイズは30Mバイトまでです。*}</p>
+          <a href="/management/csvtable/csvtable_dl/csvtable_id={$csvtable_id}">{'/label/download'|translate}{*ダウンロード*}({$csv_file_size})</a>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/csvtable/label/text_of_upper_part'|translate}{*表の上部の文言*}</th>
+        <td><textarea name="header_text" cols="60" rows="5">{$data.header_text|escape}</textarea><br>
+        <span class="hint">{'/modules/csvtable/msg/cl_remain_on_csv'|translate}{*改行はそのまま反映されます。*}</span>
+
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/csvtable/label/text_of_under_part'|translate}{*表の下部の文言*}</th>
+        <td><textarea name="footer_text" cols="60" rows="5">{$data.footer_text|escape}</textarea><br>
+        <span class="hint">{'/modules/csvtable/msg/cl_remain_on_csv'|translate}{*改行はそのまま反映されます。*}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/memo'|translate}{*メモ*}</th>
+        <td><textarea name="memo" cols="60" rows="5">{$data.memo|escape}</textarea></td>
+      </tr>
+    </table>
+
+{if $docmeta.is_primary}
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    <div class="clear"></div>
+
+    {rcms_include file="management/open_date_box.html" id=$csvtable_id data=$data}
+{/if}{* is_primary *}
+
+{buttonbox}
+    {if $csvtable_id != ""}
+        {if $docmeta.is_waiting}
+        {* これは承認待ち画像 *}
+            {if $rauth->canUpdate("/csvtable/item/$csvtable_id", $docmeta.lang)}
+                {if $rauth->unlimitedUpdate("/csvtable/item/$csvtable_id", $docmeta.lang)}
+                {* 許可する権限がある *}
+                    <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>
+                    <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>
+                {elseif $docmeta.own}
+                {* 自分が作成したので再修正できる *}
+                    <button type="submit">{'/label/update_btn'|translate}</button>
+                    <button type="submit" onclick="go_preview(this.form)">{'/label/preview_btn'|translate}</button>
+                {else}
+                    {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                {/if}
+            {else}
+                {if $docmeta.own}
+                {* 自分が作成したので再修正できる *}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+                {else}
+                {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                {/if}
+            {/if}
+        {else}
+        {* これは通常画像 *}
+            {if $docmeta.has_waiting}
+                {* 承認待ち画像がある場合は何もできない *}
+                {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+                <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+            {else}
+                {* 通常画像に対する更新処理 *}
+                {if $rauth->canUpdate("/csvtable/item/$csvtable_id", $docmeta.lang)}
+                {* 更新権限がある *}
+                    <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                    <button type="submit" onclick="go_preview(this.form)">{'/label/preview_btn'|translate}</button>
+                {/if}
+                {if $rauth->canDelete("/csvtable/item/$csvtable_id", $docmeta.lang)}
+                {* 削除権限がある *}
+                    <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+                {/if}
+            {/if}
+        {/if}
+    {else}
+        {if $rauth->canInsert("/csvtable/item/")}
+            <button type="submit">{'/label/add_btn'|translate}</button>
+            <button type="submit" onclick="go_preview(this.form)">{'/label/preview_btn'|translate}</button>
+        {/if}
+    {/if}
+
+{/buttonbox}
+
+{rcms_include file="management/update_comment.html" comment=$data.update_comment}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

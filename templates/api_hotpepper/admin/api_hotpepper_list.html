@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<style type="text/css">
+.ahPhotoCredit {
+  font-size: 6pt;
+  color: #cccccc;
+}
+</style>
+{/literal}
+
+<div class="list_right_bt">
+  <h2>飲食店一覧</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_hotpepper/api_hotpepper_search/">{$module_nm}</a>
+飲食店一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_hotpepper/api_hotpepper_search/">飲食店検索</a></li>
+  <li><a href="/management/api_hotpepper/api_hotpepper_list/" class="active">飲食店一覧</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+
+    <p>過去に関連させたり、コメントしたりしたことのある飲食店の一覧です。</p>
+
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>&nbsp;</th><th>店名</th><th>関連</th><th>コメント</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$shops item=shop}
+        <tr>
+          <td><a href="{$shop.detail}"><img src="{$shop.thumbnail}" /></a><br /><span class="ahPhotoCredit">写真提供：ホットペッパー.jp</span></td><td><a href="{$shop.detail}">{$shop.shop_name}</a></td><td>{$shop.nOfRelatedItems}件</td><td>{$shop.notes|default:"なし"|mbtruncate}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+    <p><a href="http://www.hotpepper.jp/" onclick="return !window.open(this.href)"><img src="http://api.hotpepper.jp/content/images/hp_api_s.gif" alt="ホットペッパー Webサービス" width="155" height="20" border="0" title="ホットペッパー Webサービス"></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

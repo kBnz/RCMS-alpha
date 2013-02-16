@@ -1,0 +1,14 @@
+<h2>{'/label/category'|translate}{* カテゴリ *}</h2>
+<ul>
+{foreach from=$topics_category_tree item=row}
+  <li><a href="/{$link_page_sysnm}/contents_type={$row.contents_type}">{$row.category_nm}({$row.cnt})</a></li>
+  {if $row.child|@count > 0}
+  <ul>
+  {foreach from=$row.child item=row2}
+    <li><a href="/{$link_page_sysnm}/contents_type={$row2.contents_type}">{$row2.category_nm}({$row2.cnt})</a></li>
+  {/foreach}
+  </ul>
+  {/if}
+{/foreach}
+</ul>
+<hr/>

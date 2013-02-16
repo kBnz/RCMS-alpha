@@ -1,0 +1,51 @@
+<h2>試合情報一覧</h2>
+
+{section name=mydata loop=$gameList}
+
+          {$gameList[mydata].game_type} {$gameList[mydata].game_type2}
+      <br/>
+      <a href="/gamebasket_detail/id={$gameList[mydata].game_id}">{$gameList[mydata].ymd_str}</a><br>
+       <a href="/gamebasket_detail/id={$gameList[mydata].game_id}">{$gameList[mydata].team_grade}&nbsp;vs&nbsp;{$gameList[mydata].team_nm}{$gameList[mydata].opponent_grade}</a><br/>
+       {$gameList[mydata].place}<br/>
+      
+      
+<a href="/gamebasket_detail/id={$gameList[mydata].game_id}">
+{if $gameList[mydata].game_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].game_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{/if}
+</a>      <hr/>
+
+
+{/section}
+
+
+{if $using_season}
+  <form action="/{$page_sysnm}/" method="get">
+    {rcms_seasonOptions name=season selected=$season firstOption=true}
+    <input type="submit" value="検索">
+  </form>
+{else}
+{$current_page}/{$all_page}ﾍﾟｰｼﾞを表示(合計:{$all_cnt}件)
+[
+{if $game_pos > 0}
+<a href="/{$page_sysnm}/?game_pos={$current_page-1}">前のﾍﾟｰｼﾞ</a>
+{else}
+前のﾍﾟｰｼﾞ
+{/if}
+{if $game_pre_pos != ''}
+<a href="/{$page_sysnm}/?game_pos={$current_page+1}">次のﾍﾟｰｼﾞ</a>
+{else}
+次のﾍﾟｰｼﾞ
+{/if}
+]
+
+{/if}

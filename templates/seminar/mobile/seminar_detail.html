@@ -1,0 +1,63 @@
+<h2>{$seminar_data.seminar_category_nm}<br/>{$seminar_data.seminar_title|mbtruncate:20|nl2br}</h2>
+{'/label/organization_name'|translate}{*主催者・支援機関名称*}<br/>
+{$seminar_data.organization_name|escape}<br/>
+{if $seminar_data.start_date || $seminar_data.end_date}
+    {'/label/start_date'|translate}{*開始日付*}<br/>
+    {if $seminar_data.start_date || $seminar_data.end_date}
+        {'/label/start_date'|translate}{*開始日付*}<br/>
+        {$seminar_data.start_date|escape|pg_dateformat:"%Y年%m月%d日(%%w%%)"}{if $seminar_data.end_date}～{$seminar_data.end_date|escape|pg_dateformat:"%Y年%m月%d日(%%w%%)"}{/if}
+        {if $seminar_data.start_time || $seminar_data.start_time}
+         /{$seminar_data.start_time}{if $seminar_data.end_time}～{$seminar_data.end_time}{/if}
+        {/if}
+        <br/><br/>
+    {/if}
+{/if}
+{if $seminar_data.place_nm || $seminar_data.address || $seminar_data.station_info}
+    {'/modules/seminar/label/place_nm'|translate}{*開催場所：会場名*}<br/>
+    <a href="{$seminar_data.map_url}">{$seminar_data.place_nm|escape|nl2br}</a><br/>
+    {if $seminar_data.address}{$seminar_data.address|escape}<br/>{/if}
+    {if $seminar_data.station_info}{$seminar_data.station_info}<br/>{/if}
+    <br/>
+{/if}
+{if $seminar_data.no_disp_fee_flg != "1" || $seminar_data.fee_detail}
+    {'/modules/seminar/label/fee'|translate}{*料金*}<br/>
+    {if $seminar_data.no_disp_fee_flg != "1"}{$seminar_data.fee|escape}<br/><br/>{/if}
+    {if $seminar_data.fee_detail}{$seminar_data.fee_detail|escape|nl2br}<br/>{/if}
+        {if $seminar_data.apply_start_date || $seminar_data.apply_end_date}
+        {'/label/apply_start_date'|translate}{*申込・募集開始日*}<br/>
+        {$seminar_data.apply_start_date|escape|pg_dateformat:"%Y年%m月%d日(%%w%%)"}{if $seminar_data.apply_end_date}～{$seminar_data.apply_end_date|escape|pg_dateformat:"%Y年%m月%d日(%%w%%)"}{/if}<br/><br/>
+    {/if}
+{/if}
+{'/label/how_to_apply'|translate}{*お申込方法*}<br/>
+{foreach from=$seminar_data.how_to_apply item=item name=seminar}
+    {$seminar_how_to_apply_option[$item]}<br/>
+    {if $smarty.foreach.seminar.last}
+    <br/>
+    {/if}
+{/foreach}
+{if $seminar_data.capacity !=""}
+{'/label/capacity'|translate}{*定員*}<br/>
+{$seminar_data.capacity|escape|nl2br}{'/label/member_unit'|translate}{*人*}<br/><br/>
+{/if}
+{if $seminar_data.target_people}
+    {'/label/target_people'|translate}{*対象者*}<br/>
+    {$seminar_data.target_people|nl2br}<br/><br/>
+{/if}
+{'/label/contents_detail'|translate}{*内容詳細*}<br/>
+    {$seminar_data.seminar_detail|nl2br}<br/><br/>
+{if $seminar_data.url}
+    {'/label/detail_url'|translate}{*詳細URL*}<br/>
+    <a href="{$seminar_data.url}" target="_blank">{$seminar_data.url|escape}</a><br/><br/>
+{/if}
+{'/label/inquiry_formal'|translate}{*お問合せ*}<br/>
+{$seminar_data.inquiry_title|escape}<br/>
+{if $seminar_data.inquiry_address}{$seminar_data.inquiry_address|escape}<br/>{/if}
+{if $seminar_data.inquiry_tel}    {$seminar_data.inquiry_tel|escape}<br/>{/if}
+{if $seminar_data.inquiry_fax}    {$seminar_data.inquiry_fax|escape}<br/>{/if}
+{if $seminar_data.inquiry_email}  <a href="mailto:{$seminar_data.inquiry_email}">{$seminar_data.inquiry_email}</a><br/>{/if}
+{if $seminar_data.inquiry_tanto_nm}{$seminar_data.inquiry_tanto_nm|escape}<br/>{/if}
+<div style="text-align:right;font-size:small;">
+<a href="/seminar_list/" class="small_text">{'/modules/seminar/label/seminar_list'|translate}{* セミナー一覧 *}</a><br/>
+<a href="/calendar_list/" class="small_text">{'/modules/seminar/label/seminar_of_this_month'|translate}{* 今月のセミナー *}</a>
+</div>
+<hr/>

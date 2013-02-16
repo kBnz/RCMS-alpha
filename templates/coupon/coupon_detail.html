@@ -1,0 +1,79 @@
+{module name="coupon_detail"}
+<h2 class="module_title"><span>クーポン情報</span></h2>
+
+<div class="module_contents">
+
+	<div class="coupon_info">
+
+		<h3>{$couponData.coupon_nm|escape}</h3>
+	{if $couponData.contents}
+			<p class="detail">{$couponData.contents|escape|nl2br}</p>
+	{/if}
+
+	{if $couponData.alert}
+			<p class="alert">{$couponData.alert|escape|nl2br}</p>
+	{/if}
+		<dl class="shop_address">
+			<dt>［住所］</dt>
+			<dd>
+				{if $restaurantData.zip_main || $restaurantData.zip_sub}
+					{$restaurantData.zip_main}&nbsp;-&nbsp;{$restaurantData.zip_sub}
+				{/if}
+					{$restaurantData.tdfk_nm}{$restaurantData.address1|nl2br} {$restaurantData.address2|nl2br}
+			</dd>
+			<dt>［ＴＥＬ］</dt><dd>{$restaurantData.tel|escape}</dd>
+
+	{if $couponData.exp_disp_flg == "1" && $couponData.exp_update_flg == "1"}
+			<dt>［有効期限］</dt><dd>{$couponData.exp_from_date|date_format:"%Y"}年{$couponData.exp_from_date|date_format:"%m"}月{$couponData.exp_from_date|date_format:"%d"}日～{$couponData.exp_to_date|date_format:"%Y"}年{$couponData.exp_to_date|date_format:"%m"}月{$couponData.exp_to_date|date_format:"%d"}日まで</dd>
+	{/if}
+		</dl>
+	{if $couponData.disp_contact_flg}
+		<div class="customer_info">
+			<table>
+				<tr>
+					<th>住所</th><td colspan="3">：〒</td>
+				</tr>
+				<tr>
+					<th>氏名</th><td>：</td>
+					<th>生年月日</th><td>：</td>
+				</tr>
+				<tr>
+					<th>E-Mail</th><td>：</td><th colspan="2">男　・　女</th>
+				</tr>
+			</table>
+			<p>※ご記入いただいた住所またはメールアドレスへ当店の扱う各種サービスに関するご案内を送付させて頂く場合がございます。</p>
+		</div>
+	{/if}
+
+	</div>
+
+	<p class="print">このクーポンは必ず紙に印刷してお持ちください。　<input type="button" name="print" value="このページを印刷" onClick="javascript:window.print()"></p>
+
+</div>
+{/module}
+
+<style type="text/css">
+{literal}
+@media print {
+
+	.mng_line,
+	#header,
+	#navi,
+	#footpath,
+	#footer,
+	h2.module_title,
+	p.print
+	{
+		display: none;
+	}
+	body,
+	#container,
+	#contents {
+		border: none;
+		background: none;
+	}
+
+}
+
+{/literal}
+</style>

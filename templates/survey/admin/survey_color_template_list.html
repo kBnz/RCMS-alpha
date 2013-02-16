@@ -1,0 +1,104 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+{literal}
+<style>
+
+#color_template_list td.color_td {
+  background-color: #ffffff;
+  border: 1px solid rgb(238, 238, 238);
+}
+</style>
+{/literal}
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/graph_template_list'|translate}{*グラフカラーテンプレート一覧*}
+</h2>
+<ul>
+{if $rauth->canInsert('/survey/color/')}
+<li class="add"><a href="/management/survey/survey_color_template_edit/"><span>{'/label/add_color'|translate}{*カラー追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey/label/survey_list'|translate}</a>
+{'/modules/survey/label/graph_template_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> >> アンケート一覧 >> グラフカラーテンプレート一覧 >> *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}{* 承認待ち一覧 *}
+
+<form action="/management/survey/survey_color_template_list/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="DELETE" />
+
+  <table width="100%" border="0" cellspacing="2" cellpadding="0" id="color_template_list">
+    <tr>
+      <th style="width:20px"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'survey_color_template_id[]');" /></th>
+      <th width="150px">{'/label/name'|translate}{*名前*}</th>
+      <th>{'/label/sample_color'|translate}{*色見本*}</th>
+    </tr>
+    <tr>
+      <td></td>
+      <td>{'/label/default_color'|translate}{*デフォルトカラー*}</td>
+      <td class="color_td">
+        <p class="hint">{'/msg/use_if_no_selected_color'|translate}{*色指定がない場合に使用します*}</p>
+        {assign var=color_cnt value=$survey_default_colors|@count}
+        {assign var=color_w value=95}
+        {assign var=item_w value=$color_w/$color_cnt}
+        {strip}
+        {foreach item=color from=$survey_default_colors}
+          <img src="/images/management/spacer.gif"/ style="height:20px;width:{$item_w}%;background-color:{$color};"/>
+        {/foreach}
+        {/strip}
+      </td>
+    </tr>
+  {foreach item=item key=key name=color_list from=$color_list}
+    {assign var=survey_color_template_id value=$item.survey_color_template_id}
+
+{strip}
+    <tr>
+      <td><input type="checkbox" name="survey_color_template_id[]" value="{$item.survey_color_template_id}"  {if !$rauth->canDelete("/survey/color/$survey_color_template_id")}disabled="disabled"{/if} /></td>
+      <td>
+        <a href="/management/survey/survey_color_template_edit/id={$item.survey_color_template_id}">{$item.name}</a>
+       {rcms_include file="common/admin/language_status.html" meta=$docmetas[$survey_color_template_id] link="/management/survey/survey_color_template_edit/id=$survey_color_template_id"}
+      </td>
+      <td class="color_td">
+        {assign var=color_cnt value=$item.colors|@count}
+        {assign var=color_w value=95}
+        {assign var=item_w value=$color_w/$color_cnt}
+        {foreach item=color from=$item.colors}
+          <img src="/images/management/spacer.gif"/ style="height:20px;width:{$item_w}%;background-color:{$color};"/>
+        {/foreach}
+      </td>
+    </tr>
+{/strip}
+  {/foreach}
+  </table>
+
+    {buttonbox}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

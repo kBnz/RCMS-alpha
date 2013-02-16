@@ -1,0 +1,10 @@
+<ul class="minitabs">
+  <li><a href="/management/catalog/catalog_group_edit/catalog_group_id={$catalog_group_id}" {if $page_type eq 'catalog_group_list' ||  $page_type eq 'catalog_group_edit'}class="active"{/if}>{'/modules/catalog/label/catalog_group_edit'|translate}{* グループ設定 *}</a></li>
+  <li><a href="/management/catalog/catalog_list/catalog_group_id={$catalog_group_id}" {if $page_type eq 'catalog_list'}class="active"{/if}>{'/modules/catalog/label/group_nm_list'|translate:$catalog_group_nm}{* [グループ名]一覧 *}</a></li>
+  <li><a href="/management/catalog/catalog_edit/catalog_group_id={$catalog_group_id}" {if $page_type eq 'catalog_edit'}class="active"{/if}>{'/modules/catalog/label/group_nm_edit'|translate:$catalog_group_nm}{* [グループ名]編集 *}</a></li>
+{if $catalog_disp_type eq '1'}
+  <li><a href="/management/catalog/catalog_place/catalog_group_id={$catalog_group_id}" {if $page_type eq 'catalog_place'}class="active"{/if}>{'/modules/catalog/label/group_nm_arrange'|translate:$catalog_group_nm}{* [グループ名]配置 *}</a></li>
+{/if}
+  <li><a href="/management/catalog/catalog_category_list/catalog_group_id={$catalog_group_id}" {if $page_type eq 'catalog_category_list' || $page_type eq 'catalog_category_edit'}class="active"{/if}>{'/modules/catalog/label/catalog_category_edit'|translate}{* カテゴリ設定 *}</a></li>
+</ul>
+<div class="clear"></div>

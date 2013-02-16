@@ -1,0 +1,37 @@
+{if $chargeInfo.site_id}
+{module name="charge_detail"}
+<h2 class="module_title"><span>{'/modules/charge/label/charge_detail'|translate}</span></h2>
+<div class="module_contents">
+<p>{$chargeInfo.name|escape}</p>{if $module.param.type == 'delete'}
+
+{if !$smarty.session.docomo_sp.sCptok}
+<p>マイメニュー解除をするにはログインをしてください。<a href="/sp_login/">ログイン</a></p>
+{else}
+<form method="post" action="https://payment1.spmode.ne.jp/smph/payment/gabapa31.srv">
+        <input type="hidden" name="sTerkn" value="01">
+        <input type="hidden" name="sSpcd" value="{$chargeInfo.site_id}">
+        <input type="hidden" name="sCptok" value="del:{$smarty.session.docomo_sp.sCptok}">
+        <input type="hidden" name="sNuidset" value="1">
+        <input type="submit" value="マイメニュー解除" />
+</form>
+{/if}
+
+{else}
+{if !$smarty.session.docomo_sp.sCptok}
+<p>マイメニュー登録をするにはログインをしてください。<a href="/sp_login/">ログイン</a></p>
+{else}
+
+<form method="post" action="https://payment1.spmode.ne.jp/smph/payment/gabapa21.srv">
+        <input type="hidden" name="sTerkn" value="01">
+        <input type="hidden" name="sSpcd" value="{$chargeInfo.site_id}">
+        <input type="hidden" name="sCptok" value="{$smarty.session.docomo_sp.sCptok}">
+        <input type="hidden" name="sNuidset" value="1">
+        <input type="submit" value="マイメニュー登録" />
+</form>
+{/if}
+
+{/if}
+<div class="clearFloat"><br></div>
+</div>
+{/module}{/if}
+

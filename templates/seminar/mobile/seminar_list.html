@@ -1,0 +1,29 @@
+<h2>{'/modules/seminar/label/seminar_list'|translate}{* セミナー一覧 *}</h2>
+{foreach from=$seminar_list item=seminar}
+<a href="/seminar_detail/?id={$seminar.seminar_id}">{$seminar.seminar_title|mbtruncate:30:"..."}</a><br/>
+{'/label/start_time'|translate}{*開始時刻*}:{$seminar.start_date} {$seminar.start_time} {if $seminar.end_time|escape}～{$seminar.end_time|escape}{/if}<br/>
+{'/label/apply_end_date'|translate}{*申込・募集締切日*}:{$seminar.apply_end_date}<br/>
+{'/modules/seminar/label/tdfk_cd'|translate}{*都道府県*}:{$tdfk_list[$seminar.tdfk_cd]}<br/>
+{if $seminar.place_nm !="" && $seminar.map_url !=""}
+{'/modules/seminar/label/place_nm'|translate}{*会場名*}
+<a href="{$seminar.map_url}" target="_blank">{$seminar.place_nm|escape}</a><br/>
+{else}
+{'/modules/seminar/label/place_nm'|translate}{*会場名*}
+{$seminar.place_nm|escape}<br/>
+{/if}
+{'/modules/seminar/label/station'|translate}{*最寄駅*}:{$seminar.railway_line_name|escape} {$seminar.station_name|escape}<br/>
+{'/label/sponsor'|translate}:{$seminar.organization_name|nl2br}<br/>
+{if $seminar.no_disp_fee_flg != "1"}
+{'/modules/seminar/label/fee'|translate}{*料金*}:{$seminar.fee}<br/>
+{/if}
+<br/>
+{foreachelse}
+<div style="text-align:center;padding-top:30px;">
+{'/msg/no_data'|translate}{* 表示するデータがありません *}
+</div>
+{/foreach}
+<div style="text-align:right;font-size:small;">
+<a href="/calendar_list/" class="small_text">{'/modules/seminar/label/seminar_of_this_month'|translate}{* 今月のセミナー *}</a>
+</div>
+
+<hr/>

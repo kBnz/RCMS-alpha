@@ -1,0 +1,52 @@
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td colspan="4"><img src="{imageurl}/modules/gamerugby/sub-member.gif" alt="部員紹介" width="248" height="26" border="0"></td>
+              </tr>
+              <tr valign="middle">
+                <td rowspan=4 align="center"><a href="/member/profile.php?member_id=1459"><img src="/photo/photo/member_photo/s/1459.jpg" alt="" width="50" height="60" border="0"></a></td>
+                <td align="right" width="60"><img src="{imageurl}/modules/gamerugby/member_name.gif" alt="名前" width="30" height="12"></td>
+                <td>：</td>
+                <td><a href="/member_detail/id={$gameList.0.member.0.member_id}">{$gameList.0.member.0.name1}　{$gameList.0.member.0.name2}</a></td>
+              </tr>
+              <tr valign="middle">
+                <td align="right"><img src="{imageurl}/modules/gamerugby/member_year.gif" alt="学年" width="30" height="12"></td>
+                <td>：</td>
+                <td><a href="/member_list/grade={$gameList.0.member.0.grade}">{$gameList.0.member.0.grade_nm}</a></td>
+              </tr>
+              <tr valign="middle">
+                <td align="right"><img src="{imageurl}/modules/gamerugby/member_pos.gif" alt="ポジション" width="58" height="12"></td>
+                <td>：</td>
+                <td><a href="/member_list/grade={$gameList.0.member.0.position}">{$gameList.0.member.0.position}</a></td>
+              </tr>
+              <tr valign="middle">
+                <td align="right"><img src="{imageurl}/modules/gamerugby/member_hschool.gif" alt="出身校" width="46" height="12"></td>
+                <td>：</td>
+                <td>{$gameList.0.member.0.school}</td>
+              </tr>
+              <tr valign="middle">
+                <td height="10" colspan="4"></td>
+              </tr>
+            </table>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                 <td height="22" colspan="4" valign="bottom"><span>この試合の成績</span></td>
+                 <td align="right"><a href="/member_list/game_id={$gameList.0.member.0.game_id}"><img src="{imageurl}/modules/gamerugby/next.gif" alt="＋" width="13" height="13" border="0"><img src="{imageurl}/modules/gamerugby/stamen.gif" alt="出場選手一覧を表示" width="99" height="13" border="0"></a></td>
+               </tr>
+               <tr title="T:ﾄﾗｲ G:ｺﾞｰﾙ PG:ﾍﾟﾅﾙﾃｨｺﾞｰﾙ DG:ﾄﾞﾛｯﾌﾟｺﾞｰﾙ">
+                 <td width="30" height="20" align="center" valign="middle">T</td>
+                 <td width="30" align="center" valign="middle">G</td>
+                 <td width="30" align="center" valign="middle">PG</td>
+                 <td width="30" align="center" valign="middle">DG</td>
+                 <td rowspan="2">T:ﾄﾗｲ<br>
+                   G:ｺﾞｰﾙ<br>
+                   PG:ﾍﾟﾅﾙﾃｨｺﾞｰﾙ <br>
+                   DG:ﾄﾞﾛｯﾌﾟｺﾞｰﾙ
+                </td>
+               </tr>
+               <tr title="T:ﾄﾗｲ G:ｺﾞｰﾙ ＰＧ：PG:ﾍﾟﾅﾙﾃｨｺﾞｰﾙ DG:ﾄﾞﾛｯﾌﾟｺﾞｰﾙ">
+                 <td height="20" align="center" valign="middle">{$gameList.0.member.0.try_point}</td>
+                 <td align="center" valign="middle">{$gameList.0.member.0.goal_point}</td>
+                 <td align="center" valign="middle">{$gameList.0.member.0.pgoal_point}</td>
+                 <td align="center" valign="middle">{$gameList.0.member.0.dgoal_point}</td>
+               </tr>
+             </table>

@@ -1,0 +1,69 @@
+
+<h2>{$TasklistData.cate_title}</h2>
+
+<p>{'/label/deadline'|translate}{* 期限 *} : {$TasklistData.limit_date|default:'/label/no_input'|translate}{* 入力なし *}</p>
+
+<table>
+  <tr>
+    <th>{'/label/content'|translate}{* 内容 *}</th>
+    <td>{$TasklistData.bug_explanation|nl2br}</td>
+  </tr>
+  <tr>
+    <th>{'/label/representative'|translate}{* 担当者 *}</th>
+    <td>{$TasklistData.member_name}</td>
+  </tr>
+  <tr>
+    <th>{'/modules/tasklist/label/inscribe_date'|translate}{* 記入日時 *}</th>
+    <td>{$TasklistData.insert_nm}</td>
+  </tr>
+  <tr>
+    <th>{'/label/category'|translate}{* カテゴリ *}</th>
+    <td>{$TasklistData.category}</td>
+  </tr>
+  <tr>
+    <th>{'/label/importance'|translate}{* 重要度 *}</th>
+    <td {$TasklistData.color_of_serious_flg}>{$TasklistData.serious_flg}</td>
+  </tr>
+  <tr>
+    <th>>{'/label/priority'|translate}{* 優先度 *}</th>
+    <td {$TasklistData.color_of_priority_flg}>{$TasklistData.priority_flg}</td>
+  </tr>
+  <tr>
+    <th>{'/label/status'|translate}{* 状態 *}</th>
+    <td>{$TasklistData.syori_flg}</td>
+  </tr>
+</table>
+
+<br>
+
+{if $tasklistChildrenData}
+  <h2>{'/modules/tasklist/label/answer_to_this_task'|translate}{* この記事への返信 *}</h2>
+<table>
+  <tr>
+    <th>{'/label/content'|translate}{* 内容 *}</th>
+    <th>{'/label/inscriber'|translate}{* 記入者 *}</th>
+    <th>{'/modules/tasklist/label/inscribe_date'|translate}{* 記入日時 *}</th>
+  </tr>
+  {section name=mydata loop=$tasklistChildrenData}
+  <tr>
+    <td>{$tasklistChildrenData[mydata].bug_explanation|nl2br}</td>
+    <td>{$tasklistChildrenData[mydata].insert_nm}</td>
+    <td>{$tasklistChildrenData[mydata].update_ymdhi|pg_dateformat}</td>
+  </tr>
+  {/section}
+</table>
+{/if}
+{if $preview}
+<form action="/management/tasklist/tasklist_edit/" method="POST">
+<input type="submit" value="{'/label/update_from_preview_btn'|translate}{* このまま更新 *}">
+<input type="submit" value="{'/label/back_to_modify_from_preview_btn'|translate}{* 戻って修正 *}" onClick="this.form.MODE.value='';">
+<input type="hidden" name="MODE" value="UPDATE">
+{foreach key=key item=item from=$hidden}
+{if $key ne 'MODE'}
+<input type="hidden" name="{$key}" value="{$item|escape:"html"}">
+{/if}
+{/foreach}
+</form>
+{/if}
+<a href="/tasklist_list/">{'/modules/tasklist/label/tasklist_list'|translate}{* 課題一覧 *}</a>
+

@@ -1,0 +1,17 @@
+{if $items|@count > 0}
+<h2>関連データ{if $source} ({$source.name}){/if}</h2>
+
+{foreach from=$items item=item}
+      {if !$source}■{$sources[$item.data_source].name}<br/>{/if}
+      <a href="/api_general_detail/id={$item.internal_id}">{$item.name}</a><br/>
+      {if !$source}{$sources[$item.data_source].credit}{/if}
+<br/>
+{/foreach}
+
+  {* クレジットを関連外部データの下部にまとめて表示する場合に利用します。
+  {foreach from=$credits item=credit}
+  <br/>{$credit}
+  {/foreach}
+  *}
+<hr/>
+{/if}

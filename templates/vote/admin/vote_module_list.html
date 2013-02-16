@@ -1,0 +1,59 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote/label/vote_list'|translate}</a>
+<a href="/management/vote/vote_module_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}</a>
+{'/modules/comment/label/comment_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 投票 >> 投票一覧 >> モジュール一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.title}</h3>
+<ul class="minitabs">
+  <li><a href="/management/vote/vote_edit/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/vote/vote_module_list/vote_header_id={$header.vote_header_id}" class="active">{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</a></li>
+  <li><a href="/management/vote/vote_item_list/vote_header_id={$header.vote_header_id}" >{'/modules/vote/label/vote_item_list'|translate}{*回答一覧*}</a></li>
+  <li><a href="/management/vote/vote_report/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_report'|translate}{*投票結果*}</a></li>
+</ul>
+
+<div class="list_main">
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th style="width:80px">{'/label/module'|translate}{*モジュール*}</th>
+      <th>{'/label/contents'|translate}{'/label/title'|translate}{*コンテンツタイトル*}</th>
+      <th>{'/label/vote_count'|translate}{*投票数*}</th>
+    </tr>
+  {foreach item=row from=$voteModuleList name=vote_module_nm}
+    {if $smarty.foreach.vote_module_nm.first}
+      <tr>
+        <td style="text-align:right">({'/label/all'|translate}{*すべて*})</td>
+        <td></td>
+        <td><a href="/management/vote/vote_item_list/vote_header_id={$header.vote_header_id}">{$header.answer_cnt}{'/label/item'|translate}{*件*}</a></td>
+      </tr>
+    {/if}
+      <tr>
+        <td  style="text-align:right">{$row.name}</td>
+        <td> <a href="{$smarty.const.ROOT_URL}/{$row.page_sysnm}/id={$row.module_id}">{$row.contents_title}</a></td>
+        <td>
+            <a href="/management/vote/vote_item_list/{$row.link_url}">{$row.contents_cnt}{'/label/item'|translate}{*件*}</a>
+            &nbsp,&nbsp[<a href="/management/vote/vote_report/{$row.link_url}">{'/modules/vote/label/vote_report'|translate}</a>]
+        </td>
+      </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,121 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+function confirm_delete() {
+    if(confirm("削除してもよろしいですか？")){
+        document.rcms_package_edit.MODE.value='DELETE';
+        document.rcms_package_edit.submit();
+    }
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>公式パッケージ編集</h2>
+<ul>
+<li class="add"><a href="/management/rcms/rcms_package_edit/"><span>公式パッケージ追加</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_info_list/">お知らせ一覧</a>
+お知らせ編集
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+
+
+  <form name="rcms_package_edit" id="rcms_package_edit" action="/management/rcms/rcms_package_edit/" method="POST">
+    <input type="hidden" name="package_id" value="{$package_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+      <table class="list">
+        <tr>
+          <th>サイトID</th>
+          <td>
+            <input type="text" name="site_id" value="{$official.site_id}" size="40" /><br>
+            {if $official.site_id && $package_id}
+            <img src="http://mozshot.nemui.org/shot?{$official.site_url}" alt="{$official.package_nm}" height="128" width="128"><br>
+            <a href="{$official.site_url}" target="_blank">設定サイト（サイトID:{$official.site_id}）</a>
+            {/if}
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>パッケージ名</th>
+          <td>
+            <input type="text" name="package_nm" value="{$official.package_nm}" size="40" />
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>カテゴリ</th>
+          <td>
+            <textarea name="tag" rows="2" cols="40">{$official.tag}</textarea>
+          </td>
+          <td>スペース区切りで入力してください</td>
+        </tr>
+        <tr>
+          <th>コメント</th>
+          <td>
+            <textarea name="comment" rows="3" cols="40">{$official.comment}</textarea>
+          </td>
+          <td></td>
+        </tr>
+{if $smarty.const.OEM_ID eq 1}
+        <tr>
+          <th>表示順</th>
+          <td>
+            <input type="text" name="order_no" value="{$official.order_no}" size="3" />
+          </td>
+          <td>数字の大きい順です</td>
+        </tr>
+        <tr>
+          <th>共通利用</th>
+          <td>
+            <input type="checkbox" name="common_flg" value="1" {if $official.common_flg}checked{/if} />共通利用する
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>公開・非公開</th>
+          <td>
+            <input type="checkbox" name="open_flg" value="1" {if $official.open_flg}checked{/if}>公開する
+          </td>
+          <td></td>
+        </tr>
+{/if}
+      </table>
+
+{if $auth.rcms.update}
+  <div class="btn_box_bottom">
+     <ul class="bt_orange">
+{if $official.package_id != ""}
+     <li><a href="javascript:void(0)" onclick="document.rcms_package_edit.MODE.value='UPDATE';document.rcms_package_edit.submit();return false;"><span>更新する</span></a></li>
+{/if}
+{if $official.package_id == ""}
+     <li><a href="javascript:void(0)" onclick="document.rcms_package_edit.MODE.value='INSERT';document.rcms_package_edit.submit();return false;"><span>追加する</span></a></li>
+{/if}
+{if $official.package_id != ""}
+     <li><a href="javascript:void(0)" onclick="confirm_delete(); return false;"><span>削除する</span></a></li>
+{/if}
+     </ul>
+
+     <div class="clear"></div>
+  </div>
+{/if}
+   </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

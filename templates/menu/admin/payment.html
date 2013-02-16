@@ -1,0 +1,211 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{headblock}
+<script type="text/javascript" src="/js/jquery/jquery-ui-1.7.2.min.js"></script> 
+<script src="/js/jqueryAlerts/jquery.alerts.js" type="text/javascript"></script> 
+<link href="/js/jqueryAlerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen,print" />
+<script type="text/javascript"> 
+<!--
+{literal}
+function confirmPayment() {
+                    jConfirm('<div style="text-align:left;"><table><tr><th>ホームペーじん基本利用料(10万PV)</th><td>x1</td><td>6,000</td></tr><tr><th>ホームペーじん基本利用料(10万PV)</th><td>x1</td><td>6,000</td></tr><tr><th>ホームペーじん基本利用料(10万PV)</th><td>x1</td><td>6,000</td></tr><tr><td colspan="3" style="height:1px;background-color:#000000;"></td></tr><tr><th colspan="2">合計</th><td>18,000</td></tr></table><br>■銀行振込<br>電話番号：03-3267-3900<br>メールアドレス：kenta@diverta.co.jp<br>お名前:加藤健太<br>振り込み名義:KATOH KENTA<br><br><br><input type="image" name="subflg" id="btn_pay2" height="43" width="182" src="/images/management/homepagine/btn_revision.gif" alt="購入"><input type="image" name="subflg" id="btn_pay2" height="43" width="182" src="/images/management/homepagine/btn_buy.gif" alt="購入"></div>','購入内容確認',function(rtn){if(rtn){j$("#input_value_limittopics_group_ext_id_01").val(rtn);}});
+
+    return true;
+}
+{/literal}
+//-->
+</script>
+<style>
+{literal}
+/*ボタン部分*/
+#popup_ok{
+display:none;
+}
+#popup_cancel{
+position:absolute;
+top:30px;
+left:500px;
+}
+#popup_content{
+    font-size:12pt;
+    line-height:130%;
+    width:500px;
+}
+#popup_content th,#popup_content td{
+    padding:0px 8px;
+}
+#popup_content td{
+   text-align:right;
+}
+{/literal}
+</style>
+{/headblock}
+
+<div class="main_contents">
+
+<div class="list_main">
+
+<h3>商品購入ページ</h3>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+
+ホームペーじんは現在、PayPalでのお支払いに対応しております。以下のボタンから購入を行ってください。
+
+初期費用2100円 年額6300円（月額525円）<br>
+1GB・10万PV/月まで　初期費用2100円　月額525円（サーバ利用料込み）
+※メールマガジン100通/日
+※会員500人まで
+※独自ドメイン利用は無料（ドメイン取得費は別途）
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="S9H6UETW73JR4">
+<input type="image" src="https://www.paypal.com/ja_JP/JP/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal- オンラインで安全・簡単にお支払い">
+<img alt="" border="0" src="https://www.paypal.com/ja_JP/i/scr/pixel.gif" width="1" height="1">
+</form>
+<br>
+
+<img src="/images/management/homepagine/paypal_explain.png">
+
+
+<p class="btn_order"><img src="/images/management/ico_order.gif" alt="注文履歴"><a href="/management/menu/order_history/">注文履歴</a></p>
+
+<form action="/management/menu/payment/" method="post" onSubmit="return confirmPayment();">
+<input type="hidden" name="MODE" value="UPDATE">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<table width="100%">
+<tr>
+<th>基本商品</th>
+<td>
+<table class="sublist">
+{foreach from=$base_item_list item=item name=base_item}
+<tr>
+<th>{$item.item_nm}</th>
+<td>\{$item.item_price|number_format}</td>
+<td>{if $item.span eq 0}初期のみ{else}{$item.span}か月{/if}</td>
+<td><select name="item_num[{$item.item_cd}]">{html_options options=$arrItem_num selected=$smarty.request.item_num[$item.item_cd]}</select></td>
+<td>{$item.memo|nl2br}</td>
+</tr>
+{if $item.item_cd eq 'hp0002'}
+</table>
+<a href="javascript:void(0);" onClick="j$('#base_item2').toggle('fast');return false;">10万PV/月以上のアクセスが予想される場合</a>
+<table width="100%" style="display:none;" id="base_item2" class="sublist">
+{/if}
+
+{/foreach}
+</table>
+</td>
+</tr>
+<tr>
+<th>オプション</th>
+<td>
+<table class="sublist">
+{foreach from=$option_item_list item=item}
+<tr>
+<th>{$item.item_nm}</th>
+<td>\{$item.item_price|number_format}</td>
+<td>{if $item.span eq 0}初期のみ{else}{$item.span}か月{/if}</td>
+<td><select name="item_num[{$item.item_cd}]">{html_options options=$arrItem_num selected=$smarty.request.item_num[$item.item_cd]}</select></td>
+</td>
+<td>{$item.memo|nl2br}</td>
+</tr>
+{/foreach}
+</table>
+</td>
+</tr>
+<tr>
+<th>決済方法</th>
+<td>
+<div id="pay">
+<input type="radio" value="9" name="pay_type" onChange="j$('#pay_type_1').toggle();j$('#pay_type_9').toggle();" {if $smarty.request.pay_type ne 1}checked{/if}>銀行振込
+<input type="radio" value="1" name="pay_type" onChange="j$('#pay_type_1').toggle();j$('#pay_type_9').toggle();" {if $smarty.request.pay_type eq 1}checked{/if} disabled><span style="color:#333333;">クレジットカード(準備中)</span>
+</div>
+<div id="pay_type_1" style="display:none;">
+<p>クレジットカード情報を入力してください。</p>
+<table id="card">
+<tr>
+<th>カード番号 (必須)</th>
+<td><input type="text" name="card_number" size="30"></td>
+</tr>
+<tr>
+<th>有効期限 (必須)</th>
+<td><input type="text" name="card_number" size="30"></td>
+</tr>
+<tr>
+<th>カード名義人氏名 (必須)</th>
+<td><input type="text" name="card_number" size="30"></td>
+</tr>
+</table>
+
+<p>お客様の情報を入力してください。</p>
+<table>
+<tr>
+<th>送信元ＩＰアドレス</th>
+<td>{$smarty.server.REMOTE_ADDR}</td>
+</tr>
+<tr>
+<th>電話番号 (必須)</th>
+<td><input type="text" name="card_number" size="30"></td>
+</tr>
+<tr>
+<th>メールアドレス (必須)</th>
+<td><input type="text" name="card_number" size="30" value="{$smarty.session.email}"></td>
+</tr>
+<tr>
+<th>お名前 (必須)</th>
+<td><input type="text" name="card_number" size="30" value="{$smarty.session.disp_name}"></td>
+</tr>
+</table>
+</div>
+
+
+<div id="pay_type_9">
+<p>お客様の情報を入力してください。</p>
+<table>
+<tr>
+<th>送信元ＩＰアドレス</th>
+<td>{$smarty.server.REMOTE_ADDR}</td>
+</tr>
+<tr>
+<th>電話番号 (必須)</th>
+<td><input type="text" name="tel" size="30" value="{$smarty.request.tel}"></td>
+</tr>
+<tr>
+<th>メールアドレス (必須)</th>
+<td><input type="text" name="email" size="30" value="{if $smarty.request.MODE}{$smarty.request.email}{else}{$smarty.session.email}{/if}"></td>
+</tr>
+<tr>
+<th>お名前 (必須)</th>
+<td><input type="text" name="name" size="30" value="{if $smarty.request.MODE}{$smarty.request.name}{else}{$smarty.session.disp_name}{/if}"></td>
+</tr>
+<tr>
+<th>振込人名義 (必須)</th>
+<td><input type="text" name="bank_nm" size="30" value="{$smarty.request.bank_nm}"></td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr>
+<th>クーポン</th>
+<td>
+<input type="text" name="coupon_cd" value="{$smarty.request.coupon_cd}" size="50">
+</td>
+</tr>
+</table>
+<div id="btn_pay">
+<!--
+<input type=image name="subflg" id="btn_pay2" height=43 width=182 src="/images/management/homepagine/btn_buy_confirm.gif" alt="購入確認">
+-->
+</div>
+</form>
+
+
+
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

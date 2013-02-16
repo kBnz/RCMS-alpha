@@ -1,0 +1,25 @@
+{module name="topics_search_list"}
+<h2>{'/modules/topics/label/topics_search_list'|translate}{*トピックス記事検索*}</h2>
+<form action="/{$page_sysnm}/" method="GET">
+  {'/label/keyword'|translate}{*キーワード*}<input type="text" style="width:80%;" name="topics_keyword" value="{$smarty.request.topics_keyword|escape}"/>
+  <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+</form>
+{if $smarty.request.topics_keyword}<span>
+{'/msg/search_word_is'|translate:$smarty.request.topics_keyword|escape}{*$smarty.request.topics_keywordで検索*}</span>
+{/if}
+{if $topics_search_list}
+<p class="page_links">{$page_links}</p>
+<ul data-role="listview">
+{foreach from=$topics_search_list item=item name=topics_search_list}
+     <li><h3><a href="/{$link_page_sysnm}{$item.topics_group_id}/id={$item.topics_id}">{$item.subject}</a></h3>
+     {$item.contents_type_nm}
+     {$item.inst_ymdhi|pg_dateformat}
+     {$item.contents|mbtruncate:100}</p>
+     </li>
+{/foreach}
+    </ul>
+<p class="page_links">{$page_links}</p>
+{elseif $smarty.request.topics_keyword}
+    <p>{'/msg/no_data_match'|translate}{*条件に一致するものは見つかりませんでした*}</p>
+{/if}
+{/module}

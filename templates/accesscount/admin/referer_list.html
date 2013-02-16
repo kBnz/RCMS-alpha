@@ -1,0 +1,78 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+var show_no = "";
+
+function visibility_area(order_no) {
+    var element = document.getElementById('inputArea['+order_no+']');
+    if(element.style.visibility == "visible") {
+        element.style.visibility = "hidden";
+        show_no = "";
+    } else {
+        element.style.visibility = "visible";
+        if(show_no != "") {
+            document.getElementById('inputArea['+show_no+']').style.visibility = "hidden";
+        }
+        show_no = order_no;
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2 class="accesscount">{'/modules/accesscount/label/visitor_data'|translate}</h2>{* 訪問者情報 *}
+</div>
+
+{* 【ぱんくず】サイト基本設定>> アクセス統計 >> 訪問者情報 *}
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/accesscount/accesscount_list/">{'/modules/accesscount'|translate}</a>
+{'/modules/accesscount/label/visitor_data'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+  {pager info=$pageInfo}
+  <p class="page_links">{$page_links}</p>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th>{'/modules/accesscount/label/visit_time'|translate}</th>{* 訪問日時 *}
+      <th width="25">{'/modules/accesscount/label/detail'|translate}</th>{* 詳細 *}
+      <th>{'/label/referer'|translate}</th>{* リファラー *}
+    </tr>
+    {foreach item=referer_data from=$referer_list name=referer_items}
+    <tr>
+      <td>{$referer_data.access_time|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      <td>
+        <a href="javascript:;" onclick="visibility_area('{$smarty.foreach.referer_items.iteration}')">{'/modules/accesscount/label/detail'|translate}</a><br />{* 詳細 *}
+        <div id="inputArea[{$smarty.foreach.referer_items.iteration}]" style="position:absolute;visibility:hidden;border:1px solid;background-color:white;">
+          <table width="450">
+            {if $referer_data.search_engine}
+              <tr><th colspan="2">{'/modules/accesscount/label/search_information'|translate}</th></tr>{* 検索情報 *}
+              <tr><td width="80">{'/label/search_engine'|translate}</td>{* 検索エンジン *}
+                  <td>{$referer_data.img_tag}{$referer_data.search_engine}</td></tr>
+              <tr><td>{'/label/search_word'|translate}</td>{* 検索語 *}
+                  <td>{$referer_data.search_word1} {$referer_data.search_word2} {$referer_data.search_word3} {$referer_data.search_word4} {$referer_data.search_word5} {$referer_data.search_word6} {$referer_data.search_word7}</td></tr>
+            {/if}
+            <tr><th colspan="2">{'/modules/accesscount/label/user_information'|translate}</th></tr>{* ユーザ情報 *}
+            <tr><td>OS</td><td>{$referer_data.os}</td></tr>{* ＯＳ *}
+            <tr><td>{'/modules/accesscount/label/browser'|translate}</td><td>{$referer_data.browser}</td></tr>{* ブラウザ *}
+            <tr><td>{'/modules/accesscount/label/ip_address'|translate}</td><td>{$referer_data.ip_addr}</td></tr>{* IPアドレス *}
+            <tr><td>{'/modules/accesscount/label/viewed_page'|translate}</td><td>{$referer_data.php_self}</td></tr>{* 訪問先 *}
+          </table>
+        </div>
+      </td>
+      <td>
+        <a href="{$referer_data.referer}" target="_blank">{$referer_data.img_tag}{$referer_data.domain}<br />{$referer_data.referer_substr}</a>
+      </td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,93 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<style type="text/css">
+.ahImgBox {
+  margin: 1em;
+  float: left;
+}
+.ahPhotoCredit {
+  font-size: smaller;
+  color: #cccccc;
+}
+.ahDataBox {
+  margin: 1em;
+}
+.ahDataBox p {
+  margin: 1em 0px;
+}
+#ahForm {
+  clear: left;
+}
+</style>
+{/literal}
+
+<div class="list_right_bt">
+  <h2>飲食店詳細</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_hotpepper/api_hotpepper_search/">{$module_nm}</a>
+飲食店詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_hotpepper/api_hotpepper_search/">飲食店検索</a></li>
+  <li><a href="/management/api_hotpepper/api_hotpepper_list/">飲食店一覧</a></li>
+</ul>
+
+
+  <div class="list_main">
+
+    {if $shop}
+    <p style="font-weight:bold">[{$shop.GenreName}]{$shop.ShopCatch}</p>
+    <p class="ahImgBox">
+      <img src="{$shop.PictureUrl.PcLargeImg}" /><br />
+      <span class="ahPhotoCredit">写真提供：ホットペッパー.jp</span>
+    </p>
+    <div class="ahDataBox">
+      <p>{$shop.GenreCatch}</p>
+      <p style="font-weight:bold">{$shop.ShopName}</p>
+      <p>{$shop.StationName}: {$shop.Access}</p>
+      <p>{$shop.ShopAddress}</p>
+      <p>{$shop.Open}</p>
+      <p><a href="{$shop.ShopUrl}" onclick="return !window.open(this.href)">詳細情報はコチラ</a></p>
+      <p><a href="http://www.hotpepper.jp/" onclick="return !window.open(this.href)"><img src="http://api.hotpepper.jp/content/images/hp_api_s.gif" alt="ホットペッパー Webサービス" width="155" height="20" border="0" title="ホットペッパー Webサービス"></a></p>
+    </div>
+    <form id="ahForm" action="/management/api_hotpepper/api_hotpepper_edit/shop_id={$shopId}" method="post">
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <table style="width:100%">
+        <tr>
+          <th>コメント</th>
+        </tr>
+        <tr>
+          <td style="text-align:center"><textarea name="notes" rows="5" style="width:98%">{$shop.local.notes}</textarea></td>
+        </tr>
+      </table>
+
+      {rcms_include file="management/relation_edit.html"}
+
+      {if $auth.api_hotpepper.update}
+        <input type="hidden" name="mode" id="ahMode" value="update" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        {buttonbox}
+          <button type="submit">更新する</button>
+        {/buttonbox}
+      {/if}
+
+    </form>
+
+    {else}
+    <p><strong>指定したIDの店舗は、ホットペッパー上に存在しません。</strong></p>
+    {/if} {* end of if $shop *}
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

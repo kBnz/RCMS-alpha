@@ -1,0 +1,60 @@
+{foreach from=$teamList item=row}
+<h3>{$row.round}</h3>
+    {foreach from=$arrTabletennisNumbers key=key item=label}
+        {if $key eq 0}
+            {$row.self_team_name} vs {$row.opp_team_name}<br>
+        {elseif $key > $row.numberOfMember}
+            {*試合の最大数を超えたら何もしない*}
+        {else}
+            <br>
+            <div style="font-weight: bold;">{$label}</div>
+            <div style="background-color:{$smarty.const.TEAMCOLOR_tabletennis};">
+                {if $row.members.self[$key].1.member_id ne -1 && $row.members.self[$key].1.member_id ne ""}
+                    <a href="/member_detail/id={$row.members.self[$key].1.member_id}">{$row.members.self[$key].1.name}</a>
+                {else}
+                    {$row.members.self[$key].1.name}
+                {/if}
+                <br>
+                {if $row.members.self[$key].2.member_id ne -1 && $row.members.self[$key].2.member_id ne ""}
+                    <a href="/member_detail/id={$row.members.self[$key].2.member_id}">{$row.members.self[$key].2.name}</a>
+                {else}
+                    {$row.members.self[$key].2.name}
+                {/if}
+            </div>
+            vs
+            <div style="background-color: #999999; color: #ffffff;">
+                {if $row.members.opp[$key].1.member_id ne -1 && $row.members.opp[$key].1.member_id ne ""}
+                    <a href="/member_detail/id={$row.members.opp[$key].1.member_id}">{$row.members.opp[$key].1.name}</a>
+                {else}
+                    {$row.members.opp[$key].1.name}
+                {/if}
+                <br>
+                {if $row.members.opp[$key].2.member_id ne -1 && $row.members.opp[$key].2.member_id ne ""}
+                    <a href="/member_detail/id={$row.members.opp[$key].2.member_id}">{$row.members.opp[$key].2.name}</a>
+                {else}
+                    {$row.members.opp[$key].2.name}
+                {/if}
+            </div>
+            <br>
+            <div style="border-bottom: 1px solid #000000;">
+                <span style="background-color:{$smarty.const.TEAMCOLOR_tabletennis};">{$row.Self_Won[$key]}</span> - <span style="background-color: #999999; color: #ffffff;">{$row.Opp_Won[$key]}</span>
+            </div>
+            <br>
+
+            {foreach from=$row.Self_Game[$key] key=roundcount item=point}
+                <span style="background-color:{$smarty.const.TEAMCOLOR_tabletennis}; border: 1px solid #ffffff;">{$point}</span>
+               -
+                <span style="background-color: #999999; color: #ffffff; border: 1px solid #ffffff;">{$row.Opp_Game.$key.$roundcount}</span>
+                <br>
+            {/foreach}
+            <br>
+            <div style="border-bottom:1px solid #000000;"></div>
+        {/if}
+    {/foreach}
+    <br>試合結果<br>
+    <span style="background-color:{$smarty.const.TEAMCOLOR_tabletennis};">{$row.Self_Won_Total}</span>
+     -
+    <span style="background-color: #999999; color: #ffffff;">{$row.Opp_Won_Total}</span>
+    <br>
+    <hr>
+{/foreach}

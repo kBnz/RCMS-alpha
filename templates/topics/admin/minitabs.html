@@ -1,0 +1,17 @@
+
+<ul class="minitabs">
+{if $rauth->canUpdate("/topics_admin/item/[@topics_group_id=$topics_group_id]")}
+  <li id="minitab_topics_group_edit"><a href="/management/topics/topics_group_edit/topics_group_id={$topics_group_id}" {if $page_type eq 'topics_group_edit'}class="active"{/if}>{'/modules/topics/label/topics_group'|translate}</a></li>
+{/if}
+{if $data_limit ne 1}
+  <li id="minitab_topics_list"><a href="/management/topics/topics_list/topics_group_id={$topics_group_id}"  {if $page_type eq 'topics_list'}class="active"{/if}>{'/modules/topics/label/topics_list'|translate}</a></li>
+{/if}
+  <li id="minitab_topics_edit"><a href="/management/topics/topics_edit/topics_group_id={$topics_group_id}" {if $page_type eq 'topics_edit'}class="active"{/if}>{'/modules/topics/label/topics_edit'|translate}</a></li>
+{if $data_limit ne 1}
+  <li id="minitab_topics_category_list"><a href="/management/topics/topics_category_list/topics_group_id={$topics_group_id}"  {if $page_type eq 'topics_category_list' || $page_type eq 'topics_category_edit'}class="active"{/if}>{'/modules/topics/label/topics_category'|translate}</a></li>
+{/if}
+{if $data_limit ne 1 && $rauth->canUpdate("/topics_admin/item/[@topics_group_id=$topics_group_id]")}
+  <li id="minitab_topics_upload"><a href="/management/topics/topics_upload/topics_group_id={$topics_group_id}"  {if $page_type eq 'topics_upload'}class="active"{/if}>{'/modules/topics/label/batch_process'|translate}</a></li>
+{/if}
+</ul>
+<div class="clear"></div>

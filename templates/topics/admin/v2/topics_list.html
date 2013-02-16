@@ -1,0 +1,193 @@
+{rcms_include file="management/header.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+	 // 選択された項目を削除します。\nよろしいですか？
+	 if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+			 f.MODE.value = 'delete';
+			 f.submit();
+	 }
+}
+{/literal}
+</script>
+
+<div id="top_fixed">
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node" href="/management/topics/topics_list/">{'/modules/topics'|translate}</a>
+            <a class="navigation_node">{if $topics_group_nm}{'/modules/topics/label/topics_list_of_the_group'|translate:$topics_group_nm}{else}{'/modules/topics/label/topics_list'|translate}{/if}</h2>{* 記事一覧 *}</a>
+        </div>
+    
+        <div class="setting_field">
+        {rcms_auth target="insert:/topics/item/[@topics_group_id=$topics_group_id]"}
+            <p id="add-new-button">
+                <a href="/management/topics/topics_edit/topics_group_id={$topics_group_id}" class="add-new">
+                    {'/modules/topics/label/add_topic_btn'|translate}{*記事追加*}
+                </a>
+            </p>
+        {/rcms_auth}
+
+        {rcms_include file="topics/admin/setting_dropdown.html"}
+
+        </div>
+    </div>
+</div>
+
+<div id="main_contents" class="main_contents">
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <!-- 承認待ち一覧 -->
+    {rcms_include file="common/admin/shonin_list.html"} 
+
+{if $topics_list|@count > 0}
+
+
+	<form method="POST" action="/management/topics/topics_list/">
+		<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+		<input type="hidden" name="MODE" />
+		<input type="hidden" name="topics_group_id" value="{$topics_group_id}" />
+		<input type="hidden" name="season" value="{$season|escape}" />
+		<input type="hidden" name="contents_type" value="{$contents_type|escape}" />
+		<input type="hidden" name="opflg" value="{$opflg|escape}" />
+		<input type="hidden" name="ext_update_key" />
+
+		{pager info=$pageInfo}
+
+			<div id="postselecter">
+
+			<form method="get" action="/management/topics/topics_list/topics_group_id={$topics_group_id}">
+				<div id="sort">
+					<h4>絞り込み</h4>
+					{rcms_seasonOptions name="season" selected=$season firstOption="true"}
+
+					<select name="contents_type" id="sort_cat" class="postform">{html_options options=$searchContents_type selected=$contents_type}</select>
+
+					<select name="opflg" id="sort_status" class="postform">{html_options options=$searchOpflg selected=$opflg}</select>
+
+					<h4>{'/label/keyword'|translate}</h4>
+					<input type="text" id="post-search-input" name="keyword" value="{$smarty.request.keyword}">
+				</div>
+
+				<div id="search">
+					<input type="submit" id="search-submit" class="button" value="{'/label/search_btn'|translate}">{* 検索 *}
+				</div>
+				</form>
+
+			</div><!-- /id="postselecter" -->
+
+	<table class="list-table" cellspacing="0">
+		<thead>
+			<tr>
+				<th scope="col" class="cb first"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'topics_id[]');" /></th>
+				<th scope="col" class="status"><span>{'/label/publish'|translate}</span></th>{* 公開 *}
+				<th scope="col" class="title"><span>{'/label/title'|translate}</span></th>{* タイトル *}
+				<th scope="col" class="category"><span>{'/label/category'|translate|sort_link:contents_type:$sort_url:$sort:$desc}</span></th>{* カテゴリ *}
+				{if $topics_group.no_use_ymd}
+					<th scope="col" class="date"><span>{'/label/order_no'|translate|sort_link:ymd:$sort_url:$sort:$desc}</span></th>{* 表示順 *}
+				{else}
+					<th scope="col" class="date"><span>{'/label/date'|translate|sort_link:ymd:$sort_url:$sort:$desc}</span></th>{* 日付 *}
+				{/if}
+				<th scope="col" class="lastupdate"><span>{'/label/updatetime'|translate|sort_link:update_ymdhi:$sort_url:$sort:$desc}</span></th>{* 最終更新日 *}
+				<th scope="col" class="comment"><a href="#"><span>コメント</span></a></th>
+				<th scope="col" class="pv last"><span>{'/label/view'|translate}</span></th>{* アクセス数 *}
+
+{foreach from=$displayItems item=item}
+				<th>{$item.disp_name}</th>
+{/foreach}
+
+			</tr>
+			</thead>
+
+			<tbody id="the-list">
+
+	{foreach from=$topics_list item=row}
+		{assign var=topics_id value=$row.topics_id}
+			<tr>
+				<td class="cb first"><input type="checkbox" name="topics_id[]" value="{$row.topics_id}" {rcms_auth not=true target="update:/topics/item/$topics_id || delete:/topics/item/$topics_id"}disabled="disabled"{/rcms_auth} /></td>
+				<td class="status">{$row.open_status|rcms_publicimg}</td>
+				<td class="title">
+					<a href="/management/topics/topics_edit/topics_id={$row.topics_id}&default_relation={$smarty.request.default_relation|urlencode}&page_modify_mode={$smarty.request.page_modify_mode|urlencode}&search_param={$search_param|urlencode}">{$row.subject|strip_tags}</a>
+					{rcms_include file="common/admin/language_status.html" meta=$docmetas[$row.topics_id] link="/management/topics/topics_edit/topics_id=$topics_id"}
+				</td>
+				<td class="category">{$row.contents_type}
+					{if $topics_group.contents_type_cnt>1}{*カテゴリが2つ以上設定可能の場合*}
+					{section name=contents_type_adding loop=$topics_group.contents_type_cnt start="1"}
+					{assign var=contents_type_colnm value="contents_type_"|cat:$smarty.section.contents_type_adding.index+1}
+					{if $row.$contents_type_colnm}<br />{$row.$contents_type_colnm}{/if}
+					{/section}
+					{/if}
+				</td>
+				<td class="date">{if $topics_group.no_use_ymd}<input type="text" name="ymd[{$row.topics_id}]" value="{$row.ymd}" size="6">{else}{$row.ymd|pg_dateformat:"%Y/%m/%d(%%w%%)"}{/if}</td>
+				<td class="lastupdate">{$row.update_ymdhi|pg_dateformat2:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+				<td class="comment"><a href="#"><span>!!</span></a></td>
+				<td class="pv last"><a href="#">{$row.access_cnt}pv</a></td>
+
+{foreach from=$displayItems item=item}
+	{assign var=opt_key value=$row[$item.key_name]}
+	{assign var=options value=$displayOptions[$item.key_name]}
+				<td>{$options[$opt_key]}</td>
+{/foreach}
+
+			</tr>
+	{/foreach}
+			</tbody>
+		</table>
+        {pager info=$pageInfo}
+    <div class="float_area"></div>{*浮いてるbuttonboxのため*}
+</div><!-- #main_contents -->
+
+<div id="bottom_fixed">
+    <div class="buttonbox">
+        <ul>
+            <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+            <li class="list_action_open_li"><button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}</button></li>{* 公開にする *}
+            <li class="list_action_delete_li"><button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button></li>{* 非公開にする *}
+            <li class="list_action_close_li"><button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}</button></li>{* 削除する *}
+            {if $topics_group.no_use_ymd}
+            <p class="list_action_order_li"><button type="submit" onclick="this.form.MODE.value='change_order'">{'/label/change_order_btn'|translate}</a></p>{* 並び順を更新する *}
+            {/if}
+        </ul>
+    </div>
+</div><!-- #bottom_fixed -->
+
+</form>
+
+
+{foreach from=$displayItems item=item}
+		{buttonbox}
+			<p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+<p>{$item.disp_name}:<select name="{$item.key_name}">
+	<option value="">{'/label/no_select'|translate}</option>
+	{html_options options=$displayOptions[$item.key_name]}
+</select></p>
+			<button type="submit" onclick="this.form.MODE.value='update';this.form.ext_update_key.value='{$item.key_name}';">{'/label/update_btn'|translate}</button>{* 更新する *}
+		{/buttonbox}
+{/foreach}
+
+	</form>
+{/if}
+
+
+<script type="text/javascript">
+<!--
+{literal}
+(function($) {
+
+    $(document).ready(function(){
+
+    /**************** プラグインの適用 ****************/
+
+        // ドロップダウンメニューを作成
+        $("#select_sc_list_cat_config").rcmsDropdown({isSelectbox:true});
+
+
+});
+})(jQuery);
+{/literal}
+//-->
+</script>
+
+{rcms_include file="management/rcms_ui/rcms_ui.html"}

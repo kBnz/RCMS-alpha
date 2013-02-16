@@ -1,0 +1,108 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+    <h2>{'/modules/invoice/label/invoice_header_list'|translate}</h2>
+    <ul>
+        <li class="add"><a href="/management/invoice/invoice_header_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+    </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/invoice/invoice_header_list/">{'/modules/invoice'|translate}</a>
+{'/modules/invoice/label/invoice_header_list'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+    {rcms_include file="invoice/admin/minitabs.html" page_type=$ct}
+    <div class="list_main">
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+        <form action="/management/invoice/invoice_header_list/" method="post">
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" />
+
+            <fieldset class="search_box">
+                {'/modules/invoice/label/invoice_client'|translate}：
+                <span style="margin-right:20px"><select name="invoice_client_id" id="invoice_client_id"><option value=""></option>{html_options options=$INVOICE_CLIENT_LIST selected=$invoice_client_id}</select></span>
+                {'/modules/invoice/label/print_date'|translate}：
+                <span style="margin-right:20px"><select name="invoice_yyyymm" id="invoice_yyyymm"><option value=""></option>{html_options options=$INVOICE_PRINT_YYYYMM_LIST selected=$invoice_yyyymm}</select></span>
+                {'/modules/invoice/label/receipt_of_money_due_date'|translate}：
+                <span style="margin-right:20px"><select name="receive_yyyymmdd" id="receive_yyyymmdd"><option value=""></option>{html_options options=$INVOICE_RECEIVE_SCHEDULE_YYYYMMDD_LIST selected=$receive_yyyymmdd}</select></span>
+                <p><input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" /></p>
+            </fieldset>
+
+            {pager info=$pageInfo}
+            <table width="100%" border="0">
+            <tr>
+                <th style="width:20px" rowspan="2"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'invoice_header_id[]');" /></th>
+                <th>{'/label/subject'|translate}</th>
+                <th>{'/modules/invoice/label/invoice_time'|translate}</th>
+                <th rowspan="2">{'/label/amount_of_money'|translate}</th>
+                <th rowspan="2">{'/modules/invoice/label/invoice_settlement'|translate}</th>
+                <th rowspan="2">{'/modules/invoice/label/invoice_output'|translate}</th>
+                <th rowspan="2">{'/label/receipt_of_money_confirmation'|translate}</th>
+            </tr>
+            <tr>
+                <th>{'/modules/invoice/label/invoice_client'|translate}</th>
+                <th>{'/modules/invoice/label/receipt_of_money_due_date'|translate}</th>
+            </tr>
+
+            {foreach from=$result_list key=year item=row}
+            {assign var=print_yyyy value=$row.print_date|pg_dateformat:"%Y"}
+            {assign var=print_mm value=$row.print_date|pg_dateformat:"%m"}
+            {assign var=receive_yyyy value=$row.receive_schedule_date|pg_dateformat:"%Y"}
+            {assign var=receive_mm value=$row.receive_schedule_date|pg_dateformat:"%m"}
+            {assign var=receive_dd value=$row.receive_schedule_date|pg_dateformat:"%d"}
+            <tr>
+                <td rowspan="2"><input type="checkbox" name="invoice_header_id[]" value="{$row.invoice_header_id}" {rcms_auth not=true target="update:/invoice/header/$invoice_header_id || delete:/invoice/header/$invoice_header_id"}disabled="disabled"{/rcms_auth} /></td>
+                <td><a href="/management/invoice/invoice_header_edit/id={$row.invoice_header_id}">{$row.header_title|escape}</td>
+                <td>{'/label/yyyymm'|translate:$print_yyyy:$print_mm}</td>
+                <td rowspan="2">\{$row.total|number_format}</td>
+                <td rowspan="2">{$INVOICE_COMMIT_FLG_LIST[$row.commit_flg]}</td>
+                <td rowspan="2">{$INVOICE_OUTPUT_FLG_LIST[$row.output_flg]}</td>
+                <td rowspan="2">{$INVOICE_RECEIVE_FLG_LIST[$row.receive_flg]}</td>
+            </tr>
+            <tr>
+                <td>{$row.client_name}</td>
+                <td>{'/label/yyyymmdd'|translate:$receive_yyyy:$receive_mm:$receive_dd}</td>
+            </tr>
+            {/foreach}
+
+            </table>
+            {pager info=$pageInfo}
+
+            {buttonbox}
+            <p>{'/label/withselected'|translate}</p>
+            <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+            <button type="button" onclick="confirmReceive(this.form)">{'/modules/invoice/label/receive_money_btn'|translate}</button>
+            {/buttonbox}
+
+        </form>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+function confirmReceive(f) {
+   // 選択された項目を入金確定します。\nよろしいですか？
+   if (confirm('{/literal}{'/modules/invoice/msg/confirm_receive_money_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'RECEIVE';
+       f.submit();
+   }
+}
+{/literal}
+</script>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,39 @@
+<h2>{$location_list.location_nm}</h2>
+{if $location_list.gmap_x && $location_list.gmap_y }
+<img src="/direct/location/gmap_mobile/id={$location_list.location_id}{if $location_category_id}&location_category_id={$location_category_id}{/if}{if $location_keyword}&location_keyword={$location_keyword}{/if}" alt="{$location_list.location_nm}" /><br/>
+{/if}
+{if $location_list.url}
+■URL<br/>
+<a href="{$location_list.url}" target="_blank">{$location_list.url}</a><br/><br/>
+{/if}
+{if $location_list.zip_main || $location_list.zip_sub }
+■{'/label/postcode'|translate}{*郵便番号*}<br/>
+{$location_list.zip_main} - {$location_list.zip_sub}<br/><br/>
+{/if}
+{if $location_list.tdfk_cd || $location_list.address1 || $location_list.address2 }
+■{'/label/address'|translate}{* 住所 *}<br/>
+{$arrTdfk[$location_list.tdfk_cd]}{$location_list.address1}{$location_list.address2}<br/><br/>
+{/if}
+{if $location_list.inquiry}
+■{'/modules/inquiry'|translate}{*問い合わせ先*}<br>
+{$location_list.inquiry|nl2br|forContentsConvert}<br/><br/>
+{/if}
+{* 拡張項目 *}
+{if $loc_ext_list|@count}
+{foreach from=$loc_ext_list item=loc_ext}
+    {$loc_ext.title}<br />{$loc_ext.value|nl2br}<br /><br />
+{/foreach}
+{/if}
+{if $location_list.comment }
+{$location_list.comment|nl2br}<br/><br/>
+{/if}
+{if $location_list.photo_url }
+<img src="{$location_list.photo_url}" alt="{$location_list.location_nm}" /><br/><br/>
+{/if}
+
+{if $location_list.navitime_lat && $location_list.navitime_lon }
+◆[<a href="http://maps.google.com/maps?q={$location_list.gmap_y},{$location_list.gmap_x}({$location_list.location_nm|urlencode})&_lang={$mylang}&spn=0.003503,0.009645&z=17">GoogleMaps</a>]<br/>
+◆[<a href="http://www.navitime.co.jp/map/index.jsp?datum=1&amp;unit=0&amp;lat={$location_list.navitime_lat}&amp;lon={$location_list.navitime_lon}">{'/modules/location/label/display_the_map'|translate}{*地図表示*}</a>]※{'/modules/location/msg/about_navitime_map'|translate}{*NAVITIMEで表示(海外は対応していません)*}<br/><br/>
+{/if}
+
+<hr/>

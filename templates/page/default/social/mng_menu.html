@@ -1,0 +1,32 @@
+{*
+{if $Login_disp_nm eq '' && $smarty.session.super_flg != -1}
+    {if $mng_menu_noflg != 1}
+    <div class="mng_line">
+      <table width="100%" cellspacing="0" cellpadding="2">
+        <tr>
+          <td>
+            <a href="{$smarty.const.ROOT_URL}/management/login/login/" target="_top"><img src="/images/management/file_key_w.gif">{'/label/login'|translate}<!--ログイン--></a>
+            <span id="Simplebox_Button"></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    {/if}
+{else}
+    {if $mng_menu_noflg_login != 1}
+    <div class="mng_line">
+      <table width="100%" cellspacing="0" cellpadding="2">
+        <tr>
+          <td>
+            <strong>{if $Login_nickname}{'/msg/greeting_to_nickname'|translate:$Login_nickname}{else}{'/msg/greeting'|translate:$Login_name1:$Login_name2}{/if}<!--●●さんこんにちは！--></strong>&nbsp;&nbsp;
+            {if $smarty.session.super_flg != -1}
+            <a href="{$smarty.const.ROOT_URL}/management/menu/menu/" ><img src="/images/management/tmp_icon_i_12.gif">{'/modules/menu/label/my_page'|translate}<!--マイページ--></a>&nbsp;
+            {/if}
+            <a href="/direct/login/logout/"><img src="/images/management/tmp_yajirusi_o.gif">{'/label/logout'|translate}<!--ログアウト--></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    {/if}
+{/if}
+*}

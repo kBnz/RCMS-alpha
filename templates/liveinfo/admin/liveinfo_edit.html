@@ -1,0 +1,187 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{$module_nm}編集　第{$data.version_no}版{if $data.latest_flg eq '1'}(最新){/if}</h2>
+<ul>
+  {if $auth.liveinfo.insert}
+  <li class="add"><a href="/management/liveinfo/liveinfo_edit/"><span>イベント追加</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/liveinfo/liveinfo_history/liveinfo_id={$liveinfo_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=topics&id={$topics_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/liveinfo_detail/id={$liveinfo_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/liveinfo/liveinfo_list/">{$module_nm}</a>
+<a href="/management/liveinfo/liveinfo_list/">{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>　<a href="/liveinfo_detail/id={$liveinfo_id}">総アクセス数:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+
+
+
+  <form name="liveinfo_edit" id="liveinfo_edit" action="/management/liveinfo/liveinfo_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="liveinfo_id" value="{$liveinfo_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="subflg" value="" />
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+  <div class="main_contents">
+    <div class="list_main">
+      <table width="678" border="0">
+        <tr>
+          <th style="width:140px;">タイトル<span class="required">※</span></th>
+          <td colspan="3">
+            <input type="text" name="title" value="{$data.title}" size="80" />
+          </td>
+        </tr>
+        <tr>
+          <th align="right">公演日<span class="required">※</span></th>
+          <td>
+            <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+          </td>
+        </tr>
+        <tr>
+          <th align="right">場所</th>
+          <td>
+            地域を選択:<select name="area">{html_options options=$arrArea selected=$data.area}</select><br />
+            <textarea rows="3" cols="50" name="location">{$data.location}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <th>時間を指定</th>
+          <td colspan="3">
+            <table class="not_list_main">
+               <tr>
+                 <td align="right" width="100">時間を指定</td>
+                 <td><input type="checkbox" name="setTime" {if $data.setTime}checked="true"{/if} onchange="onclicksettime(this.checked);"></td>
+                 <td rowspan="2" style="background-color:clear">
+                   <input type="text" name="from_time" id="from_time" value="{$data.from_time}" {if $data.allDayFlg || $data.setTime==""}disabled="disabled"{/if} style="width:50px;">
+                   ～<input type="text" name="to_time" id="to_time" value="{$data.to_time}" {if $data.allDayFlg || $data.setTime==""}disabled="disabled"{/if} style="width:50px;"><span class="hint">(例 10:30)</span>
+                </td>
+              </tr>
+              <tr>
+                <td align="right">終日</td>
+                <td><input type="checkbox" name="allDayFlg" id="allDayFlg" {if $data.allDayFlg}checked="true"{/if} {if $data.setTime==""}disabled="disabled"{/if} onchange="onclickallday(this.checked);"></td>
+              </tr>
+            </table>
+            <textarea name="time_note" rows="3" cols="50">{$data.time_note}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <th align="right">料金</th>
+          <td colspan="3">
+            <textarea rows="3" cols="50" name="charge">{$data.charge}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <th align="right">説明</th>
+          <td colspan="3">
+            <textarea rows="10" cols="50" name="contents">{$data.contents}</textarea>
+          </td>
+        </tr>
+      </table>
+
+  <a id="relation_data" name="relation_data"></a>
+  {rcms_include file="management/relation_edit.html"}
+
+  {rcms_include file="management/open_date_box.html" id=$liveinfo_id data=$data}
+
+{if $auth.liveinfo.update}
+  {buttonbox}
+     <button type="submit">更新する</button>
+     <button type="submit" onclick="go_preview(this.form)">プレビューを確認する</button>
+     <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+  {/buttonbox}
+
+  {rcms_include file="management/update_comment.html" comment=$data.update_comment}
+{/if}
+
+    </div>
+  </div>
+  </form>
+
+
+<script type="text/javascript">
+<!--
+{literal}
+function go_preview(f){
+{/literal}
+    f.action='/liveinfo_detail/id={$liveinfo_id}';
+    f.MODE.value='preview';
+{literal}
+}
+
+function confirmDelete(f){
+    if(confirm("削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+{/literal}
+
+{if $data.pdf_url ne '' || $data.link_url ne ''}
+  {literal}
+  setTimeout("display('write_text');",1000);
+  setTimeout("display('write_link');",1000);
+  {/literal}
+{/if}
+
+{literal}
+function onclicksettime( value ){
+  var element1 = document.getElementById('from_time');
+  var element2 = document.getElementById('to_time');
+  var element3 = document.getElementById('allDayFlg');
+  if(value == "") {
+    element1.disabled = "disabled";
+    element2.disabled = "disabled";
+    element3.disabled = "disabled";
+  }
+  else {
+    if(element3.checked == ""){
+        element1.disabled = "";
+        element2.disabled = "";
+    }
+    element3.disabled = "";
+  }
+}
+
+function onclickallday( value ){
+  var element1 = document.getElementById('from_time');
+  var element2 = document.getElementById('to_time');
+  if(value != "") {
+    element1.disabled = "disabled";
+    element2.disabled = "disabled";
+  }
+  else {
+    element1.disabled = "";
+    element2.disabled = "";
+  }
+}
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

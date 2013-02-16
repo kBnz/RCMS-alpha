@@ -1,0 +1,178 @@
+{module name="jobs_detail"}
+<h2 class="module_title"><span>{$jobsData.job_nm}</span></h2>
+<div class="module_contents">
+  <table class="list">
+  {if $preview || $jobsData.jobs_img_exists}
+    <tr>
+      <td colspan="2">
+  {if $preview}
+      {if !$hidden.del_photo}
+            <img src="{$hidden.photo_url}">
+      {/if}
+  {elseif $jobsData.jobs_img_exists}
+      <img src="{$smarty.const.JOBS_SAVE_URL}/{$jobsData.jobs_id}{$jobsData.image_type}">
+  {/if}
+      </td>
+    </tr>
+{/if}
+{if $jobsData.explanation}
+    <tr>
+      <th>{'/label/job_description'|translate}</th>{*仕事内容*}
+      <td>{$jobsData.explanation|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.category_name}
+    <tr>
+      <th>{'/label/category'|translate}</th>
+      <td>{$jobsData.category_name|nl2br}</td>
+    </tr>
+{/if}
+
+{if $jobsData.lowest_age || $jobsData.highest_age}
+    <tr>
+      <th>{'/label/age'|translate}</th>{*年齢*}
+      <td>{$jobsData.lowest_age}{'/label/years_old'|translate}{*歳*}～ {$jobsData.highest_age}{'/label/years_old'|translate}{*歳*}</td>
+    </tr>
+{/if}
+{if $jobsData.edu_background}
+    <tr>
+      <th>{'/label/education_record'|translate}</th>{*学歴*}
+      <td>{$jobsData.edu_background|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.welcomed_skills}
+    <tr>
+      <th>{'/modules/jobs/label/welcomed_skills'|translate}</th>{*歓迎される経験、スキル、資格*}
+      <td>{$jobsData.welcomed_skills|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.indispensable_skills}
+    <tr>
+      <th>{'/modules/jobs/label/qualifications'|translate}</th>{*必須の経験、スキル、資格*}
+      <td>{$jobsData.indispensable_skills|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.area || $jobsData.location}
+    <tr>
+      <th>{'/label/work_place'|translate}</th>{*勤務地*}
+          <td>
+      {if $jobsData.location ne ''}
+          {$jobsData.location|nl2br}
+      {else}
+          {$jobsData.area}
+      {/if}
+
+          </td>
+        </tr>
+{/if}
+{if $jobsData.from_time || $jobsData.to_time || $jobsData.time_note}
+    <tr>
+      <th>{'/label/work_time'|translate}</th>{*勤務時間*}
+      <td>{$jobsData.from_time}{if $jobsData.from_time || $jobsData.to_time} ～ {/if}{$jobsData.to_time}<br />
+  {$jobsData.time_note|nl2br}
+  </td>
+    </tr>
+{/if}
+{if $jobsData.salary || $jobsData.salary_note}
+    <tr>
+      <th>{'/label/salary'|translate}</th>{*給与*}
+      <td>{$jobsData.salary}{if $jobsData.salary}<br />{/if}
+          {$jobsData.salary_note|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.bonus}
+    <tr>
+      <th>{'/label/bonus'|translate}</th>{*昇給、賞与*}
+      <td>{$jobsData.bonus|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.allowance}
+    <tr>
+      <th>{'/label/allowance'|translate}</th>{*諸手当*}
+      <td>{$jobsData.allowance}</td>
+    </tr>
+{/if}
+{if $jobsData.holiday}
+    <tr>
+      <th>{'/label/holiday'|translate}</th>{*休暇*}
+      <td>{$jobsData.holiday}</td>
+    </tr>
+{/if}
+{if $jobsData.welfare}
+    <tr>
+      <th>{'/modules/jobs/label/benefit'|translate}</th>{*待遇、福利厚生*}
+      <td>{$jobsData.welfare|nl2br}</td>
+    </tr>
+{/if}
+{if $jobsData.edu_system}
+    <tr>
+      <th>{'/modules/jobs/label/training_program'|translate}</th>{*教育制度*}
+      <td>{$jobsData.edu_system|nl2br}</td>
+    </tr>
+{/if}
+  {if $jobsData.ext_title_01}
+  <tr>
+    <th>{$jobsData.ext_title_01}</th>
+    <td>{$jobsData.ext_txt_01|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_02}
+  <tr>
+    <th>{$jobsData.ext_title_02}</th>
+    <td>{$jobsData.ext_txt_02|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_03}
+  <tr>
+    <th>{$jobsData.ext_title_03}</th>
+    <td>{$jobsData.ext_txt_03|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_04}
+  <tr>
+    <th>{$jobsData.ext_title_04}</th>
+    <td>{$jobsData.ext_txt_04|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_05}
+  <tr>
+    <th>{$jobsData.ext_title_05}</th>
+    <td>{$jobsData.ext_txt_05|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_06}
+  <tr>
+    <th>{$jobsData.ext_title_06}</th>
+    <td>{$jobsData.ext_txt_06|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_07}
+  <tr>
+    <th>{$jobsData.ext_title_07}</th>
+    <td>{$jobsData.ext_txt_07|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_08}
+  <tr>
+    <th>{$jobsData.ext_title_08}</th>
+    <td>{$jobsData.ext_txt_08|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_09}
+  <tr>
+    <th>{$jobsData.ext_title_09}</th>
+    <td>{$jobsData.ext_txt_09|nl2br}</td>
+  </tr>
+  {/if}
+  {if $jobsData.ext_title_10}
+  <tr>
+    <th>{$jobsData.ext_title_10}</th>
+    <td>{$jobsData.ext_txt_10|nl2br}</td>
+  </tr>
+  {/if}  
+</table>
+<!--br style="clear:both;"-->
+
+<div class="relation_link"><a href="/jobs_list/" class="small_text">{'/modules/jobs/label/jobs_list'|translate}{* 採用情報一覧 *}</a></div>
+</div>
+{/module}

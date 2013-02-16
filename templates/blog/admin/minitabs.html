@@ -1,0 +1,20 @@
+
+<ul class="minitabs">
+  {if $header.blog_id}
+    {if $auth.blog_admin.select || $header.member_id eq $smarty.session.member_id}
+    <li id="minitab_blog_edit"><a href="/management/blog/blog_edit/blog_id={$header.blog_id}" {if $page_type eq 'blog_edit' || $page_type eq 'blog_member_edit' || $page_type eq 'blog_owner_edit'}class="active"{/if}>{'/modules/blog/label/blog_settings'|translate}</a></li>
+    {/if}
+    <li id="minitab_blog_item_list"><a href="/management/blog/blog_item_list/blog_id={$header.blog_id}" {if $page_type eq 'blog_item_list'}class="active"{/if}>{'/modules/blog/label/blog_entry_list'|translate}</a></li>
+    <li id="minitab_blog_item_edit"><a href="/management/blog/blog_item_edit/blog_id={$header.blog_id}{if $blog_item_id}&blog_item_id={$blog_item_id}{/if}" {if $page_type eq 'blog_item_edit' ||  $page_type eq 'blog_item_delete' ||  $page_type eq 'blog_history'}class="active"{/if}>{'/modules/blog/label/blog_entry_edit'|translate}</a></li>
+    <li id="minitab_blog_comment_list"><a href="/management/blog/blog_comment_list/blog_id={$header.blog_id}" {if $page_type eq 'blog_comment_list'}class="active"{/if}>{'/modules/blog/label/blog_comment_list'|translate}</a></li>
+    <li id="minitab_blog_tb_list"><a href="/management/blog/blog_tb_list/blog_id={$header.blog_id}" {if $page_type eq 'blog_tb_list'}class="active"{/if}>{'/modules/blog/label/blog_trackback_list'|translate}</a></li>
+  {else}
+    {* V‹Kì¬‚Ì‚Æ‚«‚ÍƒŠƒ“ƒN‚ğ–³Œø‚É‚·‚é *}
+    <li id="minitab_blog_edit"><a href="/management/blog/blog_edit/" {if $page_type eq 'blog_edit'}class="active"{/if}>{'/modules/blog/label/blog_settings'|translate}</a></li>
+    <li id="minitab_blog_item_list"><span>{'/modules/blog/label/blog_list'|translate}</span></li>
+    <li id="minitab_blog_item_edit"><span>{'/modules/blog/label/blog_entry_edit'|translate}</span></li>
+    <li id="minitab_blog_comment_list"><span>{'/modules/blog/label/blog_comment_list'|translate}</span></li>
+    <li id="minitab_blog_tb_list"><span>{'/modules/blog/label/blog_trackback_list'|translate}</span></li>
+  {/if}
+</ul>
+<div class="clear"></div>

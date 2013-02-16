@@ -1,0 +1,113 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function turnBack() {
+    // ファイルが選択されているかチェック
+    var cb = document.fileserver_gomibako_list["file_id[]"];
+    if (cb.length) {
+        for(var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                b = true;
+                break;
+            }
+        }
+    }
+    else {
+        b = cb.checked;
+    }
+    if (!b) {
+        alert('ファイルを選択してください。');
+        return;
+    }
+
+    document.fileserver_gomibako_list.MODE.value="TURNBACK";
+    document.fileserver_gomibako_list.submit();
+}
+
+function del() {
+    // ファイルが選択されているかチェック
+    var cb = document.fileserver_gomibako_list["file_id[]"];
+    if (cb.length) {
+        for(var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                b = true;
+                break;
+            }
+        }
+    }
+    else {
+        b = cb.checked;
+    }
+    if (!b) {
+        alert('ファイルを選択してください。');
+        return;
+    }
+    var msg = '削除するとファイルを元に戻すことはできなくなります。\n削除してよろしいですか？';
+    if (confirm(msg)) {
+        document.fileserver_gomibako_list.MODE.value="DEL";
+        document.fileserver_gomibako_list.submit();
+    }
+}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>ゴミ箱</h2>
+<ul>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/fileserver/fileserver_list/">ファイル管理</a>
+<a href="/management/fileserver/fileserver_gomibako_list/">ゴミ箱</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div id="fileserver_gomibako_list" class="list_main">
+  <form name="fileserver_gomibako_list" action="/management/fileserver/fileserver_gomibako_list/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+{foreach from=$files item=item name=files_nm}
+  {if $smarty.foreach.files_nm.first}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'file_id[]')" /></th>
+        <th>タイトル</th>
+        <th>ファイル名</th>
+        <th>元のフォルダ</th>
+      </tr>
+  {/if}
+    <tr>
+      <td><input type="checkbox" name="file_id[]" value="{$item.file_id}" /></td>
+      <td>{$item.title}</td>
+      <td>{$item.name}</td>
+      <td>
+        {assign var=parent_id value=$item.folder_id}
+        {foreach from=$folders.$parent_id.parents name=parents_list_nm item=folder_id}{$folders.$folder_id.name}<span style="font-weight:bold">＞</span>{/foreach}{$folders.$parent_id.name}
+        {if $folders.$parent_id.folders_dflg}<span style="color:red">(元のフォルダは削除されています)</span>{/if}
+      </td>
+    </tr>
+  {if $smarty.foreach.files_nm.last}
+    </table>
+    チェックしたファイルを
+      <input type="button" onclick="turnBack();" value="元に戻す" />
+      <input type="button" onclick="del()" value="完全削除する" />
+      <p style="margin-top:10px;" class="hint">元のフォルダが削除されている場合、「元に戻す」操作を行うと「ルートフォルダ」へ保存されます。</p>
+  {/if}
+{foreachelse}
+  <p>ゴミ箱は空です。</p>
+{/foreach}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

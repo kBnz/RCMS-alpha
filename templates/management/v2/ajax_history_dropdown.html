@@ -1,0 +1,122 @@
+<button type="button" id="history_selector" class="rcms_ui_select"><span class="icon-time"></span></button>
+<ul>
+    <li id="ajax_history_container">
+    </li>
+</ul>
+{literal}
+<script type="text/javascript">
+
+(function() {
+
+    // 変数の定義
+    var id = "{/literal}{$id}{literal}";
+    var pk = "{/literal}{$pk}{literal}";
+    var mt = "{/literal}{$mt}{literal}";
+    var data_history_id = "{/literal}{$smarty.request.data_history_id}{literal}";
+
+    $(document).ready(function() {
+
+        var data = {};
+        data["module"] = mt;
+        data[pk]       = id;
+
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/menu/api_history/",
+            data     : data,
+            dataType : "json",
+            success  : createHistoryTable
+        });
+    });
+    
+    /**
+    * テーブルの生成
+    */
+    function createHistoryTable(response){
+
+        // JSONをパース
+        if(typeof response === "object"){
+            var results = response;
+        }else{
+            var results = $.parseJSON(response);
+        }
+
+        // テンプレートエンジンに渡す値を準備
+        var data = {};
+        data["id"] = id;
+        data["pk"] = pk;
+        data["mt"] = mt;
+        data["data"] = results;
+        
+        $.each(data.data,function(){
+            // バージョン番号を翻訳
+            this.version_no = translateVersionNo(this.version_no);
+        });
+
+        // テーブルの表示
+        var table = $("#rcms_ui_ajax_history_dropdown_tmpl").tmpl(data);
+        $("#ajax_history_container").html(table);
+        
+        // 見出しに現在のバージョンを表示
+        var version = ( data_history_id > 0) ? findCurrentVersionNo(data_history_id,data.data) : "{/literal}{'/label/latest'|translate}{*最新*}{literal}";
+        $("#history_selector").append(version);
+
+    }
+    
+    /**
+    * バージョン番号を翻訳する
+    */
+    function translateVersionNo(i){
+        var baseStr = "{/literal}{'/label/version_no'|translate}{*第{0}版*}{literal}";
+        var result  = baseStr.replace("{0}", i);
+        return result;
+    }
+    
+    /**
+    * 現在のバージョン番号を検索
+    */
+    function findCurrentVersionNo(id,data){
+        var result = "";
+        if( id > 0 && data){
+            $.each(data,function(){
+                if(this.data_history_id == id){
+                    result = this.version_no;
+                    return false;
+                }
+            });
+        }
+        return (result) ?  result : "{/literal}{'/label/update_history'|translate}{*更新履歴*}{literal}";
+    }
+})(jQuery);
+
+</script>
+
+<!-- テンプレートの定義   rcms_ui_ajax_selector_tmpl-->
+<script id="rcms_ui_ajax_history_dropdown_tmpl" type="text/x-jquery-tmpl">
+    <table>
+        <thead>
+            <tr>
+                <th class="version_no">{/literal}{'/label/version'|translate}{*版*}{literal}</th>
+                <th class="change_ymdhi">{/literal}{'/label/update_time'|translate}{*更新日付*}{literal}</th>
+                <th class="admin_nm">{/literal}{'/label/updated_by'|translate}{*更新者*}{literal}</th>
+                {/literal}{if false}{literal}<th>{/literal}{'/label/status_katakana'|translate}{*ステータス*}{literal}</th>{/literal}{/if}{literal}
+                <th class="comment">{/literal}{'/label/comments'|translate}{*コメント*}{literal}</th>
+                {/literal}{if false}{literal}<th>{/literal}{'/label/content'|translate}{*内容*}{literal}</th>{/literal}{/if}{literal}
+            </tr>
+        </thead>
+        <tbody>
+            {{each(i,data) data}}
+            <tr class="rcms_anchor" data-href="${pk}=${id}&data_history_id=${data.data_history_id}&{/literal}{if $smarty.request.iframe_mode == 1}iframe_mode=1{elseif $smarty.request.popup_mode == 1}popup_mode=1{/if}{literal}" title="${data.update_comment}">
+                <td class="version_no">${data.version_no}</td>    <!--版-->
+                <td class="change_ymdhi">${data.change_ymdhi}</td>  <!--更新日付-->
+                <td class="admin_nm">${data.admin_nm}</td>      <!--更新者-->
+                {/literal}{if false}{literal}<td>${data.version_no}</td>    <!--ステータス-->{/literal}{/if}{literal}
+                <td class="comment">${data.update_comment}</td><!--コメント-->
+                {/literal}{if false}{literal}<td>${data.version_no}</td>    <!--内容-->{/literal}{/if}{literal}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</script>
+
+{/literal}

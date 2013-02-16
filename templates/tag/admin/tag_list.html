@@ -1,0 +1,96 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/tag/label/tag_list'|translate}</h2>
+<ul>
+{if $auth.tag.insert}
+<li class="add"><a href="/management/tag/tag_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/tag/tag_list/">{'/modules/tag'|translate}</a>
+{'/modules/tag/label/tag_list'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="tag/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="POST" action="/management/tag/tag_list/">
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="MODE" type="hidden" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.tag.delete}
+          <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'tag_id[]');" /></th>
+        {/if}
+        <th>ID</th>
+        <th>{'/label/category'|translate}</th>
+        <th>{'/label/title'|translate}</th>
+        <th>{'/modules/tag/label/open_contents_cnt'|translate}</th>
+        <th>{'/modules/tag/label/all_contents_cnt'|translate}</th>
+        <th>{'/label/last_updated_time'|translate}</th>
+      </tr>
+
+      {foreach item=row from=$tag_list}
+        {assign var=tag_id value=$row.tag_id}
+        <tr>
+        {if $auth.tag.delete}
+          <td>
+            <input type="checkbox" name="tag_id[]" value="{$tag_id}" {if !$rauth->canDelete("/tag/$tag_id")}disabled="disabled"{/if} />
+          </td>
+        {/if}
+          <td>{$tag_id}</td>
+          <td>{if $row.tag_category_id}{$row.tag_category_nm}{else}{'/label/unclassification'|translate}{/if}</td>
+          <td>
+            <a href="/management/tag/tag_edit/tag_id={$tag_id}">{$row.tag_nm|escape}</a>
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$tag_id] link="/management/tag/tag_edit/tag_id=$tag_id"}
+          </td>
+          <td>{$row.open_contents_cnt|number_format}</td>
+          <td>{$row.all_contents_cnt|number_format}</td>
+          <td>{$row.update_ymdhi|pg_dateformat}</td>
+        </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.tag.delete}
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+    {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

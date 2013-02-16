@@ -1,0 +1,271 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{headblock}
+{literal}
+<style type="text/css">
+td.usepage a {
+    font-size: 0.8em;
+    margin-right: 15px; 
+    color: green;
+}
+</style>
+{/literal}
+{/headblock}
+<script type="text/javascript">
+<!--
+{literal}
+
+function secure_login_on(chk) {
+    var list = document.getElementsByTagName('input');
+    for (var i = 0 ; i < list.length; i++) {
+        if (list[i].id.match(/secure_level_[0-9]+/)) {
+                list[i].disabled = chk;
+        }
+    }
+}
+{/literal}
+-->
+</script>
+<div class="list_right_bt">
+    <h2>{'/modules/staticcontents/label/staticcontents_edit'|translate}</h2>{*自由HTML編集*}
+    <ul>
+        {rcms_auth target="insert:/staticcontents/item/"}
+        <li class="add">
+            <a href="/management/staticcontents/staticcontents_edit/">
+                <span>{'/modules/staticcontents/label/add_staticcontents'|translate}{*自由HTML追加*}</span>
+            </a>
+        </li>
+        {/rcms_auth}
+        {if $latestRow.static_id}
+            <li class="normal">
+                <a href="/management/staticcontents/staticcontents_history/static_id={$static_id}&_doc_lang={$docmeta.lang}">
+                    <span>{'/label/update_history'|translate}</span>
+                </a>
+            </li>
+        {/if}
+    </ul>
+</div>
+
+{pankuzu}
+    <a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+    <a href="/management/staticcontents/staticcontents_list/">{$module_nm}</a>
+    <a href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents/label/staticcontents_list'|translate}</a>
+    {'/modules/staticcontents/label/staticcontents_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 自由HTML >>    自由HTML一覧 >> 自由HTML編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+    {rcms_include file="staticcontents/admin/minitabs.html" page_type=$ct}
+    <div class="clear"></div>
+
+    <h3 class="title">{if $static_id}{$formData.subject|escape}{else}{'/label/create_new'|translate}{/if}</h3>
+
+    <ul class="tabnavi" style="width:100%;">
+        <li id="here" class="regist_000">
+            <a href="javascript:void(0)" onclick="tabnaviCtl('blk_editor',this);return false;" id="a_editor">
+                <div>HTML {'/label/edit'|translate}</div>
+            </a>
+        </li>
+        <li class="regist_000">
+            <a href="javascript:void(0)" onclick="tabnaviCtl('blk_secure',this);return false;" id="a_secure">
+                <div>{'/label/view_edit_limit'|translate}{*閲覧・編集制限*}</div>
+            </a>
+        </li>
+    </ul>
+
+    <div class="list_main">
+        {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/staticcontents/staticcontents_edit/static_id=$static_id"}
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+    
+        <form action="/management/staticcontents/staticcontents_edit/" method="post" name="static_edit" id="static_edit">
+            <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+            <input name="MODE" type="hidden" />
+            <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+            {if $static_id}
+                <input name="static_id" type="hidden" value="{$static_id}" />
+            {/if}
+            {if $latestRow.static_id}
+                {lang_selector meta=$docmeta link="/management/staticcontents/staticcontents_edit/static_id=$static_id"}
+            {/if}     
+            <div id="blk_editor" style="position:relative; display:block;">
+                <table width="100%">
+                    <tr>
+                        <th>{'/label/title'|translate}</th>{*タイトル*}
+                        <td><input style="width:400px;" name="subject" type="text" value="{$formData.subject|escape}" /></td>
+                    </tr>
+                    <tr>
+                        <th>{'/label/category'|translate}</th>{*カテゴリ*}
+                        <td>
+                            {if $docmeta.is_primary}
+                                <select name="static_category_id">{html_options options=$arrCategoryId selected=$formData.static_category_id}</select>
+                            {else}
+                                {$arrCategoryId[$latestRow.static_category_id]}
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{'/label/display_settings'|translate}</th>{*表示設定*}
+                        <td>
+                            {if $docmeta.is_primary}
+                                <input type="checkbox" name="design_flg" value="1" {if $formData.design_flg}checked="checked"{/if} />
+                                {'/modules/staticcontents/lable/use_design'|translate}{*サイトのデザインを引き継ぐ*}<br>
+                                <input type="checkbox" name="pc_flg" value="1" {if $formData.pc_flg}checked="checked"{/if} />
+                                {'/modules/staticcontents/lable/use_on_pc'|translate}{*PC版で使用する*}
+                                <input type="checkbox" name="mobile_flg" value="1" {if $formData.mobile_flg}checked="checked"{/if} />
+                                {'/modules/staticcontents/lable/use_on_mobile'|translate}{*携帯版で使用*}
+                                <input type="checkbox" name="smartphone_flg" value="1" {if $formData.smartphone_flg}checked="checked"{/if} />
+                                {'/modules/staticcontents/lable/use_on_smartphone'|translate}{*スマートフォン版で使用*}
+                                {if $module_installed.social}
+                                    <input type="checkbox" name="social_flg" value="1" {if $formData.social_flg}checked="checked"{/if} />
+                                    {'/modules/staticcontents/lable/use_on_social'|translate}{*Facebook版で使用*}
+                                {/if}
+                            {else}
+                                {if $latestRow.design_flg == 1}{'/modules/staticcontents/lable/use_on_design'|translate}{*サイトのデザインを引き継ぐ*}{/if}
+                                {if $latestRow.pc_flg == 1}{'/modules/staticcontents/lable/use_on_pc'|translate}{*PC版で使用する*}{/if}
+                                {if $latestRow.mobile_flg == 1}{'/modules/staticcontents/lable/use_on_mobile'|translate}{*携帯版で使用*}{/if}
+                                {if $latestRow.smartphone_flg == 1}{'/modules/staticcontents/lable/use_on_smartphone'|translate}{*スマートフォン版で使用*}{/if}
+                                {if $latestRow.social_flg == 1}{'/modules/staticcontents/lable/use_on_social'|translate}{*Facebook版で使用*}{/if}
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Smarty</th>
+                        <td>
+                            {if $docmeta.is_primary}
+                                <select name="smarty_flg" onChange = "this.form.MODE.value='SMARTY_FLG_ON';this.form.submit();">
+                                    {html_options options=$arrStaticContentsSmartyOptions selected=$formData.smarty_flg}
+                                </select>
+                            {else}
+                                {$arrStaticContentsSmartyOptions[$latestRow.smarty_flg]}
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{'/label/target_page'|translate}</th>{*使用ページ*}
+                        <td class="usepage">
+                            {foreach from=$formData.use_page item=pageRow}
+                                <a href="{if $pageRow.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $pageRow.page_sysnm ne 'top'}{$pageRow.page_sysnm}/{/if}" target="_blank">{$pageRow.page_nm|escape}</a>
+                            {foreachelse}
+                                {'/msg/no_page_to_use_this_content'|translate}{*使用しているページはありません*}
+                            {/foreach}
+                        </td>
+                    </tr>
+                </table>
+                {rcms_include file="common/editor_info.html"}
+        
+                {if $formData.smarty_flg}
+                    <div class="not_list_main" style="width:100%;background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+                        <textarea name="contents" cols="90" rows="30">{$formData.contents|escape}</textarea>
+                    </div>
+                {else}
+                    <div class="not_list_main" style="width:100%;background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+                        <div class="wysiwyg_area">{$sw_html}</div>
+                    </div>
+                {/if}
+                <div class="clear"></div>
+        
+                {if $docmeta.is_primary}
+                    {rcms_include file="management/relation_edit.html"}
+                    <!--公開設定-->
+                    {rcms_include file="management/open_date_box.html" id=$static_id data=$formData}
+                {else}
+                    {rcms_include file="management/lang_open_date_box.html" id=$static_id data=$formData}
+                {/if}
+            </div>
+    
+            {if $docmeta.is_primary}{* $docmeta.is_primary from *}
+                <div id="blk_secure" style="position:relative; display:none;">
+                    <div class="list_main">
+                        <table width="100%">
+                            <tr>
+                                <th width="150">{'/label/viewing_limit'|translate}</th>{*閲覧制限*}
+                                <td>
+                                    <input type="radio" name="secure_flg" id="secure_flg_off" value="off" onclick="display('secure_group_list', 'none');" {if $formData.secure_flg != 'on'}checked="checked"{/if}/>
+                                    <label for="secure_flg_off">{'/label/unlimited'|translate}</label>{*制限無し*}
+                                    <input type="radio" name="secure_flg" id="secure_flg_on" value="on" onclick="display('secure_group_list', '');" {if $formData.secure_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" />
+                                    <label for="secure_flg_on">{'/label/limited'|translate}</label>{*制限有り*}
+                                    <div id="secure_group_list" style="margin: 10px 0 0 10px; {if $formData.secure_flg != 'on'}display:none;{/if}">
+                                        <p class="hint">
+                                            {'/msg/select_group_for_view'|translate}
+                                        </p>{*閲覧を許可するユーザ・グループを選択してください。(複数選択できます)*}
+                                        <ul class="secure_level_list">
+                                            <li>
+                                                <input type="checkbox" name="secure_level[]" value="N" id="secure_level_N" {if 'N'|in_array:$formData.secure_level}checked="checked"{/if} />
+                                                <label for="secure_level_N">{'/label/all_notlogin_members'|translate}</label>
+                                            </li>{*未ログインメンバー*}
+                                            <li>
+                                                <input type="checkbox" name="secure_level[]" value="A" id="secure_level_A" {if 'A'|in_array:$formData.secure_level}checked="checked"{/if} onclick="secure_login_on(this.checked);" />
+                                                <label for="secure_level_A">{'/label/all_login_members'|translate}{*全てのログインメンバー*}</label>
+                                            </li>
+                                            {foreach from=$arrAdmin key=key item=row name=secure_level_list}
+                                                {if $smarty.foreach.secure_level_list.first}<ul id="secure_level_groups">{/if}
+                                                <li>
+                                                    <input type="checkbox" name="secure_level[]" value="{$key}" id="secure_level_{$key}" {if $key|in_array:$formData.secure_level}checked="checked"{/if} {if 'A'|in_array:$formData.secure_level}disabled="disabled"{/if}/>
+                                                    <label for="secure_level_{$key}">{$row|escape}</label>
+                                                </li>
+                                                {if $smarty.foreach.secure_level_list.last}</ul>{/if}
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {if $auth.staticcontents_admin.update}
+                            <tr>
+                                <th>{'/label/editing_limit'|translate}</th>{*編集制限*}
+                                <td>
+                                    <input type="radio" name="editable_flg" id="editable_flg_off" value="off" onclick="display('editable_group_list', 'none');" {if $formData.editable_flg != 'on'}checked="checked"{/if}/>
+                                    <label for="editable_flg_off">{'/label/unlimited'|translate}</label>{*制限無し*}
+                                    <input type="radio" name="editable_flg" id="editable_flg_on" value="on" onclick="display('editable_group_list', '');" {if $formData.editable_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" />
+                                    <label for="editable_flg_on">{'/label/limited'|translate}</label>{*制限有り*}
+                                    <div id="editable_group_list" style="margin: 10px 0 0 10px; {if $formData.editable_flg != 'on'}display:none;{/if}">
+                                        <p class="hint">
+                                            {'/modules/staticcontent/msg/select_group_editing_this_staticcontent'|translate}
+                                        </p>{*この自由HTMLの編集を許可するグループを選択してください。<br />グループは複数選択できます。*}
+                                        <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">
+                                            {html_options options=$arrAdmin selected=$formData.editable_group}
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
+                    </div>
+                </div>
+            {/if}{* $docmeta.is_primary to *}
+    
+            {* 承認ワークフロー選択 *}
+            {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/staticcontents/item/$static_id", $docmeta.lang) docmeta=$docmeta link="/management/staticcontents/staticcontents_edit/static_id=$static_id"}
+            
+            {editActionBox docmeta=$docmeta}{/editActionBox}
+            
+            {rcms_include file="management/update_comment.html" comment=$formData.update_comment last_comment=$formData.last_update_comment}
+    
+        </form>
+    </div>
+</div>
+
+{literal}
+<script type="text/javascript">
+<!--
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_editor"; //初期表示ブロック
+var a_obj = document.getElementById("a_editor"); //カレント表示タブ(初期)
+function tabnaviCtl(nm, anchorObj){
+    if(blk_name != nm){
+        document.getElementById(blk_name).style.display = "none";
+        blk_name = nm;
+        document.getElementById(nm).style.display = "block";
+        a_obj.style.backgroundPosition = "center top";
+        a_obj = anchorObj;
+        anchorObj.style.backgroundPosition = "center bottom";
+    }
+}
+
+// -->
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

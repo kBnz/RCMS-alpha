@@ -1,0 +1,15 @@
+{rcms_include file="management/mobile/header.html"}
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+>><a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}{* ブログ一覧 *}</a>
+
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'modules/blog/label/blog_entry_delete'|translate}記事削除</h2>
+<hr class="for_mng"/>
+<br/>
+{'/msg/deleted'|translate}{* 削除しました。 *}
+<br/>
+  <form action="/management/blog/blog_item_list/blog_id={$blog_id}" method="POST">
+    <input type="submit" value="{'/modules/blog/label/blog_entry_list'|translate}{* 記事一覧 *}" />
+  </form>
+{rcms_include file="management/mobile/footer.html"}

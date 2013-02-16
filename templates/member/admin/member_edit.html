@@ -1,0 +1,770 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+<script type="text/javascript" src="/js/jquery/jquery-ui-1.7.2.min.js"></script>
+<script src="/js/jqueryAlerts/jquery.alerts.js" type="text/javascript"></script>
+<link href="/js/jqueryAlerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen,print" />
+
+{literal}
+<script type="text/javascript">
+<!--
+// カレンダー
+Event.observe(window, 'load', function() {
+        DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'login_ok_ymd', btnId: 'login_ok_ymd-btn', boxId: 'login_ok_ymd-pop', tableId: 'login_ok_ymd-table'});
+});
+
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value = "delete";
+        f.submit();
+    }
+}
+
+function confirmUpdate() {
+
+    var group_arr = j$("#h_selected").val() || [];
+    var member_id = j$("#member_id").val() || '';
+
+    var queryString = '?member_id='+member_id;
+    jQuery.each(group_arr, function() {
+        queryString += '&group_id[]=' + this;
+    });
+
+    j$("#MODE").val('update');
+    var a = new Ajax.Request( 
+        "/direct/member/confirm_blog_create/", 
+        { 
+            "method": "post", 
+            "parameters": queryString, 
+            onComplete: function(request) { 
+                eval("var json = " + request.responseText);
+                if (json.confirm==true){
+                    if (confirm('指定のグループには、ブログの自動作成設定がされています。このメンバーがオーナーのブログは、既に削除されていますが、再度、新規に作成しますか？')) {
+                        j$("#blog_auto_create").val(1);
+                    }else{
+                        j$("#blog_auto_create").val(0);
+                    }
+                }
+                j$("#member_edit").submit();
+            } 
+        } 
+    );
+
+    return true;
+}
+
+/*
+ * 現在の権限表示
+ */
+function viewAuth(id) {
+    var d = new Date();
+    window.open('/management/member/member_authorized_list/member_id=' + id + '&t=' + d.getTime(),'','width=600,height=600,scrollbars=1,resizable=yes');
+}
+
+// ここからグループ選択用のjs
+function refreshGroupViewer() {
+    var b = document.getElementById('group_viewer_list');
+    // 一旦全部消す
+    while (b.hasChildNodes()) {
+        b.removeChild(b.firstChild);
+    }
+    // リストを作る
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        var item = document.createElement("li");
+        item.appendChild(document.createTextNode(group_list[selected_group_id[i]]));
+        b.appendChild(item);
+    }
+}
+function refreshGroupEditor() {
+    var b = document.getElementById('group_editor_list');
+    var h = document.getElementById('h_selected');
+    while (b.hasChildNodes()) {
+        b.removeChild(b.firstChild);
+    }
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        var item = document.createElement("li");
+        item.id = "g_sel" + selected_group_id[i];
+        item.appendChild(document.createTextNode(group_list[selected_group_id[i]]));
+        if (navigator.userAgent.indexOf("MSIE") != -1) {
+            item.setAttribute("onclick", new Function("switchGroup(" + selected_group_id[i] + ")"));
+        }
+        else {
+            item.setAttribute("onclick", "switchGroup(" + selected_group_id[i] + ")");
+        }
+
+
+        var btn = document.createElement("a");
+        btn.href = "javascript:void(0);";
+        btn.style.paddingLeft = "15px";
+        btn.appendChild(document.createTextNode("{/literal}{'/label/delete'|translate}{*削除*}{literal}"));
+        if (jQuery.browser.msie && parseInt(jQuery.browser.version) < 8) {
+            btn.setAttribute("onclick", new Function("delGroup(" + selected_group_id[i] + ")"));
+        }
+        else {
+            btn.setAttribute("onclick", "delGroup(" + selected_group_id[i] + ")");
+        }
+        item.appendChild(btn);
+        b.appendChild(item);
+    }
+    for (var i = h.options.length - 1 ; i >= 0 ; i--) {
+        h.options[i].selected = false;
+        for (j in selected_group_id) {
+            if (h.options[i].value == selected_group_id[j]) {
+                h.options[i].selected = true;
+                break;
+            }
+        }
+    }
+}
+function groupEditCancel() {
+    selected_group_id = base_group_id.slice(0, base_group_id.length);
+    refreshGroupEditor();
+}
+function addGroup() {
+    var b = document.getElementById("group_editor_select");
+    var val = b.value;
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        if (selected_group_id[i] == val) {
+            return;
+        }
+    }
+    selected_group_id.push(val);
+    refreshGroupEditor();
+}
+function delGroup(id) {
+    var list = new Array();
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        if (selected_group_id[i] != id) {
+            list.push(selected_group_id[i]);
+        }
+    }
+    selected_group_id = list;
+    refreshGroupEditor();
+}
+
+function switchGroup(id) {
+    //alert(id);
+}
+// ここまでグループ選択用のjs
+
+// コメント行の追加
+function add_subdata_row(row_nm,next_row_nm) {
+    document.getElementById(row_nm).style.display = "block";
+    document.getElementById(row_nm+'_btn').style.display = "none";
+    if (next_row_nm != "") {
+        document.getElementById(next_row_nm+'_btn').style.display = "block";
+    }
+}
+
+function positionInput(){
+    window.open('/js/optionAssist.php?target=member_edit.position&type=position','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+
+-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+    <h2>{'/modules/member/label/member_edit'|translate}{*メンバー編集*}</h2>
+    <ul>
+        {if $auth.member.insert}
+        <li class="add"><a href="/management/member/member_edit/"><span>{'/modules/member/label/add_member'|translate}{*メンバー追加*}</span></a></li>
+        {/if}
+        <li class="normal"><a href="/management/member/member_history/member_id={$member_id}"><span>{'/label/update_history'|translate}{*更新履歴*}</span></a></li>
+        <li class="view"><a href="{$smarty.const.ROOT_URL}/member_detail/id={$member_id}" target="_blank"><span>{'/label/view_page'|translate}{*サイト確認*}</span></a></li>
+    </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/member/member_list/">{'/modules/member'|translate}</a>
+<a href="/management/member/member_list/">{'/modules/member/label/member_list'|translate}</a>
+{'/modules/member/label/member_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー管理 >> メンバー >> メンバー一覧 >> メンバー編集*}
+
+<p class="page_info">
+    <a href="/member_detail/id={$member_id}">{'/label/played_game_count'|translate}{*出場試合数*}:{if $entryGameCount}{$entryGameCount}{else}0{/if}{'/label/game'|translate}{*試合*}</a>　<a href="/member_detail/id={$member_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}</a>
+</p>
+
+<div class="clear"></div>
+
+<div class="main_contents member_edit">
+
+    {rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+    <span class="hint">{'/modules/member/msg/when_use_member_student_module'|translate}{*メンバー学生のモジュールを使用する場合は、所属グループに「現役」がないと表のページに表示されません。*}</span>
+
+    <ul class="sub_tab">
+        <li id="here"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_profile',this)" id="a_profile">{'/label/profile_info'|translate}{*プロフィール情報*}</a></li>
+        {if $extCols}
+        <li id="sub_tab_ext"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_extn',this)" id="a_extn">{'/label/extended'|translate}{*拡張*}</a></li>
+        {/if}
+        <li id="sub_tab_school"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_school',this)" id="a_school">{'/label/school_info'|translate}{*学校情報*}</a></li>
+        <li id="sub_tab_placework"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_placework',this)" id="a_placework">{'/label/work_info'|translate}{*勤務先情報*}</a></li>
+        <li id="sub_tab_comment"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_comment',this)" id="a_comment">{'/label/comments_info'|translate}{*コメント情報*}</a></li>
+        <li id="sub_tab_idinfo"><a href="javascript:void(0)" onclick="tabnaviCtl('blk_idinfo',this)" id="a_idinfo">{'/label/id_info'|translate}{*ID情報*}</a></li>
+        {if $auth.login_history.select}
+        <li id="sub_tab_login"><a href="javascript:void(0)" onClick="if(confirm('{'/modules/member/msg/forward_to_login_page'|translate}{*ログイン履歴ページへ移動します。変更された修正は保存されません。よろしいですか？*}')){ldelim}location.href='/management/login_history/login_history_list/s_member_id={$member_id}';return false;{rdelim}">{'/modules/member/label/login_history'|translate}{*ログイン履歴*}</a></li>
+        {/if}
+        {if $rauth->isSuper()}
+        <li id="sub_tab_subscription"><a href="javascript:void(0);" onClick="if(confirm('{'/modules/member/msg/forward_to_subscription_edit_page'|translate}{*更新受信設定ページへ移動します。変更された修正は保存されません。よろしいですか？*}')){ldelim}location.href='/management/menu/subscription_edit/member_id={$member_id}';return false;{rdelim}">{'/modules/menu/label/subscription_edit'|translate}{*更新受信設定*}</a></li>
+        {/if}
+    </ul>
+
+    <div class="clearFloat"><br></div>
+
+    <div class="list_main">
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+        {if $module_installed.memberrugby }  {/if}
+        <form enctype="multipart/form-data" action="/management/member/member_edit/" method="post" name="member_edit" id="member_edit">
+
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" id="MODE" value="" />
+            <input type="hidden" name="blog_auto_create" id="blog_auto_create" value="1" />{*ブログを同時に作成します*}
+            <input name="MAX_FILE_SIZE" type="hidden" value="31457280" />
+
+            {if $member_id != ""}
+            <input type="hidden" name="member_id" id="member_id" value="{$member_id}" />
+            {/if}
+
+            {*} {'/label/id_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*ID情報*}
+            <div id="blk_idinfo" style="position:relative; display:none;">
+                <table width="100%" id="table_id_info">
+                    <tr id="tr_email">
+                        <th id="th_email" width="25%">{'/label/email'|translate}</th>
+                        <td id="td_email" width="75%">
+                            <input type="text" name="email" value="{$formData.email}" size="30" maxlength="200" />
+                            <br />
+                            <span class="hint">{'/modules/member/msg/reminder_is_sent_to_this_address'|translate}{*ログインにも使用します。パスワードのリマインダーはこのアドレスに送信されます。*}</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_login_id">
+                        <th id="th_login_id" width="25%">{'/label/login_id'|translate}{*ログインID*}</th>
+                        <td id="td_login_id" width="75%">
+                            <input type="text" name="login_id" value="{$formData.login_id}" size="15" maxlength="200" autocomplete="off" />
+                            <br />
+                            <span class="hint">{'/modules/member/msg/explaination_for_login_id'|translate}{*emailを基本的にログインに使用しますが、メールアドレス以外をログインに使用したい場合はこちらに入力してください。*}</span>
+                            <br />
+                            <span class="hint">{'/modules/member/msg/alert_for_login_id'|translate}{*ログインID、email、一時更新権限のIDで重複はできません。*}</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_login_password">
+                        <th id="th_login_password">{'/label/login_password'|translate}{*ログインパスワード*}</th>
+                        <td id="td_login_password">
+                            {if $smarty.const.USE_HASHED_PASSWORD} 
+                            <p><input type="checkbox" name="change_password" id="change_password" value="1" {if $formData.change_password}checked{/if} /><label for="change_password">{'/label/change_password'|translate}</label></p>
+                            <p><label for="login_pwd">{'/label/new_password'|translate}:</label><input type="password" name="login_pwd" id="login_pwd" value="" autocomplete="off" /></p>
+                            {else}
+                            <input type="text" name="login_pwd" id="login_pwd" value="{$formData.login_pwd|escape}" /></p>
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr id="tr_openid">
+                        <th id="th_openid">OpenID</th>
+                        <td id="td_openid"><input type="text" name="openid" value="{$formData.openid}" /></td>
+                    </tr>
+                    <tr id="tr_permission_for_logind">
+                        <th id="th_permission_for_logind">{'/label/permission_for_login'|translate}{*ログインの許可*}</th>
+                        <td id="td_permission_for_logind">
+                            <input type="checkbox" name="login_ok_flg" value="1" {if $formData.login_ok_flg eq '1'}checked{/if} />{'/label/permit'|translate}{*許可する*}
+                            <span class="hint">{'/modules/member/label/either_email_or_login_id_or_login_password_is_required'|translate}{*許可をする場合には、emailまたはログインIDとログインパスワードが必須です*}</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_permission_for_login_expire">
+                        <th id="th_permission_for_login_expire">{'/label/permission_for_login_expire date'|translate}{*ログインIDの有効期限*}</th>
+                        <td id="td_permission_for_login_expire">
+                            <input type="text" id="login_ok_ymd" name="login_ok_ymd" value="{$formData.login_ok_ymd}" size="16" autocomplete="off" />
+                            <button type="button" id="login_ok_ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                            <div class="pop_calendar" id="login_ok_ymd-pop"></div>
+                            <span class="hint">{'/label/date_example'|translate}</span>{* 日付例 *}
+                        </td>
+                    </tr>
+                    {if $auth.group.select || $auth.group.update}
+                    <tr id="tr_belonging_group">
+                        <th id="th_belonging_group" valign="top">{'/label/belonging_group'|translate}{*所属グループ*}</th>
+                        <td id="td_belonging_group">
+                            {if !$auth.group.update}
+                            {* グループ権限なし *}
+
+                            <ul id="group_viewer_list">
+                            {foreach from=$baseGroupList item=item name=vbaseGroup}
+                                <li><img src="/images/management/check.gif" />{$groupAr[$item]}</li>
+                            {/foreach}
+                            </ul>
+
+                            {* グループ権限なし *}
+                            {else}
+                            {* グループ権限あり *}
+
+                            <div id="group_viewer">
+                                <ul id="group_viewer_list"></ul>
+                                <a style="margin-top:5px;" href="javascript:void(0);" onclick="refreshGroupEditor();display('group_viewer');display('group_editor');">&gt;&gt;{'/label/edit_btn'|translate}{*編集する*}</a>
+                            </div>
+                            <div id="group_editor" style="display:none">
+                                <div id="group_editor_main">
+                                    <ul id="group_editor_list"></ul>
+                                    <select id="group_editor_select">{html_options options=$groupAr}</select><input type="button" onclick="addGroup()" value="{'/label/add_btn'|translate}{*追加する*}" />
+                                    <br />
+                                    <input type="button" onclick="groupEditCancel();" value="{'/label/cancel_btn'|translate}{*キャンセルする*}" />
+                                </div>
+                                <a style="margin-top:5px;" href="javascript:void(0);" onclick="refreshGroupViewer();display('group_editor');display('group_viewer');">&gt;&gt;{'/label/close'|translate}{*閉じる*}</a>
+                                <select name="group_id[]" id="h_selected" multiple="multiple" style="display:none">{html_options options=$groupAr selected=$formData.group_id}</select>
+                            </div>
+
+                            {* //グループ権限あり *}
+                            {/if}
+
+                            <script type="text/javascript">
+                            <!--
+                            var selected_group_id = [{","|@join:$formData.group_id}];
+                            var base_group_id = [{","|@join:$baseGroupList}];
+                            var group_list = new Array();
+                            {foreach from=$groupAr item=item key=key}
+                            group_list[{$key}] = '{$item}';
+                            {/foreach}
+                            refreshGroupViewer();
+                            //-->
+                            </script>
+
+                            {if $member_id}
+                            <p style="margin-top:5px;"><a style="padding-left:20" href="javascript:void(0);" onclick="viewAuth('{$member_id}'); return false">&gt;&gt;{'/msg/display_current_authority'|translate}{*現在の権限を表示する*}</a></p>
+                            {/if}
+                            <p style="margin-top:5px;" class="hint">{'/msg/group_setting_is_available_after_login'|translate}{*所属グループの変更は次回のログインから有効になります*}</p>
+                        </td>
+                    </tr>
+                    {/if}
+                    {if $module_installed.magazine}
+                    <tr id="tr_email_send_ng_flg">
+                        <th id="th_email_send_ng_flg">{'/label/email_send_ng_flg'|translate}{*メルマガ拒否フラグ*}</th>
+                        <td id="td_email_send_ng_flg"><input type="checkbox" name="email_send_ng_flg" value="1" {if $formData.email_send_ng_flg}checked{/if}>{'/label/not_send'|translate}{*送信しない*}</td>
+                    </tr>
+                    {/if}
+                    <tr id="tr_bikou">
+                        <th id="th_bikou">{'/label/remarks'|translate}{*備考*}</th>
+                        <td id="td_bikou"><textarea rows="5" cols="40" name="bikou">{$formData.bikou|escape}</textarea></td>
+                    </tr>
+                    <tr id="tr_open_flg">
+                        <th id="th_open_flg">{'/label/status_katakana'|translate}{*ステータス*}</th>
+                        <td id="td_open_flg">
+                        {html_radios name="open_flg" options=$arrStatus selected=$formData.open_flg}
+                        </td>
+                    </tr>
+                </table>
+            </div><!--//blk_idinfo-->
+
+            {*} {'/label/profile_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*プロフィール情報*}
+            <div id="blk_profile" style="position:relative; display:block;">
+
+                <table width="100%" id="table_profile">
+                    <tr id="tr_photo_file">
+                        <th id="th_photo_file" width="25%">{'/label/image'|translate}{*画像*}　</th>
+                        <td id="td_photo_file">
+                            {if $formData.photo_url != ""}
+                            <img src="{$formData.photo_url}" style="border:solid #E1E1E1 10px;">
+                            {/if}
+                            {if $formData.photo_file != ""}
+                            <input type="hidden" name="photo_file" value="{$formData.photo_file}" />
+                            <input type="hidden" name="photo_s_file" value="{$formData.photo_s_file}" />
+                            {/if}
+                            {if $smarty.request.data_history_id}
+                            <input type="hidden" name="data_history_img[member_photo]" value="{$formData.photo_url}" />
+                            {/if}
+                            <input name="member_photo" type="file" />
+                            <input name="del_member_photo" type="checkbox" value="1" />{'/label/delete_image'|translate}{*画像削除*}<br>
+                            <span class="hint">{'/msg/maximum_image_size'|translate:30}{*アップロードできる最大サイズは30Mバイトまでです。*}</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_name">
+                        <th id="th_name" width="25%">{'/label/name'|translate}{*名前*}</th>
+                        <td id="td_name" width="75%">
+                            <input size="10" maxlength="50" autocomplete="off" id="name1" name="name1" type="text" value="{$formData.name1}" />
+                            <input size="10" maxlength="50" id="name2" name="name2" type="text" value="{$formData.name2}" style="margin-left:5px;" /><span class="required">{'/label/required'|translate}{*必須*}</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_namekana">
+                        <th id="th_namekana">{'/label/name_kana'|translate}{*名前かな*}</th>
+                        <td id="td_namekana">
+                        <input size="10" maxlength="50" id="namekana1" name="namekana1" type="text" value="{$formData.namekana1}" />
+                        <input size="10" maxlength="50" id="namekana2" name="namekana2" type="text" value="{$formData.namekana2}" style="margin-left:5px;" />
+                        </td>
+                    </tr>
+                    <tr id="tr_nameroma">
+                        <th id="th_nameroma">{'/label/english_name'|translate}{*英字名*}</th>
+                        <td id="td_nameroma">
+                            <input size="10" maxlength="100" id="nameroma1" name="nameroma1" type="text" value="{$formData.nameroma1}" />
+                            <input size="10" maxlength="100" id="nameroma2" name="nameroma2" type="text" value="{$formData.nameroma2}" style="margin-left:5px;" />
+                        </td>
+                    </tr>
+                    <tr id="tr_nickname">
+                        <th id="th_nickname">{'/label/nickname'|translate}{*ニックネーム*}</th>
+                        <td id="td_nickname">
+                            <input size="20" maxlength="100" id="nickname" name="nickname" type="text" value="{$formData.nickname}" /><br/>
+                            <span class="hint">{'/modules/member/msg/can_display_nickname_stead_of_name'|translate}{*ニックネームを入力すると、名前の代わりにニックネームが表示されるようになります。*}</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_birth">
+                        <th id="th_birth">{'/label/date_of_birth'|translate}{*生年月日*}</th>
+                        <td id="td_birth">
+                        <select name="birth[y]" style="width:60px">{html_options options=$arrYear selected=$formData.birth.y}</select>{'/label/year'|translate}{*年*}
+                        <select name="birth[m]" style="width:40px">{html_options options=$arrMonth selected=$formData.birth.m}</select>{'/label/month'|translate}{*月*}
+                        <select name="birth[d]" style="width:40px">{html_options options=$arrDate selected=$formData.birth.d}</select>{'/label/day'|translate}{*日*}
+                        </td>
+                    </tr>
+                    <tr id="tr_sex">
+                        <th id="th_sex">{'/label/sex'|translate}{*性別*}</th>
+                        <td id="td_sex">
+                            <input type="radio" name="sex" value="m" {if $formData.sex eq 'm'}checked{/if}>{'/label/man'|translate}{*男性*}
+                            <input type="radio" name="sex" value="f" {if $formData.sex eq 'f'}checked{/if}>{'/label/woman'|translate}{*女性*}
+                            <input type="radio" name="sex" value="" {if $formData.sex eq ''}checked{/if}>{'/label/no_select'|translate}{*選択なし*}
+                        </td>
+                    </tr>
+                    <tr id="tr_height">
+                        <th id="th_height">{'/modules/member/label/height'|translate}{*身長*}／{'/label/weight'|translate}{*体重*}</th>
+                        <td id="td_height">
+                            <input size="4" maxlength="3" id="height" name="height" type="text" value="{$formData.height}" onBlur="changeHankaku(this, 'number')" />cm／
+                            <input size="4" maxlength="3" id="weight" name="weight" type="text" value="{$formData.weight}" onBlur="changeHankaku(this, 'number')" />kg
+                            <span class="hint2">({'/label/halfwidth_number'|translate}{*半角数字*})</span>
+                        </td>
+                    </tr>
+                    <tr id="tr_address">
+                        <th id="th_address">{'/label/current_address'|translate}{*現住所*}</th>
+                        <td id="td_address">
+                            <p>{'/label/postcode'|translate}{*郵便番号*}:<span class="hint2">({'/label/halfwidth_number'|translate}{*半角数字*})</span><br /><input size="3" maxlength="3" id="zip_main" name="zip_main" type="text" value="{$formData.zip_main}" onBlur="changeHankaku(this, 'number')" />&nbsp;-&nbsp;<input size="4" maxlength="4" id="zip_sub" name="zip_sub" type="text" value="{$formData.zip_sub}" onBlur="changeHankaku(this, 'number')" /></p>
+                            <p>{'/label/prefecture'|translate}{*都道府県*}:<br /><select id="tdfk_cd" name="tdfk_cd">{html_options options=$arrTdfk selected=$formData.tdfk_cd}</select> {'/label/abroad'|translate}{*海外*}:<input size="10" maxlength="100" id="tdfk_99" name="tdfk_99" type="text" value="{$formData.tdfk_99}" /></p>
+                            <p>{'/label/address1'|translate}{*住所1*}:<br /><input size="40" maxlength="100" id="address1" name="address1" type="text" value="{$formData.address1}" /></p>
+                            <p>{'/label/address2'|translate}{*住所2*}:({'/msg/building_name_etc'|translate}{*建物名など*})<br /><input size="40" maxlength="100" id="address2" name="address2" type="text" value="{$formData.address2}" /></p>
+                            <p>{'/label/telephone'|translate}{*電話*}:<span class="hint2">({'/label/numeric_hyphen_000-0000-0000_style'|translate}{*半角数字ハイフン 000-0000-0000形式*})</span><br /><input size="20" maxlength="20" id="tel" name="tel" type="text" value="{$formData.tel}" onBlur="changeHankaku(this, 'tel')" /></p>
+                            <p>FAX:<span class="hint2">({'/label/numeric_hyphen_000-0000-0000_style'|translate}{*半角数字ハイフン 000-0000-0000形式*})</span><br /><input size="20" maxlength="20" id="fax" name="fax" type="text" value="{$formData.fax}" onBlur="changeHankaku(this, 'tel')" /></p>
+                        </td>
+                    </tr>
+                    <tr id="tr_address2">
+                        <th id="th_address2">{'/label/other_contact'|translate}{*その他の連絡先*}</th>
+                        <td id="td_address2">
+                            <p>{'/label/postcode'|translate}{*郵便番号*}:<span class="hint2">({'/label/halfwidth_number'|translate}{*半角数字*})</span><br /><input size="3" maxlength="3" id="zip_main2" name="zip_main2" type="text" value="{$formData.zip_main2}" onBlur="changeHankaku(this, 'number')" />&nbsp;-&nbsp;<input size="4" maxlength="4" id="zip_sub2" name="zip_sub2" type="text" value="{$formData.zip_sub2}" onBlur="changeHankaku(this, 'number')" /></p>
+                            <p>{'/label/prefecture'|translate}{*都道府県*}:<br /><select id="tdfk_cd2" name="tdfk_cd2">{html_options options=$arrTdfk selected=$formData.tdfk_cd2}</select> {'/label/abroad'|translate}{*海外*}:<input size="10" maxlength="100" id="tdfk2_99" name="tdfk2_99" type="text" value="{$formData.tdfk2_99}" /></p>
+                            <p>{'/label/address1'|translate}{*住所1*}:<br /><input size="40" maxlength="100" id="address1_2" name="address1_2" type="text" value="{$formData.address1_2}" /></p>
+                            <p>{'/label/address2'|translate}{*住所2*}:({'/msg/building_name_etc'|translate}{*建物名など*})<br /><input size="40" maxlength="100" id="address2_2" name="address2_2" type="text" value="{$formData.address2_2}" /></p>
+                            <p>{'/label/telephone'|translate}{*電話*}:<span class="hint2">({'/label/numeric_hyphen_000-0000-0000_style'|translate}{*半角数字ハイフン 000-0000-0000形式*})</span><br /><input size="20" maxlength="20" id="tel" name="tel2" type="text" value="{$formData.tel2}" onBlur="changeHankaku(this, 'tel')" /></p>
+                            <p>FAX:<span class="hint2">({'/label/numeric_hyphen_000-0000-0000_style'|translate}{*半角数字ハイフン 000-0000-0000形式*})</span><br /><input size="20" maxlength="20" id="fax" name="fax2" type="text" value="{$formData.fax2}" onBlur="changeHankaku(this, 'tel')" /></p>
+                        </td>
+                    </tr>
+                    <tr id="tr_email2">
+                        <th id="th_email2">{'/label/another_mail_address'|translate}{*その他のメールアドレス*}</th>
+                        <td id="td_email2">
+                            <p class="hint">{'/modules/member/msg/input_another_email_address'|translate}{*ログインに使用するメールアドレスのほかにある場合は入力してください。*}</p></p>
+                            <p>{'/label/another_mail_address'|translate}{*その他のメールアドレス*}:<span class="hint2">({'/lable/alphanumeric'|translate}{*半角英数字*})</span></p>
+                            <p><input size="30" maxlength="200" id="email2" name="email2" type="text" value="{$formData.email2}" /></p>
+                            <p>{'/label/mobile_address'|translate}{*携帯*}:<span class="hint2">({'/lable/alphanumeric'|translate}{*半角英数字*})</span>
+                            <p><input size="30" maxlength="200" id="email_mobile" name="email_mobile" type="text" value="{$formData.email_mobile}" /></p>
+                        </td>
+                    </tr>
+                    <tr id="tr_contact_open_flg">
+                        <th id="th_contact_open_flg">{'/label/publish_for_contact_number'|translate}{*連絡先の公開*}</th>
+                        <td id="td_contact_open_flg">
+                            <input name="contact_open_flg" id="contact_open_flg" type="checkbox" value="1" {if $formData.contact_open_flg == "1"}checked="checked"{/if} /><label for="contact_open_flg">{'/label/publish_btn'|translate}{* 公開にする *}</label>
+                        </td>
+                    </tr>
+                </table>
+            </div><!--//blk_profile-->
+
+            <!--自由定義列↓-->
+            {foreach from=$extCols item=item name=extCols}
+            {assign var=key_name value=$item.key_name}
+            {assign var=db_name value=$item.db_name}
+            {if $smarty.foreach.extCols.first}
+            <div id="blk_extn" style="position:relative; display:none;">
+                <table width="100%" id="table_extn">
+                    <tr id="tr_order_no">
+                        <th id="th_order_no" width="25%">{'/label/display_order'|translate}{*表示順序*}</th>
+                        <td id="td_order_no" width="75%">
+                            <input type="text" name="order_no" value="{$formData.order_no}" />※{'/msg/data_order_from_low_sort_value'|translate}{*数字の小さい順に並びます。マイナスの数字の設定も可能です。*}
+                        </td>
+                    </tr>
+            {/if}
+                    <tr id="tr_{$key_name}">
+                        <th id="th_{$key_name}" width="25%">{$item.disp_name}</th>
+                        <td id="td_{$key_name}" width="75%">
+                            {if $item.type == "text"}
+                            <input type="text" name="{$item.key_name}" value="{$formData.$key_name}" size="50" />
+                            {elseif $item.type == "textarea"}
+                            <textarea name="{$item.key_name}" cols="50" rows="2">{$formData.$key_name}</textarea>
+                            {elseif $item.type == "int"}
+                            <input type="text" name="{$item.key_name}" value="{$formData.$key_name}" size="20" />
+                            {elseif $item.type == "date"}
+                            <input type="text" name="{$item.key_name}" value="{$formData.$key_name}" size="20" />
+                            {elseif $item.type == "option"}
+                            <select name="{$item.key_name}">{if $item.options|@key ne ''}<option value="">{'/msg/please_select'|translate}{*選択してください*}</option>{/if}{html_options options=$item.options selected=$formData.$db_name}</select>
+                            {elseif $item.type == "radio"}
+                            {foreach from=$item.options key=r_key item=r_val}
+                            <input type="radio" name="{$item.key_name}" value="{$r_key}" {if $formData.$db_name==$r_key}checked{/if}>{$r_val}
+                            {/foreach}
+                            {elseif $item.type == "checkbox"}
+                                {if $item.options|@count==1}
+                                    <input type="checkbox" name="{$item.key_name}" value="1" {if $formData.$db_name}checked{/if}>{$item.options.1}
+                                {else}
+                                    {foreach from=$item.options key=checkkey item=checkval}<input type="checkbox" name="{$item.key_name}[]" value="{$checkkey}" {foreach from=$formData.$db_name item=dataKey}{if $dataKey==$checkkey}checked{/if}{/foreach}>{$checkval}<br />{/foreach}
+                                {/if}
+                            {/if}
+
+                            {if $item.key_name eq 'position' && $item.type == "text"}
+                            <a href="javascript:void(0);" onclick="positionInput()">{'/label/select_btn'|translate}{*選択*}</a>
+                            {/if}
+                        </td>
+                    </tr>
+            {if $smarty.foreach.extCols.last}
+                </table>
+            </div><!--//blk_extn-->
+            {/if}
+            {/foreach}
+            <!--自由定義列↑-->
+
+            {*} {'/label/school_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*学校情報*}
+            <div id="blk_school" style="position:relative; display:none;">
+                <table width="100%" id="table_school">
+                    <tr id="tr_elementary_school">
+                        <th id="th_elementary_school">{'/label/elementary_school'|translate}{*小学校*}</th>
+                        <td id="td_elementary_school"><input size="30" maxlength="100" id="elementary_school" name="elementary_school" type="text" value="{$formData.elementary_school}" /></td>
+                    </tr>
+                    <tr id="tr_junior_high_school">
+                        <th id="th_junior_high_school">{'/label/junior_high_school'|translate}{*中学校*}</th>
+                        <td id="td_junior_high_school"><input size="30" maxlength="100" id="jrhigh_school" name="jrhigh_school" type="text" value="{$formData.jrhigh_school}" /></td>
+                    </tr>
+                    <tr id="tr_high_school">
+                        <th id="th_high_school" width="25%">{'/label/high_school'|translate}{*高等学校*}</th>
+                        <td id="td_high_school" width="75%">
+                            <select onchange="onChangeTdfkHi(this.value)" id="tdfk_hi" name="tdfk_hi">
+                            {html_options options=$arrTdfk selected=$formData.tdfk_hi}
+                            </select>
+                            <select id="high_school" name="high_school">
+                            {html_options options=$arrHighSchool selected=$formData.high_school}
+                            </select>
+                            <div id="hs_search1">
+                                <a href="javascript:void(0)" onclick="display('hs_search1');display('hs_search2');">&gt;&gt;{'/label/search'|translate}{*検索*}</a>
+                            </div>
+                            <div id="hs_search2" style="display:none;">
+                                <a href="javascript:void(0)" onclick="display('hs_search2');display('hs_search1');">&gt;&gt;{'/label/close'|translate}{*閉じる*}</a>
+                                <div><iframe name="hs_suggest" id="hs_suggest" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="/js/hs_suggest.php" scrolling="no" width="100%" height="400"></iframe></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="tr_university">
+                        <th id="th_university">{'/label/university'|translate}{*大学*}</th>
+                        <td id="td_university">
+                            <select onchange="onChangeInicial(escape(this.value))" id="search_uni" name="search_uni">
+                            {html_options options=$arrASCII selected=$formData.search_uni}
+                            </select>
+                            <select id="university" name="university">
+                            {html_options options=$arrUniversity selected=$formData.university}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            {* 学年プラグインがあればここに配置 *}
+            {if "grade"|array_key_exists:$plugins}{rcms_include file="member/admin/plugin/member_edit_plugin_grade.html"}{/if}
+            </div><!--blk_school-->
+
+            {*} {'/label/work_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*勤務先情報*}
+            <div id="blk_placework" style="position:relative; display:none;">
+                <table width="100%" id="table_placework">
+                    <tr id="tr_com_nm">
+                        <th id="th_com_nm" width="25%">{'/label/company_name'|translate}{*会社名*}</th>
+                        <td id="td_com_nm" width="75%"><input size="30" maxlength="100" id="com_nm" name="com_nm" type="text" value="{$formData.com_nm}" /></td>
+                    </tr>
+                    <tr id="tr_com_post">
+                        <th id="th_com_post">{'/label/department'|translate}{*所属部署*}</th>
+                        <td id="td_com_post"><input size="30" maxlength="100" id="com_post" name="com_post" type="text" value="{$formData.com_post}" /></td>
+                    </tr>
+                    <tr id="tr_com_address">
+                        <th id="th_com_address">{'/label/address'|translate}{*住所*}</th>
+                        <td id="td_com_address">
+                            <p>{'/label/postcode'|translate}{*郵便番号*}:<span class="hint2">({'/label/halfwidth_number'|translate}{*半角数字*})</span><br /><input size="3" maxlength="3" id="com_zip_main" name="com_zip_main" type="text" value="{$formData.com_zip_main}" onBlur="changeHankaku(this, 'number')" />&nbsp;-&nbsp;<input size="4" maxlength="4" id="com_zip_sub" name="com_zip_sub" type="text" value="{$formData.com_zip_sub}" onBlur="changeHankaku(this, 'number')" /></p>
+                            <p>{'/label/prefecture'|translate}{*都道府県*}:<br /><select id="com_tdfk_cd" name="com_tdfk_cd">{html_options options=$arrTdfk selected=$formData.com_tdfk_cd}</select></p>
+                            <p>{'/label/address1'|translate}{*住所1*}:<br /><input size="40" maxlength="100" id="com_address1" name="com_address1" type="text" value="{$formData.com_address1}" /></p>
+                            <p>{'/label/address2'|translate}{*住所2*}:({'/msg/building_name_etc'|translate}{*建物名など*})<br /><input size="40" maxlength="100" id="com_address2" name="com_address2" type="text" value="{$formData.com_address2}" /></p>
+                        </td>
+                    </tr>
+                    <tr id="tr_com_fax_tel_email">
+                        <th id="th_com_fax_tel_email">{'/label/tel_fax_email'|translate}{*電話・FAX・email*}</th>
+                        <td id="td_com_fax_tel_email">
+                            <p>{'/label/telephone'|translate}{*電話*}:<span class="hint2">({'/label/numeric_hyphen_000-0000-0000_style'|translate}{*半角数字ハイフン 000-0000-0000形式*})</span><br /><input size="20" maxlength="20" id="com_tel" name="com_tel" type="text" value="{$formData.com_tel}" onBlur="changeHankaku(this, 'tel')" /></p>
+                            <p>FAX:<span class="hint2">({'/label/numeric_hyphen_000-0000-0000_style'|translate}{*半角数字ハイフン 000-0000-0000形式*})</span><br /><input size="20" maxlength="20" id="com_fax" name="com_fax" type="text" value="{$formData.com_fax}" onBlur="changeHankaku(this, 'tel')" /></p>
+                            <p>email:<span class="hint2">({'/lable/alphanumeric'|translate}{*半角英数字*})</span><br /><input size="30" maxlength="255" id="com_email" name="com_email" type="text" value="{$formData.com_email}" /></p>
+                        </td>
+                    </tr>
+                </table>
+            </div><!--//blk_placework-->
+
+            {*} {'/label/comments_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*コメント情報*}
+            <div id="blk_comment" style="position:relative; display:none;">
+                <div class="hint">{'/msg/title_is_required'|translate}{*タイトルは必須入力です。*}</div>
+                <table id="table_comment">
+                    <tr style="display:block;" id="subdata_row99">
+                        <th id="th_order" width="50">{'/modules/member/label/order'|translate}{*順番*}</th>
+                        <th id="th_title" width="130">{'/label/title'|translate}{*タイトル*}</th>
+                        <th id="th_body" width="420">{'/label/body'|translate}{*本文*}</th>
+                        <th id="th_publish" width="50">{'/label/publish'|translate}{*公開*}</th>
+                        <th id="th_delete" width="50">{'/label/delete'|translate}{*削除*}</th>
+                    </tr>
+
+                    {section name=subdata loop=$subdata_maxcnt}
+                        {assign var=i value=$smarty.section.subdata.index}
+                        {if $subdata_cnt > $i}
+                        <tr style="display:block;" id="subdata_row{$i}">
+                            <td id="td_subdata_member_subdata_id_{$i}" width="50">
+                                {if $formData.subdata_member_subdata_id[$i] != ""}
+                                <input type="hidden" name="subdata_member_subdata_id[{$i}]" value="{$formData.subdata_member_subdata_id[$i]}"/>
+                                {/if}
+                                <select name="subdata_order_no[{$i}]">{html_options options=$arrSubDataOrder selected=$formData.subdata_order_no[$i]}</select>
+                            </td>
+                            <td id="td_subdata_title_{$i}" width="130">
+                                <input size="20" maxlength="50" name="subdata_title[{$i}]" type="text" value="{$formData.subdata_title[$i]}"/>
+                            </td>
+                            <td id="td_subdata_comment_{$i}" width="420">
+                                <textarea rows="5" cols="40" name="subdata_comment[{$i}]">{$formData.subdata_comment[$i]|escape}</textarea>
+                            </td>
+                            <td id="td_subdata_open_flg_{$i}" width="50">
+                                <input name="subdata_open_flg[{$i}]" type="checkbox" value="1" id="subdata[open_flg][{$i}]" {if $formData.subdata_open_flg[$i] == "1"}checked{/if} /><label for="subdata[open_flg][{$i}]">{'/label/publish'|translate}{*公開*}</label>
+                            </td>
+                            <td id="td_subdata_dflg_{$i}" width="50">
+                                <input name="subdata_dflg[{$i}]" type="checkbox" value="1" id="subdata[dflg][{$i}]" {if $formData.subdata_dflg[$i] == "1"}checked{/if} /><label for="subdata[dflg][{$i}]">{'/label/delete'|translate}{*削除*}</label>
+                            </td>
+                        </tr>
+                        {else}
+                        <tr style="display:none;"  id="subdata_row{$smarty.section.subdata.index}">
+                            <td id="td_subdata_member_subdata_id_{$i}" width="50">
+                                <select name="subdata_order_no[{$i}]">{html_options options=$arrSubDataOrder}</select>
+                            </td>
+                            <td id="td_subdata_title_{$i}" width="130">
+                                <input size="20" maxlength="50" name="subdata_title[{$i}]" type="text" value=""/>
+                            </td>
+                            <td id="td_subdata_comment_{$i}" width="420">
+                                <textarea rows="5" cols="40" name="subdata_comment[{$i}]">{$formData.subdata_comment[$i]|escape}</textarea>
+                            </td>
+                            <td id="td_subdata_open_flg_{$i}" width="50">
+                                <input name="subdata_open_flg[{$i}]" type="checkbox" value="1" id="subdata[open_flg][{$i}]" /><label for="subdata[open_flg][{$i}]">{'/label/publish'|translate}{*公開*}</label>
+                            </td>
+                            <td id="td_subdata_dflg_{$i}" width="50">
+                                <input name="subdata_dflg[{$i}]" type="checkbox" value="1" id="subdata[dflg][{$i}]" /><label for="subdata[dflg][{$i}]">{'/label/delete'|translate}{*削除*}</label>
+                            </td>
+                        </tr>
+                            {if $smarty.section.subdata.index eq $subdata_cnt}
+                            <tr id="subdata_row{$smarty.section.subdata.index}_btn">
+                                <td id="td_subdata_row{$smarty.section.subdata.index}_btn" colspan="4">
+                                    <button type="button" onclick="add_subdata_row('subdata_row{$smarty.section.subdata.index}','subdata_row{$smarty.section.subdata.index+1}')">{'/label/add_new_btn'|translate}{*新規追加*}</button>
+                                </td>
+                            </tr>
+                            {elseif $smarty.section.subdata.last}
+                            <tr style="display:none;" id="subdata_row{$smarty.section.subdata.index}_btn">
+                                <td id="td_subdata_row{$smarty.section.subdata.index}_btn" colspan="4">
+                                    <button type="button" onclick="add_subdata_row('subdata_row{$smarty.section.subdata.index}','')">{'/label/add_new_btn'|translate}{*新規追加*}</button>
+                                </td>
+                            </tr>
+                            {else}
+                            <tr style="display:none;" id="subdata_row{$smarty.section.subdata.index}_btn">
+                                <td id="td_subdata_row{$smarty.section.subdata.index}_btn" colspan="4">
+                                    <button type="button" onclick="add_subdata_row('subdata_row{$smarty.section.subdata.index}','subdata_row{$smarty.section.subdata.index+1}')">{'/label/add_new_btn'|translate}{*新規追加*}</button>
+                                </td>
+                            </tr>
+                            {/if}
+                        {/if}
+                    {/section}
+                </table>
+            </div><!--//blk_comment-->
+
+            {if $ml_list.0 ne ''}
+            <div id="member_ml_list">
+                <p>
+                    {'/label/mailing_list_participation_information'|translate}{*メーリングリスト参加情報*}
+                    <table width="300" id="table_member_ml_list">
+                        <tr id="tr_title_member_ml_list">
+                            <th id="th_title_status_katakana">{'/label/status_katakana'|translate}{*ステータス*}</th>
+                            <th id="th_title_mailing_list_name">{'/label/mailing_list_name'|translate}{*メーリングリスト名*}</th>
+                        </tr>
+                        {foreach item=ml_list from=$ml_list name="ml_list_loop"}
+                        <tr id="tr_data_member_ml_list_{$smarty.foreach.ml_list_loop.iteration}">
+                            <td id="th_title_status_katakana_{$smarty.foreach.ml_list_loop.iteration}">{$ml_list.ml_member_status}</td>
+                            <td id="th_title_mailing_list_name_{$smarty.foreach.ml_list_loop.iteration}">{$ml_list.ml_name}</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </p>
+            </div><!--//member_ml_list-->
+            {/if}
+
+
+            {buttonbox}
+                {if $auth.ownmember.update && $smarty.session.member_id == $member_id}
+                <button type="button" onclick="confirmUpdate();{*}this.form.MODE.value='update';{*}">{'/label/update_btn'|translate}{* 更新する *}</button>
+                {elseif $auth.member.update && $member_id != ""}
+                <button type="button" onclick="confirmUpdate();{*}this.form.MODE.value='update';{*}">{'/label/update_btn'|translate}{* 更新する *}</button>
+                {elseif $auth.member.insert && $member_id == ""}
+                <button type="submit" onclick="this.form.MODE.value='insert';">{'/label/add_btn'|translate}{* 登録する *}</button>
+                {/if}
+
+                {if $auth.member.delete && $member_id != ""}
+                <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}{* 削除する *}</button>
+                {/if}
+            {/buttonbox}
+        </form>
+    </div>
+</div>
+
+<style>
+{literal}
+/*
+#member_info_right
+{
+      FLOAT:left;
+      padding-left:20px;
+}
+
+#member_info_left
+{
+      FLOAT:left;
+}
+#member_info_right2
+{
+      FLOAT:left;
+      padding-left:20px;
+}
+#member_info_left2
+{
+      FLOAT:left;
+}
+*/
+#blk_profile p, #blk_placework p{
+  margin: 6px 0;
+}
+{/literal}
+</style>
+
+{literal}
+<script type="text/javascript">
+<!--
+//タブナビゲーションボタン表示制御用関数
+var blk_name = "blk_profile"; //初期表示ブロック
+var a_obj = document.getElementById("a_profile"); //カレント表示タブ(初期)
+function tabnaviCtl(nm, anchorObj){
+  if(blk_name != nm){
+    document.getElementById(blk_name).style.display = "none";
+    blk_name = nm;
+    document.getElementById(nm).style.display = "block";
+    a_obj.style.backgroundPosition = "left top";
+    a_obj = anchorObj;
+    anchorObj.style.backgroundPosition = "left bottom";
+  }
+}
+
+{/literal}
+{if $smarty.request.tab eq 'idinfo'}
+tabnaviCtl('blk_idinfo',$('a_idinfo'));
+{/if}
+{literal}
+// -->
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

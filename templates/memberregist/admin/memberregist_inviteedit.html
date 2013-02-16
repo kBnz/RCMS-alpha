@@ -1,0 +1,81 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_inviteedit'|translate}{*招待状の作成*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+<a href="/management/memberregist/memberregist_invite/">{'/modules/memberregist/label/memberregist_invite'|translate}</a>
+{'/modules/memberregist/label/memberregist_inviteedit'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 招待する >> 招待状の作成 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <div class="list_main">
+    <form action="/management/memberregist/memberregist_invitesubmit/" method="POST">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <h3>{'/label/invitation'|translate}{*招待状*}</h3>
+      <table width="100%">
+        <tr>
+          <th width="30%">{'/modules/memberregist/label/invited_person_mail'|translate}{*招待する人のemail*}</th>
+          <td width="70%">
+            <table>
+            {foreach name=emailTable from=$mail_addresses item=email key=key}
+              <tr>
+                <td><input type="hidden" name="mail_addresses[]" value="{$email}" />
+                    {$smarty.foreach.emailTable.iteration}.</td>
+                <td>{$email}</td>
+              </tr>
+            {/foreach}
+            </table>
+          </td>
+        </tr>
+		<tr>
+			<th>{'/modules/memberregist/label/invited_default_group'|translate}{*招待する人の初期登録グループ*}</th>
+			<td>
+				<ul>
+			{foreach from = $defaultGroup item = group}
+				<p>{$group}</p>
+			{/foreach}
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<th>{'/modules/group/label/permission_for_login'|translate}{*ログインの許可*}</th>
+			<td>{$arrMemberregistLoginOK[$normal_login_ok_flg]}</td>
+		</tr>
+        <tr>
+          <th>{'/modules/memberregist/label/your_name'|translate}{*あなたのお名前*}</th>
+          <td>
+            {'/label/sername'|translate}{*姓*}<input type="text" name="name1" value={$Login_name1}>
+            {'/label/first_name'|translate}{*名*}<input type="text" name="name2" value={$Login_name2}>
+            <span class="require">{'/label/required'|translate}{*必須*}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/message'|translate}{*メッセージ*}</th>
+          <td><textarea rows="7" cols="50" name="message">{$inputmessage}</textarea></td>
+        </tr>
+        <tr>
+          <th>{'/label/example'|translate}{*例*}</th>
+          <td>{'/modules/memberregist/msg/sample_invitation'|translate}{*こんにちは●●です。この前話したRCMSへの招待状を送ります。是非登録してみてください。*}</td>
+        </tr>
+      </table>
+
+      {buttonbox}
+        <button type="submit">{'/label/send_btn'|translate}{*送信*}</button>
+      {/buttonbox}
+    </form>
+  </div>
+</div>
+{rcms_include file="management/footer.html"}
+

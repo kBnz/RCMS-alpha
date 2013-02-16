@@ -1,0 +1,51 @@
+{module name="member_list"}
+<h2 class="module_title"><span>メンバー一覧</span></h2>
+<div class="module_contents">
+
+<p class="page_links">{$page_links}</p>
+<table width="460" border="0" align="center" cellpadding="0" cellspacing="0" class="list">
+  <tr align="center">
+    <th width="60" height="20">写真</th>
+    <th width="97" height="20">名前<br>出身校</th>
+    <th width="43" nowrap>学年</th>
+    <th width="43">ポジション</th>
+    <th width="32">身長</th>
+    <th width="32">体重</th>
+  </tr>
+{foreach item=member from=$memberList}
+  {capture assign=member_name}{$member.disp_name}{/capture}
+  <tr align="center">
+    <td height="65" valign="middle" align="center">
+      {if $member.image_s_exist}<a href="/member_detail/id={$member.member_id}"><img src="/files/member/member_photo/s/{$member.member_id}.jpg" alt="{$member_name}" border="0" align="center"></a>
+      {elseif $exists_noimage}
+      <a href="/member_detail/id={$member.member_id}"><img src="/files/member/noimage_s.jpg" alt="{$member_name}" border="0" align="center"></a>{/if}
+    </td>
+    <td valign="middle">{if $member.nickname eq ''}<a href="/member_detail/id={$member.member_id}" class="member_kana">{$member.namekana1}{$member.namekana2}</a>{/if}<br>
+      <a href="/member_detail/id={$member.member_id}">{$member_name}</a><br>
+      {if $member.univ_short_nm ne ''}{$member.univ_short_nm}{else}{$member.univ_name}<br>{/if}
+      {if $member.hs_sname ne ''}{$member.hs_sname}{else}{$member.hs_name}<br>{/if}
+      {if $member.jrhigh_school ne ''}{$member.jrhigh_school}<br>{/if}
+      {if $member.elementary_school ne ''}{$member.elementary_school}<br>{/if}
+    </td>
+    <td>
+{if $member.grade != "" && $member.student_flg}
+  {assign var="grade" value=$member.grade}
+  {$arrGrade[$grade]}
+{/if}
+    </td>
+    <td>
+      {$member.position}
+    </td>
+    <td>{if $member.height eq '0'}?{elseif $member.height > 0}{$member.height}cm{/if}</td>
+    <td>{if $member.weight eq '0'}?{elseif $member.height > 0}{$member.weight}kg{/if}</td>
+  </tr>
+{/foreach}
+</table>
+<p class="page_links">{$page_links}</p>
+{if $memberList|@count == 0}
+  {* 0件の場合 *}
+  <p>{'/modules/member/msg/no_member_found'|translate}{*該当するメンバーが見つかりませんでした。*}</p>
+{/if}
+
+</div>
+{/module}

@@ -1,0 +1,7 @@
+{if $i18n_supported_languages|@count > 1}
+  <select onchange="location.href = '?_lang=' + this.options[this.selectedIndex].value">
+  {foreach from=$i18n_supported_languages item=lang}
+    <option value="{$lang.lang}" {if $lang.lang == $mylang}selected="selected"{/if}>{$lang.disp_lang}</option>
+  {/foreach}
+  </select>
+{/if}

@@ -1,0 +1,145 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>フォルダ情報設定</h2>
+<ul>
+{*}<li class="add"><a href="/management/blog/blog_edit/"><span>フォルダ追加</span></a></li>{*}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/fileserver/fileserver_list/{if $folder_id}&folder_id={$folder_id}{/if}">ファイル管理</a>
+<a href="/management/fileserver/fileserver_folder_edit/{if $folder_id}&folder_id={$folder_id}{/if}">フォルダ情報設定</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $folder_id == ""}
+  <h3>フォルダ新規作成</h3>
+{else}
+  <h3>フォルダ詳細・設定</h3>
+{/if}
+  <form action="/management/fileserver/fileserver_folder_edit/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $folder_id == ""}CREATE{else}UPDATE{/if}" />
+    <input type="hidden" name="folder_id" value="{$folder_id}" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>親フォルダ</th>
+        <td>
+          {*親フォルダを選択するのは新規作成のときだけ*}
+          {if $folder_id == ""}
+            {$parentIdListbox}<span class="required">必須</span>
+          {else}
+            {$folders.parent.name}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>フォルダ名</th>
+        <td>
+          {if $folder_id == "" || $folders.current.auth.myAuth.U || $auth.fileserver_admin.update}
+            <input type="text" name="name" value="{$formData.name|escape}" style="width:200px"/><span class="required">必須</span><span class="hint">(30文字以内)</span>
+          {else}
+            {$folders.current.name}
+          {/if}
+        </td>
+      </tr>
+      </tr>
+{if $folder_id == ""}
+      <tr>
+        <th>表示順</th>
+        <td>
+          <input type="radio" name="order_no" id="order_no_first" value="first" {if $formData.order_no == 'first'}checked="checked"{/if} /><label for="order_no_first">最初に追加</label>
+          <input type="radio" name="order_no" id="order_no_last" value="last" {if $formData.order_no != 'first'}checked="checked" {/if}/><label for="order_no_last">最後に追加</label>
+          <span class="required">必須</span>
+        </td>
+      </tr>
+{/if}
+      <tr>
+        <th>メモ</th>
+        <td><textarea name="memo" style="width:400px;height:100px">{$formData.memo|escape}</textarea></td>
+      </tr>
+    </table>
+
+{if $folder_id == ""}
+  {if $auth.fileserver.insert || $auth.fileserver_admin.insert}
+    <input type="submit" value="新規作成" />
+  {/if}
+{else}
+  {if ($folders.current.auth.myAuth.U && $auth.fileserver.update) || $auth.fileserver_admin.update}
+    <input type="submit" value="更新" />
+  {/if}
+  {if ($folders.current.auth.myAuth.D && $auth.fileserver.delete) || $auth.fileserver_admin.delete}
+    <!--input type="button" value="削除" /-->
+  {/if}
+{/if}
+
+  </form>
+
+{if $folder_id != ""}
+
+    <h3>アクセス制限</h3>
+    <table style="margin-bottom:10px" width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="150px">あなたのアクセス権限</th>
+        <td>
+          {if $folders.current.auth.myAuth.R && $auth.fileserver_admin.select}<span class="auth_able">閲覧</span>{/if}
+          {if $folders.current.auth.myAuth.C && $auth.fileserver_admin.insert}<span class="auth_able">作成</span>{/if}
+          {if $folders.current.auth.myAuth.U && $auth.fileserver_admin.update}<span class="auth_able">更新</span>{/if}
+          {if $folders.current.auth.myAuth.D && $auth.fileserver_admin.delete}<span class="auth_able">削除</span>{/if}
+        </td>
+      </tr>
+    </table>
+  {if $folders.current.auth_flg eq '0' && $folder_id != '1'}
+      <p>このフォルダにはアクセス制限の設定は行われていません。</p>
+  {else}
+      {if count($folders.current.auth.groups)==0}アクセス可能なグループはありません{/if}
+      {foreach from=$folders.current.auth.groups name=auth_groups_nm item=item key=group_id}
+        {if $smarty.foreach.auth_groups_nm.first}
+          <p class="hint">この一覧にないグループはアクセス不可の設定になっています。</p>
+          <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+              <th width="150px">グループ名</th>
+              <th>権限</th>
+            </tr>
+        {/if}
+        <tr>
+          <td>{$groupList.$group_id}</td>
+          <td>
+            {if $item.R}<span class="auth_able">閲覧</span>{/if}
+            {if $item.C}<span class="auth_able">作成</span>{/if}
+            {if $item.U}<span class="auth_able">更新</span>{/if}
+            {if $item.D}<span class="auth_able">削除</span>{/if}
+          </td>
+        </tr>
+        {if $smarty.foreach.auth_groups_nm.last}
+          </table>
+        {/if}
+      {/foreach}
+  {/if}
+  {if $auth.fileserver_admin.insert || $auth.fileserver_admin.update}
+    <form style="margin-top:10px" action="/management/fileserver/fileserver_auth_edit/folder_id={$folder_id}" method="post">
+      <input type="submit" value="アクセス制限の設定" {if $folder_id == '1' || $folders.current.auth.folder_id && $folders.current.auth.folder_id != $folder_id}disabled="true" {/if}/>
+      <p class="hint">
+        ・親フォルダにアクセス制限が設定されている場合は、子供フォルダには設定できません。<br/>
+        ・ルートフォルダにはアクセス制限は設定できません。
+      </p>
+    </form>
+  {/if}
+{/if}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,105 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+Event.observe(window, 'load', function() {
+    // 送信時に並び順を設定する
+    Event.observe($('restaurant_order_edit'), 'submit', function() {
+        var rows = $('item_list_content').rows;
+        var buf = [];
+        for (var i = 0 ; i < rows.length ; i++) {
+            buf.push(rows[i].id);
+        }
+        $('order_string').value = buf.join(",");
+    });
+});
+
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>表示順設定</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant/restaurant_edit/">{$module_nm}</a>
+表示順設定
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+<ul class="minitabs">
+  <li><a href="/management/restaurant/restaurant_edit/{if $restaurant_id != ""}restaurant_id={$restaurant_id}{/if}">{$module_nm}編集</a></li>
+  <li><a href="/management/restaurant/restaurant_order_edit/"  class="active">表示順設定</a></li>
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form method="post" action="/management/restaurant/restaurant_order_edit/" id="restaurant_order_edit">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="order_string" id="order_string" value="{$formData.order_string}" />
+
+{foreach from=$orderList item=term name=item_list}
+   {if $smarty.foreach.item_list.first}
+    <table id="item_list" width="100%" border="0" cellspacing="2" cellpadding="0">
+      <thead id="item_list_header">
+        <tr>
+          <th scope="col">項目</th>
+          <th scope="col">表示順</th>
+        </tr>
+      </thead>
+      <tbody id="item_list_content">
+  {/if}
+        {if $term == "ext_title_01"}
+            {assign var=item_title value=$formData.ext_title_01}
+        {elseif $term == "ext_title_02"}
+            {assign var=item_title value=$formData.ext_title_02}
+        {elseif $term == "ext_title_03"}
+            {assign var=item_title value=$formData.ext_title_03}
+        {elseif $term == "ext_title_04"}
+            {assign var=item_title value=$formData.ext_title_04}
+        {elseif $term == "ext_title_05"}
+            {assign var=item_title value=$formData.ext_title_05}
+        {elseif $term == "ext_title_06"}
+            {assign var=item_title value=$formData.ext_title_06}
+        {elseif $term == "ext_title_07"}
+            {assign var=item_title value=$formData.ext_title_07}
+        {elseif $term == "ext_title_08"}
+            {assign var=item_title value=$formData.ext_title_08}
+        {elseif $term == "ext_title_09"}
+            {assign var=item_title value=$formData.ext_title_09}
+        {elseif $term == "ext_title_10"}
+            {assign var=item_title value=$formData.ext_title_10}
+        {else}
+            {assign var=item_title value=$restaurant_items_options[$term].name}
+        {/if}
+        <tr id="{$term}">
+          <td>{$item_title}</td>
+          <td>
+            <a href="javascript:;" onclick="swapSibling(-1, '{$term}')"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+            <a href="javascript:;" onclick="swapSibling(1, '{$term}')"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+          </td>
+        </tr>
+  {if $smarty.foreach.item_list.last}
+      </tbody>
+    </table>
+  {/if}
+{/foreach}
+
+{if $auth.restaurant.update}
+  {buttonbox}
+    <button type="submit">更新する</button>
+  {/buttonbox}
+{/if}
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

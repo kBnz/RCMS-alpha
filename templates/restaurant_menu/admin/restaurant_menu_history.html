@@ -1,0 +1,30 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+<li class="view"><a href="/restaurant_menu/id={$restaurant_menu_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+{if $restaurant_menu_id}
+<a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id={$restaurant_menu_id}">メニュー編集</a>
+{else}
+<a href="/management/restaurant_menu/restaurant_menu_category_edit/restaurant_menu_category_id={$restaurant_menu_category_id}">メニューカテゴリ編集</a>
+
+{/if}
+{'/label/update_history_list'|translate}{* 更新履歴一覧 *}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $restaurant_menu_id}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id=$restaurant_menu_id" pageInfo=$pageInfo}
+{else}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/restaurant_menu/restaurant_menu_category_edit/restaurant_menu_category_id=$restaurant_menu_category_id" pageInfo=$pageInfo}
+{/if}
+
+</div>
+{rcms_include file="management/footer.html"}

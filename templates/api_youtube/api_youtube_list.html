@@ -1,0 +1,31 @@
+{module name="api_youtube_list"}
+<h2 class="module_title"><span>{'/modules/api_youtube/label/api_youtube_list'|translate}</span></h2>
+<div class="module_contents">
+  <p>{'/modules/api_youtube/label/youtube_list_explain'|translate}{*このサイトで紹介しているYouTube動画の一覧です。*}</p>
+
+  {if !$category_search_off}
+  <form action="/{$page_sysnm}/">
+    <p>
+    {'/label/category'|translate}:
+    <select name="category">
+      <option value="">{'/label/all'|translate}</option>
+      {html_options options=$categories selected=$category}
+    </select>
+    <input type="submit" value="{'/label/search_btn'|translate}" />
+    </p>
+  </form>
+  {/if}
+
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  {foreach from=$items item=item}
+  <p class="subitem_list" style="text-align:center;float:left;width:150px;height:150px;overflow: hidden;padding:0px 2px 10px 2px;">
+  <a href="{$item.detail}"><img src="{$item.thumb}" alt="{$item.name}" ></a><br>
+  <a href="{$item.detail}">{$item.name}</a>
+  </p>
+  {/foreach}
+  <div class="clr"></div>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+
+</div>
+{/module}
+

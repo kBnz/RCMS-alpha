@@ -1,0 +1,218 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/location/label/location_edit'|translate}{* 地図情報編集 *}</h2>
+<ul>
+  {if $rauth->canInsert('/location/item/')}
+  <li class="add"><a href="/management/location/location_edit/"><span>{'/modules/location/label/create_new_location_btn'|translate}{*地図情報追加*}</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/location/location_history/location_id={$location_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=location&id={$location_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/location_detail/id={$location_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/location/location_list/">{'/modules/location'|translate}</a>
+<a href="/management/location/location_list/">{'/modules/location/label/location_list'|translate}</a>
+{'/modules/location/label/location_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 地図情報 >> 地図情報一覧 >> 地図情報編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{*関連情報*}：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}{'/label/items'|translate}{*件*}</a>　<a href="/location_detail/id={$location_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/location/location_edit/location_id=$location_id"}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/location/location_edit/" method="post" name="location_edit" enctype="multipart/form-data">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+  <input name="MAX_FILE_SIZE" type="hidden" value="1048576" />
+  <input name="location_id" type="hidden" value="{$location_id}" />
+  <input type="hidden" name="MODE" id="MODE" value="" />
+  <input type="hidden" name="image_type" value="{$formData.image_type}" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {if $location_id}
+      {lang_selector meta=$docmeta link="/management/location/location_edit/location_id=$location_id"}
+    {/if}
+
+    <table width="100%">
+      <tr>
+        <th>{'/modules/location/label/location_name'|translate}{*ロケーション名*}</th>
+        <td><input size="70" maxlength="100" name="location_nm" type="text" value="{$formData.location_nm|escape}" /></td>
+      </tr>
+      <tr>
+        <th>URL</th>
+        <td>
+          {if $docmeta.is_primary}
+            <input size="70" maxlength="100" name="url" type="text" value="{$formData.url|escape}" />
+          {else}
+            {$latestRow.url|escape}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}</th>
+        <td>
+          {if $docmeta.is_primary}
+            <select name="location_category_id" onchange="getExtension(this.form);return false;">{html_options options=$arrLocation_category selected=$formData.location_category_id}</select>
+          {else}
+            {$arrLocation_category[$latestRow.location_category_id]|escape}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/sort'|translate}{* 並び順 *}</th>
+        <td>
+          {if $docmeta.is_primary}
+            <input size="3" maxlength="3" name="order_no" type="text" value="{$formData.order_no|escape}" />
+          {else}
+            {$latestRow.order_no|escape}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/postcode'|translate}{*郵便番号*}</th>
+        <td>
+          {if $docmeta.is_primary}
+            <input size="3" maxlength="3" name="zip_main" type="text" value="{$formData.zip_main|escape}" /> - <input size="4" maxlength="4" name="zip_sub" type="text" value="{$formData.zip_sub|escape}" />
+          {else}
+            {$latestRow.zip_main|escape} - {$latestRow.zip_sub|escape}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/prefecture'|translate}{*都道府県*}</th>
+        <td>
+          {if $docmeta.is_primary}
+            <select name="tdfk_cd"><option value="">{'/label/prefecture'|translate}{*都道府県*}↓</option>{html_options options=$tdfk_list selected=$formData.tdfk_cd}</select>
+          {else}
+            {$tdfk_list[$latestRow.tdfk_cd]|escape}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th style="white-space: nowrap;">{'/label/address'|translate}{* 住所 *}1（{'/label/municipality'|translate}{*市区町村名*}・{'/label/street_number'|translate}{*番地*}）</th>
+        <td>
+          <input size="70" maxlength="100" name="address1" type="text" value="{$formData.address1|escape}" />
+          <input type="button" value="{'/label/search_btn'|translate}" onclick="googlemap.document.searchForm.address.value=document.location_edit.address1.value;googlemap.showAddress()" />
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/address'|translate}{* 住所 *}2（{'/label/building'|translate}{*建物名*}） </th>
+        <td>
+          <input size="70" maxlength="100" name="address2" type="text" value="{$formData.address2|escape}" />
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/registered_point'|translate}{*登録地点*}</th>
+        <td><span class="hint">{'/modules/location/msg/help_googlemap_setting'|translate}{*地図上をクリックすると設定される位置が変わります。ズームなどの状態も設定できます。*}</span><br>
+          <input id="gmap_x" name="gmap_x" type="hidden" value="{$formData.gmap_x}" />
+          <input id="gmap_y" name="gmap_y" type="hidden" value="{$formData.gmap_y}" />
+          <input id="gmap_zoom" name="gmap_zoom" type="hidden" value="{$formData.gmap_zoom}" />
+          <input id="gmap_type" name="gmap_type" type="hidden" value="{$formData.gmap_type}" />
+
+<script Language="JavaScript">
+<!--
+{literal}
+function openwin(url) {
+ /* 横幅400px、縦幅200pxのウインドウを開く */
+ w = window.open(url, 'googlemap','width=400,height=400,status=no,scrollbars=no,directories=no,menubar=no,resizable=yes,toolbar=no');
+}
+{/literal}
+
+//-->
+</script>
+          <iframe src="/management/location/location_map/gmap_x={$formData.gmap_x}&gmap_y={$formData.gmap_y}&gmap_zoom={$formData.gmap_zoom}&gmap_type={$formData.gmap_type}" name="googlemap" width=490 height=430 scrolling="auto" marginheight="0" marginwidth="0" frameborder="0"></iframe>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/inquiry'|translate}{*問い合わせ先*}(TEL,Email {'/label/etc'|translate}{*等*})</th>
+        <td>
+          <textarea rows="3" cols="60" name="inquiry" style="font-size: 100%">{$formData.inquiry|escape}</textarea>
+        </td>
+      </tr>
+    {* 拡張項目 *}
+    {foreach item=loc_ext from=$loc_ext_list}
+      <tr>
+        <th>{$loc_ext.title|escape}</th>
+        <td>
+          <input size="70" maxlength="100" name="ext_col_{$loc_ext.no}" type="text" value="{$loc_ext.value|escape}" />
+        </td>
+      </tr>
+    {/foreach}
+      <tr>
+        <th>{'/label/comments'|translate}{*コメント*}({'/label/how_to_access'|translate}{*アクセス方法*} {'/label/etc'|translate}{*等*})</th>
+        <td>
+          <textarea rows="5" cols="60" name="comment" style="font-size: 100%">{$formData.comment|escape}</textarea>
+        </td>
+      </tr>
+    {if $docmeta.is_primary}
+      <tr>
+        <th>{'/modules/location/label/location_image'|translate}{*ロケーション画像*}</th>
+        <input type="hidden" name="file_type" value="{$formData.file_type}">
+        <input type="hidden" name="photo_file" value="{$formData.photo_file}">
+        <input type="hidden" name="photo_s_file" value="{$formData.photo_s_file}">
+
+        <td colspan="">
+      {if $formData.photo_url && $formData.photo_s_url}
+          <div id="photo_img">
+            <br>
+            <img src="{$formData.photo_url}"><br>
+            <a href="javascript:void(0);" onclick="display('photo_img_s');display('photo_img');return false;">{'/label/display_thumbnail'|translate}{*サムネイルを確認*}</a>
+          </div>
+          <div id="photo_img_s" style="display:none;">
+            <br>
+            <img src="{$formData.photo_s_url}"><br>
+            <a href="javascript:void(0);" onclick="display('photo_img_s');display('photo_img');return false;">{'/label/display_image'|translate}{*画像を確認*}</a>
+          </div>
+      {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/location/msg/specify_the_location_image'|translate}{*ロケーション画像指定*}</th>
+        <td><input name="photo" type="file" /> (.jpg .jpeg .gif .png {'/label/support'|translate}{*対応*}) <input name="del_photo" type="checkbox" value="1" {if $formData.del_photo == 1}checked=checked{/if}/>{'/label/delete'|translate}{*削除*}</td>
+      </tr>
+    {/if}
+    </table>
+
+{if $docmeta.is_primary}
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <div class="clear"></div>
+
+    {editTagsBox docmeta=$docmeta}{/editTagsBox}
+
+    {rcms_include file="management/open_date_box.html" id=$location_id data=$latestRow}
+{/if}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$latestRow.update_comment}
+
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+var location_category_id = {if $formData.location_category_id}{$formData.location_category_id}{else}0{/if};
+var location_id = {if $formData.location_id}{$formData.location_id}{else}0{/if};
+{literal}
+
+function getExtension(f) {
+    f.MODE.value='ON_CHANGE_CATEGORY';
+    f.submit();
+}
+{/literal}
+</script>
+{rcms_include file="management/footer.html"}

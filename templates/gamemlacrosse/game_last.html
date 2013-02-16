@@ -1,0 +1,126 @@
+{if $gameList|@count > 0}
+{module name="game_last"}
+<h2 class="module_title"><span>最新試合結果</span></h2>
+<div class="module_contents">
+
+{foreach from=$gameList item=gameData}
+<table>
+  <tr>
+    <td valign="top">
+      <table width="100%" class="score_table" border="1">
+        <tr>
+          <td colspan="3" width="50%" align="center" class="self_team_nm">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+          <td colspan="3" width="50%" align="center" class="opp_team_nm">{$gameData.team_nm}{$gameData.opponent_grade}</td>
+        </tr>
+        <tr>
+          <td width="20%" class="score28" rowspan="4">{$gameData.score_detail_arr.Self_Total}</td>
+          <td width="20%" class="score">{$gameData.score_detail_arr.Self_1Q}</td>
+          <td width="20%" colspan="2" class="score_label">1st</td>
+          <td width="20%" class="score">{$gameData.score_detail_arr.Opp_1Q}</td>
+          <td width="20%" class="score28" rowspan="4">{$gameData.score_detail_arr.Opp_Total}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_2Q}</td>
+          <td colspan="2" class="score_label">2nd</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_2Q}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_3Q}</td>
+          <td colspan="2" class="score_label">3rd</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_3Q}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_4Q}</td>
+          <td colspan="2" class="score_label">4th</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_4Q}</td>
+        </tr>
+      </table>
+      <table width="280"><tr><td>&nbsp;</td></tr></table>
+    </td>
+    <td valign="top">
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">開始時間</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+{if count($gameMembers)}
+<br/>
+  <h2 class="topics_subject">出場選手</h2>
+  <table class="self_member_table" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <th width="70" class="self_member_table">背番号</th>
+      <th width="70" class="self_member_table">ポジション</th>
+      <th width="30" class="self_member_table">学年</th>
+      <th width="140" class="self_member_table">名前</th>
+      <th width="30" class="self_member_table">得点</th>
+      <th width="50" class="self_member_table">アシスト</th>
+    </tr>
+  {section name=self_member loop=$gameMembers}
+    {if $gameMembers[self_member].member_order}
+    <tr>
+      <td align="center">{$gameMembers[self_member].member_no}</td>
+      <td align="center">{$gameMembers[self_member].position_nm}</td>
+      <td align="center">{$gameMembers[self_member].member_grade}</td>
+      <td>
+        {if $gameMembers[self_member].member_id > 0}
+          <a href="/member_detail/id={$gameMembers[self_member].member_id}">{$gameMembers[self_member].disp_name}</a>
+        {else}
+          {$gameMembers[self_member].disp_name}
+        {/if}
+      </td>
+      <td align="center">{$gameMembers[self_member].point}</td>
+      <td align="center">{$gameMembers[self_member].assist}</td>
+    </tr>
+    {/if}
+  {/section}
+  </table>
+{/if}
+
+{/foreach}
+<div class="relation_link"><a href="/gamemlacrosse_list/" class="small_text">試合一覧へ</a></div>
+</div>
+{/module}
+
+<style>
+{literal}
+
+table.score_table {
+  width: 90% ;
+  margin-left: 0 ;
+  border: 1px solid gray;
+  background-color: #ffffff;
+  border-collapse:collapse;
+  text-align:center;
+}
+
+.member_blank {
+  border-bottom: 1px dashed gray;
+}
+
+{/literal}
+</style>

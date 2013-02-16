@@ -1,0 +1,10 @@
+{if $page_sysnm eq 'top'}
+<ul data-role="listview">
+ {foreach name="menu_list" item="menu" from=$global_menu_list}
+  {if $menu.page_sysnm ne 'top'}{*  TOPは表示しない  *}
+    <li><a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}">{$menu.page_nm}</a></li>
+  {/if}
+ {/foreach}
+</ul>
+{/if}
+<hr/>

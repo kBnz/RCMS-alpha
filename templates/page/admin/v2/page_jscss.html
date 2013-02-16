@@ -1,0 +1,643 @@
+{*
+  ページ設定で読み込むJavaScriptとCSS（LPOでも読み込む）
+*}
+
+{literal}
+<style type="text/css">
+#modulesTable table {
+  width: 100%;
+}
+#modulesTable table .title {
+  white-space: nowrap;
+}
+#modulesTable table .param, #modulesTable table .contents_title {
+  width: 250px;
+}
+.paramHelpBtn {
+  margin-left: 10px;
+}
+.paramHelp {
+  display: none;
+  background-color: #fff;
+  margin: 5px 5px;
+  padding: 5px;
+  border: 1px dashed #999;
+}
+.paramHelp dt {
+  font-weight: bold;
+}
+.paramHelp dd {
+  padding: 0;
+  margin: 5px 0 15px 15px;
+}
+.paramHelp dd strong {
+  margin-right: 15px;
+  font-weight: bold;
+}
+</style>
+
+<script type="text/javascript">
+<!--
+
+/*!
+ * jQuery.class.js
+ * Copyirght (c) 2010, matsukaze.
+ * 
+ * @version 1.1.1
+ * @author mach3
+ * @requires jQuery
+ */
+var Class = (Class) ? Class : {};
+$.extend( Class, {
+	/**
+	 * Function to attach class feature to function, just like prototype.js's "Class.create()" method.
+	 * @param {Object} superClass Super class object. (optional)
+	 * @return {Object} Function which has class feature.
+	 * @example var MyClass = Class.create(); MyClass.prototype = { ... };
+	 */
+	create: function( superClass ){
+		var s = superClass || {};
+		return function(){
+			var pt = {
+				superclass:s.prototype,
+				bind:function( e, f ){ $(this).bind(e,f); },
+				trigger:function( e ){ $(this).trigger(e); },
+				log:function( m ){
+					if( typeof(console)!=="undefined" && typeof(console.log)!=="undefined" ){
+						console.log( m );
+					}
+				}
+			};
+			$.extend( true, pt, s.prototype, this );
+			$.extend( true, this, pt );
+			try{ this.initialize.apply(this, arguments); }
+			catch(e){}
+		};
+	},
+	/**
+	 * Function to get class defenition directly, wrapper of create().
+	 * @param {Object} def Definition of the class. (required)
+	 * @param {Object} superClass Super class object. (optional)
+	 * @return {Object} Class defenition
+	 * @example var MyClass = Class.get( { ... }, MySuperClass );
+	 */
+	get: function( def, superClass ){
+		var cls = this.create( superClass );
+		cls.prototype = def;
+		return cls;
+	}
+});
+
+
+var LABEL_BORDER = "2px solid #00c";
+var CURRENT_BORDER = "1px solid #efefef";
+var BETWEEN_BG = "white";
+
+var movingItem = null;
+var targetItem = null;
+var insert_color;
+var myPage = {};
+myPage.getModuleInfo = function(module_nm) {
+/*
+  if (!myPage._modules[module_nm]) {
+    var req = new Ajax.Request('/direct/page/module/', {
+      method: 'get', 
+      asynchronous: false,
+      parameters: 'module_nm=' + module_nm, 
+    }); 
+    myPage._modules[module_nm] = req.transport.responseText.evalJSON();
+  }
+*/
+  return myPage._modules[module_nm];
+}
+//myPage._modules = {};
+myPage._modules = {/literal}{$moduleInfo|@json_encode}{literal};
+myPage.layout_positions = ['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}];
+var moduleList = null;
+var isPrimaryLang = {/literal}{if $docmeta}{if $docmeta.is_primary}true{else}false{/if}{else}true{/if}{literal};
+var isLimitedUser = {/literal}{if $isLimitedUpdateUser}{if $isLimitedUpdateUser}true{else}false{/if}{else}false{/if}{literal};
+
+/* 初期化処理 */
+$(document).ready(function() {
+    moduleList = new ModuleList(myPage.layout_positions);
+
+    for (var i = 0 ;; i++) {
+        var module_type_obj = $("module_type[" + i + "]");
+        if (!module_type_obj) {
+            break;
+        }
+        var place = $("place[" + i + "]").value;
+        moduleList.add(new Module(i), place);
+        observeEvents(i);
+        paintParamHelp(i);
+        showHideParamHelpBtn(i);
+    }
+    var max_no = i;
+
+    function addModule() {
+        var table = $('#modulesTable');
+        var row = table.insertRow(table.rows.length);
+        row.id = 'moduleRow[' + max_no + ']';
+
+        var col = row.insertCell(row.cells.length);
+        col.appendChild(document.createTextNode(max_no));
+        col.appendChild(create('input', {type: 'hidden', name: 'weight[' + max_no + ']', id: 'weight[' + max_no + ']', value: '0'}));
+        col.appendChild(create('input', {type: 'hidden', name: 'place[' + max_no + ']', id: 'place[' + max_no + ']'}));
+
+        col = row.insertCell(row.cells.length);
+        var body = create('table', {'class': 'modulesTableSub'});
+        col.appendChild(body);
+
+        var row2 = body.insertRow(body.rows.length);
+
+        var col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("{/literal}{'/label/contents'|translate}{literal}:"));//コンテンツ
+
+        var sel = create('select', {name: 'module_type[' + max_no + ']', id: 'module_type[' + max_no + ']'});
+
+        $('#module_type[0] option').each(function () {
+            sel.options[sel.options.length] = new Option($(this).text(),$(this).val());
+        });
+
+        sel.id = 'module_type[' + max_no + ']';
+        sel.name = 'module_type[' + max_no + ']';
+        sel.selectedIndex = 0;
+        col2 = row2.insertCell(row2.cells.length);
+        col2.width = "30%";
+        col2.appendChild(sel);
+
+        sel = create('select', {name: 'contents_type[' + max_no + ']', id: 'contents_type[' + max_no + ']'});
+        col2 = row2.insertCell(row2.cells.length);
+        col2.width = "30%";
+        col2.appendChild(sel);
+
+        sel = create('select', {name: 'template[' + max_no + ']', id: 'template[' + max_no + ']'});
+        col2 = row2.insertCell(row2.cells.length);
+        col2.width = "30%";
+        col2.appendChild(sel);
+
+        row2 = body.insertRow(body.rows.length);
+        col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("{/literal}{'/label/parameters'|translate}{literal}:"));//パラメータ
+        col2 = row2.insertCell(row2.cells.length);
+        col2.colSpan = 3;
+        col2.appendChild(create('input', {type: 'text', name: 'param[' + max_no + ']', id: 'param[' + max_no + ']', 'className': 'param'}));
+        col2.appendChild(create('a', {href: 'javascript:void(0)', id: 'paramHelpBtn[' + max_no + ']', className: 'paramHelpBtn'}, "{/literal}{'/label/help'|translate}{literal}"));//ヘルプ
+        col2.appendChild(create('div', {id: 'paramHelp[' + max_no + ']', className:'paramHelp'}));
+
+        row2 = body.insertRow(body.rows.length);
+        col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("{/literal}{'/label/customized_title'|translate}{literal}:"));//独自タイトル
+        col2 = row2.insertCell(row2.cells.length);
+        col2.colSpan = 3;
+        col2.appendChild(create('input', {type: 'text', name: 'contents_title[' + max_no + ']', id: 'contents_title[' + max_no + ']', 'className': 'param'}));
+
+        row2 = body.insertRow(body.rows.length);
+        col2 = row2.insertCell(row2.cells.length);
+        col2.className = "title";
+        col2.appendChild(document.createTextNode("{/literal}{'/label/mobile_display_order'|translate}{literal}:"));//携帯・表示順
+        col2 = row2.insertCell(row2.cells.length);
+        col2.colSpan = 3;
+        col2.appendChild(create('input', {type: 'text', name: 'mobile_order_no2[' + max_no + ']', id: 'mobile_order_no2[' + max_no + ']', size: "2"}));
+        col2.appendChild(create('input', {type: 'checkbox', name: 'mobile_flg2[' + max_no + ']', id: 'mobile_flg2[' + max_no + ']', value: "1", checked: 'checked'}));
+        col2.appendChild(document.createTextNode("{/literal}{'/label/mobile_phone'|translate}{literal}/"));//mobile_phone
+
+        col2.appendChild(create('input', {type: 'checkbox', name: 'smartphone_flg2[' + max_no + ']', id: 'smartphone_flg2[' + max_no + ']', value: "1", checked: 'checked'}));
+        col2.appendChild(document.createTextNode("{/literal}{'/label/smart_phone'|translate}{literal}/"));//smart_phone
+{/literal}{if $module_installed.social}{literal}
+        col2.appendChild(create('input', {type: 'checkbox', name: 'social_flg2[' + max_no + ']', id: 'social_flg2[' + max_no + ']', value: "1", checked: 'checked'}));
+        col2.appendChild(document.createTextNode("{/literal}{'/label/facebook'|translate}{literal}"));//facebook
+{/literal}{/if}{literal}
+        col = row.insertCell(row.cells.length);
+        col.appendChild(create('input', {type: 'button', name: 'delBtn[' + max_no + ']', id: 'delBtn[' + max_no + ']', value: '{/literal}{'/label/delete'|translate}{literal}'}));//{*削除*}
+
+        moduleList.add(new Module(max_no));
+        observeEvents(max_no);
+        changeModuleType(max_no);
+        max_no++;
+    }
+    Event.observe($('#addModuleBtn'), 'click', addModule);
+
+    // 新規の行追加 (主言語で、 サブコンテンツが0件 もしくは 最終行が入力済み だったら)
+    if ( (max_no == 1 || moduleList.get(max_no - 1).moduleType()) && isPrimaryLang && !isLimitedUser ) {
+        addModule();
+    }
+
+    changeLayoutAllCols();
+    Event.observe($('#page_template'), 'change', changeLayoutAllCols);
+
+    function create(tag, atts) {
+        var ele = document.createElement(tag);
+        for (var i in atts) {
+            ele[i] = atts[i];
+        }
+        if (arguments.length == 3) {
+            ele.appendChild(document.createTextNode(arguments[2]));
+        }
+        return ele;
+    }
+
+    function observeEvents(no) {
+        var me = this;
+        $('#module_type[' + no + ']').change(function() {
+            changeModuleType(no);
+        });
+        $('#contents_type[' + no + ']').change(function() {
+            changeContentsType(no);
+        });
+        $('#template[' + no + ']').change(function() {
+            refreshLayout();
+        });
+        var helpBtn = $('#paramHelpBtn[' + no + ']');
+        if (helpBtn) {
+            helpBtn.click(function() {
+                expandParamHelp(no);
+            });
+        }
+        var delBtn = $('#delBtn[' + no + ']');
+        if (delBtn) {
+            // メインモジュールには削除ボタンがない
+            delBtn.click(function() {
+                moduleList.remove(no);
+                $('#modulesTable').deleteRow($('#moduleRow[' + no + ']').rowIndex);
+                refreshLayout();
+            });
+        }
+    }
+
+    // モジュールタイプが変わったときにコンテンツとテンプレートの選択肢を入れ替える
+    function changeModuleType(no) {
+        var module = moduleList.get(no);
+        if (module.isEnable()) {
+            setOptions("contents_type" + "[" + no + "]", myPage.getModuleInfo(module.moduleType()).contents);
+        }
+        else {
+            setOptions("contents_type" + "[" + no + "]", {});
+        }
+        changeContentsType(no);
+    } // changeModuleType()
+
+    // コンテンツタイプが変わったときにテンプレートの選択肢を入れ替える
+    function changeContentsType(no) {
+        var module = moduleList.get(no);
+        if (module.isEnable()) {
+            setOptions("template" + "[" + no + "]", myPage.getModuleInfo(module.moduleType()).contents[module.contentsType()].tpl);
+        }
+        else {
+            setOptions("template" + "[" + no + "]", {});
+        }
+        paintParamHelp(no);
+        showHideParamHelpBtn(no);
+        refreshLayout();
+    } // changeContentsType()
+
+    function setOptions(ele, obj) {
+        var ele = $(ele);
+        while (ele.options.length > 0) {
+            ele.options[0] = null;
+        }
+        var i = 0;
+        for (var key in obj) {
+            ele.options[i] = new Option(obj[key].name, key);
+            i++;
+        }
+        ele.selectedIndex = 0 ;
+        if (ele.options.length <= 1) {
+            // 選択肢が1件以下のときは表示しない
+            ele.css("display","none");
+        }
+        else {
+            ele.css("display","block");
+        }
+    } // setOptions()
+
+    function changeLayoutAllCols() {
+        $("#changelayoutAll").innerHTML = layout_tables[$("#page_template option:selected").val()];
+        refreshLayout();
+    }
+
+    function showHideParamHelpBtn(no) {
+        var module = moduleList.get(no);
+        var hasHelp = false;
+        if (module.isEnable()) {
+            var params = myPage.getModuleInfo(module.moduleType()).contents[module.contentsType()].params;
+            if (params && params.length > 0) {
+                hasHelp = true;
+            }
+        }
+        var btn = $('#paramHelpBtn[' + no + ']');
+        btn.css("display") = hasHelp ? '' : 'none';
+        if (!hasHelp) {
+            expandParamHelp(no, 'none');
+        }
+    }
+
+    /** 2番目の指定があったらその値で開閉する*/
+    function expandParamHelp(no) {
+        var msgBox = $('#paramHelp[' + no + ']');
+        var val = msgBox.css("display") != 'block' ? 'block' : '';
+        if (arguments.length == 2) {
+            val = arguments[1];
+        }
+        msgBox.css("display",val);
+    }
+
+    /** ヘルプをhtmlに埋め込む */
+    function paintParamHelp(no) {
+        var module = moduleList.get(no);
+        var buf = [];
+        if (module.isEnable()) {
+            var params = myPage.getModuleInfo(module.moduleType()).contents[module.contentsType()].params;
+            if (params && params.length > 0) {
+                buf.push('<dl>');
+                for (var i = 0 ; i < params.length ; i++) {
+                    buf.push("<dt>", params[i]['key'], "</dt>");
+                    buf.push("<dd>");
+                    buf.push("<pre>", params[i]['description'], "</pre>");
+                    if (params[i]['default'] != '') {
+                        buf.push("<p>", "<strong>", "{/literal}{'/label/initial_value'|translate}{literal}:", "</strong>", params[i]['default'], "</p>");//初期値
+                    }
+                    if (params[i]['multiple']) {
+                        buf.push("<p>", "<strong>", "{/literal}{'/label/multiple_settings'|translate}{literal}:", "</strong>", "{/literal}{'/modules/page/label/able'|translate}{literal}", "</p>");//複数設定,可能
+                    }
+                    buf.push("</dd>");
+                }
+                buf.push('</dl>');
+            }
+        }
+        var msgBox = $('#paramHelp[' + no + ']');
+        $('#paramHelp[' + no + ']').innerHTML = buf.join('') || "{/literal}{'/msg/no_help'|translate}{literal}";//ヘルプはありません。
+    }
+});
+
+var ModuleList = Class.create();
+ModuleList.prototype = {
+    initialize: function(layout_positions) {
+        this.layout = {};
+        for (var i = 0 ; i < layout_positions.length ; i++) {
+            this.layout[layout_positions[i]] = [];
+        }
+    },
+    move: function(from, to) {
+        if (from == null || to == null) {
+            return;
+        }
+        var mover = this.layout[from.place][from.row];
+        this.layout[from.place].splice(from.row, 1);
+        if ((from.place == to.place) && (to.row > from.row)) {
+            to.row--;
+        }
+        this.layout[to.place].splice(to.row, 0, mover);
+    },
+    add: function(module, place) {
+        place = place || 'sub_module1';
+        var idx = this.layout[place].length;
+        if (arguments.length == 3) {
+            idx = Math.max(0, arguments[2]);
+        }
+        if (idx >= this.layout[place].length) {
+            this.layout[place].push(module);
+        }
+        else {
+            this.layout[place].splice(idx, 0, module);
+        }
+    },
+    remove: function(no) {
+        for (var place in this.layout) {
+            for (var j = 0 ; j < this.layout[place].length ; j++) {
+                if (this.layout[place][j].no == no) {
+                    this.layout[place].splice(j, 1);
+                    return;
+                }
+            }
+        }
+    },
+    get: function(no) {
+        for (var place in this.layout) {
+            for (var j = 0 ; j < this.layout[place].length ; j++) {
+                if (this.layout[place][j].no == no) {
+                    return this.layout[place][j];
+                }
+            }
+        }
+        return null;
+    }
+};
+
+var Module = Class.create();
+Module.prototype = {
+    initialize: function(no) {
+        this.no = no;
+    },
+    name: function(message) {
+        var moduleType = this.moduleType();
+        var contentsType = this.contentsType();
+        var template = this.template();
+        var text = "";
+        if (this.no > 0) {
+            text += "(" + this.no +")<br/>";
+        }
+        text += myPage.getModuleInfo(moduleType).name + "<br/>";
+        text += myPage.getModuleInfo(moduleType).contents[contentsType].name + "<br/>";
+        text += myPage.getModuleInfo(moduleType).contents[contentsType].tpl[template].name + "<br/>";
+        return text;
+    },
+    isEnable: function() {
+        return this.moduleType() != '';
+    },
+    moduleType: function() {
+        return $("#module_type" + "[" + this.no + "] option:selected").val();
+    },
+    contentsType: function() {
+        return $("#contents_type" + "[" + this.no + "] option:selected").val();
+    },
+    template: function() {
+        return $("#template" + "[" + this.no + "] option:selected").val();
+    }
+}
+
+function refreshLayout() {
+    var layout = moduleList.layout;
+    for (var place in layout) {
+        var html = [];
+        html.push('<table onmouseup="layoutmouseup()">');
+        html.push('<tr>');
+        html.push(
+            '<td class="layoutcol" onmouseover="over(event, ',
+            "'" + place + "',",
+            layout[place].length,
+            ')" onmouseout="out(event,',
+            "'" + place + "',",
+            layout[place].length,
+            ')"',
+            '>'
+        );
+        html.push('<table>');
+        for (var j = 0 ; j < layout[place].length ; j++) {
+            if (!layout[place][j].isEnable()) {
+                continue;
+            }
+            html.push('<tr>');
+            html.push(
+                '<td id="b_' + place + '_' + j + '"',
+                'onselectstart="return false" ',
+                'onmouseover="over(event,', "'" + place + "',", j, ')" ',
+                'onmouseout="out(event,', "'" + place + "',", j, ')">'
+            );
+            html.push(
+                '<div ',
+                'onmousedown="move(', "'" + place + "',", j, ')" ',
+                'id="c_' + place + '_' + j + '" ',
+                'class="label">'
+            );
+            html.push(
+                '<div id="l_' + place + '_' + j + '">',
+                layout[place][j].name(),
+                '</div>'
+            );
+            html.push('</div>');
+            html.push('</td>');
+            html.push('</tr>');
+        }
+        html.push('<tr>');
+        html.push(
+            '<td id="b_' + place + '_' + j + '"',
+            'onselectstart="return false" ',
+            'onmouseover="over(event,', "'" + place + "',", j, ')" ',
+            'onmouseout="out(event,', "'" + place + "',", j, ')">'
+        );
+        html.push('<div class="endlabel">&nbsp;</div>');
+        html.push('</td>');
+        html.push('</tr>');
+
+        html.push('</td></tr></table>');
+        if ($("#place_" + place)) {
+            $("#place_" + place).innerHTML = html.join("");
+        }
+    }
+}
+
+var layout_tables = {};
+{/literal}
+{foreach from=$arrTemplateType key=key item=row}
+layout_tables[{$key}] = '{rcms_includelayout no=$key}';
+{/foreach}
+{literal}
+
+function showElt(id) {
+    var ele = $(id);
+    if (ele) {
+        ele.css("display","");
+    }
+}
+
+function hideElt(id) {
+    var ele = $(id);
+    if (ele) {
+        ele.css("display","none");
+    }
+}
+
+function move(place, row) {
+    if (place == 'main_module') {
+        // メインは移動できない
+        return;
+    }
+    $("#c_" + place + "_" + row).css("border",CURRENT_BORDER);
+    movingItem = {place: place, row: row};
+    insert_color = "#00c" ;
+}
+
+function over(e, place, row) {
+    var ip = insertpoint(place, row);
+    if (ip >= 0) {
+        $("#b_" + place + "_" + ip).css("background",insert_color);
+        targetItem = {place: place, row: ip};
+    }
+    else {
+        targetItem = null;
+    }
+    if (window.event) {
+        window.event.cancelBubble = true;
+    }
+    else if (
+        e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+
+function out(e, place, row) {
+    var ip = insertpoint(place, row);
+    if (ip >= 0) {
+        $("#b_" + place + "_" + ip).css("background",BETWEEN_BG);
+    }
+    targetItem = null;
+    if (window.event) {
+        window.event.cancelBubble = true;
+    }
+    else if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+
+function layoutmouseup() {
+    if (movingItem && targetItem) {
+        moduleList.move(movingItem, targetItem);
+        refreshLayout() ;
+    }
+    else {
+        if (movingItem) {
+            $("#c_" + movingItem.place + "_" + movingItem.row).css("border",LABEL_BORDER);
+        }
+        if (targetItem) {
+            $("#b_" + targetItem.place + "_" + targetItem.row).css("background", BETWEEN_BG);
+        }
+    }
+    targetItem = null;
+    movingItem = null;
+}
+
+function insertpoint(place, row) {
+    var point = -1;
+    if (place == 'main_module') {
+        return point;
+    }
+    if (movingItem != null) {
+        // 移動中
+        if ((place == movingItem.place) && ((row == movingItem.row) || (row == movingItem.row + 1))) {
+            ;
+        }
+        else {
+            point = row;
+        }
+    }
+    return point;
+}
+
+
+function submitExec(f, mode) {
+    var layout = moduleList.layout;
+    for (var place in layout) {
+        for (var j = 0 ; j < layout[place].length ; j++) {
+            $("#place[" + layout[place][j].no + "]").value = place;
+            $("#weight[" + layout[place][j].no + "]").value = layout[place].length - j;
+        }
+    }
+    f.MODE.value = mode;
+}
+
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+//-->
+{/literal}
+</script>
+

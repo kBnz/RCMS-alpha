@@ -1,0 +1,47 @@
+<script type="text/javascript">
+<!--
+{literal}
+function setPackageId(package_id,package_nm,package_img){
+
+    if(!window.opener || window.opener.closed){
+        window.close();
+    }else{
+        //親ウィンドウに設定
+        window.opener.document.getElementById('package_id').value = package_id;
+        window.opener.document.getElementById('package_nm').innerHTML = unescape(package_nm);
+        window.opener.document.getElementById('package_img').src = unescape(package_img);
+        window.opener.document.getElementById('package_img').style.width = "128px";
+        window.opener.document.getElementById('package_img').style.height = "128px";
+        window.close();
+    }
+
+}
+{/literal}
+//-->
+</script>
+{module name="rcms_package_list"}
+<h2 class="module_title"><span>公式パッケージ一覧</span></h2>
+<div class="module_contents">
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<div class="list">
+  <table summary="PackageList" class="table_package">
+    <tbody>
+      <tr>
+          <th>パッケージ</th>
+          <th>サンプル</th>
+      </tr>
+      {foreach from=$official item=item}
+      <tr>
+          <th align="center">{$item.package_nm}<br><input type="button" value="このパッケージにする" onClick="setPackageId('{$item.package_id}',escape('{$item.package_nm}'),escape('http://mozshot.nemui.org/shot/large?{$item.site_url}'));return false;"><br>{if $item.tag}{$item.tag}{/if}</th>
+          <td align="center">
+              <img src="http://mozshot.nemui.org/shot/large?{$item.site_url}" alt="{$item.package_nm}" height="256" width="256"><br>
+              <a href="{$item.site_url}" target="_blank">実際にサイトを見てみる</a>
+          </td>
+      </tr>
+      {/foreach}
+    </tbody>
+  </table>
+</div>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+</div>
+{/module}

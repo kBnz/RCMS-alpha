@@ -1,0 +1,111 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+<script language="javascript" type="text/javascript" src="/js/treemenu/TreeMenu.js"></script>
+<script type="text/javascript">
+{literal}
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"From", textId: 'from_dt', btnId: 'from_dt_btn', boxId: 'from_dt_pop', tableId: 'from_dt_table'});
+    DUI.calendar.PopupWindow({title:"To", textId: 'to_dt', btnId: 'to_dt_btn', boxId: 'to_dt_pop', tableId: 'to_dt_table'});
+});
+function setOutputCSV(f){
+
+    $('output_pattern').innerHTML = "loading...";
+    var queryString = '';
+    for (i = 0; i < f.elements['init_group_id[]'].length; i++ ) {
+    // チェックボックスがONの時はその値を設定する。
+        if (f.elements['init_group_id[]'][i].checked == true) {
+            queryString += '&init_group_id[]='+f.elements['init_group_id[]'][i].value;
+        }
+    }
+
+    if (f.elements['no_group_id'].checked == true) {
+        queryString += '&no_group_id='+f.elements['no_group_id'].value;
+    }
+
+    new Ajax.Updater("output_pattern", '/management/login_history/login_history_download/', {method: 'get', parameters: queryString});
+}
+
+function AllGroupChecked(check, form, ele) {
+    if (!form) return;
+
+    var cb = form.elements[ele];
+    if (!cb) return;
+
+    if (!cb.length) {
+        cb = [cb];
+    }
+    for (var i = 0 ; i < cb.length ; i++) {
+        if (!cb[i].disabled) {
+            cb[i].checked = check;
+        }
+    }
+    form.elements['no_group_id'].checked = check;
+    setOutputCSV(form);
+}
+{/literal}
+</script>
+
+
+<div class="list_right_bt">
+<h2 class="login_history">{'/modules/login_history/label/login_history'|translate} {'/modules/login_history/label/csv_download'|translate}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/login_history/login_history/">{'/modules/login_history/label/login_history'|translate}</a>
+{'/modules/login_history/label/csv_download'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="login_history/admin/minitabs.html" page_type=$ct auth=$auth header=$data}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+  <form method="POST" action="/management/login_history/login_history_download/">
+
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="DOWNLOAD" />
+
+    <table style="width:100%">
+    <tr>
+        <th width="150px">{'/label/download_each_group'|translate}{*グループ毎にダウンロード*}</th>
+        <td>
+        <p><a href="javascript:void(0)" onclick="display('group_select');return false;" >{assign var=lblOutGro value='/label/output_groups'|translate}{'/msg/selecting_item_message'|translate:$lblOutGro}{*出力するグループを選択する*}</a></p>
+            <table style="width:100%;display:none;" id="group_select">
+                <tr>
+                    <td>
+                        <p class="hint">{'/msg/select_no_item_error'|translate:$lblOutGro}{*出力するグループを指定してください。*}</p>
+                        <input type="checkbox" onclick="AllGroupChecked(this.checked, this.form, 'init_group_id[]');" />{'/label/all_check'|translate}
+                        <ul class="init_group_id">
+                        <li><input type="checkbox" name="no_group_id" id="no_group_id" value="1" {if $check_group[1]} checked="checked" {/if}/><label for="no_group_id">{'/modules/member/label/no_belonging_group_members'|translate}</label>({$no_group_id_cnt})</li>
+                        {foreach from=$group_list key=key item=row}
+                        <li><input type="checkbox" name="init_group_id[]" id="init_group_id_{$key}" value="{$key}" {if $check_group[$key]} checked="checked"{/if} onclick="setOutputCSV(this.form);" /><label for="init_group_id_{$key}">{$row|escape}</label>({$groups_cnt[$key]+0})</li>
+                        {/foreach}
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
+
+        <label>期間指定：</label>
+        <input type="text" name="s_from_dt" id="from_dt" value="{$s_from_dt|escape}" />
+        <button type="button" id="from_dt_btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="from_dt_pop"></div>
+        ～
+        <input type="text" name="s_to_dt" id="to_dt" value="{$s_to_dt|escape}" />
+        <button type="button" id="to_dt_btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="to_dt_pop"></div>
+
+    <p class="hint">※一度にダウンロードできる件数は20000件までです。超えた場合は期間を短く指定して再度お試し下さい。</p>
+    {buttonbox}
+        <button type="submit" onclick="confirmDownload(this.form);return false;">{'/label/download'|translate}{*ダウンロード*}</button>
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

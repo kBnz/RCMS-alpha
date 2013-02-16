@@ -1,0 +1,144 @@
+{if $file_flg}
+このファイルは{$smarty.const.SITE_TITLE}のフォームから送信された内容です。
+{else}
+このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+{/if}
+
+{$header.title}に回答がありました。
+ログインして確認してください。
+{$smarty.const.ROOT_SSL_URL}/management/survey/survey_report/survey_id={$survey_id}
+
+{if $header.send_inbound_mail_flg == $smarty.const.SURVEY_CONTACT_ALL}
+■回答内容
+
+{if $formData.pf_name1|strip_tags}
+・{'/label/sername'|translate}{*姓*}
+
+{$formData.pf_name1|strip_tags}
+
+{/if}
+{if $formData.pf_name2|strip_tags}
+・{'/label/first_name'|translate}{*名*}
+
+{$formData.pf_name2|strip_tags}
+
+{/if}
+{if $formData.pf_namekana1|strip_tags}
+・{'/label/sername_kana'|translate}{*姓（カナ）*}
+
+{$formData.pf_namekana1|strip_tags}
+
+{/if}
+{if $formData.pf_namekana2|strip_tags}
+・{'/label/first_name_kana'|translate}{*名（カナ）*}
+
+{$formData.pf_namekana2|strip_tags}
+
+{/if}
+{if $formData.pf_age}
+・{'/label/age'|translate}{*年齢*}
+
+{$age_options[$formData.pf_age]}
+
+{/if}
+{if $formData.pf_sex}
+・{'/label/sex'|translate}{*性別*}
+
+{$sex_options[$formData.pf_sex]}
+
+{/if}
+{if $formData.pf_job}
+・{'/label/job_position'|translate}{*職種*}
+
+{$job_options[$formData.pf_job]}
+
+{/if}
+{if $formData.pf_birth|strip_tags}
+・{'/label/date_of_birth'|translate}{*生年月日*}
+
+{$formData.pf_birth|strip_tags}
+
+{/if}
+{if $formData.pf_zip_main|strip_tags || $formData.pf_zip_sub|strip_tags}
+・{'/label/postcode'|translate}{*郵便番号*}
+
+{$formData.pf_zip_main|strip_tags}-{$formData.pf_zip_sub|strip_tags}
+
+{/if}
+{if $formData.pf_tdfk_cd}
+・{'/label/prefecture'|translate}{*都道府県*}
+
+{$tdfk_options[$formData.pf_tdfk_cd]}
+
+{/if}
+{if $formData.pf_address1|strip_tags || $formData.pf_address2|strip_tags}
+・{'/label/address'|translate}{*住所*}
+
+{$formData.pf_address1|strip_tags}
+{$formData.pf_address2|strip_tags}
+
+{/if}
+{if $formData.pf_email|strip_tags}
+・{'/label/mail_address'|translate}{*メールアドレス*}
+
+{$formData.pf_email|strip_tags}
+
+{/if}
+{if $formData.pf_m_email|strip_tags}
+・{'/label/mobile_address'|translate}{*携帯メールアドレス*}
+
+{$formData.pf_m_email|strip_tags}{$m_domain_options[$formData.pf_m_email_domain]}
+
+{/if}
+{if $formData.pf_tel|strip_tags}
+・{'/label/telephone_no'|translate}{*電話番号*}
+
+{$formData.pf_tel|strip_tags}
+
+{/if}
+{if $formData.pf_mtel|strip_tags}
+・{'/label/mobile_no'|translate}{*携帯番号*}
+
+{$formData.pf_mtel|strip_tags}
+
+{/if}
+{if $formData.pf_fax|strip_tags}
+・{'/label/fax_no'|translate}{*FAX番号*}
+
+{$formData.pf_fax|strip_tags}
+
+{/if}
+{section loop=$arrQuestionList name=question_id}{assign var="formkey" value="ans"|cat:$arrQuestionList[question_id].survey_question_id}{assign var="answer_value" value=$formData.$formkey}
+・Q{$arrQuestionList[question_id].shownum}.{$arrQuestionList[question_id].question|nl2br|strip_tags}
+{if $arrQuestionList[question_id].formtype == $smarty.const.SURVEY_FORM_TYPE_TEXTAREA || $arrQuestionList[question_id].formtype == $smarty.const.SURVEY_FORM_TYPE_TEXT}{*テキスト*}
+{if $answer_value != ""}{$answer_value|nl2br|strip_tags}
+
+{else}
+{'/modules/survey/label/no_answer'|translate}{*未回答*}
+
+
+{/if}
+{elseif $arrQuestionList[question_id].formtype == $smarty.const.SURVEY_FORM_TYPE_RADIO || $arrQuestionList[question_id].formtype == $smarty.const.SURVEY_FORM_TYPE_SELECTBOX}{*単一選択*}
+{if $arrQuestionList[question_id].options[$answer_value].text != ""}
+{$arrQuestionList[question_id].options[$answer_value].text|strip_tags}
+
+{else}
+{'/modules/survey/label/no_answer'|translate}{*未回答*}
+
+
+{/if}
+{elseif $arrQuestionList[question_id].formtype == $smarty.const.SURVEY_FORM_TYPE_CHECKBOX}{*複数選択*}{assign var="answered" value=0}
+{foreach key=key item=item name=ans_name from=$arrQuestionList[question_id].options}
+{if $answer_value[$key] ne ''}{assign var="answered" value=1}{$item.text|strip_tags}
+{/if}
+{/foreach}
+{if $answered eq 0}{'/modules/survey/label/no_answer'|translate}{*未回答*}{/if}
+
+
+{/if}
+{/section}
+{/if}
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/
+■管理画面
+{$smarty.const.ROOT_SSL_URL}/management/

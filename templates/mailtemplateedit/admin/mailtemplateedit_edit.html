@@ -1,0 +1,70 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2 class="mailtemplateedit">{'/modules/mailtemplateedit/label/mailtemplete_edit'|translate}{*メールひな形編集*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/mailtemplateedit/mailtemplateedit_list/">{'/modules/mailtemplateedit'|translate}</a>
+<a href="/management/mailtemplateedit/mailtemplateedit_list/">{'/modules/mailtemplateedit/label/mailtemplateedit_list'|translate}</a>
+{'/modules/mailtemplateedit/label/mailtemplete_edit'|translate}
+{/pankuzu}
+{*【パンくず】 サイト基本設定 >> メールひな形編集 >> メールひな形一覧 >> メールひな形編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$mailInfo.mail_tpl_nm}{if $mailInfo.custom}({'/modules/mailtemplateedit/label/customized'|translate}{*カスタマイズ済*}){else}({'/label/default'|translate}{*デフォルト*}){/if}</h3>
+
+<div style="margin-top: 10px" class="list_main">
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+<form name="mailtemplateedit_edit_form" id="mailtemplateedit_edit_form" method="POST" action="/management/mailtemplateedit/mailtemplateedit_edit/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="mail_tpl_id" value="{$mailInfo.mail_tpl_id}" />
+  <input type="hidden" name="_doc_lang" value="{$_doc_lang}" />
+
+
+  {* i18n対応 mailtemplateeditモジュールでは$bagオブジェクトを使用しないため、関連する共通部品を使えない。イレギュラー対応としてベタ書き。 *}
+  {if $mailInfo.mail_tpl_id}
+    {$lang_selector}
+  {/if}
+
+  <textarea name="mail_body" style="width:650px;height:400px">{$formData.mail_body|escape}</textarea>
+
+{if $auth.mailtemplateedit.update}
+  {buttonbox}
+    <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+    {if $mailInfo.custom}
+      <button type="button" onclick="resetConfirm(this.form)">{'/modules/mailtemplateedit/label/reset'|translate}{* 初期に戻す *}</button>
+    {/if}
+  {/buttonbox}
+
+  {if $mailInfo.custom}
+     <p class="hint">※{'/modules/mailtemplate/msg/customized_template_is_canceled'|translate}{*カスタマイズされたテンプレートを削除すると、初期状態のテンプレートが適用されるようになります。*}</p>
+  {/if}
+
+{/if}
+</form>
+</div>
+</div>
+
+{if $mailInfo.custom}
+{literal}
+<script type="text/javascript">
+function resetConfirm(f) {
+    var msg = "{/literal}{'/modules/mailtemplateedit/msg/reset_confirm'|translate}{*これまで編集した内容を破棄して、\nRCMSの初期テンプレートを読み込みます。\nよろしいですか？"*}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "RESET";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+</script>
+{/literal}
+{/if}
+{rcms_include file="management/footer.html"}

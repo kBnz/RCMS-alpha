@@ -1,0 +1,10 @@
+{module name="bbs_show_error_open"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+{rcms_include file="bbs/bbs_show_menu.html"}
+<h2>{'/modules/bbs/label/post_display_limit'|translate}{*記事表示制限*}</h2>
+<p>
+{'/modules/bbs/msg/this_bbs_is_unpublish'|translate}{*大変申し訳ございません。<br>現在この掲示板は非公開となっております。*}
+</p>
+</div>
+{/module}

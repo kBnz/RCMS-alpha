@@ -1,0 +1,250 @@
+<h2>{$realestateData.realestate_nm}</h2>
+{if $realestateData.realestate_img_exists}
+    <img src="{$smarty.const.REALESTATE_SAVE_URL}/{$realestateData.realestate_id}.jpg"><br/>
+{/if}
+■物件名<br/>
+{$realestateData.realestate_nm}
+
+■物件概要<br/>
+{$realestateData.summary}
+
+{if $realestateData.address}
+■所在地<br/>
+{$realestateData.address|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.access}
+■交通<br/>
+{$realestateData.access|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.tiiki_tiku}
+■地域地区<br/>
+{$realestateData.tiiki_tiku|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.total_number_of_houses}
+■総戸数<br/>
+{$realestateData.total_number_of_houses|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.sales_number_of_houses}
+■販売戸数<br/>
+{$realestateData.sales_number_of_houses|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.total_floor_area}
+■建築延床面積<br/>
+{$realestateData.total_floor_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.building_area}
+■建築面積<br/>
+{$realestateData.building_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.site_area}
+■敷地面積<br/>
+{$realestateData.site_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.structure}
+■構造及び階数<br/>
+{$realestateData.structure|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.possession_area}
+■専有面積<br/>
+{$realestateData.possession_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.balcony_area}
+■バルコニー面積<br/>
+{$realestateData.balcony_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.garden_area}
+■専用庭面積<br/>
+{$realestateData.garden_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.terrace_area}
+■テラス面積<br/>
+{$realestateData.terrace_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.porch_area}
+■ポーチ面積<br/>
+{$realestateData.porch_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.trunk_room_area}
+■トランクルーム面積<br/>
+{$realestateData.trunk_room_area|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.room_arrangement}
+■間取り<br/>
+{$realestateData.room_arrangement|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.price}
+■価格<br/>
+{$realestateData.price|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.popular_price}
+■最多価格帯<br/>
+{$realestateData.popular_price|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.parking}
+■駐車場<br/>
+{$realestateData.parking|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.cycle_port}
+■サイクルポート<br/>
+{$realestateData.cycle_port|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.bicycle_parking_space}
+■駐輪場<br/>
+{$realestateData.bicycle_parking_space|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.bike_parking}
+■バイク置場<br/>
+{$realestateData.bike_parking|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.maintenance_fee}
+■管理費<br/>
+{$realestateData.maintenance_fee|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.mending_fee}
+■修繕積立金<br/>
+{$realestateData.mending_fee|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.mending_fund}
+■修繕積立基金<br/>
+{$realestateData.mending_fund|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.manage_reserve_fund}
+■管理準備金<br/>
+{$realestateData.manage_reserve_fund|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.garden_rental}
+■専用庭使用料<br/>
+{$realestateData.garden_rental|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.roof_balcony_rental}
+■ルーフバルコニー使用料<br/>
+{$realestateData.roof_balcony_rental|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.management_form}
+■管理形態<br/>
+{$realestateData.management_form|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.confirmation_number}
+■建築確認番号<br/>
+{$realestateData.confirmation_number|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.plan_construct}
+■設計・施工<br/>
+{$realestateData.plan_construct|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.manager}
+■管理<br/>
+{$realestateData.manager|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.designer}
+■デザイン監修<br/>
+{$realestateData.designer|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.completion}
+■建物竣工<br/>
+{$realestateData.completion|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.available}
+■入居時期<br/>
+{$realestateData.available|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.right_form_after}
+■分譲後の権利形態<br/>
+{$realestateData.right_form_after|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.seller}
+■売主<br/>
+{$realestateData.seller|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_01}
+■{$realestateData.ext_title_01}<br/>
+{$realestateData.ext_txt_01|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_02}
+■{$realestateData.ext_title_02}<br/>
+{$realestateData.ext_txt_02|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_03}
+■{$realestateData.ext_title_03}<br/>
+{$realestateData.ext_txt_03|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_04}
+■{$realestateData.ext_title_04}<br/>
+{$realestateData.ext_txt_04|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_05}
+■{$realestateData.ext_title_05}<br/>
+{$realestateData.ext_txt_05|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_06}
+■{$realestateData.ext_title_06}<br/>
+{$realestateData.ext_txt_06|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_07}
+■{$realestateData.ext_title_07}<br/>
+{$realestateData.ext_txt_07|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_08}
+■{$realestateData.ext_title_08}<br/>
+{$realestateData.ext_txt_08|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_09}
+■{$realestateData.ext_title_09}<br/>
+{$realestateData.ext_txt_09|nl2br}<br/><br/>
+{/if}
+
+{if $realestateData.ext_title_10}
+■{$realestateData.ext_title_10}<br/>
+{$realestateData.ext_txt_10|nl2br}<br/><br/>
+{/if}
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/realestate_list/" >不動産物件一覧へ</a>
+</div>
+<hr/>

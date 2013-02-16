@@ -1,0 +1,50 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>{$module_nm}アカウント一覧</h2>
+<ul>
+{if $rauth->canInsert("/api_twitter/item/")}
+    <li class="add"><a href="/management/api_twitter/api_twitter_edit/"><span>{'/modules/api_twitter/label/add_new_account_btn'|translate}</span></a></li>{* アカウント追加 *}
+{/if}
+</ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_twitter/api_twitter_list/">{$module_nm}</a>
+{$module_nm}アカウント一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+
+  <div class="list_main">
+
+    <p>サイト内で利用している{$module_nm}アカウントの一覧です。</p>
+
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>{'/label/account'|translate}{*アカウント*}</th><th>{$module_nm}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$list item=item}
+        <tr>
+          <td><a href="/management/api_twitter/api_twitter_edit/id={$item.twitter_id}">{$item.user_account}</a></td>
+          <td><a href="http://www.twitter.com/{$item.user_account}" target="_blank">http://www.twitter.com/{$item.user_account}</a></td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,9 @@
+<ul class="minitabs">
+  <li><a href="/management/banner/banner_contents_list/" {if $page_type eq 'banner_contents_list' || $page_type eq 'banner_contents_edit'} class="active"{/if}>{'/modules/banner/label/banner_contents_list'|translate}{*広告枠一覧*}</a></li>
+  <li><a href="/management/banner/banner_list/" {if $page_type eq 'banner_list' || $page_type eq 'banner_edit'} class="active"{/if}>{'/modules/banner/label/banner_list'|translate}{*バナー一覧*}</a></li>
+  <li><a href="/management/banner/banner_client_list/" {if $page_type eq 'banner_client_list' || $page_type eq 'banner_client_edit'} class="active"{/if}>クライアント一覧</a></li>
+  <li><a href="/management/banner/banner_summary/" {if $page_type eq 'banner_summary'} class="active"{/if}>集計結果</a></li>
+  {if $auth.banner.insert}
+  <li><a href="/management/banner/banner_client_edit/wizard=1" {if $page_type eq 'banner_summary' && $wizard==1} class="active"{/if}>広告枠簡単作成</a></li>
+  {/if}
+</ul>

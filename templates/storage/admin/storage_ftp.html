@@ -1,0 +1,91 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/storage/storage_list/">{'/modules/storage'|translate}</a>
+{/pankuzu}
+<div class="clear"></div>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<h3>サーバからダウンロード</h3>
+  <form name="setup_edit" id="setup_edit" action="/management/storage/storage_ftp/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="MODE" value="DOWNLOAD">
+[現在の設定]<br>
+{$storage_ftp_server}の{$storage_ftp_base_dir}　＝＞　{$smarty.const.ROOT_URL}/files{$storage_ftp_local_dir}<input type="text" name="local_dir" size="10" value="{$smarty.request.local_dir}">
+        {if $auth.storage.update}
+          {buttonbox}
+            <button type="submit">ダウンロードを実行する</button>
+          {/buttonbox}
+        {/if}
+  </form>
+
+<h3>FTP設定</h3>
+  <form name="setup_edit" id="setup_edit" action="/management/storage/storage_ftp/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="MODE" value="UPDATE">
+    <table>
+      <tr>
+        <th>FTPサーバ</th>
+          <td>
+            <input type="text" name="storage_ftp_server" size="40" value="{$storage_ftp_server}">
+          </td>
+          <td>
+          </td>
+      </tr>
+      <tr>
+        <th>FTP ID</th>
+          <td>
+            <input type="text" name="storage_ftp_user" size="40" value="{$storage_ftp_user}">
+          </td>
+          <td>
+          </td>
+      </tr>
+      <tr>
+        <th>FTP PWD</th>
+          <td>
+            <input type="text" name="storage_ftp_pass" size="40" value="{$storage_ftp_pass}">
+          </td>
+          <td>
+          </td>
+      </tr>
+      <tr>
+        <th>リモート側のディレクトリ</th>
+          <td>
+            <input type="text" name="storage_ftp_base_dir" size="40" value="{$storage_ftp_base_dir}">
+          </td>
+          <td>最後に必ず / を入れてください。
+          </td>
+      </tr>
+      <tr>
+        <th>ローカル側のディレクトリ</th>
+          <td>
+            /files{$storage_ftp_local_dir}
+          </td>
+          <td>
+          </td>
+      </tr>
+    </table>
+        {if $auth.site.update}
+          {buttonbox}
+            <button type="submit">更新する</button>
+          {/buttonbox}
+        {/if}
+  </form>
+
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

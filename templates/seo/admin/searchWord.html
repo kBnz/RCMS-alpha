@@ -1,0 +1,68 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmInsert() {
+    if(document.getElementById('search_word').value != "") {
+        document.getElementById('MODE').value = "INSERT";
+        document.getElementById('seo_search_word').submit();
+    }
+    else {
+        alert("{/literal}{'/msg/please_input_search_words'|translate}{literal}");//検索語を入力してください。
+    }
+}
+
+function confirmDelete(id) {
+	// 削除してもよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        document.getElementById('MODE').value = "DELETE";
+        document.getElementById('delete_id').value = id;
+        document.getElementById('seo_search_word').submit();
+    }
+}
+
+{/literal}
+-->
+</script>
+<div class="list_right_bt">
+<h2 class="seo">{'/modules/seo/label/search_word_settings'|translate}{*検索語設定*}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/seo/pageInfo/">{'/modules/seo'|translate}</a>
+{'/modules/seo/label/search_word_settings'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> SEO >> 検索語設定*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<p class="hint">{'/modules/seo/msg/set_search_words_to_check'|translate}{*検索エンジンに表示される順位を調べる検索語を設定します。*}</p>
+  <form name="seo_search_word" id="seo_search_word" action="/management/seo/searchWord/" method="POST">
+  <input type="hidden" name="MODE" id="MODE" value="" />
+  <input type="hidden" name="DG_CODE" id="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="delete_id" id="delete_id" value="" />
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+{if $seoSearchWordList|@count < $max_word}
+    <tr><th>{'/label/add'|translate}/{'/label/delete'|translate}{*追加/削除*}</th><th>{'/label/search_word'|translate}{*検索語*}</th></tr>
+    <tr><td><input type="button" value="{'/label/add'|translate}{*追加*}" onclick="confirmInsert()" /></td><td><input type="text" name="search_word" id="search_word" value="" size="50" /><p class="hint">{'/msg/separate_words_by_not_space_but_comma'|translate}{*単語と単語の区切りは「　」(空白)ではなく、「,」(コンマ)で入力してください。*}</p></td></tr>
+{/if}
+{foreach item=searchWord from=$seoSearchWordList}
+    <tr><td><input type="button" value="{'/label/delete'|translate}{*削除*}" onclick="confirmDelete({$searchWord.search_word_id})" /></td><td>{$searchWord.search_word}</td></tr>
+{/foreach}
+  </table>
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}
+
+

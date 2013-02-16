@@ -1,0 +1,39 @@
+{module name="topics_list_digest"}
+<h2 class="module_title"><span>{'/modules/topics/label/topics_list_user_page_name'|translate}{* トピックス一覧 *}</span></h2>
+<div class="module_contents">
+{if $using_season}
+  <form action="/{if $page_sysnm ne 'top'}{$page_sysnm}/{/if}" method="get">
+  {rcms_seasonOptions name=season selected=$season firstOption=true}
+  <input type="submit" value="{'/label/search_btn'|translate}{* 検索 *}" />
+  </form>
+{/if}
+
+{foreach from=$topicsList item=row}
+<div class="topicsItem">
+  <h3>
+    {if $row.link_flg eq '1'}
+      <a href="/{$link_page_sysnm}{if !$link_page_flg && $row.topics_group_id}{$row.topics_group_id}{/if}/id={$row.topics_id}">{$row.subject|escape}</a>
+    {elseif $row.link_flg eq '2'}
+      <a href="{$row.link_url}" {if $row.link_target eq '_blank'}target="_blank"{/if}>{$row.subject|escape}</a>
+    {else}
+      {$row.subject|escape}
+    {/if}
+  </h3>
+  <p>
+  {if !$row.no_use_ymd}
+      <span class="ymd">{$row.ymd_str}{if $row.new_flg}<span style="color:red;">new!!</span>{/if}</span>
+  {/if}
+  <span class="category">{$row.contents_type_nm}</span>
+  </p>
+
+  {if $row.link_flg eq '1'}<p class="digest">{$row.contents|strip_tags:false|mbtruncate:400}</p>{/if}
+
+</div>
+
+{/foreach}
+
+{if !$using_season}
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+{/if}
+</div>
+{/module}

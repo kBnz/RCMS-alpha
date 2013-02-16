@@ -1,0 +1,48 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h3>データアップロード</h3>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">サイト基本設定</a>
+<a href="/management/upload/upload/">データアップロード</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="management/alerts_box.html" messages=$alerts}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="list_main">
+<form name="upload_form" method="POST" action="/management/upload/upload/" ENCTYPE="multipart/form-data">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+
+<input type="file" name="file">
+<div class="clear"></div>
+<div class="clear"></div>
+<input type="submit" name="upload" value="送信">
+</form>
+</div>
+
+{if $insertCount}
+<div id="hiddendetail">
+<a href="javascript:;" onclick="display('hiddendetail');display('showdetail');return false;">&gt;&gt;詳細を見る</a>
+</div>
+<div id="showdetail" style="display:none;border:1px solid;">
+<a href="javascript:;" onclick="display('hiddendetail');display('showdetail');return false;">&gt;&gt;詳細を隠す</a>
+<table>
+{foreach from=$insertValue item=item}
+<tr>
+{foreach from=$item item=item1}
+<td>{$item1.value}</td>
+{/foreach}
+</tr>
+{/foreach}
+</table>
+<a href="javascript:;" onclick="display('hiddendetail');display('showdetail');return false;">&gt;&gt;詳細を隠す</a>
+</div>
+{/if}
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,141 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+
+function chengeStatus(f, mode) {
+    f.MODE.value = mode;
+    f.submit();
+    f.MODE.value = "";
+}
+function deleteItem(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+-->
+{/literal}
+</script>
+{literal}
+<style>
+div#tb_contents h4 {
+  text-decoration: underline;
+}
+div#tb_contents p {
+  margin-left: 1em;
+}
+</style>
+{/literal}
+
+
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_trackback_list'|translate}</h2>{* トラックバック一覧 *}
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+{'/modules/blog/label/blog_trackback_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> トラックバック一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- トラックバック一覧 検索 -->
+  <form action="/management/blog/blog_tb_list/" method="POST">
+    <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+    <fieldset class="search_box">
+      {'/modules/blog/label/blog_entry_title'|translate}{* ブログ記事タイトル *}<select name="blog_item_id">{html_options options=$blog_item_list selected=$blog_item_id}</select>
+      {'/label/publish_status'|translate}{* 公開状況 *}<select name="open_flg">{html_options options=$openOptions selected=$open_flg}</select>
+      {'/modules/blog/label/receive_send'|translate}{* 受信・送信 *}<select name="inout_type">{html_options options=$inoutOptions selected=$inout_type}</select>
+      <input type="submit" value="{'/label/search'|translate}" />{* 検索 *}
+    </fieldset>
+  </form>
+<!-- //トラックバック一覧 検索 -->
+
+<!-- トラックバック一覧 -->
+  <form action="/management/blog/blog_tb_list/" method="POST">
+    <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+    <input type="hidden" name="blog_item_id" value="{$blog_item_id}" />
+    <input type="hidden" name="open_flg" value="{$open_flg}" />
+    <input type="hidden" name="inout_type" value="{$inout_type}" />
+    <input type="hidden" name="MODE" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%">
+      <tr>
+        <th>{if $blog_tb_list}<input type="checkbox" onclick="AllChecked(this.checked, this.form, 'tb_id[]');" />{/if}</th>
+        <th>{'/modules/blog/label/blog_entry_title'|translate}</th>{* ブログ記事タイトル *}
+        <th>{'/label/publish_status'|translate}</th>{* 公開状況 *}
+        <th>{'/modules/blog/label/receive_send'|translate}</th>{* 受信・送信 *}
+        <th>{'/modules/blog/label/receive_send_date'|translate}</th>{* 受信・送信日時 *}
+        <th>{'/modules/blog/label/trackback_content'|translate}</th>{* トラックバックコメント *}
+      </tr>
+    {foreach from=$blog_tb_list name=comment_list item=item}
+    {assign var=tb_id value=$item.tb_id}
+      <tr>
+        <td width="15"><input type="checkbox" name="tb_id[]" value="{$item.tb_id}" {if !$rauth->canDelete("/blog/trackback/$tb_id") && !$rauth->canUpdate("/blog/trackback/$tb_id") }disabled="disabled"{/if} /></td>
+        <td width="20%">{$blog_item_list[$item.blog_item_id]}</td>
+        <td>
+          {if $smarty.const.BLOG_TB_OPEN_ON == $item.open_flg}
+          <img src="/images/management/check.gif" />
+          {elseif $smarty.const.BLOG_TB_OPEN_OFF == $item.open_flg}
+          <img src="/images/management/batu.gif" />
+          {elseif $smarty.const.BLOG_TB_OPEN_NON == $item.open_flg}
+          <img src="/images/management/sankaku.gif" />
+          {/if}
+          {$openOptions[$item.open_flg]}
+        </td>
+        <td width="30">{$inoutOptions[$item.tb_kbn]}</td>
+        <td width="30">
+          {if $item.tb_kbn == "1"}{$item.send_ymdhi|pg_dateformat}
+          {elseif $item.tb_kbn == "2"}{$item.receive_ymdhi|pg_dateformat}{/if}
+        </td>
+        <td>
+          <div id="tb_contents">
+            <h4>{'/label/title'|translate}</h4>{* タイトル *}
+            <p>{$item.title|strip_tags|escape}</p>
+            <h4>{'/modules/blog/label/overview'|translate}</h4>{* 概要 *}
+            <p>{$item.excerpt|strip_tags|escape}</p>
+            <h4>{'/modules/blog/label/ping_url'|translate}</h4>{* ping url *}
+            <p>{$item.ping_url}</p>
+            <h4>{'/modules/blog/label/sender_url'|translate}</h4>{* 送信元URL *}
+            <p>{$item.url|strip_tags|escape}</p>
+          </div>
+        </td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+{if $smarty.foreach.comment_list.total > 0}
+  {buttonbox}
+    <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+    <button type="button" onclick="chengeStatus(this.form, 'OPEN_TB');">{'/label/publish_btn'|translate}</button>{* 公開にする *}
+    <button type="button" onclick="chengeStatus(this.form, 'CLOSE_TB');">{'/label/unpublish_btn'|translate}</button>{* 非公開にする *}
+    <button type="button" onclick="chengeStatus(this.form, 'NON_TB');">{'/label/apply_btn'|translate}</button>{* 申請中にする *}
+    <button type="button" onclick="deleteItem(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+{/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

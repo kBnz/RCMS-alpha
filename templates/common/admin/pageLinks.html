@@ -1,0 +1,33 @@
+{if $page_num == NULL}
+  {assign var="page_num" value="10"} {*ページの最大表示数、デフォルト値*}
+{/if}
+<p class="page_links">
+  {strip}
+  {if $pageInfo.totalCnt != 0}
+    {math equation="x - (x - 1) % y" x=$pageInfo.pageNo y=$page_num assign="start"} {*ページリンクの左端*}
+    {assign var="loop" value=$pageInfo.totalPageCnt+1|min:$start+$page_num}
+
+    <span class="allCnt">{$pageInfo.totalCnt}件中</span><span class="range">{$pageInfo.firstIndex}-{$pageInfo.lastIndex}件目</span>
+
+    {if $pageInfo.pageNo!=1}
+      <a href="/management/?{$pageInfo.param}&pageID=1"  title="first page" class="first"><span>先頭</span></a>
+      <a href="/management/?{$pageInfo.param}&pageID={$pageInfo.pageNo-1}"  title="previous page" class="back"><span>前へ</span></a>
+    {/if}
+
+    {section name=cnt start=$start loop=$loop}
+      {if $smarty.section.cnt.index != $pageInfo.pageNo}
+        <a href="/management/?{$pageInfo.param}&pageID={$smarty.section.cnt.index}" title="page {$smarty.section.cnt.index}" class="page"><span>{$smarty.section.cnt.index}</span></a>
+      {else}
+        <span class="current">{$smarty.section.cnt.index}</span>
+      {/if}
+    {/section}
+
+    {if $pageInfo.pageNo!=$pageInfo.totalPageCnt}
+      <a href="/management/?{$pageInfo.param}&pageID={$pageInfo.pageNo+1}"  title="next page" class="next"><span>次へ</span></a>
+      <a href="/management/?{$pageInfo.param}&pageID={$pageInfo.totalPageCnt}"  title="last page" class="last"><span>最後</span></a>
+    {/if}
+  {else}
+    該当するデータがありません。
+  {/if}
+  {/strip}
+</p>

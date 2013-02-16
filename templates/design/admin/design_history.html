@@ -1,0 +1,22 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design/label/design_list'|translate}</a>
+<a href="/management/design/design_edit/design_id={$design_id}">{'/modules/design/label/template_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】デザイン >> デザイン >> デザイン一覧 >> 独自テンプレート編集 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/design/design_edit/design_id=$design_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

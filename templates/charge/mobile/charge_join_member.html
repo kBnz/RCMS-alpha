@@ -1,0 +1,40 @@
+<div>
+携帯で月額課金を申し込まれた方はID(メールアドレス), パスワードを設定するとPCサイト（有料コンテンツ）を利用することができます。
+</div>
+
+{if $canJoin}
+
+{if $updated}
+<br />
+<br />
+登録しました。
+<br />
+<br />
+{/if}
+
+
+
+<div>
+<p>・メンバー登録済みの方</p>
+<form method="post" action="/{$page_sysnm}/">
+ID(メールアドレス):<br />
+<input type="text" name="email" {istyle type="en"} />
+パスワード:<br />
+<input type="text" name="login_pwd" {istyle type="en"} />
+<input type="submit" value="設定" />
+</form>
+</div>
+
+<br />
+{if !$smarty.session.member_id}
+<div>
+<p>・メンバー未登録の方</p>
+<a href="/member_regist/">メンバー登録</a>
+</div>
+{/if}
+{else}
+<div>
+携帯月額課金を申し込まれていない方は設定することはできません。
+</div>
+
+{/if}

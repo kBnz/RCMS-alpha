@@ -1,0 +1,101 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>サーバ一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a> 
+<a href="/management/rcms/rcms_info_list/">お知らせ一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<table width="100%">
+<tr>
+<th>名前</th>
+<th>ステータス</th>
+<th>タイプ</th>
+<th>インスタンスID</th>
+<th>プライベートIP</th>
+<th>ELB</th>
+</tr>
+{foreach from=$arrInstances item=instance}
+<tr>
+<td>{$instance.tagsName}</td>
+<td>{$instance.instanceStatus}</td>
+<td>{$instance.instanceType}</td>
+<td>{$instance.instanceId}</td>
+<td>{$instance.privateIpAddress}</td>
+<td>{foreach from=$instance.elb item=elb}{$elb} {/foreach}</td>
+<td>
+{if !$instance.tagsName || $instance.tagsName|substr:0:5 eq "TEMP:"}
+<form action="/management/rcms/rcms_aws_list/" method="POST">
+<input type="hidden" name="MODE" value="del_instance">
+<input type="hidden" name="instance_id" value="{$instance.instanceId}">
+<input type="hidden" name="ip" value="{$instance.privateIpAddress}">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<input type="submit" value="削除">
+</form>
+{/if}
+</td>
+</tr>
+{/foreach}
+</table>
+  </form>
+{*
+{foreach from=$arrELB item=elb}
+{$elb.LoadBalancerName}({$elb.DNSName})<br>
+
+    {foreach from=$elb.instances item=instance}
+        {$instance}<br>
+    {/foreach}
+{/foreach}
+*}
+<form action="/management/rcms/rcms_aws_list/" method="POST">
+<input type="hidden" name="MODE" value="empty_elb">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<input type="submit" value="ELB停止">
+</form>
+↓<br>
+<form action="/management/rcms/rcms_aws_list/" method="POST">
+<input type="hidden" name="MODE" value="instance_request">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<input type="submit" value="５サーバ">
+</form>
+↓15秒くらい待つ<br>
+<form action="/management/rcms/rcms_aws_list/" method="GET">
+<input type="submit" value="状態確認">
+</form>
+↓<br>
+<form action="/management/rcms/rcms_aws_list/" method="POST">
+<input type="hidden" name="MODE" value="update_elb">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<input type="submit" value="ELB更新">
+</form>
+↓落ち着いたら<br>
+<form action="/management/rcms/rcms_aws_list/" method="POST">
+<input type="hidden" name="MODE" value="reset_elb">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<input type="submit" value="ELB戻す">
+</form>
+
+※スポットリクエスト<br>
+<form action="/management/rcms/rcms_aws_list/" method="POST">
+<input type="hidden" name="MODE" value="spot_request">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<input type="submit" value="スポットリクエスト５サーバ">
+※反映まで時間がかかるので、連打しないように。
+</form>
+
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

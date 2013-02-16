@@ -1,0 +1,74 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'delete';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/onetime/label/onetime_member_list'|translate}{*ワンタイムメンバー一覧*}</h2>
+<ul>
+{if $auth.onetime.insert}
+<li class="add"><a href="/management/onetime/onetime_edit/"><span>{'/label/add_btn'|translate}{*追加する*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/onetime/onetime_list/">{'/modules/onetime'|translate}</a>
+{'/modules/onetime/label/onetime_member_list'|translate}{/pankuzu}
+{* 【ぱんくず】メンバー管理 >> ワンタイムメンバー >> ワンタイムメンバー一覧 *}
+<p class="page_info">
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/onetime/onetime_list/">
+    <fieldset class="search_box">
+      {'/label/name'|translate}/{'/label/mail_address'|translate}{*名前/メールアドレス*}<input type="text" name="s_text" value="{$s_text}" />
+      {'/label/status'|translate}{*状態*}:<select name="s_status">{html_options options=$status_options selected=$s_status}</select>
+      <button type="submit">{'/label/search'|translate}{*検索*}</button>
+    </fieldset>
+  </form>
+
+  <form name="member_list_form" method="POST" action="/management/onetime/onetime_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>{'/label/status'|translate}{*状態*}</th>
+        <th>Login ID</th>
+        <th>{'/label/name'|translate}/{'/label/mail_address'|translate}{*名前/メールアドレス*}</th>
+        <th>{'/label/expire'|translate}{*有効期限*}</th>
+      </tr>
+      {foreach from=$onetime_list item=row}
+      <tr>
+        <td>{$row.status|rcms_publicimg}</td>
+        <td><a href="/management/onetime/onetime_edit/member_id={$row.member_id}">{$row.login_id}</a></td>
+        <td>
+          {if $row.name}{$row.name|escape}&lt;{$row.email|escape}&gt;{else}{$row.email|escape}{/if}
+        </td>
+        <td>{$row.expire|pg_dateformat:"%Y/%m/%d(%%w%%)"}</td>
+      </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

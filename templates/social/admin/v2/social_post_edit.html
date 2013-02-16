@@ -1,0 +1,88 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link rel="stylesheet" href="/css/management/v2/edit.css">
+
+<div class="main_contents">
+{*
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+*}
+
+
+{*
+{rcms_include file="common/admin/shonin_list.html"}
+*}
+
+
+{*
+$data::<br>
+{$data|@debug_print_var}
+<hr>
+*}
+
+{*
+$unauthorizedList::<br>
+{$unauthorizedList|@debug_print_var}
+<hr>
+$unauthorizedItem::<br>
+{$unauthorizedItem|@debug_print_var}
+*}
+
+<div class="list_main">
+
+<h3>投稿</h3>
+
+<form name="social_post_edit" id="social_post_id" action="/management/social/social_post_edit/" method="POST" >
+    <input type="hidden" name="social_post_id" value="{$social_post_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $social_post_id}UPDATE{else}INSERT{/if}" />
+    <input type="hidden" name="subflg" value="" />
+
+
+    {rcms_include file="common/admin/shonin_message.html"}
+    {rcms_include file="management/messages_box.html"}
+    {rcms_include file="management/errors_box.html"}
+
+<br><br><br>
+    <select id="feed_selector" name="facebook_db_id" value="{$data.facebook_db_id}">
+    {foreach from=$fb_page_list item=item}
+        {if $item.facebook_page_id==7 || $item.facebook_page_id==18}{*デバッグ用*}
+        <option value='{$item.facebook_page_id}' {if $item.facebook_page_id==$data.facebook_db_id}selected="selected"{/if}>{$item.page_name}</option>
+        {/if}{*デバッグ用*}
+    {/foreach}
+    </select>
+    <select id="publish_lang_selector" name="facebook_lang">
+        <option value="">全員に公開</option>
+        <option value="ja" {if $data.facebook_lang=="ja"}selected="selected"{/if}>日本語</option>
+        <option value="en" {if $data.facebook_lang=="en"}selected="selected"{/if}>英語</option>
+        <option value="fr" {if $data.facebook_lang=="fr"}selected="selected"{/if}>フランス語</option>
+        <option value="de" {if $data.facebook_lang=="de"}selected="selected"{/if}>ドイツ語</option>
+        <option value="es" {if $data.facebook_lang=="es"}selected="selected"{/if}>スペイン語</option>
+        <option value="ko" {if $data.facebook_lang=="ko"}selected="selected"{/if}>韓国語</option>
+        <option value="zh" {if $data.facebook_lang=="zh"}selected="selected"{/if}>中国語</option>
+        <option value="ru" {if $data.facebook_lang=="ru"}selected="selected"{/if}>ロシア語</option>
+        <option value="it" {if $data.facebook_lang=="it"}selected="selected"{/if}>イタリア語</option>
+    </select>
+
+    <br>
+    <textarea id="publish_message" name="msg" cols="100" rows="10">{$data.msg}</textarea>
+<br><br><br>
+
+{*
+<hr>
+{$data|@debug_print_var}
+<hr>
+*}
+
+{rcms_include file="management/open_date_box.html" id=$social_post_id data=$data}
+{rcms_include file="management/update_comment.html" comment=$data.update_comment}
+
+{editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+
+
+
+{rcms_include file="management/footer.html"}

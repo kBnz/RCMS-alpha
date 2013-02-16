@@ -1,0 +1,13 @@
+{if $restaurants}
+{module name="api_gnavi_relation"}
+<h2 class="module_title"><span>関連ぐるなび情報</span></h2>
+<div class="module_contents">
+
+  {foreach from=$restaurants item=rest}
+  <p style="margin:1em"><a href="{$rest.detail}">{$rest.restaurant_name}</a></p>
+  {/foreach}
+
+  <p><a href="http://www.gnavi.co.jp/" onclick="return !window.open(this.href)"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" width="90" height="35" alt="グルメ情報検索サイト　ぐるなび"></a></p>
+</div>
+{/module}
+{/if}

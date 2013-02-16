@@ -1,0 +1,46 @@
+{capture name=0}{/capture}
+{capture name=1}<td></td>{/capture}
+{capture name=2}<td></td><td></td>{/capture}
+{capture name=3}<td></td><td></td><td></td>{/capture}
+{capture name=4}<td></td><td></td><td></td><td></td>{/capture}
+{capture name=5}<td></td><td></td><td></td><td></td><td></td>{/capture}
+{capture name=6}<td></td><td></td><td></td><td></td><td></td><td></td>{/capture}
+{module name="topics_calendar"}
+<h2 class="module_title"><span>{'/modules/calendar'|translate}{* カレンダー *}</span></h2>
+<div class="module_contents">
+
+{assign var=prev_y value=$this_year}
+{assign var=prev_m value=$this_month-1}
+{if $prev_m < 1}
+  {assign var=prev_y value=$prev_y-1}
+  {assign var=prev_m value=12}
+{/if}
+{assign var=next_y value=$this_year}
+{assign var=next_m value=$this_month+1}
+{if $next_m > 12}
+  {assign var=next_y value=$next_y+1}
+  {assign var=next_m value=1}
+{/if}
+
+<table class="navi">
+<tr>
+<td class="year"><a class="prev" href="/{$link_page_sysnm}/date={$this_year-1}-{$this_month}">&lt;&lt;</a>{'/label/yyyy'|translate:$this_year}{* N年 *}<a class="next" href="/{$link_page_sysnm}/date={$this_year+1}-{$this_month}">&gt;&gt;</a></td>
+<td class="month"><a class="prev" href="/{$link_page_sysnm}/date={$prev_y}-{$prev_m}">&lt;&lt;</a>{'/label/mm'|translate:$this_month}{* N月 *}<a class="next" href="/{$link_page_sysnm}/date={$next_y}-{$next_m}">&gt;&gt;</a></td>
+</tr>
+</table>
+<table class="calendar">
+<tr><th>{'/label/sunday_short'|translate}{* 日 *}</th><th>{'/label/monday_short'|translate}{* 月 *}</th><th>{'/label/tuesday_short'|translate}{* 火 *}</th><th>{'/label/wednesday_short'|translate}{* 水 *}</th><th>{'/label/thursday_short'|translate}{* 木 *}</th><th>{'/label/friday_short'|translate}{* 金 *}</th><th>{'/label/saturday_short'|translate}{* 土 *}</th></tr>
+{foreach from=$topics_calendar_list item=row name=cal}
+{if $smarty.foreach.cal.first || $row.day_i == $start_day}<tr>{/if}
+{if $smarty.foreach.cal.first}{* 先頭行のパティング *}
+{assign var=paddCnt value=$row.day_i-$start_day}{if $paddCnt < 0}{assign var=paddCnt value=$paddCnt+7}{/if}{$smarty.capture.$paddCnt}
+{/if}
+<td>{if $row.cnt > 0}<a href="/{$link_page_sysnm}/date={$row.time|date_format:'%Y-%m-%d'}">{$row.time|date_format:'%e'}</a>{else}{$row.time|date_format:'%e'}{/if}</td>
+{if $smarty.foreach.cal.last}{* 最後行のパティング *}
+{assign var=paddCnt value=$end_day-$row.day_i}{if $paddCnt < 0}{assign var=paddCnt value=$paddCnt+7}{/if}{$smarty.capture.$paddCnt}
+{/if}
+{if $smarty.foreach.cal.last || $row.day_i == $end_day}</tr>{/if}
+{/foreach}
+</table>
+</div>
+{/module}

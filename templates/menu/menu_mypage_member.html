@@ -1,0 +1,14 @@
+{module name="menu_mypage_member"}
+<h2 class="module_title"><span>{'/modules/member/label/member_intro'|translate}{*メンバー紹介*}</span></h2>
+<div class="module_contents">
+<a href="/member_detail/id={$memberInfo.member_id}">
+{if $memberInfo.image_s_exist}
+<img src="{$smarty.const.MEMBER_PHOTO_S_URL}/{$memberInfo.member_id}.jpg" alt="{'/label/someone_image'|translate:$memberInfo.disp_name}{*$memberInfo.disp_nameさんの画像*}" width="50" border="0"/>
+{elseif $exists_noimage}
+<img src="/files/member/noimage_s.jpg" alt="noimage" width="50" height="60" border="0" />
+{/if}
+</a>
+{'/label/name'|translate}{*名前*}: <a href="/member_detail/id={$memberInfo.member_id}">{$memberInfo.disp_name}</a><br />
+<div class="relation_link"><a href="/member_list/" class="small_text">{'/modules/member/label/member_list'|translate}{*メンバー一覧*}</a></div>
+</div>
+{/module}

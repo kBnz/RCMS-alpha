@@ -1,0 +1,9 @@
+{module name="search_blog_box"}
+<h2 class="module_title"><span>{'/modules/blog/label/search_blog'|translate}{*ブログ検索*}</span></h2>
+<div class="module_contents">
+    <form action="{if $blog_id eq ''}/blog_top/{else}/blog_my_top/blog_id={$blog_id}{/if}" method="POST">
+      {'/label/keyword'|translate}{*キーワード*}<input type="text" style="width:80%;" name="keyword" value="{$smarty.request.keyword|escape}"/>
+      <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+    </form>
+</div>
+{/module}

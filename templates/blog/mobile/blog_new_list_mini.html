@@ -1,0 +1,11 @@
+{if $blog_new_item_list|@count > 0}
+<h2>[emoji:070]{'/modules/blog/label/blog_latest_entry'|translate}{* ブログ最新記事 *}</h2>
+{foreach from=$blog_new_item_list item=item name=new_list}
+{if $item.new_flg}[emoji:120]{/if}<a href="/blog_detail/blog_id={$item.blog_id}&id={$item.blog_item_id}" >{$item.subject|escape}</a>
+<div style="text-align:right;font-size:small;">
+[<a href="/blog_my_top/blog_id={$item.blog_id}" >{$item.title|escape}</a>]<br/>
+{$item.post_ymdhi|pg_dateformat}
+</div>
+{/foreach}
+<hr/>
+{/if}

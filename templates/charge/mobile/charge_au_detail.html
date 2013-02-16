@@ -1,0 +1,32 @@
+{if $chargeInfo}
+{if $module.param.type == 'delete'}
+<div style="text-align: center;font-size:large;">
+<form method="POST" action="{$chargeInfo.url}/mob/KKReq">
+<input type="hidden" name="cp_cd" value="{$chargeInfo.cp_cd}">
+<input type="hidden" name="cp_srv_cd" value="{$chargeInfo.cp_srv_cd}">
+<input type="hidden" name="item_cd" value="{$chargeInfo.item_cd}">
+<input type="hidden" name="odr_id" value="{$chargeInfo.charge_au_id}">
+<input type="hidden" name="odr_sts" value="3">
+<input type="hidden" name="use_fin_page" value="1">
+<input type="hidden" name="ng_url" value="{$smarty.const.ROOT_URL}/direct/charge/charge_au_cancel/">
+<input type="hidden" name="ok_url" value="{$smarty.const.ROOT_URL}/direct/charge/charge_au/?cancel=1">
+<input type="submit" value="月額315円解約">
+</form>
+</div>
+{else}
+<div style="text-align: center;font-size:large;">
+<form method="POST" action="{$chargeInfo.url}/mob/KSReq">
+<input type="hidden" name="cp_cd" value="{$chargeInfo.cp_cd}">
+<input type="hidden" name="cp_srv_cd" value="{$chargeInfo.cp_srv_cd}">
+<input type="hidden" name="item_cd" value="{$chargeInfo.item_cd}">
+<input type="hidden" name="odr_id" value="{$chargeInfo.charge_au_id}">
+<input type="hidden" name="odr_sts" value="3">
+<input type="hidden" name="use_fin_page" value="1">
+<input type="hidden" name="ng_url" value="{$smarty.const.ROOT_URL}/direct/charge/charge_au_cancel/">
+<input type="hidden" name="ok_url" value="{$smarty.const.ROOT_URL}/direct/charge/charge_au/">
+<input type="submit" value="月額315円登録">
+</form>
+</div>
+{/if}
+{/if}
+

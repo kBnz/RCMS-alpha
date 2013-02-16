@@ -1,0 +1,96 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}管理</h2>
+  <ul>
+	{if $auth.simplebox.insert}
+	<li class="add"><a href="/management/simplebox/simplebox_edit/"><span>付箋追加</span></a></li>
+	{/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">コミュニケーション</a>
+<a href="/management/simplebox/simplebox_list/">{$module_nm}</a>
+{$module_nm}管理
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/simplebox/simplebox_list/" {if $pageType=='ownList'}class="active"{/if}>自作付箋一覧</a></li>
+  {if $isAdmin}<li><a href="/management/simplebox/simplebox_admin/" {if $pageType=='adminList'}class="active"{/if}>全付箋一覧</a></li>{/if}
+</ul>
+
+<div class="list_main">
+
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/simplebox/simplebox_list/" method="post" id="sb_form">
+	<div><input type="hidden" name="DG_CODE" value="{$DG_CODE}" /><input type="hidden" name="MODE" value="" /></div>
+	<table style="width:100%">
+	  <thead>
+		<th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'items[]');" /></th>
+		<th>{'公開'|sort_link:open_flg:$sort_url:$sort:$desc}</th>
+		<th>{'ページ'|sort_link:page:$sort_url:$sort:$desc}</th>
+		<th>{'内容'|sort_link:content:$sort_url:$sort:$desc}</th>
+		<th>{'最終更新日時'|sort_link:update_ymdhi:$sort_url:$sort:$desc}</th>
+	  </thead>
+	  <tbody>
+		{foreach from=$simpleboxList item=item}
+		<tr>
+		  <td><input type="checkbox" name="items[]" value="{$item.simplebox_id}" /></td>
+		  <td><img src="/images/management/{if $item.is_hidden==''}check{else}batu{/if}.gif" /></td>
+		  <td><a href="{$item.path}{if $item.query}?{$item.query}{/if}">{$item.path}{if $item.query}?{$item.query}{/if}</a></td>
+		  <td>{$item.content|mbtruncate|escape}<a href="/management/simplebox/simplebox_edit/simplebox_id={$item.simplebox_id}">[編集]</a></td>
+		  <td>{$item.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+		</tr>
+		{/foreach}
+	  </tbody>
+	</table>
+	{pager info=$pageInfo}
+  </form>
+
+  {if $auth.simplebox.update || $auth.simplebox.delete}
+  <div class="btn_box_bottom">
+	<div style="float: left; margin-top: 5px;">選択した{$module_nm}を一括で</div>
+	<ul class="bt_orange" style="margin-left: -5px;">
+	  {if $auth.simplebox.update}
+	  <li><a href="javascript:SB_submit('OPEN');"><span>公開にする</span></a></li>
+	  <li><a href="javascript:SB_submit('CLOSE');"><span>非公開にする</span></a></li>
+	  {/if}
+	  {if $auth.simplebox.delete}
+	  <li><a href="javascript:SB_submit('DELETE');"><span>削除する</span></a></li>
+	  {/if}
+	</ul>
+  </div><!-- end of div.btn_box_bottom -->
+  {/if}
+
+
+
+  {literal}
+  <script type="text/javascript">
+  //<![CDATA[
+  function SB_submit(mode) {
+	var f = $('sb_form');
+	f.MODE.value = mode || '';
+	switch (mode) {
+	case 'OPEN':
+	case 'CLOSE':
+	  f.submit();
+	  break;
+	case 'DELETE':
+	  if (confirm('選択された付箋を削除します。')) f.submit();
+	  break;
+	}
+  }
+  //]]>
+  </script>
+  {/literal}
+</div>	<!-- end of div.list_main -->
+</div>
+
+{rcms_include file="management/footer.html"}

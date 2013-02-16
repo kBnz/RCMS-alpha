@@ -1,0 +1,12 @@
+{if $link_list|@count>0}
+<h2>{'/label/link'|translate}{*リンク*}</h2>
+<ul>
+{foreach item="link_data" from=$link_list  name="dataloop"}
+  <li><a href="{$link_data.link_url}" target="_blank">{$link_data.link_string}</a></li>
+{/foreach}
+</ul>
+<div style="text-align:right;font-size:small;">
+<a href="/link_list/">{'/modules/link/label/link_list'|translate}{*リンク一覧*}</a>
+</div>
+<hr/>
+{/if}

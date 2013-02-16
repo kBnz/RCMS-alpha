@@ -1,0 +1,365 @@
+{literal}
+<!-- rcmsCustomizableTemplatePicker -->
+<script type="text/javascript">
+
+(function($){
+
+    /**
+    * 選択肢を非同期的に所得するセレクタ
+    * ページングも可能
+    *
+    * @対象要素  <select>タグ
+    * @param   url                   = ""      String   選択肢を取得するURL 
+    * @param   enableAutoPaging      = false   bool     下端までスクロールした時に自動的にページングするか 
+    * @param   autoSelectValues      = []      Array    サーバーから取得したオプションに対してチェックを付けておく値の配列
+    * @使用例
+    *
+    */
+    $.fn.rcmsAjaxSelector = function(options){
+
+        // メンバ変数の宣言
+        // jQueryオブジェクト格納用変数
+        var target,         // 対象オブジェクト
+            container,      // セレクタコンテナ
+            fieldset,       // オプションフィールド
+            indicator,      // インジケータ
+            nextPage;       // ページャ
+
+        // その他変数
+        var optsName,         // オプションのname属性値
+            isMultiple,       // 複数選択の可否
+            autoSelectValues, // 検索する値の配列
+            searchedIndex,    // 検索済みのインデックス
+            autoSelectStatus; // autoSelectの実行状況 0:実行前 1:実行中 2:完了
+
+
+        // 引数を宣言
+        var options = $.extend({
+            url                : "",
+            enableAutoPaging   : false,
+            autoSelectValues   : [],
+            beforeSyncOptions  : function(){}
+        },options);
+
+        // 初期化
+        function init(){
+
+            var currentVal = target.val();
+
+            // htmlを生成
+            var html = $("#rcms_ui_ajax_selector_tmpl").tmpl();
+            target.after(html);
+
+            // 複数選択の可否
+            var attr = target.attr("multiple");
+            if (typeof attr !== "undefined" && attr !== false) {
+                isMultiple = true;
+            }else{
+                isMultiple = false;
+            }
+
+            // jQueryオブジェクトを代入
+            container = target.next(".rcms_ui_ajax_selector_container");
+            indicator = $(".loading_indicator",container);
+            fieldset  = $("fieldset",container);
+            nextPage  = $(".pager",container);
+
+            // 選択肢要素の名前を定義(ユニークIDの生成)
+            var now = new Date().getTime().toString();
+            optsName  = "rcms_ajax_selector_" + now + (isMultiple ? "[]" : "");
+
+            // 不必要な物を隠す
+            target.hide();
+            nextPage.hide();
+            indicator.hide();
+
+            // 自動選択で使う値の準備
+            searchedIndex  = 0;
+            autoSelectValues = $.isArray(options.autoSelectValues) ?
+                               $.map(options.autoSelectValues,function(v){return v.toString();}) : []; // inArrayでは厳密比較をするためString型に統一 
+            autoSelectStatus = autoSelectValues.length > 0 ? 0 : 2; // 検索配列が空なら完了
+
+            // イベント登録
+            target.on("change.rcmsAjaxSelector",refleshWithXFCN)         // 対象要素に直接変更が有った場合
+            nextPage.on("click.rcmsAjaxSelector",requestNextOptions);    // さらに表示
+            fieldset.on("change.rcmsAjaxSelector","input",syncOptions);  // オプション選択
+            
+            // 自動ページ送りのイベント登録
+            if(options.enableAutoPaging){
+                container.on("scroll.rcmsAjaxSelector",autoPaging);
+            }
+
+            // targetに元からある値を引き継ぐ
+            var defaults = new Array;
+            $("option",target).each(function(){
+                defaults.push({ "name" : $(this).text(), "value" : $(this).val(), "checked" : ( $(this).attr("selected") ? true : false ) });
+            });
+            addOptions({"data":defaults});
+
+            // オプションを要求
+            if(options.url){
+                indicator.show();
+                $.ajax({
+                    type   : "POST",
+                    async  : true,
+                    url    : options.url,
+                    data   : {},
+                    success: addOptions
+                });
+            }
+
+        };
+
+        // search values
+        function autoSelect(){
+
+            // ステータスのセット(1:実行中)
+            autoSelectStatus = 1;
+
+            // 続きのインデックスを指定する文字列を生成
+            var selectorStr = ( searchedIndex > 0 ) ? ":gt(" + searchedIndex + ")" : "";
+
+            // 未確認のオプションを走査
+            $("input"+selectorStr, fieldset).each(function(){
+                searchedIndex = $("input", fieldset).index( $(this) );
+                var i = $.inArray( $(this).val() , autoSelectValues );
+
+                if( i > -1 ){
+                    // 見つかった場合 チェックを付けて検索配列から該当要素を削除
+                    $(this).attr( "checked", "checked" );
+                    autoSelectValues.splice(i,1);
+                    // 検索配列が空になったらeachを抜ける
+                    if( searchedIndex.length < 1 ){
+                        return false;
+                    }
+                }
+            });
+
+            // 検索配列が残っている場合はページングして繰り返し
+            if( autoSelectValues.length > 0 && nextPage.is(":visible") ){
+                requestNextOptions();
+            }else{
+                autoSelectStatus = 2; //完了
+            }
+            syncOptions();
+        }
+
+
+        // さらに表示
+        function autoPaging(event){
+
+            if( nextPage.is(":visible") ){
+                // ページャの位置を取得
+                var ch = container.outerHeight();  // コンテナの高さ
+                var pt = nextPage.offset().top;    // コンテナの上端とページャの上端との距離
+                var ph = nextPage.outerHeight();   // ページャの高さ
+
+                // ページャが出てくる少し手前で読み込み
+                if( (pt - ch - ph) < 20 ){
+                    requestNextOptions();
+                }
+            }
+        }
+
+        // 次のオプションを要求
+        function requestNextOptions(){
+
+            nextPage.hide();
+            var url = nextPage.data("url");
+
+            if(url){
+                indicator.show();
+                $.ajax({
+                    type   : "POST",
+                    async  : true,
+                    url    : url,
+                    data   : {},
+                    success: addOptions
+                });
+            }
+        }
+
+        // 外部から直接targetが操作されたときに呼ばれる関数
+        function refleshWithXFCN(){
+
+            var current = target.val();
+
+            // 一旦全てのチェックを外す
+            $("input",fieldset).removeAttr('checked');
+
+            // 一致する値のみチェックを付ける
+            if(current){
+                $.each(current,function(){
+                    $("input[value='"+ this +"']",fieldset).attr('checked','checked');
+                });
+            }
+
+            syncOptions(false);
+        }
+
+        // 選択項目をtargetに同期
+        function syncOptions( fireEvent ){
+            if (typeof this.value != "undefined") {
+                options.beforeSyncOptions($(this),target);
+            }
+
+            fireEvent = (typeof fireEvent == "undefined") ? true : false;
+
+            // ラベルのクラスを再設定
+            $("label",fieldset).removeClass("selected");
+            $("input:checked",fieldset).parent().addClass("selected");
+
+            // 値を取得
+            var vals = new Array;
+            $("input:checked",fieldset).each(function(){
+                vals.push({"value" : $(this).val()});
+            });
+
+            // 値をtargetに設定
+            target.html($("#rcms_ui_ajax_selector_select_opts_tmpl").tmpl(vals));
+
+            // targetのchangeイベントを実行 *イベントループを避けるため、実行時はイベントをアンバインド
+            if( fireEvent ){
+                target.off("change.rcmsAjaxSelector");
+                target.trigger("change");
+                target.on("change.rcmsAjaxSelector",refleshWithXFCN);
+            }
+        }
+
+        // オプション追加
+        function addOptions(response){
+
+            // JSONをパース
+            if(typeof response === "object"){
+                var opts = response;
+                var fromAPI = false;
+            }else{
+                var opts = $.parseJSON(response);
+                var fromAPI = true;
+            }
+
+            if(opts.data){
+                var params = { "data" : opts.data, "opts_name" : optsName };
+
+                // 複数選択の可否で分岐
+                if(isMultiple){
+                    var html = $("#rcms_ui_ajax_selector_select_checkbox_opts_tmpl").tmpl(params);
+                }else{
+                    var html = $("#rcms_ui_ajax_selector_select_radio_opts_tmpl").tmpl(params);
+                }
+                fieldset.append(html);
+            }
+
+            // ページャの切り替え
+            if( opts.pager && opts.pager.next_url ){ // 親が存在しない子要素で直接条件判定を試みるとErrorになるので条件を二重化
+                nextPage.data("url",opts.pager.next_url);
+                nextPage.show();
+            }else{
+                nextPage.data("url","");
+                nextPage.hide();
+            }
+
+            // インジケータを隠す
+            indicator.hide();
+
+            // 選択済みの項目がある場合があるので、選択項目を同期
+            syncOptions(false);
+            
+            // 自動選択処理の開始
+            if( fromAPI && autoSelectStatus !== 2 ){
+                autoSelect();
+            }
+
+
+        }
+        
+        return this.each(function(){
+            target = $(this);
+            init();
+        });
+        
+    };
+    
+})(jQuery);
+</script>
+
+<!-- テンプレートの定義   rcms_ui_ajax_selector_tmpl-->
+<script id="rcms_ui_ajax_selector_tmpl" type="text/x-jquery-tmpl">
+    <div class="rcms_ui_ajax_selector_container">
+        <fieldset>
+        </fieldset>
+        <div class="pager">さらに表示...</div>
+        <div class="loading_indicator"></div>
+    </div>
+</script>
+
+<!-- テンプレートの定義   rcms_ui_ajax_selector_select_opts_tmpl-->
+<script id="rcms_ui_ajax_selector_select_opts_tmpl" type="text/x-jquery-tmpl">
+    <option value="${value}" selected="selected">${name}</option>
+</script>
+
+<!-- テンプレートの定義   rcms_ui_ajax_selector_select_radio_opts_tmpl-->
+<script id="rcms_ui_ajax_selector_select_radio_opts_tmpl" type="text/x-jquery-tmpl">
+    {{each(i,data) data}}
+        <label><input type="radio" name="${opts_name}" value="${data.value}" {{if data.checked}}checked="checked"{{/if}}/>${data.name}</label>
+    {{/each}}
+</script>
+
+<!-- テンプレートの定義   rcms_ui_ajax_selector_select_checkbox_opts_tmpl-->
+<script id="rcms_ui_ajax_selector_select_checkbox_opts_tmpl" type="text/x-jquery-tmpl">
+    {{each(i,data) data}}
+        <label><input type="checkbox" name="${opts_name}" value="${data.value}" {{if data.checked}}checked="checked"{{/if}}/>${data.name}</label>
+    {{/each}}
+</script>
+
+
+
+<style type="text/css">
+.rcms_ui_ajax_selector_container{
+    background: #fff;
+    width: 165px;
+    height: 230px;
+    overflow: scroll;
+}
+
+.rcms_ui_ajax_selector_container fieldset{
+    border: none;
+    min-width: 100%;
+}
+
+.rcms_ui_ajax_selector_container label{
+    display: block;
+    clear: both;
+    height: 2em;
+    min-width: 100%;
+}
+.rcms_ui_ajax_selector_container label:hover{
+    background:#def;
+}
+
+.rcms_ui_ajax_selector_container label.selected{
+    background:#cde;
+}
+
+
+.rcms_ui_ajax_selector_container .loading_indicator{
+    background : url(/images/modules/social/loading_w.gif);
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 30px;
+}
+.rcms_ui_ajax_selector_container .pager{
+    color: #aaa;
+    left:0;
+    right:0;
+    text-align: center;
+    height: 30px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.rcms_ui_ajax_selector_container .pager:hover{
+    color: #239AFF;
+}
+
+</style>
+{/literal}

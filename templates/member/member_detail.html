@@ -1,0 +1,75 @@
+{module name="member_detail"}
+<h2 class="module_title"><span>{'/modules/member/label/member_profile'|translate}{*メンバープロフィール*}</span></h2>
+<div class="module_contents">
+
+    <div class="member_photo">
+    {if $memberList.image_s_exist}
+        <p><img src="{$memberList.image_url}" alt="{$memberList.disp_name}"></p>
+    {elseif $exists_noimage}
+        <p><img src="/files/member/noimage.jpg" alt="noimage"></p>
+    {/if}
+    </div>
+
+    <div class="member_profile">
+        <table>
+        {if $memberList.nickname != ""}
+            <tr>
+                <th>{'/label/nickname'|translate}{*ニックネーム*}</th>
+                <td>{$memberList.disp_name}</td>
+            </tr>
+        {else}
+            <tr>
+                <th>{'/label/name'|translate}{*名前*}</th>
+                <td>{$memberList.disp_name}</td>
+            </tr>
+            {if $memberInfo.namekana1 ne '' || $memberInfo.namekana2 ne ''}
+            <tr>
+                <th>{'/label/name_kana'|translate}{*名前かな*}</th>
+                <td>{$memberList.namekana1} {$memberList.namekana2}</td>
+            </tr>
+            {/if}
+        {/if}
+        {if $memberList.univ_short_nm ne '' || $memberList.univ_name ne ''}
+            <tr>
+                <th>{'/label/last_university_attended'|translate}{*出身大学*}</th>
+                <td>{if $memberList.univ_short_nm ne '' }{$memberList.univ_short_nm}{else}{$memberList.univ_name}{/if}</td>
+            </tr>
+        {/if}
+        {if $memberList.hs_sname ne '' || $memberList.hs_name ne ''}
+            <tr>
+                <th>{'/label/last_high_school_attended'|translate}{*出身高校*}</th>
+                <td>{if $memberList.hs_sname ne '' }{$memberList.hs_sname}{else}{$memberList.hs_name}{/if}</td>
+            </tr>
+        {/if}
+        {if $memberList.jrhigh_school ne ''}
+            <tr>
+                <th>{'/label/last_junior_high_school_attended'|translate}{*出身中学校*}</th>
+                <td>{$memberList.jrhigh_school}</td>
+            </tr>
+        {/if}
+        {if $memberList.elementary_school ne ''}
+            <tr>
+                <th>{'/label/last_elementary_school_attended'|translate}{*出身小学校*}</th>
+                <td>{$memberList.elementary_school}</td>
+            </tr>
+        {/if}
+        </table>
+    </div>
+    <div class="clr"></div>
+
+{if $memberList.contact_open_flg == "1" && $memberList.email2 ne '' }
+<p class="relation_link"><a href="/member_mail/id={$memberList.member_id}">{'/label/send_mail'|translate}{*メールを送る*}</a></p>
+{/if}
+
+    <div class="member_comment">
+        <h3>{'/label/comments'|translate}{*コメント*}</h3>
+            <dl>
+            {section name=mydata loop=$memberList.subData}
+                <dt>{$memberList.subData[mydata].title}</dt>
+                <dd>{$memberList.subData[mydata].comment|nl2br}</dd>
+            {/section}
+            </dl>
+    </div>
+
+</div>
+{/module}

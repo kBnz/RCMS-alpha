@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="/css/management/default.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div id="layout">
+<div id="content">
+<div id="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $finish_flg != 1}
+  <form name="bookmark_add_edit" method="POST" action="/direct/bookmark/bookmark_add_edit/" id="bookmark_add_edit">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <h3>ブックマークに追加</h3>
+    <table>
+      <tr>
+        <th>タイトル</th>
+        <td><input size="50" maxlength="100" name="title" type="text" value="{$formData.title|escape}" /></td>
+      </tr>
+      <tr>
+        <th>URL</th>
+        <td><input size="100" maxlength="200" name="url" type="text" value="{$formData.url|escape}" /></td>
+      </tr>
+    </table>
+    <div class="btn_box_bottom">
+    <ul class="bt_orange">
+     <li><a href="javascript:;" onclick="document.bookmark_add_edit.MODE.value='ADD';document.bookmark_add_edit.submit();return false;"><span>登録する</span></a></li>
+    </ul>
+    </div>
+  </form>
+{else}
+  <div style="float:center;"><a href="javascript:;" onclick="self.close()">閉じる</a></div>
+{/if}
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

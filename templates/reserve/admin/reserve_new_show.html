@@ -1,0 +1,11 @@
+<div class="contents_table">
+    {foreach item=reserve_data from=$reserve_new_show_list}
+    <table>
+        <tr><th width="58">題名</th><td>{$reserve_data.title}</td></tr>
+        <tr><th width="58">タイトル</th><td>{$reserve_data.name}</td></tr>
+<!--        <tr><th>URL</th><td>{$reserve_data.url}</td></tr>-->
+        <tr><th>備考</th><td>{$reserve_data.note}</td></tr>
+    </table>
+    {/foreach}aa
+    </div>
+<div>

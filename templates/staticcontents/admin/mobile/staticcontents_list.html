@@ -1,0 +1,45 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}</a>{*管理TOP*}
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'/modules/staticcontents/label/staticcontents_list'|translate}</h2>{*自由HTML一覧*}
+
+{rcms_auth target="insert:/staticcontents/item/"}
+    <a href="/management/{$mt}/{$mt}_edit/">>>{'/modules/staticcontents/label/add_staticcontents'|translate}{*自由HTML追加*}</a><br />
+{/rcms_auth}
+<a href="/management/{$mt}/{$mt}_category_list/">{'/modules/staticcontents/label/staticcontents_category_list'|translate}{*カテゴリ設定*}</a><br />
+
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+<form name="staticcontents_list_form" method="POST" action="/management/staticcontents/staticcontents_list/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" />
+{'/label/title'|translate}{*タイトル*}<br />
+<input type="text" id="s_subject" name="s_subject" value="{$s_subject}" /><br />
+<select name="s_category">{html_options options=$arrCategory selected=$s_category}</select><br />
+<select name="s_page_id">{html_options options=$arrUsepage selected=$s_page_id}</select><br />
+{'/label/contents'|translate}{*コンテンツ*}<br />
+<input type="text" id="s_contents" name="s_contents" value="{$s_contents}" /><br />
+<input type="submit" value="{'/label/search'|translate}{*検索*}" />
+<hr class="for_mng"/>
+{pager info=$pageInfo}
+    {foreach from=$static_list item=row}
+    {assign var=static_id value=$row.static_id}
+      {$row.open_status|rcms_publicimg}{$row.category_nm}<br />
+      <a href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}">{$row.subject|escape}</a><br />
+      {$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}<br />
+      {if $row.use_page}
+          {foreach from=$row.use_page item=pageRow}
+            <a href="{if $pageRow.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $pageRow.page_sysnm ne 'TOP'}{$pageRow.page_sysnm}/{/if}" target="_blank">{$pageRow.page_nm|escape}</a><br />
+          {/foreach}
+      {/if}
+<br />
+    {/foreach }
+{pager info=$pageInfo}
+
+</form>
+
+{rcms_include file="management/mobile/footer.html"}

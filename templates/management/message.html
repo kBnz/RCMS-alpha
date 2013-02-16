@@ -1,0 +1,33 @@
+{rcms_include file="management/header.html"}
+{*
+
+  汎用メッセージ表示テンプレートです。
+
+  使用方法は
+
+  if (!$auth['xxxx']['update']) {
+      postAdminMessage("権限がありません。");
+      exit;
+  }
+
+*}
+{literal}
+<style>
+#message {
+    text-align: center;
+    padding: 80px 0 80px 0;
+}
+</style>
+{/literal}
+
+<div id="content">
+  <div id="message">
+    {$message}
+  </div>
+</div><!-- content -->
+
+<div id="box"></div><!-- box -->
+
+<div class="clear"></div>
+
+{rcms_include file="management/footer.html"}

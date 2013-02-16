@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/label/category_edit'|translate}</h2>{*カテゴリ編集*}
+  <ul>
+    {if $auth.keyword.insert}
+        <li class="add"><a href="/management/{$mt}/keyword_category_edit/"><span>{'/label/create_new_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+    {/if}
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/keyword_item_list/">{'/modules/keyword'|translate}</a>
+<a href="/management/{$mt}/keyword_category_list/">{'/label/categories_list'|translate}</a>
+{'/label/category_edit'|translate}{*カテゴリ編集*}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 用語辞典 >> カテゴリ一覧 >> カテゴリ編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <form action="/management/{$mt}/keyword_category_edit/" method="post" name="keyword_category_edit" id="keyword_category_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="keyword_category_id" type="hidden" value="{$keyword_category_id}" />
+    <input type="hidden" name="MODE" value="" />
+
+    {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/keyword/keyword_category_edit/keyword_category_id=$keyword_category_id"}
+    {rcms_include file="management/messages_box.html"}
+    {rcms_include file="management/errors_box.html"}
+
+    {if $keyword_category_id}  
+    {lang_selector meta=$docmeta link="/management/keyword/keyword_category_edit/keyword_category_id=$keyword_category_id"}
+    {/if}  
+
+    <ul class="minitabs">
+        <li><a href="/management/{$mt}/keyword_list/">{'/modules/keyword/label/keyword_list'|translate}</a></li>{*用語辞典一覧*}
+        <li><a href="/management/{$mt}/keyword_category_list/" class="active">{'/label/categorieslist'|translate}</a></li>{*カテゴリ設定*}
+    </ul>
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+        <td><input size="25" maxlength="50" name="category_name" type="text" value="{$formData.category_name|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/parent_category'|translate}</th>{*親カテゴリ*}
+        <td><select name="parent_id">{html_options options=$arrParentCategory selected=$formData.parent_id}</select></td>
+      </tr>
+      <tr>
+        <th>{'/label/sort'|translate}</th>{*並び順*}
+        <td><input size="5" maxlength="5" name="disp_order" type="text" value="{$formData.disp_order|escape}" /></td>
+      </tr>
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

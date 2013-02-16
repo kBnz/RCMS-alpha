@@ -1,0 +1,14 @@
+{if $photoList|@count>0}
+<h2>[emoji:068]{'/label/new_image'|translate}{*新着画像*}</h2>
+<div style="text-align:center;font-size:small;">
+{section name=mydata loop=$photoList max=3}
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}">{$photoList[mydata].title}</a><br/>
+{$photoList[mydata].ymd}<br/>
+<a href="/photo_detail/id={$photoList[mydata].photo_id}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList[mydata].photo_id}.jpg" alt="{$photoList[mydata].title}"/></a><br/>
+{/section}
+</div>
+<div align="text-align:right;font-size:small;">
+<a href="/photo_list/{$param}">{'/label/to_other_images'|translate}{*他の画像を見る*}</a>
+</div>
+<hr/>
+{/if}

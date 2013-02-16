@@ -1,0 +1,14 @@
+{if $helpRelationRow.relation_link_name1 || $helpRelationRow.relation_link_name2 || $helpRelationRow.relation_link_name3 || $helpRelationRow.relation_link_name4 || $helpRelationRow.relation_link_name5}
+{module name="help_relation_link"}
+<h2 class="module_title"><span>{'/modules/help/label/related_link'|translate}{* 関連リンク *}</span></h2>
+<div class="module_contents">
+<table width="100%">
+  {if $helpRelationRow.relation_link_name1}<tr><td><a href="{$helpRelationRow.relation_link_url1}">{$helpRelationRow.relation_link_name1}</a></td></tr>{/if}
+  {if $helpRelationRow.relation_link_name2}<tr><td><a href="{$helpRelationRow.relation_link_url2}">{$helpRelationRow.relation_link_name2}</a></td></tr>{/if}
+  {if $helpRelationRow.relation_link_name3}<tr><td><a href="{$helpRelationRow.relation_link_url3}">{$helpRelationRow.relation_link_name3}</a></td></tr>{/if}
+  {if $helpRelationRow.relation_link_name4}<tr><td><a href="{$helpRelationRow.relation_link_url4}">{$helpRelationRow.relation_link_name4}</a></td></tr>{/if}
+  {if $helpRelationRow.relation_link_name5}<tr><td><a href="{$helpRelationRow.relation_link_url5}">{$helpRelationRow.relation_link_name5}</a></td></tr>{/if}
+</table>
+</div>
+{/module}
+{/if}

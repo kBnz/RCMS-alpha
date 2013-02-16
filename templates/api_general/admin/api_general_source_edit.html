@@ -1,0 +1,110 @@
+{* vim: set tabstop=2 shiftwidth=2 : *}
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>外部データソース編集{if $source} ({$source.name}){/if}</h2>
+  <ul>
+    {if $auth.api_general.insert}
+      <li class="add">
+        <a href="/management/api_general/api_general_source_edit/"><span>新規作成</span></a>
+      </li>
+    {/if}
+    {if $source}
+      <li class="normal"><a href="/management/api_general/api_general_list/data_source={$source.id}"><span>データ一覧</span></a></li>
+    {/if}
+  </ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+  <a href="/management/menu/contents/">コンテンツ更新</a>
+  <a href="/management/api_general/api_general_source_list/">{$module_nm}</a>
+  外部データソース編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+  <ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_source_list/">データソース一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_search/">外部データ検索</a></li>
+    <li><a href="/management/{$mt}/{$mt}_list/">外部データ一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_edit/">外部データ編集</a></li>
+    <li><a href="/management/{$mt}/{$mt}_source_edit/" class="active">データソース編集</a></li>
+  </ul>
+
+  <div class="list_main">
+
+    <form action="/management/api_general/api_general_source_edit/" method="post">
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+      <h3>基本情報</h3>
+
+      <table style="width:100%">
+        <tbody>
+          <tr>
+            <th style="width:120px;">ID</th><td>{$source.id} <span class="hint">ページ設定で使用します</span></td>
+          </tr>
+          <tr>
+            <th>提供元</th><td><input name="basic[provider]" type="text" value="{$source.provider}" style="width:95%"/></td>
+          </tr>
+          <tr>
+            <th>データソース名</th><td><input name="basic[name]" type="text" value="{$source.name}" style="width:95%"/></td>
+          </tr>
+          <tr>
+            <th>タイプ</th><td>{if $source.official_flg eq 1}公式{else}ユーザー{/if}</td>
+          </tr>
+          <tr>
+            <th>説明</th><td><textarea name="basic[description]" style="width:95%">{$source.description}</textarea></td>
+          </tr>
+          <tr>
+            <th>表示順</th><td><input name="basic[order_no]" style="width:25px;" value="{$source.order_no}"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>詳細情報</h3>
+      <table style="width:100%">
+        <tbody>
+          {foreach from=$guide key=key item=val}
+            <tr>
+              <th>{$val.name}</th>
+              <td>{$val.guide}</td>
+              <td>
+                {if $val.type == 'textarea'}
+                  <textarea name="advanced[{$key}]" style="width:400px;height:70px;">{$source.$key|default:$val.default}</textarea>
+                {else}
+                  <input name="advanced[{$key}]" type="text" value="{$source.$key|default:$val.default|escape}" style="width:400px;"/>
+                {/if}
+              </td>
+            </tr>
+          {/foreach}
+        </tbody>
+      </table>
+
+{if $source.official_flg eq 1 && $smarty.const.SITE_ID ne 1}
+公式の場合は変更できません。
+{else}
+      {* @todo 権限ごとにボタンの表示・非表示の切替 *}
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      {if $source}
+        <input type="hidden" name="data_source" value="{$sourceId}"/>
+      {/if}
+      {buttonbox}
+        {if $auth.api_general.insert && !$source}
+          <button type="submit" name="mode" value="insert">作成する</button>
+        {/if}
+        {if $auth.api_general.update && $source}
+          <button type="submit" name="mode" value="update">更新する</button>
+        {/if}
+        {if $auth.api_general.delete && $source}
+          <button type="submit" name="mode" value="delete" onclick="return confirm('削除してよろしいですか？')">削除する</button>
+        {/if}
+      {/buttonbox}
+{/if}
+    </form>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

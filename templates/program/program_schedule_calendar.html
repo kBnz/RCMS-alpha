@@ -1,0 +1,63 @@
+{module name="calendar_list"}
+<h2 class="module_title"><span>{$this_year}年{$this_month}月</span></h2>
+<div class="module_contents">
+
+{if $this_month == 12}
+  {assign var="aft_year" value=$next_year}
+  {assign var="bef_year" value=$this_year}
+{elseif $this_month == 1}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$pre_year}
+{else}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$this_year}
+{/if}
+
+<br style="clear:both">
+
+{* 月間カレンダー本体 *}
+
+<table width="100%" border="0" cellspacing="1" cellpadding="0" class="calendar">
+<tr class="header">
+  <th colspan="7">
+    <span class="pre"><a href="/program_schedule_calendar/ym={$bef_year}{$pre_month}">&lt;&lt;</a></span>
+    <span class="this">{$this_year}年{$this_month}月</span>
+    <span class="next"><a href="/program_schedule_calendar/ym={$aft_year}{$next_month}">&gt;&gt;</a></span>
+  </th>
+</tr>
+<tr class="daysHeader">
+  <td class="Mon">日</td>
+  <td class="Tue">月</td>
+  <td class="Wed">火</td>
+  <td class="Thu">水</td>
+  <td class="Fri">木</td>
+  <td class="Sat">金</td>
+  <td class="Sun">土</td>
+</tr>
+
+{foreach item=cal_line from=$cal_data.days}
+<tr class="days">
+  {* 週毎の段 *}
+  {foreach from=$cal_line key=key item=item}
+  {* 日毎のデータ *}
+    <td class="{$item.week}{if $item.holiday_flg == 1} holiday{/if} {if $item.date == $today} today{/if}">
+    <div class="head"><span>{$item.day}</span></div>
+    <br style="clear:both"/>
+{*    {if $item.date >= $today}*}
+      <a href="/program_schedule_day/day={$item.date}">
+      <ul>
+        {foreach from=$monthly_schedule_list[$item.date] item=categoryData key=category_id}
+          {if $categoryData.program_num > 0}
+            <li><span>{$categoryData.category_nm} : {$categoryData.program_num}</span></li>
+          {/if}
+        {/foreach}
+      </ul>
+      </a>
+{*    {/if}*}
+    </td>
+  {/foreach}
+</tr>
+{/foreach}
+</table>
+</div>
+{/module}

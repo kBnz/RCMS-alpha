@@ -1,0 +1,220 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>OEM編集</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/oemadmin/oemadmin_list/">{'/modules/oemadmin'|translate}</a>
+<a href="/management/oemadmin/oemadmin_list/">OEM一覧</a>
+OEM編集
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="oemadmin/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/oemadmin/oemadmin_edit/" method="post">
+<input type="hidden" name="oem_id" value="{$oem.oem_id}">
+<input type="hidden" name="MODE" value="{$MODE}">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<table width="100%">
+<tr>
+<th>OEM名</th><td><input type="text" name="oem_nm" value="{$oem.oem_nm|escape}" size="80"></td>
+</tr>
+<tr>
+<th>OEMサイトID</th><td><input type="text" name="oem_site_id" value="{$oem.oem_site_id|escape}" size="10"></td>
+</tr>
+<tr>
+<th>ベースURL</th><td><input type="text" name="rcms_base_url" value="{$oem.rcms_base_url|escape}" size="80"><br>※最後に/は入れないでください。</td>
+</tr>
+<tr>
+<th>ベース SSL URL</th><td><input type="text" name="rcms_base_ssl_url" value="{$oem.rcms_base_ssl_url|escape}" size="80">
+<br><input type="checkbox" name="use_ssl_flg" value="1" {if $oem.use_ssl_flg}checked{/if}>SSLを使う<br>
+<span class="hint">※最後に/は入れないでください。</span></td>
+</tr>
+<tr>
+<th>管理画面フッター</th><td><input type="text" name="management_footer" value="{$oem.management_footer|escape}" size="80"></td>
+</tr>
+<tr>
+<th>ステータス</th><td><select name="status">{html_options options=$arrOemStatus selected=$oem.status}</select></td>
+</tr>
+<tr>
+<th>エディションテキスト</th><td><input type="text" name="edition_text" value="{$oem.edition_text|escape}" size="80"></td>
+</tr>
+<tr>
+<th>ロゴURL</th><td><input type="text" name="mng_logo_url" value="{$oem.mng_logo_url|escape}" size="80"></td>
+</tr>
+<tr>
+<th>OEMサービス名</th><td><input type="text" name="oem_product_nm" value="{$oem.oem_product_nm|escape}" size="80"></td>
+</tr>
+<tr>
+<th>デフォルトの<br>セキュリティチェック</th><td><select name="default_secure_level">{html_options options=$arrRCMS_Secure_level selected=$oem.default_secure_level}</select></td>
+</tr>
+<tr>
+<th>デフォルトの<br>管理画面</th><td><select name="default_mng_type">{html_options options=$arrMng_type selected=$oem.default_mng_type}</select></td>
+</tr>
+<tr>
+<th>デフォルトの<br>多言語利用</th><td><input type="checkbox" name="default_use_multilang" value="1" {if $oem.default_use_multilang}checked{/if}></td>
+</tr>
+<tr>
+<th>メールアドレス</th><td><input type="text" name="oem_email" value="{$oem.oem_email|escape}" size="80"></td>
+</tr>
+<tr>
+<th>メール送信元名</th><td><input type="text" name="oem_email_from_nm" value="{$oem.oem_email_from_nm|escape}" size="80"></td>
+</tr>
+<tr>
+<th>登録完了メールSubject</th><td><input type="text" name="regist_mail_subject" value="{$oem.regist_mail_subject|escape}" size="80"></td>
+</tr>
+<tr>
+<th>問い合わせ先</th><td><input type="text" name="inquiry_url" value="{$oem.inquiry_url|escape}" size="80" /><br>
+<span class="hint">問い合わせ先のURL　例）http://www.r-cms.jp/inquiry_list/</span></td>
+</tr>
+<tr>
+<th>料金プランの選択肢</th>
+<td>
+<textarea name="payment_plan" rows="5" cols="60">{$oem.payment_plan|escape}</textarea><br>
+<span class="hint">例)1:無料版[改行]2:有料版(法人)[改行]3:有料版(法人以外)</span>
+</td>
+</tr>
+<tr>
+<th>コンタクト通知の転送先メールアドレス</th>
+<td>
+<textarea name="contact_mail" rows="5" cols="60">{$formData.contact_mail|escape}</textarea><br>
+<span class="hint">設定したメールアドレスに傘下のサイトの問い合わせ等の通知が届きます。改行区切りで複数設定が可能です。</span>
+</td>
+</tr>
+<tr>
+<th>よく使う機能のデフォルト設定</th>
+<td>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.0}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.1}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.2}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.3}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.4}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.5}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.6}</select><br>
+<select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$oem.favorite_menu.7}</select><br>
+<span class="hint">８つまで設定できます。</span>
+</td>
+</tr>
+<tr>
+<th>OEM管理者ID</th><td><input type="text" name="admin_id" value="{$oem.admin_id|escape}" size="80"></td>
+</tr>
+<tr>
+<th>OEM管理者PWD</th><td><input type="text" name="admin_pwd" value="" size="80"></td>
+</tr>
+
+<tr>
+<th>利用するDBサーバ</th><td><textarea name="arrdb_host" rows="6" cols="30">{$oem.arrdb_host|escape}</textarea></td>
+</tr>
+<tr>
+<th>デフォルトのDBサーバ</th><td><input type="text" name="default_db_host" value="{$oem.default_db_host|escape}" size="20"></td>
+</tr>
+<tr>
+<th>デフォルトのDBサーバ2</th><td><input type="text" name="default_db_host2" value="{$oem.default_db_host2|escape}" size="20"></td>
+</tr>
+<tr>
+<th>デフォルトのMemcaheサーバ</th><td><input type="text" name="default_mem_server" value="{$oem.default_mem_server|escape}" size="20"></td>
+</tr>
+<tr>
+<th>デフォルトのAppサーバ</th><td><input type="text" name="default_app_server" value="{$oem.default_app_server|escape}" size="20"></td>
+</tr>
+<tr>
+<th>SMTPメールサーバ</th><td><input type="text" name="mail_send_smtp_server" value="{$oem.mail_send_smtp_server|escape}" size="20"></td>
+</tr>
+<tr>
+<th>デフォルトでNO_ACCESSCOUNT</th><td><input type="checkbox" name="default_no_accesscount" value="1" {if $oem.default_no_accesscount|escape}checked{/if}>アクセス統計を使わない</td>
+</tr>
+<tr>
+<th>全ページ共通PHP</th><td><textarea name="oem_original_php" rows="4" cols="60">{$oem.oem_original_php|escape}</textarea></td>
+</tr>
+<tr>
+<th>マイページPHP</th><td><textarea name="menu_php" rows="4" cols="60">{$oem.menu_php|escape}</textarea></td>
+</tr>
+<tr>
+<th>ペイメント店舗ID</th><td><input type="text" name="payment_id" size="30" value="{$oem.payment_id|escape}"></td>
+</tr>
+<tr>
+<th>試用期間</th><td><input type="text" name="free_limit_span" size="10" value="{$oem.free_limit_span|escape}"></td>
+</tr>
+<tr>
+<th>通常管理画面のカスタマイズ</th>
+<td><input type="checkbox" name="menu_html_flg" value="1" {if $oem.menu_html_flg}checked{/if}>カスタマイズする<br>
+<textarea name="menu_html" rows="4" cols="60">{$oem.menu_html|escape}</textarea><br>
+<a href="javascript:void(0);" onClick="Effect.toggle('menu_html_default', 'blind');">デフォルトのものを表示</a>
+<div id="menu_html_default" style="display:none">
+    <textarea name="menu_html_default" rows="10" cols="60">{$oem.menu_html_default|escape}</textarea>
+</div>
+</td>
+</tr>
+<tr>
+<th>簡易管理画面のカスタマイズ</th>
+<td><input type="checkbox" name="menu_easy_html_flg" value="1" {if $oem.menu_easy_html_flg}checked{/if}>カスタマイズする<br>
+<textarea name="menu_easy_html" rows="4" cols="60">{$oem.menu_easy_html|escape}</textarea><br>
+<a href="javascript:void(0);" onClick="Effect.toggle('menu_easy_html_default', 'blind');">デフォルトのものを表示</a>
+<div id="menu_easy_html_default" style="display:none">
+    <textarea name="menu_easy_html_default" rows="10" cols="60">{$oem.menu_easy_html_default|escape}</textarea>
+</div>
+</td>
+</tr>
+<tr>
+<th>管理画面CSS</th><td><textarea name="management_css" rows="5" cols="60">{$oem.management_css|escape}</textarea></td>
+</tr>
+<tr>
+<th>登録前処理PHP</th><td><textarea name="pre_regist_php" rows="4" cols="60">{$oem.pre_regist_php|escape}</textarea></td>
+</tr>
+<tr>
+<th>登録画面PHP</th><td><textarea name="regist_php" rows="4" cols="60">{$oem.regist_php|escape}</textarea></td>
+</tr>
+<tr>
+<th>拡張項目タイトル</th><td><textarea name="ext_col_titles" rows="10" cols="60">{$oem.ext_col_titles|escape}</textarea><br>
+<span class="hint">1:項目1[改行]2:項目2[改行]3:項目3[改行]</span>
+</td>
+</tr>
+<tr>
+<th>登録完了メール</th><td><textarea name="rcms_thanks_text" rows="4" cols="60">{$oem.rcms_thanks_text|escape}</textarea></td>
+</tr>
+<tr>
+<th>facebookページタブ用AppID</th><td><textarea name="fb_pagetab_appid" rows="2" cols="60">{$oem.fb_pagetab_appid|escape}</textarea><br>
+<span class="hint">JSON形式で指定: {literal}{"AppID":"AppSecret","AppID":"AppSecret"}{/literal}</span>
+</td>
+</tr>
+
+<tr>
+    <th>facebookのaccess token取得用AppID</th>
+    <td>
+        <textarea name="fb_access_token_appid" rows="1" cols="60">{$oem.fb_access_token_appid|escape}</textarea><br />
+        <span class="hint">JSON形式で指定: {literal}{"AppID":"AppSecret"}{/literal}</span>
+    </td>
+</tr>
+
+<tr>
+<th>スーパーユーザー登録フラグ</th><td><input type="checkbox" value="1" name="regist_super_user_flg" {if $oem.regist_super_user_flg}checked{/if}>登録する<br>
+<span class="hint">登録ユーザーをスーパーユーザーにするかどうか</span>
+</td>
+</tr>
+<tr>
+<th>作成日時</th><td>{$oem.inst_ymdhi|pg_dateformat:"%m/%d %H:%M"}</td>
+</tr>
+<tr>
+<th>更新日時</th><td>{$oem.update_ymdhi|pg_dateformat:"%m/%d %H:%M"}</td>
+</tr>
+</table>
+
+{buttonbox}
+    {if $MODE == 'UPDATE'}
+    <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+    {elseif  $MODE == 'INSERT'}
+    <button type="submit">{'/label/add_btn'|translate}{*追加する*}</button>
+    {/if}
+{/buttonbox}
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

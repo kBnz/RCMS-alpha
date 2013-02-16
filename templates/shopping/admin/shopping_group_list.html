@@ -1,0 +1,91 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+   if (confirm('選択されたグループに含まれる全てのカテゴリも消去されます。\nよろしいですか？')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm} グループ一覧</h2>
+<ul>
+{if $auth.shopping.insert}
+<li class="add"><a href="/management/shopping/shopping_group_edit/"><span>グループ追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/shopping/shopping_group_list/">{$module_nm}</a>
+グループ一覧
+{/pankuzu}
+<div class="clear"></div>
+{*
+<ul class="minitabs">
+  <li><a href="/management/shopping/shopping_group_list/" class="active">商品</a></li>
+  <li><a href="/management/shopping/shopping_category_list/" >カテゴリ設定</a></li>
+</ul>
+<div class="clear"></div>
+*}
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+  <form method="POST" action="/management/shopping/shopping_group_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <div class="search_box">
+      <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select>
+      <input type="submit" value="検索する" />
+    </div>
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+{if $auth.shopping.update || $auth.shopping.delete}
+        <th><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'shopping_group_id[]');" /></th>
+{/if}
+        <th width="26">公開</th>
+        <th colspan="2">グループ名</th>
+        <th>{'最終更新日'|sort_link:update_ymdhi:$sort_url:$sort:$desc}</th>
+        <th width="40">設定</th>
+      </tr>
+  {foreach from=$shopping_group_list item=row}
+      <tr>
+        {if $auth.shopping.update || $auth.shopping.delete}
+          <td style="width:10px"><input type="checkbox" name="shopping_group_id[]" value="{$row.shopping_group_id}"></td>
+        {/if}
+        <td>{$row.open_status|rcms_publicimg}</td>
+        <td>{$row.group_nm}</td>
+        <td style="width: 160px"><a href="/management/shopping/shopping_edit/shopping_group_id={$row.shopping_group_id}">商品作成</a> | <a href="/management/shopping/shopping_list/shopping_group_id={$row.shopping_group_id}">商品一覧</a></td>
+        <td>{$row.update_ymdhi|pg_dateformat}</td>
+  <td><a href="/management/shopping/shopping_group_edit/shopping_group_id={$row.shopping_group_id}">[設定]</a></td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.shopping.update || $auth.shopping.delete}
+      {buttonbox}
+        {if $auth.shopping.update}
+          <p>選択したグループを一括で</p>
+          <button type="submit" onclick="this.form.MODE.value='PUBLIC'">公開にする</button>
+          <button type="submit" onclick="this.form.MODE.value='PRIVATE'">非公開にする</button>
+        {/if}
+        {if $auth.shopping.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

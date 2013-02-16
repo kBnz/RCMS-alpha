@@ -1,0 +1,29 @@
+▼公開設定<br/>
+
+{* 既存のｺﾝﾃﾝﾂの場合に「公開」「非公開」のﾒｯｾｰｼﾞを出す。新規の場合は「...を行ってください。」ﾒｯｾｰｼﾞ *}
+
+        {if $id != ""}
+          {if $data.open_flg == "1"}
+            この内容は、現在<span style="font-weight:bold;color:red;">公開中</span>です。
+          {else}
+            この内容は、現在<span style="font-weight:bold;color:red;">非公開</span>です。
+          {/if}
+<br/>
+        {/if}
+
+{* ﾃﾞﾌｫﾙﾄで公開を選択する *}
+      {if $data.open_type == 'open' || $data.open_type == 'close' || $data.open_type == 'sitei'}
+          {assign var=open_type value=$data.open_type}
+      {else}
+          {assign var=open_type value='open'}
+      {/if}
+
+      <input type="hidden" name="open_flg" value="{$data.open_flg}" />
+      <input type="radio" name="open_type" value="open" {if $open_type == 'open'}checked="checked"{/if} />公開<br />
+      <input type="radio" name="open_type" value="close" {if $open_type == 'close'}checked="checked"{/if} />非公開<br />
+      <input type="radio" name="open_type" value="sitei" {if $open_type == 'sitei'}checked="checked"{/if} />公開日指定(例 2006/04/21 19:30)<br />
+        開始日付<input name="open_sta_date" type="text" value="{$data.open_sta_date}" size="12" {istyle type="en"} /><br />
+        時刻{rcms_opentimeOptions selected=$data.open_sta_time name='open_sta_time'}<br />
+        終了日付<input name="open_end_date" type="text" value="{$data.open_end_date}" size="12" {istyle type="en"} /><br />
+        時刻{rcms_opentimeOptions selected=$data.open_end_time name='open_end_time'}<br />
+<br/>

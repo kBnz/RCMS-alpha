@@ -1,0 +1,487 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script src="/js/jqueryAlerts/jquery.alerts.js" type="text/javascript"></script>
+<link href="/js/jqueryAlerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen,print" />
+
+{literal}
+<style type="text/css">
+.extension_limit_form {
+  text-align: left;
+}
+</style>
+{/literal}
+<script type="text/javascript">
+{literal}
+function updateUpMail(f) {
+    f.MODE.value='UP_MAIL';
+    f.submit();
+}
+function deleteUpMail(f) {
+    f.MODE.value='DEL_MAIL';
+    f.submit();
+}
+function changeReceiveType(){
+
+    if (document.topics_group_edit.receive_type0.checked) {
+    // 指定されたグループのみ
+        j$('#site_mail_group_list').show();
+        j$('#site_mail_member_list').hide();
+    }
+    else if (document.topics_group_edit.receive_type1.checked) {
+    // メンバーであれば誰でもOK
+        j$('#site_mail_group_list,#site_mail_member_list').hide();
+    }
+    else if (document.topics_group_edit.receive_type2.checked) {
+    // 誰でもOK
+        j$('#site_mail_group_list').hide();
+        j$('#site_mail_member_list').show();
+    }
+
+}
+
+j$(function(){
+  function check(v, ele) {
+    var val = j$(ele).val();
+    if (j$.isArray(v)) {
+      for (var i = 0 ; i < v.length ; i++) {
+        if (v[i] == val) {
+          j$(ele).attr('checked', true);
+        }
+      }
+    }
+    else {
+      if (v == val) {
+        j$(ele).attr('checked', true);
+      }
+    }
+  }
+  j$('input.extension_limit_btn').bind('click', function() {
+    var no = j$(this).attr('ext_no');
+    var ext_type = parseInt(j$("[name=ext_type_" + no + "]").val());
+    var valEle = j$('#input_value_limittopics_group_ext_id_' + no);
+    var values = {};
+    j$.each(valEle.val().split("&"), function(i, kv) {
+      var m = kv.match(/^(.+?)(?:=(.*))?$/);
+      if (m) {
+        var key = decodeURIComponent(m[1]);
+        var val = decodeURIComponent(m[2]);
+        if (key.substr(-2) == '[]') {
+          values[key] = values[key] || [];
+          values[key].push(val);
+        }
+        else {
+          values[key] = val;
+        }
+      }
+    });
+
+    var html = '';
+    if (j$.inArray(ext_type, [0, 13]) >= 0) {
+      html = '<div><div class="extension_limit_form">' +
+        '■必須設定<br><input type="checkbox" name="required" value="1" id="required">必須<br><br>' + 
+        '■入力制限<br>' +
+        '<input type="radio" name="type" value="">制限なし<br>' + 
+        '<input type="radio" name="type" value="email">メールアドレス<br>' +
+        '<input type="radio" name="type" value="tel">TEL<br>' +
+        '<input type="radio" name="type" value="zip">郵便番号<br>' +
+        '<input type="radio" name="type" value="url">URL<br>' +
+  /*
+        '<input type="radio" name="type" value="custom">個別設定<br>' +
+          '<input type="checkbox" name="char[]" value="1">全角文字' +
+          '<input type="checkbox" name="char[]" value="2">全角カタカナ' +
+          '<input type="checkbox" name="char[]" value="3">半角ｶﾀｶﾅ' +
+          '<input type="checkbox" name="char[]" value="4">半角英数字' +
+          '<input type="checkbox" name="char[]" value="5">半角数字<br>' +
+  */
+        '<input type="radio" name="type" value="regex" id="limit_type_7">正規表現<br><input type="text" name="regex" value=""><br><br>' +
+        '■文字数制限<br>min:<input type="text" name="min_length" size="2">-max:<input type="text" name="max_length" size="2"><br><br>' +
+        '</div></div>';
+    }
+    else if (j$.inArray(ext_type, [1,2,5,6,4,7,8,12]) >= 0) {
+      html = '<div><div class="extension_limit_form">' +
+        '■必須設定<br><input type="checkbox" name="required" value="1" id="required">必須<br><br>' + 
+        '</div></div>';
+    }
+    else if (j$.inArray(ext_type, [21]) >= 0) {
+      html = '<div><div class="extension_limit_form">' +
+        '■必須設定<br><input type="checkbox" name="required" value="1" id="required">必須<br><br>' + 
+        '■許可するタグ<br>' +
+        '<input type="checkbox" name="allow_script" value="1" id="required">script<br>' + 
+        '</div></div>';
+    }
+    jConfirm(html,
+      '入力制限設定',
+      function(rtn){if(rtn){valEle.val(rtn); }}
+    );
+
+    j$.each(values, function(k,v) {
+      j$("[name=" + k + "]", j$(".extension_limit_form")).each(function() {
+        if (this.type == 'checkbox' || this.type == 'radio') {
+          check(v, this);
+        }
+        else {
+          j$(this).val(v);
+        }
+      });
+    });
+  });
+});
+
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$topics_group_nm}{'/modules/topics/label/topics_group_edit'|translate}</h2>{* 記事グループ編集 *}
+<ul>
+{if $rauth->canInsert("/topics/group/")}
+<li class="add"><a href="/management/topics/topics_group_edit/"><span>{'/modules/topics/label/add_group_btn'|translate}</span></a></li>{* 記事グループ追加 *}
+{/if}
+{if $topics_group_id}
+<li class="normal"><a href="/management/topics/topics_history/topics_group_id={$topics_group_id}"><span>{'/label/update_history'|translate}</span></a></li>{* 更新履歴 *}
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics/label/topics_group_list'|translate}</a>
+{'/modules/topics/label/topics_group_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}{'/label/items'|translate}</a>{* 関連情報 N件 *}
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/topics/topics_group_edit/topics_group_id="|cat:$topics_group_id}
+
+{if $topics_group_id}
+    {rcms_include file="topics/admin/minitabs.html" page_type=$ct}
+{/if}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="topics_group_edit" id="topics_group_edit" action="/management/topics/topics_group_edit/{if $topics_group_id}topics_group_id={$topics_group_id}{/if}" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="subflg" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {if $topics_group_id}
+      {lang_selector meta=$docmeta link='/management/topics/topics_group_edit/topics_group_id='|cat:$topics_group_id}
+    {/if}
+
+    <table width="100%" border="0">
+{if $topics_group_id}
+      <tr>
+        <th style="width:150px">{'/label/group_id'|translate}</th>{* グループID *}
+        <td>
+          {$topics_group_id|escape}
+        </td>
+      </tr>
+{/if}
+      <tr>
+        <th style="width:150px">{'/label/group_name'|translate}<span class="required">{'/label/required'|translate}</span></th>{* グループ名 必須 *}
+        <td>
+          {if !$docmeta.is_primary && $primaryRow.group_nm!=''}
+          <span class="step">{$primaryRow.group_nm|escape}</span>({'/label/primary_language_translation'|translate})<br />
+          {/if}
+          <input type="text" name="group_nm" value="{if $docmeta.is_primary}{$formData.group_nm|escape}{else}{if $formData.group_nm != $primaryRow.group_nm}{$formData.group_nm|escape}{/if}{/if}" size="80" />
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/topics/label/description'|translate}</th>{* 概要 *}
+        <td>
+          {if !$docmeta.is_primary && $primaryRow.description!=''}
+          <span class="step">{$primaryRow.description|escape}</span>({'/label/primary_language_translation'|translate})<br />
+          {/if}
+          <textarea name="description" style="width:500px;height:60px;">{$formData.description|escape}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/sort_order_desc'|translate}</th>{* 表示順 *}
+        <td>
+          {if $docmeta.is_primary}
+          <input type="text" name="order_no" value="{if $docmeta.is_primary}{$formData.order_no|escape}{else}{if $formData.order_no != $primaryRow.order_no}{$formData.order_no|escape}{/if}{/if}" size="4" />
+          {else}
+          {$primaryRow.order_no}
+          {/if}
+        </td>
+      </tr>
+
+      <tr>
+        <th>{'/modules/topics/label/category_cnt'|translate}</th>
+        <td>
+          {if $docmeta.is_primary}
+          <select name="contents_type_cnt">
+          {html_options options=$ContentsTypeCntList selected=$formData.contents_type_cnt}
+          </select>
+          {else}
+          {$primaryRow.contents_type_cnt}
+          {/if}
+          {assign var=contents_type_nm value='/label/category'|translate'}
+          <span class="hint">{'/modules/topics/msgl/about_category_cnt'|translate:$contents_type_nm:$TOPICS_CONTENTS_TYPE_CNT:"1"}</span>
+        </td>
+      </tr>
+
+    </table>
+
+{if $smarty.const.USE_EXTEND_TOPICS_COLUMN}
+        <div id="add_ext_column" class="edit_close" style="{if $use_ext_column} display:none; {/if} ">
+            <h3>{'/modules/topics/label/col_setting'|translate}</h3>{* 拡張項目 *}
+            <p><a href="javascript:void(0)" onclick="j$('#add_ext_column,#add_ext_column2').toggle();return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt=""></a></p>
+        </div>
+
+        <div id="add_ext_column2" style="{if !$use_ext_column} display:none; {/if} ">
+            <div class="edit_open">
+                <h3><span class="link_button">{'/modules/topics/label/col_setting'|translate}</span></h3>{* 拡張項目 *}
+                <p class="close"><a href="javascript:void(0)" onclick="j$('#add_ext_column,#add_ext_column2').toggle();return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+            </div>
+            <div class="edit_contents">
+    {if $docmeta.is_primary}
+    <table width="100%">
+      <tr>
+        <th>{'/modules/topics/label/no_use_ymd'|translate}</th>
+        <td><input type="checkbox" name="no_use_ymd" id="no_use_ymd" value="1" {if $formData.no_use_ymd}checked="checked"{/if} /><label for="no_use_ymd">{'/msg/enable'|translate}</label></td>
+      </tr>
+      <tr>
+        <th>{'/modules/topics/label/use_post_time'|translate}</th>
+        <td><input type="checkbox" name="post_time_flg" id="post_time_flg" value="1" {if $formData.post_time_flg}checked="checked"{/if} /><label for="post_time_flg">{'/msg/enable'|translate}</label></td>
+      </tr>
+      <tr>
+        <th style="width:150px">{'/modules/topics/label/content_input_type'|translate}</th>{* 本文の入力方法 *}
+        <td>
+          {html_radios name="content_input_type" options=$arrTopics_Content_input_type selected=$formData.content_input_type separator=" "}
+          <br>
+          wysiwyg_options:<textarea name="wysiwyg_options" style="width:300px" rows="2">{if $docmeta.is_primary}{$formData.wysiwyg_options|escape}{else}{if $formData.wysiwyg_options != $primaryRow.wysiwyg_options}{$formData.wysiwyg_options|escape}{/if}{/if}</textarea>
+        </td>
+      </tr>
+    </table>
+    {/if}
+
+    <div class="hint">{'/modules/topics/help/edit_contents_selectbox'|translate}</div>
+    <table width="100%">
+      <tr>
+          <th>{'/label/id'|translate}</th>
+          <th>{'/lable/parent_item'|translate}{*親項目*}</th>
+          <th>{'/label/item_name'|translate}<br/>{'/label/annotation'|translate}</th>
+          <th>{'/label/setting_item'|translate}</th>
+          <th>{'/label/limit_item'|translate}</th>
+          <th>{'/label/sort_order_desc'|translate}</th>
+      </tr>
+{foreach from=$ext_column item=item}
+    
+      <tr>
+        <th rowspan="2">{$item.topics_group_ext_id|substr:20}
+            {* ↓DB入出力制御に使用するので消しちゃダメ *}
+            <input type="hidden" name="{$item.topics_group_ext_id}" value="{$formData[$item.topics_group_ext_id]|escape}">
+        </th>
+
+        <th valign="top" rowspan="2">
+    {if $formData[$item.ext_parent_flg]}
+                <input type="text" name="{$item.ext_parent_col_nm}" value="{$formData[$item.ext_parent_col_nm]|escape}" style="width:180px;">
+                <br>{'/lable/repeat_count'|translate}{*繰り返し回数*}:
+                <select name="{$item.ext_group_loop}">
+                {section name=cnt start=1 loop=31}
+                <option value="{$smarty.section.cnt.iteration}" {if $smarty.section.cnt.iteration eq $formData[$item.ext_group_loop]}selected{/if}>{$smarty.section.cnt.iteration}</option>
+                {/section}
+                </select>
+    {else}
+        {if $docmeta.is_primary}
+            <select name="{$item.ext_group_id}"><option value="">{'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrTopics_ext_nm selected=$formData[$item.ext_group_id]}</select>を親項目にする
+
+            {if !$formData[$item.ext_group_id]}
+                <br>{'/lable/repeat_count'|translate}{*繰り返し回数*}:
+                <select name="{$item.ext_group_loop}">
+                {section name=cnt start=1 loop=31}
+                    <option value="{$smarty.section.cnt.iteration}" {if $smarty.section.cnt.iteration eq $formData[$item.ext_group_loop]}selected{/if}>{$smarty.section.cnt.iteration}</option>
+                {/section}
+                </select>
+            {/if}
+
+        {else}
+            {$arrTopics_ext_nm[$item.ext_group_id]|escape}
+            <input type="hidden" name="{$item.ext_group_id}" value="{$formData[$item.ext_group_id]|escape}" />
+        {/if}
+    {/if}
+
+        </th>
+        <th valign="top" rowspan="2">
+            {if !$docmeta.is_primary && $primaryRow[$item.ext_title]!=''}<span class="step">{$primaryRow[$item.ext_title]|escape}</span>({'/label/primary_language_translation'|translate})<br />{/if}
+            {'/label/item_name'|translate}:<input type="text" name="{$item.ext_title}" value="{if $docmeta.is_primary}{$formData[$item.ext_title]|escape}{else}{if $formData[$item.ext_title] != $primaryRow[$item.ext_title]}{$formData[$item.ext_title]|escape}{/if}{/if}" style="width:180px;" />
+            <br >
+            {'/label/annotation'|translate}:<input type="text" name="{$item.ext_help_msg}" value="{if $docmeta.is_primary}{$formData[$item.ext_help_msg]|escape}{else}{if $formData[$item.ext_help_msg] != $primaryRow[$item.ext_help_msg]}{$formData[$item.ext_help_msg]|escape}{/if}{/if}" style="width:180px;" />
+        </th>
+
+        {if $docmeta.is_primary}
+        <td><select name="{$item.ext_type}" style="width:180px;"><option value="">{'/label/no_select'|translate}</option>{* 選択無し *}
+            {html_options options=$arrTopics_ext_type selected=$formData[$item.ext_type]}</select><br />
+            <textarea name="{$item.ext_option}" style="width:180px;" rows="2">{$formData[$item.ext_option]|escape}</textarea>
+        </td>
+        {else}
+        <td>
+            {assign value=$formData[$item.ext_type] var=ext_type}
+            {$arrTopics_ext_type[$ext_type]}
+            {if $ext_type == 2 || $ext_type == 5}
+            {if !$docmeta.is_primary && $primaryRow[$item.ext_option]!=''}<p class="major_language"><span class="step">{$primaryRow[$item.ext_option]|escape}</span><span class="g_translate">({'/label/primary_language_translation'|translate})</p>{/if}
+            <textarea name="{$item.ext_option}" style="width:180px;" rows="2">{$formData[$item.ext_option]|escape}</textarea>
+            {else}
+            <input type="hidden" name="{$item.ext_option}" value="{$formData[$item.ext_option]|escape}" />
+            {/if}
+        </td>
+        {/if}
+
+        {if $docmeta.is_primary}
+        <td>
+          <input type="hidden" class="extension_limit" name="{$item.ext_limit_item}" value="{$formData[$item.ext_limit_item]|escape}" style="width:70px;" id="input_value_limit{$item.topics_group_ext_id}">
+          <input type="button" value="入力" class="extension_limit_btn" id="input_box_limit{$item.topics_group_ext_id}" ext_no="{$item.no}">
+        </td>
+        <td>
+            <input type="text" name="{$item.ext_order_no}" value="{$formData[$item.ext_order_no]|escape}" style="width:30px;">
+        </td>
+        {else}
+        <td>
+            {$formData[$item.ext_limit_item]|escape}
+            <input type="hidden" name="{$item.ext_limit_item}" value="{$formData[$item.ext_limit_item]|escape}" />
+        </td>
+        <td>
+            {$formData[$item.ext_order_no]|escape}
+            <input type="hidden" name="{$item.ext_order_no}" value="{$formData[$item.ext_order_no]|escape}" />
+        </td>
+        {/if}
+      </tr>
+      <tr>
+        <td colspan="3">
+            {if $docmeta.is_primary}
+            <span class="hint">{'/msg/extension_colum_html_source'|translate}{*記事編集時に、入力フォーム変更したい場合は入力してください。*}</span>
+            <textarea name="{$item.ext_template}" style="width:320px;" rows="5">{$formData[$item.ext_template]|escape}</textarea>
+            {else}
+            <input type="hidden" name="{$item.ext_template}" value="{$formData[$item.ext_template]|escape}" />
+            {/if}
+        </td>
+
+      </tr>
+
+{/foreach}
+    </table>
+        </div>
+    </div>
+{/if}
+
+
+  {if $docmeta.is_primary}
+    <h3><span class="link_button">{'/label/detail_settings'|translate}</span></h3>{* 詳細設定 *}
+    <table width="100%">
+      <tr>
+        <th style="width:150px" valign="top">{'/label/viewing_limit'|translate}</th>{* 閲覧制限 *}
+        <td><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select></td>
+      </tr>
+      <tr>
+        <th valign="top">{'/label/editing_limit'|translate}</th>{* 編集制限 *}
+        <td><select name="writer_groups[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrWriterGroups}</select></td>
+      </tr>
+      <tr>
+        <th valign="top">{'/label/my_topics_only_limit_groups'|translate}</th>{* 所有記事限定編集制限 *}
+        <td><select name="my_topics_only_limit_groups[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrMy_topics_only_limit_groups}</select></td>
+      </tr>
+      <tr>
+        <th>{'/modules/topics/label/use_multi_page'|translate}</th>
+        <td><input type="checkbox" name="use_multi_page" id="use_multi_page" value="1" {if $formData.use_multi_page}checked="checked"{/if} /><label for="use_multi_page">{'/msg/enable'|translate}</label></td>
+      </tr>
+      <tr>
+        <th>{'/modules/topics/label/data_limit'|translate}</th>
+        <td><input type="text" name="data_limit" id="data_limit" value="{$formData.data_limit}" size="3" />
+        <span class="hint">{'/msg/zero_is_unlimited'|translate}{'/modules/topics/msg/data_limit_help'|translate}</span></td>
+      </tr>
+      <tr>
+        <th>{'/modules/topics/label/disable_rss_flg'|translate}</th>
+        <td><input type="checkbox" name="disable_rss_flg" id="disable_rss_flg" value="1" {if $formData.disable_rss_flg}checked="checked"{/if} /><label for="disable_rss_flg">{'/msg/enable'|translate}</label>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/topics/label/rss_format'|translate}</th>
+        <td>
+            <textarea name="rss_format" rows="3" style="width:400px;">{$formData.rss_format|escape}</textarea>
+        </td>
+      </tr>
+    </table>
+
+{if $rauth->canUpdate("/topics/group/$topics_group_id") && $topics_group_id!=''}
+  <h3>{'/modules/topics/label/mobile_settings'|translate}{* ケータイ設定 *}</h3>
+        <table width="650">
+          <tr>
+            <th width="25%">{'/modules/topics/label/email_address_for_post_from_mobile'|translate}{* 投稿用メールアドレス *}</th>
+            <td width="75%">
+            {if $ReceiveMail}{$ReceiveMail.site_mail_email}<br>
+            <button type="button" onclick="updateUpMail(this.form);">{'/modules/topics/label/change_emal_adress_for_post_from_mobile'|translate}{* 投稿用メールアドレスを再発行する *}</button>
+            <input type="hidden" name="site_mail_id" value="{$ReceiveMail.site_mail_id}" />
+            <input type="hidden" name="site_mail_email" value="{$ReceiveMail.site_mail_email}" />
+            {else}
+            <button type="button" onclick="updateUpMail(this.form);">{'/modules/topics/label/get_emal_adress_for_post_from_mobile'|translate}{* 投稿用メールアドレスを発行する *}</button>
+            {/if}
+            </td>
+        {if $ReceiveMail}
+            <td rowspan="4"><img src="{$qrcode_path}"></td>
+        {/if}
+          </tr>
+        {if $ReceiveMail}
+          <tr>
+            <th>{'/modules/topics/label/range_permission_posting_entries'|translate}{* 投稿の許可範囲 *}</th>
+            <td>
+              <p class="hint">{'/modules/topics/msg/from_email_is_member_only'|translate}{* 設定されたメンバーのアドレスからのみ、投稿を受け付けます。 *}
+              {'/msg/cant_use_emoji'|translate}{* 絵文字はご利用できません。 *}</p>
+              <input type="radio" name="receive_type" id="receive_type0" onclick="changeReceiveType()" value="0" {if $ReceiveMail.receive_type eq 0}checked{/if}>{'/modules/topics/label/only_the_specified_group'|translate}{* 指定されたグループのみ *}<br>
+              <input type="radio" name="receive_type" id="receive_type1" onclick="changeReceiveType()" value="1" {if $ReceiveMail.receive_type eq 1}checked{/if}>{'/modules/topics/label/all_members_can_post_from_mobile'|translate}{* メンバーであれば誰でもOK *}<br>
+              <input type="radio" name="receive_type" id="receive_type2" onclick="changeReceiveType()" value="2" {if $ReceiveMail.receive_type eq 2}checked{/if}>{'/modules/topics/label/everybody_members_can_post_from_mobile'|translate}{* 誰でもOK *}<br>
+              <div id="site_mail_group_list" style="{if $ReceiveMail.receive_type != 0}display:none;{/if}">
+                <p class="hint">{'/modules/topics/msg/select_group_posting_entries_from_mobile'|translate}{* メール投稿を許可するグループを選択してください。(複数選択できます) *}</p>
+                <select name="receive_group_ids[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$ReceiveMail.receive_group_ids}</select>
+              </div>
+              <div id="site_mail_member_list" style="{if $ReceiveMail.receive_type != 2}display:none;{/if}">
+                <p class="hint">{'/modules/topics/msg/select_member_from_address'|translate}{* 送信元となるメンバーを選択してください。 *}</p>
+                <select name="default_member_id" style="width: 150px" >{html_options options=$arrMember selected=$ReceiveMail.default_member_id}</select>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>{'/label/topics/category_name_from_email'|translate}<span class="required">{'/label/required'|translate}</span></th>
+            <td>
+              <p class="hint">{'/modules/topics/msg/select_category_of_entry_from_mobile'|translate}{* カテゴリを選択して下さい。ケータイから投稿された記事は全て設定されたカテゴリになります。 *}</p>
+              <select name="site_mail_category" >{html_options options=$arrUpMailTopicsCategory selected=$ReceiveMail.site_mail_category}</select>
+            </td>
+          </tr>
+
+          <tr>
+            <th>{'/label/deletion_of_mail_posting_settings'|translate}{* メール投稿設定を削除する *}</th>
+            <td>
+                <p class="hint">{'/msg/alert_about_posting_entries_from_mobile_settings'|translate}{*ケータイからメールで投稿された記事は、承認ステップやユーザー権限に関係なく登録されます。ケータイからの投稿を完全に制限する場合は、設定を削除して下さい。*}</p>
+                <button type="button" onclick="deleteUpMail(this.form);">{'/label/delete_btn'|translate}{* 削除する *}</button>
+            </td>
+          </tr>
+
+        {/if}
+        </table>
+{/if}
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" id=$topics_group_id data=$formData}
+  {/if}
+
+  {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  {rcms_include file="management/update_comment.html" comment=$formData.update_comment last_comment=$formData.last_update_comment}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,17 @@
+{module name="convention_list"}
+<h2 class="module_title"><span>大会情報</span></h2>
+<div class="module_contents">
+<table class="list">
+  <tr>
+      <th>年度</th>
+      <th>大会名</th>
+  </tr>
+  {foreach  item=convention_data from=$convention_list}
+  <tr>
+    <td nowrap class="td1">{$convention_data.season}</td>
+    <td nowrap class="td1"><a href="/convention_detail/id={$convention_data.convention_id}">{$convention_data.convention_name}</a></td>
+  </tr>
+  {/foreach }
+</table>
+</div>
+{/module}

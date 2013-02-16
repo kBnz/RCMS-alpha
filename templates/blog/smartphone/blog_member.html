@@ -1,0 +1,17 @@
+{if $blogMemberData}
+<h2>[emoji:070]{'/modules/blog/label/member_who_wrote_this_blog_entry'|translate}{* このブログを書いた人 *}</h2>
+
+<a href="/member_detail/id={$blogMemberData.member_id}">
+{if $blogMemberURL}
+<img src="{$blogMemberURL}" alt="{$blogMemberData.disp_name}"/>
+{else}
+<img src="/files/member/noimage.jpg" alt="noimage" />
+{/if}
+</a>
+
+{'/label/name'|translate}{* 名前 *}: <a href="/member_detail/id={$blogMemberData.member_id}">{$blogMemberData.disp_name}</a><br/>
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/member_id={$blogMemberData.member_id}">{'/modules/blog/label/blog_list_written_by_this_member'|translate}{* この人の書いたブログ一覧 *}</a>
+</div>
+<hr/>
+{/if}

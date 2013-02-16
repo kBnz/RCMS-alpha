@@ -1,0 +1,13 @@
+<h2>[emoji:170]{'/modules/magazine/label/magazine_list_for_user'|translate}{*メルマガ一覧*}</h2>
+<hr/>
+  {foreach  item=data from=$mm_list}
+    {$data.magazine_name}<br/>
+    {$data.magazine_info}<br/>
+    <a href="/magazine_detail/id={$data.magazine_id}">&gt;&gt;{'/modules/magazine/label/detail_and_apply'|translate}{*詳細・参加申請*}</a><br/>
+    {if $data.bn_flg}<a href="/magazine_bn/id={$data.magazine_id}">&gt;&gt;{'/modules/magazine/label/back_number_list'|translate}{/if}</a><br/>{*バックナンバーリスト*}
+<hr/>
+{/foreach}
+<br/>
+{$page_links}
+<hr/>
+

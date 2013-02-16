@@ -1,0 +1,153 @@
+
+
+{capture name="original_design"}
+  <h3 class="big">{'/label/customized_template_css'|translate}{*独自に作成したテンプレートCSS*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th>{'/label/design_name'|translate}{*デザイン名*}</th><th>{'/label/update_time'|translate}{*更新日時*}</th>
+    </tr>
+    {foreach item=orig from=$original}
+    <tr>
+      <td><a href="/management/design/design_edit/design_id={$orig.design_id}">{$orig.design_nm}</a>{if $current_design_type eq 'original' && $orig.design_id eq $current_design_id}<span style="color:red;">({'/label/using_now'|translate}{*適用中です*})</span>{/if}</td>
+      <td>{$orig.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+    {/foreach}
+  </table>
+  <input type="button" name="subflg" value="{'/modules/design/label/add_css_btn'|translate}{*CSSを新規作成する*}" onclick="location.href='/management/design/design_edit/';return false;">
+{/capture}
+
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>{'/modules/design/label/design_list'|translate}{*デザイン一覧*}</h2>
+  {if $auth.design.insert}
+  <ul>
+    <li class="add"><a href="/management/design/design_edit/"><span>{'/modules/design/label/add_design_btn'|translate}{*デザイン追加*}</span></a></li>
+    <li class="add">
+    <a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a>
+    </li>
+    <li class="normal"><a href="javascript:;" onclick="window.open('/direct/design/changeHeaderImage/', 'cHI', 'width=400,height=650');"><span>{'/label/add_header_image_btn'|translate}{*ヘッダ画像*}</span></a></li>
+  </ul>
+  {/if}
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design'|translate}</a>
+{'/modules/design/label/design_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】デザイン >> デザイン >> デザイン一覧 *}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  {rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+  {if $current_design_type eq 'original'}
+  {$smarty.capture.original_design}
+  {/if}
+
+  {if $formattedOfficial|@count > 0}
+
+  <h3 class="big">{'/label/official_template_css'|translate}{*公式テンプレートCSS*}</h3>
+  {'/modules/design/msg/design_test_mode'|translate:$smarty.const.ROOT_URL}
+{*
+  デザインの色の変更だけなら、実際にサイトを見ながらやってみましょう！-><a href='{$smarty.const.ROOT_URL}/?design_test_mode=1' target="_top">こちら</a>から<br>
+  ※公式テンプレート使用時のみに使えます。<br>
+*}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0" class="template_category">
+    <tr>
+      <th>{'/label/category'|translate}{*カテゴリ*}
+          {if $smarty.request.tags[0]}
+            [{$smarty.request.tags[0]}] 選択中
+          {/if}
+      </th>
+    </tr>
+    <tr>
+      <td>
+        <ul>
+          <li><a href="/management/design/design_list/">{'/label/all'|translate}{*すべて*}</a></li>
+          {foreach from=$tagList key=tag item=tmp}
+          <li><a href="/management/design/design_list/tags[]={$tag}">{$tag}</a></li>
+          {/foreach}
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  {pager info=$pageInfo}
+  {assign var="off" value=$formattedOfficial}
+
+  <table class="design_list">
+    {section name="i" loop=$off}
+    <tr class="row{$smarty.section.i.iteration%2}">
+      {section name="j" loop=$off[i]}
+      <td width="25%">
+        <div class="design_list">
+        {if $off[i][j].design_id != ''}
+          <p class="design_name">
+          {$off[i][j].design_nm}
+          {if $current_design_type eq 'official' && $current_design_id eq $off[i][j].design_id}<span>（{'/label/using_now'|translate}{*適用中です*}）</span>{/if}
+          </p>
+          <p class="design_sample"><a href="javascript:void(0);" onclick="window.open('{$smarty.const.ROOT_URL}/?design_test_mode=1&preview_design_id=official:{$off[i][j].design_id}', '_top');return false;">
+          <img src="/images/css/{$off[i][j].thumbnail}.jpg"></a></p>
+
+          <p class="design_category">{$off[i][j].tag}</p>
+        {else}
+            &nbsp;
+        {/if}
+        </div>
+      </td>
+      {/section}
+    </tr>
+    {/section}
+  </table>
+  {pager info=$pageInfo}
+
+  {/if}
+
+  {if $current_design_type ne 'original'}
+  {$smarty.capture.original_design}
+  {/if}
+
+
+  <h3 class="big">{'/label/css_used_in_this_system'|translate}{*このシステムで使用されているCSS*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th>{'/label/css_name'|translate}{*CSS名*}</th><th>{'/label/display'|translate}/{'/label/edit'|translate}{*表示/編集*}</th><th>{'/label/memo'|translate}{*備考*}</th>
+    </tr>
+    <tr>
+      <td>layout[1-6].css</td><td><a href="/files/css/front/layout1.css" target="_blank">{'/msg/display_label'|translate:$layout1_css}{*layout1.cssを見る*}</a></td>
+      <td>{'/modules/design/msg/layout_css'|translate}{*変更できません。[1-6]の部分は1～6の数字が入ります。2段組、3段組などの配置を設定しています。「ページ設定」でページ毎に設定可能です。*}</td>
+    </tr>
+    <tr>
+      <td>default.css</td><td><a href="/css/front/default.css" target="_blank">{'/label/display'|translate}{*表示*}</a></td>
+      <td>{'/modules/design/msg/default_css'|translate}{*変更できません。サイト全体で必要なデザインの設定を行っております。*}</td>
+    </tr>
+    <tr>
+      <td>import.css</td><td><a href="/css/front/import.css" target="_blank">{'/label/display'|translate}{*表示*}</a></td>
+      <td>{'/modules/design/msg/import_css'|translate}{*変更できません。ここで、part.css、module.css、customize.cssの順番で読み込んでいます。*}</td>
+    </tr>
+    <tr>
+      <td>parts.css</td><td><a href="/files/css/front/parts.css" target="_blank">{'/label/display'|translate}{*表示*}</a></td>
+      <td>{'/modules/design/msg/parts_css'|translate}{*変更可能です。上部にある「独自に作成したCSS」か「公式テンプレートCSS」から選択したものが設定されます。*}</td>
+    </tr>
+    <tr>
+      <td>modules.css</td><td><a href="/css/front/modules.css" target="_blank">{'/label/display'|translate}{*表示*}</a></td>
+      <td>{'/modules/design/msg/modules_css'|translate}{*変更できません。主にモジュール毎のデザインの設定に使われています。*}</td>
+    </tr>
+    <tr>
+      <td>customize.css</td><td><a href="/management/design/design_edit/design_id=1">{'/label/edit'|translate}{*編集*}</a></td>
+      <td>{'/modules/design/msg/customize_css'|translate}{*変更可能です。このCSSはすべてのページで最後に読み込まれます。*}</td>
+    </tr>
+  </table>
+  <p>{'/modules/design/msg/extra_css'|translate}{*※この他に「ページ設定」でページ毎に設定できるCSS、「blog」にあるCSSがあります。これらは各該当ページに直接書き込まれます。*}
+    <br/>{'/msg/more_detail_with_link'|translate:$link}{*詳しい説明は<a href="http://www.r-cms.jp/support/contents.html" target="_blank">こちら</a>から。*}
+  </p>
+</div>  <!-- end of div#list_main -->
+</div>
+
+{rcms_include file="management/footer.html"}

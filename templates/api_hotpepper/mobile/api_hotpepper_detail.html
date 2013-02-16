@@ -1,0 +1,26 @@
+<h2>ﾎｯﾄﾍﾟｯﾊﾟｰ情報</h2>
+{if $error}
+{$error}
+{else}
+<h3>{$shop.ShopName}</h3>
+<div style="text-align:center;font-size:small;">
+<img src="{$shop.PictureUrl.PcLargeImg}" alt="{$shop.ShopName}">
+写真提供：ﾎｯﾄﾍﾟｯﾊﾟｰ.jp</div><br/>
+[{$shop.GenreName}]{$shop.ShopCatch}<br/>
+{$shop.StationName}：{$shop.Access}<br/>
+{$shop.ShopAddress}<br/>
+{$shop.Open}<br/>
+<div style="text-align:right;font-size:small;">
+<a href="{$shop.ShopUrl}">詳細情報はｺﾁﾗ</a>
+</div>
+<div style="text-align:center;font-size:small;">
+<a href="http://www.hotpepper.jp/"><img src="http://api.hotpepper.jp/content/images/hp_api_s.gif" alt="ﾎｯﾄﾍﾟｯﾊﾟｰ Webｻｰﾋﾞｽ"></a>
+</div>
+{if $shop.local.notes ne ''}
+<dl>
+	<dt>ｺﾒﾝﾄ:</dt>
+	<dd>{$shop.local.notes}</dd>
+</dl>
+{/if}
+{/if}
+<hr/>

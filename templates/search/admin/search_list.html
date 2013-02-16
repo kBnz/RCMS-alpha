@@ -1,0 +1,89 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<style>
+{literal}
+.search_result li {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.search_result a {
+  text-decoration: underline;
+}
+.title {
+  font-size: 1.5em;
+}
+.info {
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 1.1em;
+}
+.info li {
+  display: inline;
+}
+{/literal}
+</style>
+
+<script type="text/javascript">
+{literal}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/search'|translate}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/search/search_list/">{'/modules/search'|translate}</a>
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{*
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct}
+*}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/search/search_list/">
+    <div class="search_box">
+      <div>
+        <input type="text" style="width:200px" name="p" value="{$smarty.get.p|escape}" />
+        <input type="submit" value="{'/label/search'|translate}" />
+      </div>
+      <div class="option">
+        <div style="margin-top:10px">
+          {'/label/language'|translate}:<select name="lang"><option value="">----</option>{html_options options=$lang_options selected=$smarty.get.lang}</select>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {pager info=$pageInfo}
+  <ol class="search_result">
+    {foreach from=$result_list item=row}
+      <li>
+        <div class="title"><a href="{$smarty.const.ROOT_URL}/direct/search/show/uri={$row.attrs.uri|escape}" target='_blank'>{$row.attrs.title|escape}</a></div>
+        <ul class="info">
+          <li>{$row.eattrs.auth|escape}</li>
+          <li>{$row.attrs.lang|escape}</li>
+          <li>{$row.module_nm|translate_modules}</li>
+          <li>{$row.attrs.mdate|escape}</li>
+          <li><a href="{$smarty.const.ROOT_URL}/direct/search/show/uri={$row.attrs.uri|escape}&page=edit" target='_blank'>{'/label/edit'|translate}</a></li>
+        </ul>
+{*
+        <div class="snippet">{$row.snippet|escape}</div>
+*}
+      </li>
+    {/foreach}
+  </ol>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

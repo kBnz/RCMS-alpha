@@ -1,0 +1,13 @@
+<h2>サイト内のrss情報一覧</h2>
+{foreach from=$allRSS key=module_nm item=feeds}
+■{$contName[$module_nm]}<br/>
+    <ul>
+      {foreach from=$feeds item=feed}
+        <li>
+          <a href="{$feed.srcLink}">{$feed.title|escape}</a>
+        </li>
+      {/foreach}
+    </ul>
+<br/>
+{/foreach}
+<hr/>

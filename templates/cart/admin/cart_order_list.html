@@ -1,0 +1,132 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+{literal}
+function bnNotPaid(f) {
+    f.MODE.value = 'NOTPAID';
+    f.submit();
+}
+function bnPaid(f) {
+    f.MODE.value = 'PAID';
+    f.submit();
+}
+function bnNotSent(f) {
+    f.MODE.value = 'NOTSENT';
+    f.submit();
+}
+function bnSent(f) {
+    f.MODE.value = 'SENT';
+    f.submit();
+}
+function bnCancel(f) {
+    f.MODE.value = 'CANCEL';
+    f.submit();
+}
+
+function confirmDelete(f) {
+    if (confirm('選択された注文を削除します。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}注文一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">コミュニケーション</a>
+<a href="/management/cart/cart_list/">{$module_nm}</a>
+注文一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/cart/cart_order_list/">
+    <fieldset class="search_box">
+      注文者<input type="text" name="search_name" value="{$search_name|escape}" />
+      メールアドレス<input type="text" name="search_email" value="{$search_email|escape}" />
+      　<input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/cart/cart_order_list/">
+    <input type="hidden" name="pageID" value="{$currentPageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="search_name" value="{$search_name|escape}" />
+    <input type="hidden" name="search_email" value="{$search_email|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.cart.update || $auth.cart.delete}
+        <th><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'cart_order_header_id[]');" /></th>
+{/if}
+        <th width="20">No.</th>
+        <th width="20">状態</th>
+        <th>注文者名</th>
+        <th>受信日時</th>
+        <th>最終更新日時</th>
+      </tr>
+    {foreach item=row from=$cart_order name=order_list}
+      <tr>
+{if $auth.cart.update || $auth.cart.delete}
+      <td><input type="checkbox" name="cart_order_header_id[]" value="{$row.cart_order_header_id}" /></td>
+{/if}
+      <td>{$row.cart_order_header_id}</td>
+      <td>
+        {if $row.status == $smarty.const.CART_STATUS_NOTPAID}
+          未入金
+        {elseif $row.status == $smarty.const.CART_STATUS_PAID}
+          入金済み
+        {elseif $row.status == $smarty.const.CART_STATUS_NOTSENT}
+          未発送
+        {elseif $row.status == $smarty.const.CART_STATUS_SENT}
+          発送済み
+        {elseif $row.status == $smarty.const.CART_STATUS_CANCEL}
+          取り消し
+        {/if}
+      </td>
+      <td><a href = "/management/cart/cart_order_edit/cart_order_header_id={$row.cart_order_header_id}&pageID={$currentPageID}">{$row.name}</a></td>
+      <td>{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+  {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+  {if ($auth.cart.update || $auth.cart.delete) && $smarty.foreach.order_list.total > 0}
+    {buttonbox}
+      <p>選択した注文を一括で</p>
+      {if $auth.cart.update}
+        <button type="button" onclick="bnNotPaid(this.form)">未入金にする</button>
+        <button type="button" onclick="bnPaid(this.form)">入金済みにする</button>
+        <button type="button" onclick="bnNotSent(this.form)">未発送にする</button>
+        <button type="button" onclick="bnSent(this.form)">発送済みにする</button>
+        <button type="button" onclick="bnCancel(this.form)">取り消しにする</button>
+      {/if}
+      {if $auth.cart.delete}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+  {/if}
+
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

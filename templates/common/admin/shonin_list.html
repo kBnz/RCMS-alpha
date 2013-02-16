@@ -1,0 +1,30 @@
+{if $unauthorizedList}
+  <div class="waiting_auth_list">
+    <h3>{'/msg/data_approval_waiting'|translate}{* 承認待ちのデータがあります。 *}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list">
+      <tr>
+        <th>{'/modules/menu/label/updated_date'|translate}</th>
+        <th>{'/modules/menu/label/update_by'|translate}</th>
+        <th>{'/label/title'|translate}</th>
+      </tr>
+      {foreach from=$unauthorizedList item=row}
+        <tr>
+          <td>{$row.update_ymdhi|pg_dateformat}</td>
+          <td>{$row.admin_nm|escape}</td>
+          <td>
+            <a href="{$row.link.link}">
+            {if $row.unauth_title}
+                {if $row.link.title ne $row.unauth_title}{$row.unauth_title}({$row.link.title}){else}{$row.unauth_title}{/if}
+            {else}
+                {if $row.link.title}{$row.link.title}{else}{'/label/new_article'|translate}{/if}
+            {/if}
+            </a>
+            {if $smarty.const.USE_MULTILANG}
+            <p>({'/label/language'|translate}:{$row.lang})</p>
+            {/if}
+          </td>
+        </tr>
+      {/foreach}
+    </table>
+  </div>
+{/if}

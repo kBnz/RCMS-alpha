@@ -1,0 +1,9 @@
+{module name="location_search_box"}
+<h2 class="module_title"><span>ロケーションキーワード検索</span></h2>
+<div class="module_contents">
+    <form action="/{if $action_page}{$action_page}{else}location_list{/if}/" method="GET">
+      {'/label/keyword'|translate}{*キーワード*}<input type="text" size="30" name="location_keyword" value="{$smarty.request.location_keyword|escape}"/>
+      <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+    </form>
+</div>
+{/module}

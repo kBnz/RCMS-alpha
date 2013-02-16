@@ -1,0 +1,64 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>DB比較</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/oem_admin/rcms_menu/">OEM管理</a> 
+DB比較
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="oemadmin/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/oemadmin/rcms_db/" method="post">
+    サイトID1:<input type="text" name="site_id1" value="{$smarty.request.site_id1}">->
+    サイトID2:<input type="text" name="site_id2" value="{$smarty.request.site_id2}"><br>
+    <input type="submit" name="subflg" value="比較する">
+</form>
+
+    <table width="100%">
+        <tr>
+            <th scope="col">変更内容</th>
+            <th scope="col">テーブル名</th>
+            <th scope="col">カラム名</th>
+            <th scope="col">カラムタイプ</th>
+        </tr>
+        {section name="i" loop=$db_list}
+       <tr class="row{$smarty.section.i.iteration%2}">
+          <td>
+{if $db_list[i].change_type eq 'del_table'}
+テーブル削除
+{elseif $db_list[i].change_type eq 'del_column'}
+カラム削除
+{elseif $db_list[i].change_type eq 'add_table'}
+テーブル追加
+{elseif $db_list[i].change_type eq 'add_column'}
+カラム追加
+{elseif $db_list[i].change_type eq 'ch_type'}
+カラムタイプ変更
+{/if}
+          </td>
+          <td>{$db_list[i].table_nm}</td>
+          <td>{$db_list[i].column_nm}</td>
+          <td>
+{if $db_list[i].change_type eq 'ch_type'}
+{$db_list[i].pre_type_nm} {$db_list[i].pre_default} {$db_list[i].pre_notnull}=>
+{/if}
+{$db_list[i].type_nm} {$db_list[i].default} {$db_list[i].notnull}
+          </td>
+        </tr>
+        {/section}
+     </table>
+
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

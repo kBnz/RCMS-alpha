@@ -1,0 +1,10 @@
+{if $img_list|@count > 0}
+<h2>食べログ写真</h2>
+
+{foreach from=$img_list item=img}
+	<img alt="" src="{$img.ImageUrlL}" /><br/>
+{/foreach}
+<br/>
+<a href="http://apiblog.kakaku.com/"><img src="http://img.tabelog.com/images/banner/tabelog_api_135x17.gif " alt="食べログ.com WEB サービス" title="食べログ.com WEB サービス" border="0" /></a>
+<hr/>
+{/if}

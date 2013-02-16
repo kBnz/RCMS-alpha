@@ -1,0 +1,33 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{* 管理TOP *}</a>
+<hr class="for_mng"/>
+<h2 class="for_mng">{'/modules/blog/label/blog_list'|translate}{* ブログ追加 *}</h2>
+{if $rauth->canInsert("/blog/blog/")}
+<a href="/management/blog/blog_edit/">>>{'/modules/blog/label/add_blog_btn'|translate}{* ブログ追加 *}</a><br/>
+{/if}
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+<!-- 参加ブログ一覧 -->
+■{'/modules/blog/label/editable_blog_list_title'|translate:$Login_disp_nm}{* ○○さんが編集に参加しているブログ *}<br/>
+  
+  {if $our_blog_list|@count==0}
+    {'/modules/blog/msg/no_editable_blog_msg'|translate:$Login_disp_nm}{* ○○さんが編集できるブログはまだ、ありません。 *}<br />
+    {if $rauth->canInsert("/blog/blog/")}
+      {'/modules/blog/msg/add_new_blog_setting'|translate}{* <a href="/management/blog/blog_edit/">こちら</a>から追加設定してください。 *}
+    {else}
+      {'/modules/blog/msg/new_blog_setting_by_admin'|translate}{* あなたにはブログを追加する権限がありません。お手数ですが、管理者の方に設定してもらってください。 *}
+    {/if}
+  {/if}
+  {foreach from=$our_blog_list name=our_blog_list_nm item=item}
+▼{if $item.open_flg == $smarty.const.BLOG_OPEN_OFF}[<span style="color:red;">{'/label/unpublish'|translate}{* 非公開 *}</span>]{/if}{$item.title}({$item.owner_name})<br/>
+<a href="/management/blog/blog_item_edit/blog_id={$item.blog_id}">{'/modules/blog/label/add_new_entry'|translate}{* 記事作成 *}</a> | 
+<a href="/management/blog/blog_item_list/blog_id={$item.blog_id}">{'/modules/blog/label/blog_entry_list'|translate}{* 記事一覧 *}</a> | 
+<a href="/management/blog/blog_edit/blog_id={$item.blog_id}">{'/modules/blog/label/blog_settings'|translate}{* 基本設定 *}</a><br/>
+<br/>
+  {/foreach}
+<!-- //参加ブログ一覧 -->
+{rcms_include file="management/mobile/footer.html"}

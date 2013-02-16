@@ -1,0 +1,78 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+    if(confirm('{/literal}{'/modules/msg/confirm_del_selected_categories'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/tag/label/tag_category_list'|translate}</h2>
+<ul>
+{rcms_auth target="insert:/tag/category/"}
+    <li class="add"><a href="/management/tag/tag_category_edit/"><span>{'/label/add_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/tag/tag_list/">{$module_nm}</a>
+<a href="/management/tag/tag_list/">{'/modules/tag/label/tag_list'|translate}</a>
+{'/modules/tag/label/tag_category_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> タグ >>  タグ一覧 >> タグカテゴリ設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="tag/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 承認待ち一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="POST" action="/management/tag/tag_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+{pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'tag_category_id[]');"></th>
+      <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+      <th>{'/label/last_updated_time'|translate}</th>{*更新日時*}
+      </tr>
+{foreach from=$tag_category_list item=row}
+    {assign var=category_id value=$row.tag_category_id}
+
+    <tr>
+        <td><input type="checkbox" name="tag_category_id[]" value="{$row.tag_category_id}" {rcms_auth not=true target="delete:/tag/category/$category_id"}disabled="disabled"{/rcms_auth} /></td>
+        <td>
+            <a href="/management/tag/tag_category_edit/tag_category_id={$row.tag_category_id}">{$row.tag_category_nm}</a>
+            {rcms_include  file="common/admin/language_status.html" meta=$docmetas[$category_id] link="/management/tag/tag_category_edit/tag_category_id=$category_id"}   
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+{/foreach}
+    </table>
+{pager info=$pageInfo}
+
+{buttonbox}
+  <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+  <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+{/buttonbox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

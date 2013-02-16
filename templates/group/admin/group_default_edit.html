@@ -1,0 +1,118 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2 class="group">{'/modules/group/label/group_default_edit'|translate}{*初期グループ設定*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/group/group_list/">{'/modules/group'|translate}</a>
+{'/modules/group/label/group_default_edit'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> グループ >> 初期グループ設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+  <ul class="minitabs">
+      <li><a href="/management/group/group_list/">{'/modules/group/label/group_list'|translate}{*グループ一覧*}</a></li>
+      <li><a href="/management/group/group_default_edit/" class="active">{'/modules/group/label/group_default_edit'|translate}{*初期グループ設定*}</a></li>
+  </ul>
+
+  <div class="clear"></div>
+
+  <div class="list_main">
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form method="post" action="/management/group/group_default_edit/">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="UPDATE" />
+
+      {'/modules/group/msg/specify_the_default_groups'|translate}{*新しいメンバーが登録時に所属するグループを指定してください。*}
+      <table width="100%">
+        <tr>
+          <th width="20%">{'/label/registered_groups'|translate}{*登録グループ*}<br/><a href="javascript:viewAuth('normal')">&gt;&gt;{'/msg/display_current_authority'|translate}{*現在の権限を表示する*}</a></th>
+          <td>
+            <ul>
+              {foreach from=$groups key=key item=val}
+              <li>
+              {if is_array($formData)}
+              <input type="checkbox" name="gId[normal][]" id="gIdN{$val.group_id}" value="{$val.group_id}"{if $formData.normal[$val.group_id]} checked="checked"{/if}/>
+              {else}
+              <input type="checkbox" name="gId[normal][]" id="gIdN{$val.group_id}" value="{$val.group_id}"{if $val.default_flg} checked="checked"{/if}/>
+              {/if}
+              <label for="gIdN{$val.group_id}">{$val.group_nm|escape}</label>
+              </li>
+              {/foreach}
+            </ul>
+          </td>
+        </tr>
+        <tr>
+        <th>{'/modules/group/label/permission_for_login'|translate}{*ログインの許可*}</th>
+            <td>
+                {html_radios name="normal_login_ok_flg" options=$arrMemberregistLoginOK selected=$normal_login_ok_flg separator="　"}
+            </td>
+        </tr>
+      </table>
+
+      {'/modules/group/msg/specify_the_default_groups_by_openid'|translate}{*OpenID登録をした新しいメンバーが登録時に所属するグループを指定してください。*}
+      <table width="100%">
+        <th>{'/modules/group/label/open_id_regist_permit'|translate}{*OpenIDからの登録の許可*}</th>
+            <td>
+                {html_radios name="login_isOpenIdEnabled" options=$arrMemberregistLoginOK selected=$login_isOpenIdEnabled separator="　"}
+            </td>
+        </tr>
+        <tr>
+          <th width="20%">{'/label/registered_groups'|translate}{*登録グループ*}<br/><a href="javascript:viewAuth('openid')">&gt;&gt;{'/msg/display_current_authority'|translate}{*現在の権限を表示する*}</a></th>
+          <td>
+            <ul>
+              {foreach from=$groups key=key item=val}
+              <li>
+              {if is_array($formData)}
+              <input type="checkbox" name="gId[openid][]" id="gIdO{$val.group_id}" value="{$val.group_id}"{if $formData.openid[$val.group_id]} checked="checked"{/if}/>
+              {else}
+              <input type="checkbox" name="gId[openid][]" id="gIdO{$val.group_id}" value="{$val.group_id}"{if $val.openid_default_flg} checked="checked"{/if}/>
+              {/if}
+              <label for="gIdO{$val.group_id}">{$val.group_nm|escape}</label>
+              </li>
+              {/foreach}
+            </ul>
+          </td>
+        </tr>
+        <tr>
+        <th>{'/modules/group/label/permission_for_login'|translate}{*ログインの許可*}</th>
+            <td>
+                {html_radios name="openid_login_ok_flg" options=$arrMemberregistLoginOK selected=$openid_login_ok_flg separator="　"}
+            </td>
+        </tr>
+        </table>
+
+      {if $auth.group.update}
+      {buttonbox}
+      <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+      {/buttonbox}
+      {/if}
+    </form>
+
+  </div>
+</div>
+
+{literal}
+<script type="text/javascript">
+  //<![CDATA[
+  /**
+   * 現在選択中の権限を表示
+   * @param string type 'normal' or 'openid'
+   */
+  function viewAuth(type) {
+    var checked  = $A(document.getElementsByName('gId[' + type + '][]')).map($F).findAll(function(v) { return v; });
+    window.open('/management/group/group_authorized_list/group_list=' + checked.join('_'), 'permission', 'width=610,height=600,scrollbars=1,resizable=yes');
+  }
+  //]]>
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

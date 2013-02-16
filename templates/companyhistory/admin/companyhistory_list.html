@@ -1,0 +1,248 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+{/literal}
+{if $docmeta.is_primary || $companyhistory_id ==""}
+{literal}
+
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+{/literal}
+{/if}
+{literal}
+
+function confirmDelete(f) {
+   if (confirm("{/literal}{'/msg/delete_confirmation'|translate}{* 削除してもよろしいですか？ *}{literal}")) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+function confirmDelete_list(f) {
+   //一覧から一括削除する場合
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value='DELETE_LIST';
+        f.submit();
+    }
+}
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/companyhistory/label/company_history'|translate}</h2>
+<ul>
+<li class="add"><a href="/management/companyhistory/companyhistory_list/"><span>{'/modules/companyhistory/label/add_history'|translate}{* 沿革追加 *}</span></a></li>
+<li class="view"><a href="{$smarty.const.ROOT_URL}/companyhistory_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/companyhistory/companyhistory_list/">{$module_nm}</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+<a name="update_form"></a>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+   <!-- 承認待ち採用情報一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+{if $companyhistory_id} 
+    {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/companyhistory/companyhistory_list/companyhistory_id=$companyhistory_id"}
+    {lang_selector meta=$docmeta link="/management/companyhistory/companyhistory_list/companyhistory_id=$companyhistory_id"}
+{/if}   
+  <form name="companyhistory_detail" id="companyhistory_detail" method="POST" action="/management/companyhistory/companyhistory_list/">
+    <input type="hidden" name="companyhistory_id" value="{$companyhistory_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $companyhistory_id}UPDATE{else}INSERT{/if}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+<h3>{if $companyhistory_id}{'/label/update_btn'|translate}{* 更新 *}{else}{'/label/add_new_btn'|translate}{* 新規追加 *}{/if}</h3>
+
+<table style="width:100%">
+  <tr>
+    <th>{'/label/season'|translate}：</th>{* シーズン *}
+    <td colspan="2">
+        {if $docmeta.is_primary || $companyhistory_id ==""}
+            <select name="season" style="width:60px;">{html_options options=$arrYear selected=$season}</select>
+        {else}
+          {$latestRow.season}
+        {/if}
+    </td>
+  </tr>
+  {if $docmeta.is_primary || $companyhistory_id ==""}
+  <tr>
+    <th rowspan="3">{'/label/date'|translate}：</th>{* 日付 *}
+    <td>
+        <input type="radio" name="disp_flg" value="0" {if $disp_flg == 0}checked{/if}>{$companyHistoryDisplayOptions[0]}：
+    </td>
+    <td>
+          <input type="text" name="ymd" id="ymd" value="{$ymd|escape}" autocomplete="off" />
+          <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="ymd-pop"></div>
+          <span class="hint">({'/label/example'|translate} 2006/05/01)</span>{* Example *}
+          <div class="hint">{'/modules/companyhistory/msg/ymd_order_help'|translate}</div>
+    </td>
+  </tr>
+  <tr>
+    <td><input type="radio" name="disp_flg" value="1" {if $disp_flg == 1}checked{/if}>{$companyHistoryDisplayOptions[1]}：</td>
+    <td>
+       <select name="year" style="width:60px;">{html_options options=$arrYear selected=$year}</select> / <select name="month" style="width:50px;">{html_options options=$arrMonth selected=$month}</select>
+    </td>
+  </tr>
+  <tr>
+    <td><input type="radio" name="disp_flg" value="2" {if $disp_flg == 2}checked{/if}>{$companyHistoryDisplayOptions[2]}：</td>
+    <td>
+            <input type="text" name="companyhistory_date_text" value="{$companyhistory_date_text|escape}">
+    </td>
+  </tr>
+  {else}
+  <tr>
+    <th>{'/label/date'|translate}：</th>{* 日付 *}
+    <td>
+        {if $disp_flg == 0}
+            {$companyHistoryDisplayOptions[0]}：          {$latestRow.ymd|escape}
+        {elseif $disp_flg == 1}
+            {$companyHistoryDisplayOptions[1]}：          {$latestRow.$year}/{$latestRow.$year}
+        {elseif $disp_flg == 2}
+            {$companyHistoryDisplayOptions[2]}：            <input type="text" name="companyhistory_date_text" value="{$companyhistory_date_text|escape}">
+        {/if}
+    </td>
+  </tr>
+  {/if}
+  <tr>
+    <th>{'/label/content'|translate}：</th>{* 内容 *}
+    <td colspan="2">
+        <textarea name="contents" style="height:60px; width:400px;">{$contents}</textarea>
+    </td>
+  </tr>
+      </table>
+    {buttonbox}
+        {if $companyhistory_id != ""}
+          {if $docmeta.is_waiting}
+            {* これは承認待ちドキュメント *}
+            {if $rauth->canUpdate("/companyhistory/item/$companyhistory_id", $docmeta.lang)}
+              {if $rauth->unlimitedUpdate("/companyhistory/item/$companyhistory_id", $docmeta.lang)}
+                {* 許可する権限がある *}
+                <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>
+                <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>
+              {elseif $docmeta.own}
+                {* 自分が作成したので再修正できる *}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+              {else}
+                  {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+              {/if}
+            {else}
+                {if $docmeta.own}
+                {* 自分が作成したので再修正できる *}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+                {else}
+                {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                {/if}
+            {/if}
+          {else}
+            {* これは通常ドキュメント *}
+            {if $docmeta.has_waiting}
+              {* 承認待ちドキュメントがある場合は何もできない *}
+                {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+                <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+            {else}
+              {* 通常ドキュメントに対する更新処理 *}
+              {if $rauth->canUpdate("/companyhistory/item/$companyhistory_id", $docmeta.lang)}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+              {/if}
+              {if $rauth->canDelete("/companyhistory/item/$companyhistory_id", $docmeta.lang)}
+                {* 削除権限がある *}
+                <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+              {/if}
+            {/if}
+          {/if}
+        {else}
+          {if $rauth->canInsert("/companyhistory/item/")}
+            <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+          {/if}
+        {/if}
+    {/buttonbox}
+    </form>
+<br>
+  <form name="companyhistory_list" id="companyhistory_list" method="POST" action="/management/companyhistory/companyhistory_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+<h3>{'/modules/companyhistory/label/company_history_list'|translate}</h3>{* 会社沿革一覧 *}
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+        <th style="width:20px"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'companyhistory_id_list[]');" /></th>
+        <th style="width:20px">{'/label/publish'|translate}</th>{* 公開 *}
+        <th style="width:52px">{'/label/season'|translate}</th>{* シーズン *}
+        <th>{'/label/date'|translate}</th>{* 日付 *}
+        <th>{'/label/content'|translate}</th>{* 内容 *}
+        <th>{'/label/updatetime'|translate}</th>{* 最終更新日 *}
+        <th>{'/label/edit'|translate}</th>{* 編集 *}
+      </tr>
+  {foreach from=$companyhistory_list item=row}
+    {assign var=id value=$row.companyhistory_id}
+
+      <tr{if $row.companyhistory_id == $companyhistory_id} id="editing"{/if}>
+        <td><input type="checkbox" name="companyhistory_id_list[]" value="{$row.companyhistory_id}" {if !$rauth->canDelete("/companyhistory/item/$id") && !$rauth->canUpdate("/companyhistory/item/$id")}disabled="disabled"{/if}></td>
+        <td>
+          {if $row.open_flg == 1}
+          <img src="/images/management/check.gif" />
+          {elseif $row.open_flg == 0}
+          <img src="/images/management/batu.gif" />
+          {elseif $row.open_flg == 2}
+          <img src="/images/management/sankaku.gif" />
+          {/if}
+        </td>
+        <td>{$row.season}</td>
+        <td>
+            {if $row.disp_flg == 0}
+              {$row.ymd|pg_dateformat:"%Y/%m/%d"}
+            {elseif $row.disp_flg == 1}
+              {$row.ymd|pg_dateformat:"%Y/%m"}
+            {else}
+              {$row.companyhistory_date_text}
+            {/if}
+        </td>
+        <td>
+            {$row.contents|nl2br}
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$id] link="/management/companyhistory/companyhistory_list/companyhistory_id=$id"}
+
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+  <td>
+    {if $row.companyhistory_id == $companyhistory_id}
+      {'/label/editing'|translate}{*  編集中 *}
+    {else}
+      <a href="/management/companyhistory/companyhistory_list/companyhistory_id={$row.companyhistory_id}&pageID={$pageInfo.pageNo}#update_form">{'/label/edit'|translate}</a>{* 編集 *}
+    {/if}
+  </td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+    {buttonbox}         
+        <p>{'/label/withselected'|translate}</p>        
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+        <button type="button" onclick="confirmDelete_list(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}            
+  </form>
+</div>
+</div>
+<style>
+{literal}
+  tr#editing td { background:#DDDDDD; }
+{/literal}
+</style>
+{rcms_include file="management/footer.html"}

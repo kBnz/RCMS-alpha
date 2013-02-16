@@ -1,0 +1,57 @@
+{module name="salesclient_list"}
+<h2 class="module_title"><span>営業情報一覧</span></h2>
+<div class="module_contents">
+  <form action="/salesclient_list/" method="get">
+    <input type="checkbox" name="sales_chk" value="1" {if $sales_chk eq '1'}checked{/if}>営業数字のあるもの <input type="text" name="salesclient_nm" value="{$salesclient_nm}"><input type="submit" value="検索">
+  </form>
+
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+  <table class="list" width="100%">
+    <tr>
+      <th width="40%">クライアント名</th>
+      <th>担当営業</th>
+      <th>営業状況</th>
+      <th width="70">売上/粗利</th>
+      <th width="70">確定</th>
+      <th width="70">Ａ</th>
+      <th width="70">Ｂ</th>
+      <th width="70">Ｃ</th>
+      <th width="70">次月以降</th>
+      <th width="70">受注済（前月まで）</th>
+      <th width="70">キャンセル</th>
+    </tr>
+
+{foreach from=$salesclientList item=row}
+    <tr {if $row.sales_e >0}style="background-color:pink;"{/if}>
+      <td rowspan="2"><a href="/salesclient_detail/id={$row.salesclient_id}">{$row.salesclient_nm}</a></td>
+      <td rowspan="2">
+      {foreach item=member_list from=$row.member}
+      <a href="/salesclient_member/?id={$member_list.member_id}">{$member_list.disp_name}</a><br>
+      {/foreach}
+      </td>
+      <td rowspan="2">{$row.sales_status}</td>
+      <td width="70">売上</td>
+      <td width="70" align="right">{$row.sales_order}</td>
+      <td align="right">{$row.sales_a}</td>
+      <td align="right">{$row.sales_b}</td>
+      <td align="right">{$row.sales_c}</td>
+      <td align="right">{$row.sales_d}</td>
+      <td align="right">{$row.sales_e}</td>
+      <td align="right">{$row.sales_cancel}</td>
+    </tr>
+    <tr {if $row.sales_e >0}style="background-color:pink;"{/if}>
+      <td>粗利</td>
+      <td align="right">{$row.gross_order}</td>
+      <td align="right">{$row.gross_a}</td>
+      <td align="right">{$row.gross_b}</td>
+      <td align="right">{$row.gross_c}</td>
+      <td align="right">{$row.gross_d}</td>
+      <td align="right">{$row.gross_e}</td>
+      <td align="right">{$row.gross_cancel}</td>
+    </tr>
+{/foreach}
+  </table>
+
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+</div>
+{/module}

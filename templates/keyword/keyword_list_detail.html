@@ -1,0 +1,14 @@
+{module name="keyword_list_detail"}
+<h2 class="module_title"><span>{'/modules/keyword/label/keyword_list'|translate}{*キーワード一覧*}</span></h2>
+<div class="module_contents">
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+{foreach from=$keyword_list item=row name=keyword_list}
+<dl class="keyword_list">
+<dt><a href="/keyword_detail/id={$row.keyword_id}">{$row.keyword}</a> [<span>{$row.japanese_syllabary}</span>]</dt>
+<dd>{$row.description|strip_tags:false|mbtruncate:200}</dd>
+</dl>
+<br>
+{/foreach}
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+</div>
+{/module}

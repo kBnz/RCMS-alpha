@@ -1,0 +1,13 @@
+<h2>{'/modules/link/label/link_detail'|translate}{*リンク詳細*}</h2>
+
+{if $linkCategoryInfo}
+  <h3>{$linkCategoryInfo.link_category_name}</h3>
+{/if}
+
+{foreach from=$link_list item=row}
+<h4><a href="{$row.link_url}" target="_blank">{$row.link_string|escape}</a></h4>
+{if $row.link_image_type}<a href="{$row.link_url}" target="_blank"><img src="{$LINK_SAVE_URL}/i{$row.link_id}{$row.link_image_type}"  alt="{$row.link_string}"></a><br/>{/if}
+<a href="{$row.link_url}" target="_blank">{$row.link_url}</a><br/>
+{$row.link_info|escape}<br/>
+{/foreach}
+

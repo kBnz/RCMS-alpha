@@ -1,0 +1,29 @@
+{if $gameList|@count > 0}
+<h2>関連試合</h2>
+{section name=mydata loop=$gameList}
+{$gameList[mydata].ymd} {$gameList[mydata].team_nm}
+<a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+{if $gameList[mydata].league_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].league_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{/if}
+</a>
+{$gameList[mydata].opponent_nm}<br/>
+{/section}
+<hr/>
+{/if}

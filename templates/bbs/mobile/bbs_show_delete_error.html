@@ -1,0 +1,11 @@
+<h2><SPAN STYLE="color: #FF6600; font-size: medium;">{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</SPAN></h2><br>
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+<h2><SPAN STYLE="color: #000; font-size: medium;">{'/modules/bbs/label/post_delete_error'|translate}{*記事削除エラー*}</SPAN></h2><br>
+{foreach from=$errors item=error}
+<p>{$error}</p>
+{/foreach}
+<p><a href="/bbs_show/bbs_header_id={$bbs_header_id}">{'/label/back_to_the_list'|translate}{*一覧に戻る*}</a></p>
+</div>

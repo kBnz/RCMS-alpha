@@ -1,0 +1,460 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+{/literal}
+  {if !$data.now_send_flg || !$magazine_send_mail_list_id}
+    {literal}
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'send_date', btnId: 'send_date-btn', boxId: 'send_date-pop', tableId: 'send_date-table'});
+});
+    {/literal}
+  {/if}
+{literal}
+
+function test_mail(){
+    var m = document.magazine_sendmail_edit.MODE.value;
+    document.magazine_sendmail_edit.MODE.value = "TEST";
+    document.magazine_sendmail_edit.submit();
+    document.magazine_sendmail_edit.MODE.value = m;
+}
+
+function confirmDelete(f){
+  // 削除してもよろしいですか？
+  if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+function confirmSendmail(f){
+    // メール送信してもよろしいですか？
+    f.MODE.value='UPDATE';
+    if(f.now_send_flg.checked){
+        if(confirm('{/literal}{'/msg/confirm_send_mail'|translate}{literal}')){
+            f.submit();
+        }
+    }else{
+        f.submit();
+    }
+}
+
+function rough_save(f) {
+    f.MODE.value='SAVE';
+    f.submit();
+}
+
+function showDestinationEdit() {
+    if(document.getElementById('destinationArea').style.display == "none") {
+      document.getElementById('destinationArea').style.display = "";
+    } else {
+      document.getElementById('destinationArea').style.display = "none";
+    }
+}
+
+function changeMailType(type) {
+
+    if(type == 1 || type == 2) {
+        $("kiji_hensyu_html").style.display = "";
+        $("kiji_hensyu_text").style.display = "none";
+    } else {
+        $("kiji_hensyu_html").style.display = "none";
+        $("kiji_hensyu_text").style.display = "";
+    }
+}
+
+function stripHTML(){
+    var re = /(<([^>]+)>)/gi;
+    for (i=0; i<arguments.length; i++)
+        arguments[i].value=arguments[i].value.replace(re, "")
+}
+
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+  <h2>{'/modules/magazine/label/magazine_sendmail_edit'|translate}{* 配信メール編集 *}</h2>
+  <ul>
+{if $rauth->canInsert("/magazine/item/")}
+  <li class="add"><a href="/management/magazine/magazine_sendmail_edit/magazine_id={$magazine_id}"><span>{'/label/create_mail_btn'|translate}{*メール追加*}</span></a></li>
+{/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a> 
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine/label/magazine_list'|translate}</a> 
+<a href="/management/magazine/magazine_sendmail_list/magazine_id={$magazine_id}">{'/modules/magazine/label/magazine_sendmail_list'|translate}</a> 
+{'/modules/magazine/label/magazine_sendmail_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 >> 配信メール一覧 >> 配信メール編集 *}
+
+<div class="clear"></div>
+
+<h3 class="title">{$header.magazine_name}</h3>
+{*rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/magazine/magazine_sendmail_edit/magazine_id=$magazine_id&magazine_send_mail_list_id=$magazine_send_mail_list_id"*}
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+<div class="clearFloat"><br></div>
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{if $magazine_send_mail_list_id}   
+    {*lang_selector meta=$docmeta link="/management/magazine/magazine_sendmail_edit/magazine_id=$magazine_id&magazine_send_mail_list_id=$magazine_send_mail_list_id"*}
+{/if}
+
+
+<form name="magazine_sendmail_edit" id="magazine_sendmail_edit" action="/management/magazine/magazine_sendmail_edit/" method="POST">
+    <input type="hidden" name="magazine_id" value="{$magazine_id}" />
+    <input type="hidden" name="magazine_send_mail_list_id" value="{$magazine_send_mail_list_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="status" value="{$data.status}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    <table width="650">
+{if $data.status != $smarty.const.MAGAZINE_MAIL_SENT || ($data.now_send_flg && $magazine_send_mail_list_id)}
+        <tr>
+          <th width="200">{'/label/status_katakana'|translate}{* ステータス *}</th>
+          <td>{if $magazine_send_mail_list_id}{$mailData.status_txt}{else}{'/label/editing'|translate}{*編集中*}{/if}</td>
+        </tr>
+        <tr>
+        <th>{'/label/sending_time'|translate}{* 送信日時 *} <span class="required">※</span></th>
+          <td>
+           {if $data.now_send_flg && $magazine_send_mail_list_id}
+            {'/modules/magazine/label/now_send_flg'|translate}{* すぐに送信 *}<input type="hidden" name="now_send_flg" value="1">
+            <input type="hidden" name="send_date" value="{$data.send_date|escape}" />
+            <input type="hidden" name="send_time" value="{$data.send_time|escape}" />
+           {else}
+            {'/label/date'|translate}{* 日付 *}
+            <input type="text" name="send_date" id="send_date" value="{$data.send_date|escape}" autocomplete="off" />
+            <button type="button" id="send_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="send_date-pop"></div>
+            {'/label/time'|translate}{*時刻*}<select name="send_time">{html_options options=$magazine_date_options selected=$data.send_time}</select><br />{* 時刻 *}
+            <div id="sendCal"></div>
+            <input type="checkbox" name="now_send_flg" value="1" {if $data.now_send_flg}checked{/if}>{'/modules/magazine/label/now_send_flg'|translate}{* すぐに送信 *}<br>
+            <span class="hint">{'/modules/magazine/msg/now_send_is_after_one_min'|translate}</span>
+           {/if}
+          </td>
+        </tr>
+        <tr>
+          <th width="200">{'/label/destination'|translate}{* あて先 *} <span class="required">※</span></th>
+          <td><div id="desItems"></div>
+    {if $auth.member.select}
+              <input type="button" value="{'/label/add_destination_btn'|translate}" onclick="showDestinationEdit()">{* あて先を追加.. *}
+              <input type="button" value="{'/label/confirm_destination_btn'|translate}" onclick="showDestinationList()">{* あて先を確認 *}
+              <table width="100%" border="0">
+                <tr><th>
+                  <iframe src="" width="100%" height="0" id="destination_list" frameborder="0" style="background: #eee; display: none;"></iframe>
+                </th></tr>
+              </table>
+              <div style="display:none;" id="destinationArea">
+              <select id="destinationList" size="6">{html_options options=$destinationList}</select>
+              <input type="button" value="{'/label/add_btn'|translate}{*追加する*}" onclick="onclickAddButton()">
+              </div>
+    {/if}
+          </td>
+        </tr>
+{else}
+        <tr>
+          <th>{'/label/status_katakana'|translate}{*ステータス*}</th>
+          <td>{$data.status_txt}<input type="hidden" name="status" value="{$data.status}"></td>
+        </tr>
+        <tr>
+        <th>{'/label/sending_time'|translate}{* 送信日時 *} <span class="required">※</span></th>
+          <td>
+           {if $data.now_send_flg && $magazine_send_mail_list_id}
+            {'/modules/magazine/label/now_send_flg'|translate}{* すぐに送信 *}<input type="hidden" name="now_send_flg" value="1">
+            <input type="hidden" name="send_date" value="{$data.send_date|escape}" />
+            <input type="hidden" name="send_time" value="{$data.send_time|escape}" />
+           {else}
+            <input type="hidden" name="now_send_flg" value="{$data.now_send_flg}">
+            {'/label/date'|translate}{* 日付 *}
+            <input type="text" name="send_date" id="send_date" value="{$data.send_date|escape}" autocomplete="off" />
+            <button type="button" id="send_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="send_date-pop"></div>
+            {'/label/time'|translate}{*時刻*}
+            {if $data.now_send_flg}
+                <input type="text" name="send_time" value="{$data.send_time}" size="6"><br />{* 時刻 *}
+            {else}
+                <select name="send_time">{html_options options=$magazine_date_options selected=$data.send_time}</select><br />{* 時刻 *}
+            {/if}
+            <div id="sendCal"></div>
+            {/if}
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/destination'|translate}{*あて先*}</th>
+          <td>{foreach item=destination from=$data.destination}{$destination}<input type="hidden" name="destination[]" value="{$destination}">{/foreach}
+          </td>
+        </tr>
+{/if}
+        <tr>
+          <th width="200">{'/label/subject'|translate} {* 件名 *}<span class="required">※</span></th>
+          <td><input type="text" name="subject" size="50" value="{$data.subject}" /></td>
+        </tr>
+        <tr>
+          <th width="200">{'/modules/magazine/label/send_list_type'|translate} {* 送信タイプ *}</th>
+          <td>{html_radios name="send_list_type" options=$magazine_send_list_type_options selected=$data.send_list_type separator=" "}
+</td>
+        </tr>
+        <tr>
+          <th width="200">{'/label/body'|translate}{* 本文 *} <span class="required">※</span></th>
+          <td></td>
+        </tr>
+    </table>
+    <input type="radio" name="mail_type" value="0" {if $data.mail_type != '1' && $data.mail_type != '2'}checked{/if} onclick="changeMailType(0);" />{'/label/text_mail'|translate}{* Textメール *}
+    <input type="radio" name="mail_type" value="1" {if $data.mail_type == '1'}checked{/if} onclick="changeMailType(1);" />{'/label/html_mail'|translate}{* Htmlメール *}
+    <input type="radio" name="mail_type" value="2" {if $data.mail_type == '2'}checked{/if} onclick="changeMailType(2);" />{'/label/decomail'|translate}{* デコメール *}
+    <div id="kiji_hensyu_html" class="kiji_hensyu_center" {if $data.mail_type != '1' && $data.mail_type != '2'}style="display:none;"{/if}>
+        {$sw_html}
+    </div>
+    <div id="kiji_hensyu_text" {if $data.mail_type == '1' || $data.mail_type == '2'}style="display:none;"{/if}>
+        <textarea name="body_plain" cols="60" rows="20">{$data.body_plain|escape}</textarea>
+    </div>
+
+    <div id="add_ext_column" class="edit_close" style="{if $data.summary_title ne '' || $data.summary ne ''} display:none; {/if} ">
+        <h3>{'/modules/magazine/label/backnumber_disp_item'|translate}</h3>{* バックナンバー表示項目 *}
+        <p><a href="javascript:void(0)" onclick="display('add_ext_column');display('add_ext_column2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt=""></a></p>
+    </div>
+ 
+   <div id="add_ext_column2" style="{if $data.summary_title eq '' && $data.summary eq ''} display:none; {/if} ">
+        <div class="edit_open">
+            <h3><span class="link_button">{'/modules/magazine/label/backnumber_disp_item'|translate}</span></h3>{* バックナンバー表示項目 *}
+            <p class="close"><a href="javascript:void(0)" onclick="display('add_ext_column');display('add_ext_column2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+        </div>
+        <div class="edit_contents">
+            <table width="100%">
+              <tr>
+                <th style="width:150px" valign="top">{'/label/title'|translate}{*タイトル*}</th>
+                <td><input type="text" name="summary_title" size="68" value="{$data.summary_title|escape}" />
+                </td>
+              </tr>
+              <tr>
+                <th style="width:150px" valign="top">{'/label/summary'|translate}{*サマリ*}</th>
+                <td><textarea name="summary" cols="40" rows="2">{$data.summary|escape}</textarea>
+                </td>
+              </tr>
+            <!--公開設定日付なし-->
+              <tr>
+                <th width="150">{'/label/publish_settings'|translate}{*公開設定*}</th>
+                <td>
+                  <p>
+            {* 既存のコンテンツの場合に「公開」「非公開」のメッセージを出す。新規の場合は「...を行ってください。」メッセージ *}
+                    {if $magazine_send_mail_list_id}
+                      {if $data.open_flg == "1"}
+                        {'/msg/this_content_is_publish_now'|translate}{*この内容は、現在<span style="font-weight:bold;color:red">公開中</span>です。*}
+                      {else}
+                        {'/msg/this_content_is_unpublish_now'|translate}{*この内容は、現在<span style="font-weight:bold;color:red">非公開</span>です。*}
+                      {/if}
+                    {else}
+                      <span class="hint">{'/msg/choose_publish_setting'|translate}{*公開・非公開の設定を行ってください。*}</span>
+                    {/if}
+                  </p>
+            {* デフォルトで公開を選択する *}
+                  {if $data.open_type == 'open' || $data.open_type == 'close'}
+                      {assign var=open_type value=$data.open_type}
+                  {else}
+                      {assign var=open_type value='open'}
+                  {/if}
+                  <input type="hidden" name="open_flg" value="{$data.open_flg}" />
+                  <input type="radio" name="open_type" id="open_type1" value="open" {if $open_type == 'open'}checked="checked"{/if} /><label for="open_type1">{'/label/publish'|translate}{* 公開にする *}</label><br />
+                  <input type="radio" name="open_type" id="open_type2" value="close" {if $open_type == 'close'}checked="checked"{/if} /><label for="open_type2">{'/label/unpublish'|translate}{* 非公開にする *}</label><br />
+                </td>
+              </tr>
+            </table>
+        </div>{* edit_contents *}
+    </div>{* add_ext_column2 *}
+
+      {buttonbox}
+        {if $magazine_send_mail_list_id != ""}
+            {if $docmeta.is_waiting}
+            {* これは承認待ちデータ *}
+                {if $rauth->canUpdate("/magazine/item/$magazine_id", $docmeta.lang)}
+                    {if $rauth->unlimitedUpdate("/magazine/item/$magazine_id", $docmeta.lang)}
+                    {* 許可する権限がある *}
+                        <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>{* 承認する *}
+                        <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>{* 拒否する *}
+                    {elseif $docmeta.own}
+                    {* 自分が作成したので再修正できる *}
+                            <button type="button" onclick="confirmSendmail(this.form)">
+                            {if $data.status == $smarty.const.MAGAZINE_MAIL_SENT}
+                                {'/label/update_btn'|translate}{* 更新する *}
+                            {else}
+                                {'/modules/magazine/label/waiting_sending_btn'|translate}{* 送信待ちにする *}
+                            {/if}
+                            </button>
+                            {if $data.status != $smarty.const.MAGAZINE_MAIL_SENT}
+                                <button type="submit" onclick="this.form.MODE.value='SAVE'">{'/modules/magazine/label/save_as_draft'|translate}</button>{* 下書き保存 *}
+                            {/if}
+                    {/if}
+                {else}
+                    {* 権限は何もない *}
+                {/if}
+            {else}
+            {* これは通常データ *}
+                {if $docmeta.has_waiting}
+                    {* 承認待ちデータがある場合は何もできない *}
+                    {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+                    <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+                {else}
+                    {* 通常データに対する更新処理 *}
+                    {if $rauth->canUpdate("/magazine/item/$magazine_id", $docmeta.lang)}
+                    {* 更新権限がある *}
+                            <button type="button" onclick="confirmSendmail(this.form)">
+                            {if $data.status == $smarty.const.MAGAZINE_MAIL_SENT}
+                                {'/label/update_btn'|translate}{* 更新する *}
+                            {else}
+                                {'/modules/magazine/label/waiting_sending_btn'|translate}{* 送信待ちにする *}
+                            {/if}
+                            </button>
+                            {if $data.status != $smarty.const.MAGAZINE_MAIL_SENT}
+                                <button type="submit" onclick="this.form.MODE.value='SAVE'">{'/modules/magazine/label/save_as_draft'|translate}{* 下書き保存 *}</button>
+                            {/if}
+                    {/if}
+                    {if $rauth->canDelete("/magazine/item/$magazine_id", $docmeta.lang)}
+                    {* 削除権限がある *}
+                        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+                    {/if}
+                {/if}
+            {/if}
+        {else}
+            {if $rauth->canInsert("/magazine/item/")}
+                <button type="button" onclick="confirmSendmail(this.form)">
+                    {if $data.status == $smarty.const.MAGAZINE_MAIL_SENT}
+                        {'/label/update_btn'|translate}{* 更新する *}
+                    {else}
+                        {'/modules/magazine/label/waiting_sending_btn'|translate}{* 送信待ちにする *}
+                    {/if}
+                </button>
+                {if $data.status != $smarty.const.MAGAZINE_MAIL_SENT}
+                    <button type="submit" onclick="this.form.MODE.value='SAVE'">{'/modules/magazine/label/save_as_draft'|translate}{* 下書き保存 *}</button>
+                {/if}
+            {/if}
+        {/if}
+      {/buttonbox}
+
+{if $data.status != $smarty.const.MAGAZINE_MAIL_SENT}
+     {if $rauth->canUpdate("/magazine/item/$magazine_id", $docmeta.lang) || $rauth->canInsert("/magazine/item/") }
+        <div id="test">
+          <h4>{'/modules/magazine/label/send_test'|translate}</h4>{* テスト送信 *}
+          {'/label/mail_address'|translate} <input type="text" name="test_address" size="50" value="{$data.test_address}">{* メールアドレス *}
+          <input type="button" class="btn" onclick="test_mail();" value="{'/modules/magazine/label/send_test'|translate}" />{* テスト送信 *}
+          <p class="hint">{'/modules/magazine/msg/sending_test_mail'|translate}</p>{* 入力したメールアドレス宛てにテスト送信します。 *}
+        </div>
+      {/if}
+{/if}
+</form>
+</div>{*list_main *}
+
+<style>
+{literal}
+#test {
+  width: 70%;
+  border: 2px solid #F60;
+  padding: 10px 0;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align:center;
+}
+#test h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+{/literal}
+</style>
+<script type="text/JavaScript">
+<!--
+{literal}
+
+items = document.getElementById('desItems');
+select = document.getElementById('destinationList');
+var itemArray = new Object();
+
+function onclickAddButton() {
+    ix = select.selectedIndex;
+    if(ix == -1) {
+        return;
+    }
+
+    addItemId = select.options[ix].value;
+    addItemName = select.options[ix].label;
+
+    if(isDup(addItemId)) {
+        //  既にあて先に指定されています
+        alert("{/literal}{'/modules/magazine/msg/already_appointed'|translate}{literal}");
+        return;
+    }
+    addDes(addItemId, addItemName);
+}
+
+function addDes(addItemId, addItemName) {
+    var str1 = document.createTextNode(addItemName);
+
+    var elm1 = document.createElement("a");
+    elm1.href = "javascript:;";
+    var str2 = document.createTextNode("[{/literal}{'/label/delete'|translate}{literal}]");//削除
+    elm1.appendChild(str2);
+    if (elm1.addEventListener) {
+        elm1.addEventListener('click', function() {delDes(addItemId);}, true);
+    } else {
+        elm1.attachEvent('onclick', function() {delDes(addItemId);});
+    }
+
+    var elm2 = document.createElement("input");
+    elm2.type = "hidden";
+    elm2.name = "destination[" + addItemId + "]" ;
+    elm2.id = "destination[" + addItemId + "]" ;
+    elm2.value = addItemId ;
+
+    addItem = document.createElement("span");
+    addItem.id = "destinationItem_"+addItemId;
+
+    addItem.appendChild(str1);
+    addItem.appendChild(elm1);
+    addItem.appendChild(elm2);
+
+    items.appendChild(addItem);
+    itemArray[addItemId] = addItemId;
+}
+
+function delDes(itemId) {
+    var delItem = document.getElementById('destinationItem_'+itemId);
+    items.removeChild(delItem);
+    itemArray[itemId] = '';
+}
+
+function isDup(itemId) {
+    if(itemArray[addItemId]) {
+        return true;
+    }
+    return false;
+}
+
+function showDestinationList() {
+    var request = '&destination_id=';
+    for(val in itemArray) {
+        if(itemArray[val] != '') {
+            request += itemArray[val]+',';
+        }
+    }
+    {/literal}
+    document.getElementById('destination_list').src = '/direct/magazine/magazine_destination_list/magazine_id={$magazine_id}'+request;
+    document.getElementById('destination_list').style.display = "";
+    {literal}
+}
+
+{/literal}
+{if $data.status != $smarty.const.MAGAZINE_MAIL_SENT}
+    {foreach from=$selectedDestinationList item=destination}
+    {if $destination.id != '' && $destination.name != ''}
+    addDes('{$destination.id}', '{$destination.name}');
+    {/if}
+    {/foreach}
+{/if}
+//-->
+</script>
+{rcms_include file="management/footer.html"}

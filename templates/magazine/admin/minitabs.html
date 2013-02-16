@@ -1,0 +1,19 @@
+<ul class="minitabs">
+{if $magazine_id}
+<li><a href="/management/magazine/magazine_edit/magazine_id={$magazine_id}" {if $ct eq 'magazine_edit'}class="active"{/if}>{'/label/basic_settings'|translate}</a></li>{*基本設定*}
+<li><a href="/management/magazine/magazine_sendmail_list/magazine_id={$magazine_id}" {if $ct eq 'magazine_sendmail_list'}class="active"{/if}>{'/modules/magazine/label/sendmail'|translate}</a></li>{*配信メール一覧*}
+<li><a href="/management/magazine/magazine_sendmail_edit/magazine_id={$magazine_id}" {if $ct eq 'magazine_sendmail_edit'}class="active"{/if}>{'/label/create_mail'|translate}</a></li>{*メール作成*}
+<li><a href="/management/magazine/magazine_member_list/magazine_id={$magazine_id}" {if $ct eq 'magazine_member_list'}class="active"{/if}>{'/label/subscriber'|translate}</a></li>{*購読者*}
+    {if $auth.member.select}
+<li><a href="/management/magazine/magazine_destination_list/magazine_id={$magazine_id}" {if $ct eq 'magazine_destination_list' || $ct eq 'magazine_destination_edit'}class="active"{/if}>{'/label/destination'|translate}</a></li>{*あて先*}
+    {/if}
+{else}
+<li><span>{'/label/basic_settings'|translate}{*基本設定*}</span></li>
+<li><span>{'/modules/magazine/label/sendmail'|translate}{*配信メール一覧*}</span></li>
+<li><span>{'/label/create_mail'|translate}{*メール作成*}</span></li></a></li>
+<li><span>{'/label/subscriber'|translate}{*購読者*}</span></li>
+    {if $auth.member.select}
+<li><span>{'/label/destination'|translate}{*あて先*}</span></li>
+    {/if}
+{/if}
+</ul>

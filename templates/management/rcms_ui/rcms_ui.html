@@ -1,0 +1,30 @@
+{**
+* rcms_ui jQueryプラグイン
+* 基本的に全てjQuery UI, jQuery, jQuery Templatesが必要。
+* 全てのモジュールで必要とは限らないので、増えて来たら必要なプラグインだけ読み込むような分岐を実装
+*}
+
+{headblock}
+{* 必須ライブラリの読み込み *}
+<script type="text/javascript" src="/js/jqueryTemplate/jquery.tmpl.beta1.js"></script>{*jquery template*}
+<script type="text/javascript" src="/js/jqueryUi/jquery-ui.1.8.10.js"></script>{*jquery UI*}
+<script type="text/javascript" src="/js/bootstrap/js/bootstrap-affix.js"></script>{*bootstrap affix jquery plugin*}
+<script type="text/javascript" src="/js/jqueryCookie/jquery.cookie.js"></script>{*jquery cookie*}
+
+{* 指定したページのみ適用する *}
+{if $docmeta.action->ct eq "staticcontents_category_edit"}{* ページを指定 *}
+    <script src="/js/jquery.ba-resize.min.js"></script>{* jquery template *}
+    {rcms_include file="management/rcms_ui/rcms_ui_rcmsFillBlankArea.html"}
+{/if}
+
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsCustomizableTemplatePicker.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsDropdown.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsIframe.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsResizableCells.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsContentSelector.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsDeviceSelector.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsAjaxSelector.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsNotificationBox.html"}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsAnchor.html"}
+
+{/headblock}

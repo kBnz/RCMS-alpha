@@ -1,0 +1,79 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>公式パッケージ一覧</h2>
+<ul>
+<li class="add"><a href="/management/rcms/rcms_package_edit/"><span>公式パッケージ追加</span></a></li>
+</ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_list/">RCMS</a>
+<a href="/management/rcms/rcms_package_list/">公式パッケージ一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+  <h3 class="big">公式パッケージ一覧</h3>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{pager info=$pageInfo}
+
+  <form name="rcms_package_list" action="/management/rcms/rcms_package_list/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+  <table class="list">
+      <tr>
+          <th>ID</th>
+          <th>利用・表示順</th>
+          <th>パッケージ</th>
+          <th>コメント</th>
+          <th>編集</th>
+      </tr>
+      {foreach from=$official item=item}
+      <tr>
+          <td>{$item.package_id}</td>
+          <td>
+              <input type="checkbox" name="exclusion_flg[]" value="{$item.package_id}" {if $item.exclusion_flg}checked{/if}>利用しない<br>
+              <input type="text" name="order_no[{$item.package_id}]" value="{$item.order_no}" size="3"><br>
+          </td>
+          <td>
+              <img src="http://mozshot.nemui.org/shot?{$item.site_url}" width="128" height="128"><br>
+                {$item.package_nm}<br><br>
+                {if $item.tag}カテゴリ：{$item.tag_link}<br>{/if}
+                {if $smarty.const.OEM_ID eq '1'}
+                    {if $item.open_flg}公開中{else}非公開{/if}<br>
+                {/if}
+                <a href="{$item.site_url}" target="_blank">サイト</a>({$item.site_id})<br>
+          </td>
+          <td>
+                {$item.comment|nl2br}
+          </td>
+          <td>
+               {if $item.oem_id eq $smarty.const.OEM_ID || $item.oem_id eq 0}
+               <a href="/management/rcms/rcms_package_edit/package_id={$item.package_id}">編集する</a>
+               {/if}
+          </td>
+      </tr>
+      {/foreach}
+  </table>
+
+{if $auth.rcms.update}
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="button" onclick="document.rcms_package_list.MODE.value='UPDATE';document.rcms_package_list.submit();return false;">{'/label/update_btn'|translate}</button>{* 更新する *}
+    {/buttonbox}
+{/if}
+   </form>
+
+</div>  <!-- end of div#list_main -->
+</div>
+
+{rcms_include file="management/footer.html"}

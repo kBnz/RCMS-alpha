@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=Shift-JIS">
+<link href="/css/front/default.css" rel="stylesheet" type="text/css" media="screen,print">
+<title>決済に進む</title>
+</head>
+
+<body>
+<div style="padding:30px;font-size:14px;">
+このまま決済手続きにお進みください。<br><br>
+<form action="{$sbps_url}" method="post">
+
+{foreach from=$options  key=key item=val}
+<input type="hidden" name="{$key}" value="{$val}">
+{/foreach}
+
+{foreach from=$del  key=i item=opt}
+    {foreach from=$opt  key=key item=val}
+<input type="hidden" name="{$key}[]" value="{$val}">
+    {/foreach}
+{/foreach}
+<input type="submit" value="決済手続きに進む" style="font-size:16px;height:40px;width:180px;">
+</form>
+</div>
+</body>
+</html>

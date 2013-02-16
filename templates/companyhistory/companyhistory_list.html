@@ -1,0 +1,26 @@
+{module name="companyhistory_list"}
+<h2 class="module_title"><span>{'/modules/companyhistory/label/company_history'|translate}</span></h2>{* 会社沿革 *}
+<div class="module_contents">
+{foreach from=$companyhistoryList item=seasonList key=key}
+<h3 class="year">{$key}</h3>
+  <table class="list">
+{foreach from=$seasonList item=row}
+    <tr>
+      <th>
+  {if $row.disp_flg == 0}
+    {$row.ymd|pg_dateformat:"%Y/%m/%d"}
+  {elseif $row.disp_flg == 1}
+    {$row.ymd|pg_dateformat:"%Y/%m"}
+  {else}
+    {$row.companyhistory_date_text}
+  {/if}
+      </th>
+      <td>
+  {$row.contents|nl2br}
+      </td>
+    </tr>
+{/foreach}
+  </table>
+{/foreach}
+</div>
+{/module}

@@ -1,0 +1,28 @@
+<div id="relation_edit" class="edit_close">
+<h3>{'/label/related_contents'|translate}</h3>
+<p><a href="javascript:void(0)" onclick="display('relation_edit');display('relation_edit2');display('relation_edit3');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+</div>
+
+<div id="relation_edit2" class="edit_open" style="display:none;">
+    <h3><span class="link_button">{'/label/related_contents'|translate}</span></h3>
+    <p class="close"><a href="javascript:void(0)" onclick="display('relation_edit');display('relation_edit2');display('relation_edit3');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+</div><!-- //relation_edit2 -->
+
+<div id="sel"></div><!-- 常に表示 -->
+
+<div id="relation_edit3" style="display:none;">
+<script type="text/javascript">
+{foreach name="loop" item="relation_list" from=$relation_list}
+addCtrl("{$relation_list.table_prefix}", "{$relation_list.table_idval}", "{$relation_list.table_titleval|escape:"javascript"}", "{$form.frozen}", "{$relation_list.table_idnm}") ;
+{/foreach }
+</script>
+<p id="inputArea2[relation]" style="display:none;text-align:right;"><a href="javascript:void(0)" onclick="display('inputArea[relation]');display('inputArea2[relation]');return false;" >{'/label/add'|translate}</a></p>
+
+<div class="relation_box" id="inputArea[relation]">
+  <iframe id="inputFrame[relation]" frameborder="0" marginwidth="0" marginheight="0" src="/js/infoInput.php?order=relation&type={$mod|default:$mt}" width="100%" height="100%"></iframe>
+</div>
+</div><!-- //relation_edit3 -->
+
+<div id="relationArea" style="position:absolute; visibility:hidden;">
+<iframe name="myFrame2" id="myFrame2" frameborder="0" marginwidth="0" marginheight="0" src="/js/empty.html" scrolling="no" width="110%" height="110%"></iframe>
+</div>

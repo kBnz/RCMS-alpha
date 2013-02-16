@@ -1,0 +1,258 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<style type="text/css">
+tr.section {
+  color: #000;
+  font-size: 1.125em;
+  text-align: center;
+}
+</style>
+{/literal}
+
+{if $isSuper}
+<script type="text/javascript">
+{literal}
+j$(document).ready(function() {
+j$("#mail_setting_check").click(function(){
+    j$("#mail_setting").toggle();
+    });
+});
+
+{/literal}
+</script>
+{/if}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+// 各種配列定義
+var arrAdmin_group = {/literal}{$arrAdmin|@json_encode}{literal};
+var arrMembers = {/literal}{$arrMember|@json_encode}{literal};
+var arrMemberData = {/literal}{if $formData.member_id}{$formData.member_id|@json_encode}{else}{literal}new Array(){/literal}{/if}{literal};
+var arrGroupData = {/literal}{if $formData.group_id}{$formData.group_id|@json_encode}{else}{literal}new Array(){/literal}{/if}{literal};
+var memberCnt = {/literal}{$formData.member_id|@count}{literal};
+var groupCnt = {/literal}{$formData.group_id|@count}{literal};
+
+// 変数定義
+var intMemberId = 0;
+var intGroupId = 0;
+var intRowId = 0;
+
+Event.observe(window, 'load', function() {
+
+    // グループを追加
+    if (memberCnt == 0){
+    // 最初は１つのグループを表示
+        fncAdd('member');
+    }else{
+        for (var intMemberId = 0 ; intMemberId < memberCnt ; intMemberId++){
+            fncAdd('member', arrMemberData[intMemberId]);
+        }
+    } 
+
+    // グループを追加
+    if (groupCnt == 0){
+    // 最初は１つのグループを表示
+        fncAdd('group');
+    }else{
+        for (var intGroupId = 0 ; intGroupId < groupCnt ; intGroupId++){
+            fncAdd('group', arrGroupData[intGroupId]);
+        }
+    } 
+
+
+    Event.observe($('btnmemberAdd'), 'click', function() {
+        fncAdd('member');
+    });
+
+    Event.observe($('btngroupAdd'), 'click', function() {
+        fncAdd('group');
+    });
+
+});
+
+// 送信メンバーを追加
+function fncAdd(kbn, arrInitData) {
+
+    arrInitData = arrInitData || {};    // 引数受け取り
+    if (kbn=='member'){
+        var intIdWK = intMemberId++;    // メンバーID
+    }else if(kbn=='group'){
+        var intIdWK = intGroupId++;    // グループID
+    }
+
+    var varTbody_TR = $(kbn+'Tbody').insertRow($(kbn+'Tbody').rows.length);
+    varTbody_TR.id = kbn+"TableRow_" + intIdWK;
+
+    // 2列目 メンバーORグループ選択
+    var varTable_TD_1 = varTbody_TR.insertCell(varTbody_TR.cells.length);
+    varTable_TD_1.style.textAlign = "left";
+
+    // グループ選択
+    var varSelectBox = document.createElement('select');
+    varSelectBox.id = kbn + "_id_" + intIdWK;
+    varSelectBox.size = 1;
+    varSelectBox.style.width = '150px';
+
+    if (kbn=='member'){
+        varSelectBox.name = "member_id[]";
+        for (var intMemberID in arrMembers)
+        {
+            varSelectBox.options[varSelectBox.options.length] = new Option(arrMembers[intMemberID], intMemberID);
+            if (arrInitData == intMemberID)
+            {
+                varSelectBox.selectedIndex = varSelectBox.options.length - 1;
+            }
+        }
+    }else if(kbn=='group'){
+        varSelectBox.name = "group_id[]";
+        for (var intGroupId in arrAdmin_group)
+        {
+            varSelectBox.options[varSelectBox.options.length] = new Option(arrAdmin_group[intGroupId], intGroupId);
+            if (arrInitData == intGroupId)
+            {
+                varSelectBox.selectedIndex = varSelectBox.options.length - 1;
+            }
+        }
+    }
+
+    varTable_TD_1.appendChild(varSelectBox);    // メンバー/グループ選択SelectBoxテーブルをTDとして追加
+
+    // 2列目 削除ボタン
+    var varTable_TD_2 = varTbody_TR.insertCell(varTbody_TR.cells.length);
+
+    varTable_TD_2.style.textAlign = "left";
+
+    var varDeleteBtn = document.createElement('input');
+    varDeleteBtn.type = 'button'
+    varDeleteBtn.value = "{/literal}{'/label/delete'|translate}{literal}";  // '削除'
+    Event.observe(varDeleteBtn, 'click', function() {
+        $(kbn+'Tbody').deleteRow(varTbody_TR.rowIndex);
+    });
+    varTable_TD_2.appendChild(varDeleteBtn);  // 削除ボタンをTDとして追加
+
+}
+
+
+
+{/literal}
+// -->
+</script>
+
+<div class="list_right_bt">
+    <ul>
+        {if $auth.membermail.insert}
+        <li class="add"><a href="/management/membermail/membermail_template_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+        {/if}
+    </ul>
+    <h2>{'/modules/membermail/label/membermail_template_edit'|translate}</h2>
+</div>
+
+
+{pankuzu}
+    <a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+    <a href="/management/membermail/membermail_template_list/">{'/modules/membermail'|translate}</a>
+    <a href="/management/membermail/membermail_template_list/">{'/modules/membermail/label/membermail_template_list'|translate}</a>
+    {'/modules/membermail/label/membermail_template_edit'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+<h3 class="title">{'/modules/membermail/label/membermail_template_edit'|translate}{*メンバーメールテンプレート編集*}</a></h3>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/membermail/membermail_template_edit/" method="post">
+  <input type="hidden" name="id" value="{$id}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+    <h3>{'/label/mail'|translate}{*メール*}</h3>
+    <table>
+        <tr>
+            <th>{'/label/subject'|translate}{*件名*}</th>
+            <td><input type="text"size="80" name="subject" value="{$formData.subject|escape}" /></td>
+        </tr>
+        <tr>
+            <th>{'/label/body'|translate}{*本文*}</th>
+            <td><textarea name="body" cols="80" rows="20">{$formData.body|escape}</textarea></td>
+        </tr>
+    </table>
+
+    {if $isSuper}
+    <input type="checkbox" name="limit_flg" id="mail_setting_check" value="1" {if $formData.limit_flg}checked="checked"{/if} />
+    {'/modules/membermail/msg/restrect_the_use_of_this_template'|translate}
+
+    <p class="hint">
+    {'/modules/membermail/msg/hint_if_you_do_not_set_restrictions'|translate}
+    {*設定しない場合、すべてのメンバーに上記メールをテンプレートとして使用することを許可します。ただし編集は許可しません。*}
+    </p>
+
+    {/if}
+    <div style="display:{if $formData.limit_flg && $isSuper}block;{else}none;{/if}" id="mail_setting">
+    
+        <h3>{'/label/group'|translate}</h3>
+
+        <p class="hint">
+        {'/modules/membermail/msg/hint_only_the_members_that_belong_to_the_following_group'|translate}
+        {*以下のグループに所属するメンバーにのみ、上記メールをテンプレートとして使用することを許可します。ただし編集は許可しません。*}
+        </p>
+
+        <table width="100%" border="0" id="groupTable">
+            <tbody id="groupTbody">
+            <tr><th>{'/label/group_name'|translate}{*グループ名*}</th><th>{'/label/delete'|translate}{*削除*}</th></tr>
+            </tbody>
+        </table>
+        <div style="float:left; margin: 0 0 25px 0;">
+        <input type="button" value="{'/label/add_group_btn'|translate}{*グループ追加*}" id="btngroupAdd" style="float: left" />
+        </div>
+
+        <h3>{'/label/member'|translate}</h3>
+
+        <p class="hint">
+        {'/modules/membermail/msg/hint_only_the_members_following'|translate}
+        {*以下のメンバーにのみ、上記メールをテンプレートとして使用することを許可します。ただし編集は許可しません。*}
+        </p>
+
+        <table width="100%" border="0" id="memberTable">
+            <tbody id="memberTbody">
+            <tr><th>{'/label/name'|translate}{*メンバー名*}</th><th>{'/label/delete'|translate}{*削除*}</th></tr>
+            </tbody>
+        </table>
+        <div style="float:left; margin: 0 0 25px 0;">
+        <input type="button" value="{'/modules/member/label/add_member'|translate}{*メンバー追加*}" id="btnmemberAdd" style="float: left" />
+        </div>
+
+    </div>
+
+    {if $formData.canOperate}
+    {buttonbox}
+    {if $id}
+      <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+    {else}
+      <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+    {/if}
+    {/buttonbox}
+    {else}
+    {'/modules/companyinfo/msg/update_deletion_not_allowed'|translate}
+    {/if}
+
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

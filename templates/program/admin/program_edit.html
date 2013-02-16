@@ -1,0 +1,152 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+<a href="/management/program/program_list/">{$module_nm}一覧</a>
+{$module_nm}を編集
+{/pankuzu}
+<p class="page_info">
+<a href="/program_schedule_list/id={$program_id}">総アクセス数:{if $accesscount_cnt}{$accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<!--クラス一覧とスケジュール一覧を切り替えるタブナビ-->
+<ul class="minitabs">
+  <li><a href="/management/program/program_list/" class="active">クラス一覧</a></li>
+  <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+  <li><a href="/management/program/program_schedule_list/">スケジュール一覧</a></li>
+  <li><a href="/management/program/program_reserve_list/">予約一覧</a></li>
+</ul>
+
+<div class="contents_table">
+
+  <form action="/management/program/program_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="program_id" value="{$program_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $program_id}UPDATE{else}INSERT{/if}" />
+    <input type="hidden" name="subflg" value="" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <div class="list_main">
+    <h3>クラスの設定</h3>
+      <table width="100%">
+      <tr>
+        <th width="25%">
+          区分<font color=red>※</font>
+        </th>
+        <td width="75%">
+          <select name="program_category_id" >
+            {html_options options=$searchCategory selected=$program_category_id}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th width="25%">
+          クラス名<font color=red>※</font>
+        </th>
+        <td width="75%">
+          <input type="text" name="program_nm" value="{$formData.program_nm}" />
+        </td>
+      </tr>
+      <tr>
+        <th width="25%">
+          サブネーム
+        </th>
+      <td>
+        <input type="text" name="program_subnm" value="{$formData.program_subnm}" />
+      </td>
+    </tr>
+    <tr>
+      <th>所要時間</th>
+      <td>
+        <input type="text" name="minutes" value="{$formData.minutes}" />
+      </td>
+    </tr>
+    <tr>
+      <th>内容</th>
+      <td><textarea name="content" cols="40" rows="10">{$formData.content}</textarea></td>
+    </tr>
+    <tr>
+      <th>強度</th>
+      <td>
+        <input type="text" name="strength" value="{$formData.strength}" />
+      </td>
+    </tr>
+    <tr>
+      <th>対象</th>
+      <td>
+        <input type="text" name="target" value="{$formData.target}" />
+      </td>
+    </tr>
+    <tr>
+      <th>活動人数の単位</th>
+      <td>
+        <input type="text" name="peoples" value="{$formData.peoples}" />
+      </td>
+    </tr>
+    <tr>
+      <th>お勧めにする</th>
+      <td>
+        {html_radios name="recommend_flg" options=$arrProgramRecommend_Flg selected=$formData.recommend_flg separator="&nbsp"}
+      </td>
+    </tr>
+    <tr>
+      <th>お勧めのコメント</th>
+      <td><textarea name="recommend_comment" cols="40" rows="5">{$formData.recommend_comment}</textarea></td>
+    </tr>
+    </table>
+
+    <h3>公開設定</h3>
+    <table width="100%">
+      <tr>
+        <th width="25%">公開・非公開</th>
+        <td width="75%">
+        <input type="radio" name="open_flg" value=1 {if $open_flg == 1}checked="checked"{/if} />公開 &nbsp
+        <input type="radio" name="open_flg" value=0 {if $open_flg != 1}checked="checked"{/if} />非公開
+        </td>
+      </tr>
+    </table>
+
+    <br style="clear:both;">
+
+    {if $auth.program.update}
+      {buttonbox}
+        <button type="submit">更新する</button>
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/buttonbox}
+    {/if}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </div>
+  </form>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f){
+  if(confirm("削除してもよろしいですか？")){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+
+{/literal}
+-->
+</script>
+
+  </form>
+</div>
+{rcms_include file="management/footer.html"}

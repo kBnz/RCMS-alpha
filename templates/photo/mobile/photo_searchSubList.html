@@ -1,0 +1,17 @@
+{if $photoList.0.photo_id ne ''}
+
+<h2>[emoji:068]{'/label/prev_and_next_image'|translate}{*前後の画像*}</h2>
+<div style="text-align:center;font-size:small;">
+
+<a href="/photo_detail/id={$photoList.0.photo_id}&type={$type}&search_id={$search_id}&season={$season}">{'/label/to_previous_image'|translate}{*前の画像へ*}</a>｜<a href="/photo_detail/id={$photoList.1.photo_id}&type={$type}&search_id={$search_id}&season={$season}">{'/label/to_next_image'|translate}{*次の画像へ*}</a>
+{section name=mydata loop=$photoList}<br/>
+[{$photoList[mydata].ymd}]<br/>
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}&season={$season}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList[mydata].photo_id}.jpg" alt="{$photoList[mydata].title}"></a><br/>
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}&season={$season}">{$photoList[mydata].title}</a><br/><br/>
+{/section}
+</div>
+<div style="text-align:right;font-size:small;">
+<a href="/photo_list/type={$type}&search_id={$search_id}&season={$season}">{'/label/search_result_list'|translate}{*検索結果一覧に戻る*}</a>
+</div>
+<hr/>
+{/if}

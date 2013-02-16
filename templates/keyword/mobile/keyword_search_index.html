@@ -1,0 +1,9 @@
+<h2>{'/modules/keyword/label/keyword_index'|translate}{*キーワード索引*}</h2>
+{foreach from=$keyword_index_list item=row key=row_key}
+{strip}
+  {foreach from=$row item=col key=col_key}
+    <a href="/{$list_page_sysnm}/s_index={$col_key}">{$col}</a>|
+  {/foreach}
+{/strip}
+{/foreach}
+<hr/>

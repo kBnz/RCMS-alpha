@@ -1,0 +1,281 @@
+{if $gameList|@count > 0}
+{module name="game_last"}
+<h2 class="module_title"><span>最新試合結果</span></h2>
+<div class="module_contents">
+
+{foreach from=$gameList item=gameData}
+<table>
+  <tr>
+    <td valign="top">
+      <table width="100%" border="1" class="score_table">
+        <tr>
+          <td width="5%">&nbsp;</td>
+          <td colspan="2"  width="35%" align="center" class="self_team_nm">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+          <td  width="25%" align="center">vs</td>
+          <td colspan="2"  width="35%" align="center" class="opp_team_nm">{$gameData.team_nm}{$gameData.opponent_grade}</td>
+        </tr>
+      {if $gameData.score_detail_arr.Self_1S neq 'default'}
+        <tr>
+          <td class="score_label" width="5%" align="center">先鋒</td>
+          <td width="30%">
+        {if $gameMembers.self[1].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[1].member_id}">{$gameMembers.self[1].disp_name}</a>
+        {else}
+          {$gameMembers.self[1].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_1S eq 'win'}
+            <td class="score" width="5%">○</td>
+          {elseif $gameData.score_detail_arr.Self_1S eq 'lose'}
+            <td class="score" width="5%">●</td>
+          {elseif $gameData.score_detail_arr.Self_1S eq 'draw'}
+            <td class="score" width="5%">△</td>
+          {/if}
+          <td class="score" width="25%">{$gameData.score_detail_arr.waza1}</td>
+          {if $gameData.score_detail_arr.Self_1S eq 'win'}
+            <td class="score" width="5%">●</td>
+          {elseif $gameData.score_detail_arr.Self_1S eq 'lose'}
+            <td class="score" width="5%">○</td>
+          {elseif $gameData.score_detail_arr.Self_1S eq 'draw'}
+            <td class="score" width="5%">△</td>
+          {/if}
+          <td class="score" width="30%" align="left">{$gameMembers.opp[1].member_name}</td>
+        </tr>
+      {/if}
+      {if $gameData.score_detail_arr.Self_2S neq 'default'}
+        <tr>
+          <td  class="score_label" align="center">次鋒</td>
+          <td>
+        {if $gameMembers.self[2].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[2].member_id}">{$gameMembers.self[2].disp_name}</a>
+        {else}
+          {$gameMembers.self[2].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_2S eq 'win'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_2S eq 'lose'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_2S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score">{$gameData.score_detail_arr.waza2}</td>
+          {if $gameData.score_detail_arr.Self_2S eq 'win'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_2S eq 'lose'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_2S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score" align="left">{$gameMembers.opp[2].member_name}</td>
+        </tr>
+      {/if}
+
+      {if $gameData.score_detail_arr.Self_3S neq 'default'}
+        <tr>
+          <td  class="score_label" align="center">五将</td>
+          <td>
+        {if $gameMembers.self[3].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[3].member_id}">{$gameMembers.self[3].disp_name}</a>
+        {else}
+          {$gameMembers.self[3].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_3S eq 'win'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_3S eq 'lose'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_3S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score">{$gameData.score_detail_arr.waza3}</td>
+          {if $gameData.score_detail_arr.Self_3S eq 'win'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_3S eq 'lose'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_3S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score" align="left">{$gameMembers.opp[3].member_name}</td>
+        </tr>
+      {/if}
+
+      {if $gameData.score_detail_arr.Self_4S neq 'default'}
+        <tr>
+          <td  class="score_label" align="center">中堅</td>
+          <td>
+        {if $gameMembers.self[4].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[4].member_id}">{$gameMembers.self[4].disp_name}</a>
+        {else}
+          {$gameMembers.self[4].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_4S eq 'win'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_4S eq 'lose'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_4S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score">{$gameData.score_detail_arr.waza4}</td>
+          {if $gameData.score_detail_arr.Self_4S eq 'win'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_4S eq 'lose'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_4S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score" align="left">{$gameMembers.opp[4].member_name}</td>
+        </tr>
+      {/if}
+
+      {if $gameData.score_detail_arr.Self_5S neq 'default'}
+        <tr>
+          <td  class="score_label" align="center">三将</td>
+          <td>
+        {if $gameMembers.self[5].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[5].member_id}">{$gameMembers.self[5].disp_name}</a>
+        {else}
+          {$gameMembers.self[5].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_5S eq 'win'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_5S eq 'lose'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_5S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score">{$gameData.score_detail_arr.waza5}</td>
+          {if $gameData.score_detail_arr.Self_5S eq 'win'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_5S eq 'lose'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_5S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score" align="left">{$gameMembers.opp[5].member_name}</td>
+        </tr>
+      {/if}
+
+      {if $gameData.score_detail_arr.Self_6S neq 'default'}
+        <tr>
+          <td  class="score_label" align="center">副将</td>
+          <td>
+        {if $gameMembers.self[6].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[6].member_id}">{$gameMembers.self[6].disp_name}</a>
+        {else}
+          {$gameMembers.self[6].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_6S eq 'win'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_6S eq 'lose'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_6S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score">{$gameData.score_detail_arr.waza6}</td>
+          {if $gameData.score_detail_arr.Self_6S eq 'win'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_6S eq 'lose'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_6S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score" align="left">{$gameMembers.opp[6].member_name}</td>
+        </tr>
+      {/if}
+
+      {if $gameData.score_detail_arr.Self_7S neq 'default'}
+        <tr>
+          <td  class="score_label" align="center">大将</td>
+          <td>
+        {if $gameMembers.self[7].member_id > 0}
+          <a href="/member_detail/id={$gameMembers.self[7].member_id}">{$gameMembers.self[7].disp_name}</a>
+        {else}
+          {$gameMembers.self[7].disp_name}
+        {/if}
+          </td>
+          {if $gameData.score_detail_arr.Self_7S eq 'win'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_7S eq 'lose'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_7S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score">{$gameData.score_detail_arr.waza7}</td>
+          {if $gameData.score_detail_arr.Self_7S eq 'win'}
+            <td  class="score">●</td>
+          {elseif $gameData.score_detail_arr.Self_7S eq 'lose'}
+            <td  class="score">○</td>
+          {elseif $gameData.score_detail_arr.Self_7S eq 'draw'}
+            <td  class="score">△</td>
+          {/if}
+          <td  class="score" align="left">{$gameMembers.opp[7].member_name}</td>
+        </tr>
+      {/if}
+        <tr>
+         <td width="5%">&nbsp;</td>
+         <td  class="score28" colspan="2" width="35%">{$gameData.score_detail_arr.Self_Total}</td>
+         <td align="cneter" width="25%">-</td>
+         <td  class="score28" colspan="2" width="35%">{$gameData.score_detail_arr.Opp_Total}</td>
+        </tr>
+      </table>
+      <table width="280"><tr><td>&nbsp;</td></tr></table>
+    </td>
+    <td valign="top">
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">開始時間</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+      </table>
+    </td>
+
+  </tr>
+</table>
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+
+{/foreach}
+<div class="relation_link"><a href="/gamejyudou_list/" class="small_text">試合一覧へ</a></div>
+</div>
+{/module}
+<style>
+{literal}
+
+table.score_table {
+  width: 90% ;
+  margin-left: 0 ;
+  border: 1px solid gray;
+  background-color: #ffffff;
+  border-collapse:collapse;
+  text-align:center;
+}
+
+.member_blank {
+  border-bottom: 1px dashed gray;
+}
+
+{/literal}
+</style>

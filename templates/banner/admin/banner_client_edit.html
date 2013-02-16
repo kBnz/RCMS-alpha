@@ -1,0 +1,107 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if(confirm("削除してよろしいですか？")) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>クライアント編集</h2>
+  <ul>
+    {if $auth.banner.insert}
+    <li class="add"><a href="/management/banner/banner_client_edit/pageID={$currentPageID}"><span>クライアント追加</span></a></li>
+    {/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/banner/banner_contents_list/">{$module_nm}</a>
+<a href="/management/banner/banner_client_list/">クライアント一覧</a>
+クライアント編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/banner/banner_contents_list/">広告枠一覧</a></li>
+  <li><a href="/management/banner/banner_list/">バナー一覧</a></li>
+  <li><a href="/management/banner/banner_client_list/">クライアント一覧</a></li>
+  <li><a href="/management/banner/banner_summary/">集計結果</a></li>
+  {if $auth.banner.insert}
+  <li><a href="/management/banner/banner_client_edit/wizard=1" {if $wizard}class="active"{/if}>広告枠簡単作成</a></li>
+  {/if}
+</ul>
+
+  <div class="list_main">
+
+  <form action="/management/banner/banner_client_edit/" method="post">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="client_id" type="hidden" value="{$formData.client_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="wizard" value="{$wizard}" />
+
+{rcms_include file="management/wizard_box.html" wizard_options=$wizard_options wizard_flg=$wizard id=$formData.client_id}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <table width="100%" border="0">
+      <tr>
+        <th style="width:150px">クライアント名称</th>
+        <td><input style="width:250px" maxlength="50" name="client_nm" type="text" value="{$formData.client_nm|escape}" /></td>
+      </tr>
+      <tr>
+        <th>担当者</th>
+        <td><input style="width:250px" maxlength="50" name="manager" type="text" value="{$formData.manager|escape}" /></td>
+      </tr>
+      <tr>
+        <th>担当者連絡先</th>
+        <td><input style="width:250px" maxlength="150" name="manager_email" type="text" value="{$formData.manager_email|escape}" /></td>
+      </tr>
+    </table>
+
+{if $banner_client_id}
+
+    <h3>クライアントのバナー一覧</h3>
+    <div class="kiji_hensyu_top">
+    <table width="650" border="0">
+      <tr>
+        <td>
+          <select name="bannerList" id="bannerList" onchange="document.getElementById('banner_preview').src='/management/relation_preview.php?selected=banner:' + this.options[this.selectedIndex].value;" size="12">
+          {html_options options=$contents_list}
+          </select>
+        </td>
+        <td>
+          <iframe name="banner_preview" id="banner_preview" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0"></iframe>
+        </td>
+      </tr>
+    </table>
+    </div>
+    <div class="clear"></div>
+{/if}
+
+{buttonbox}
+  {if $auth.banner.update && $client_id != ""}
+    <button type="submit" onclick="this.form.MODE.value='UPDATE';">更新する</button>
+  {/if}
+  {if $auth.banner.insert && $client_id == ""}
+    <button type="submit" onclick="this.form.MODE.value='INSERT';">追加する</button>
+  {/if}
+  {if $auth.banner.delete && $client_id != ""}
+    <button type="button" onclick="confirmDelete(this.form);">削除する</button>
+  {/if}
+{/buttonbox}
+
+  </form>
+  </div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

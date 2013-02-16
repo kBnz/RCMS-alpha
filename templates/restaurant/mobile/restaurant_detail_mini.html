@@ -1,0 +1,33 @@
+<h2>店舗情報</h2>
+
+{foreach from=$restaurantData.order_list item=key name=list_data}
+  {if $key == "address"}
+      {if $restaurantData.zip_main || $restaurantData.zip_sub || $restaurantData.tdfk_nm || $restaurantData.address1 || $restaurantData.address2}
+      ■住所<br/>
+          {if $restaurantData.zip_main || $restaurantData.zip_sub}
+            {$restaurantData.zip_main}&nbsp;-&nbsp;{$restaurantData.zip_sub}<br/>
+          {/if}
+            {$restaurantData.tdfk_nm}{$restaurantData.address1|nl2br} {$restaurantData.address2|nl2br}<br/>
+
+          {if $location_linkurl|@count == 1}
+              [ <a href="{$location_linkurl.0.url}" >MAP</a> ]<br/>
+          {elseif  $location_linkurl|@count > 1}
+              {section name=location_url loop=$location_linkurl}
+                  [ <a href="{$location_linkurl[location_url].url}" >{$location_linkurl[location_url].location_nm}</a> ]<br/>
+              {/section}
+          {/if}
+
+      {/if}
+  {elseif $key == "email"}
+      {if $restaurantData[$key]}
+          ■{$restaurant_items_options[$key].name}<br/>
+          <a href="mailto:{$restaurantData.email|escape}">{$restaurantData.email|escape|nl2br}</a><br/>
+      {/if}
+  {elseif $key == "tel"}
+      {if $restaurantData[$key]}
+          ■{$restaurant_items_options[$key].name}<br/>
+          <a href="tel:{$restaurantData.tel|replace:"-":""|escape}">{$restaurantData.tel|escape|nl2br}</a><br/>
+      {/if}
+  {/if}
+{/foreach}
+<hr/>

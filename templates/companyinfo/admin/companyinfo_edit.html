@@ -1,0 +1,342 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<script type="text/javascript">
+<!--
+Event.observe(window, 'load', function() {
+    // 送信時に並び順を設定する
+    Event.observe($('companyinfo_edit'), 'submit', function() {
+        var rows = $('item_list_content').rows;
+        var buf = [];
+        for (var i = 0 ; i < rows.length ; i++) {
+            buf.push(rows[i].id);
+        }
+        $('order_string').value = buf.join(",");
+    });
+});
+
+var tmp_member_name;
+var tmp_member_id;
+var showing_no = '';
+
+function confirm_delete(){
+{/literal}
+var message = "{'/msg/confirm_del'|translate}";
+{literal}
+    if(confirm(message)){
+        document.game_edit.MODE.value='DELETE';
+        document.game_edit.submit();
+    }
+}
+-->
+</script>
+{/literal}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{'/modules/companyinfo/label/companyinfo_edit'|translate}</h2>
+<ul>
+  <li class="normal"><a href="/management/companyinfo/companyinfo_history/companyinfo_id={$companyinfo_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="view"><a href="/companyinfo_detail/id={$companyinfo_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/companyinfo/companyinfo_edit/">{$module_nm}</a>
+{'/modules/companyinfo/label/companyinfo_edit'|translate}
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>　<a href="/companyinfo_detail/id={$companyinfo_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+  {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/companyinfo/companyinfo_edit/"}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html"}
+  {rcms_include file="management/errors_box.html"}
+  <form name="companyinfo_edit" id="companyinfo_edit" action="/management/companyinfo/companyinfo_edit/" method="POST" enctype="multipart/form-data"> 
+    <input type="hidden" name="companyinfo_id" value="{$companyinfo_id}" />
+    <input type="hidden" name="item_order" value="{$data.item_order}" />
+    <input type="hidden" name="order_string" id="order_string" value="{$data.order_string}"/>
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    {capture name=comp_nm}
+          <th>{'/modules/companyinfo/label/comp_nm'|translate}<span class="required">{'/label/required'|translate}</span></th>
+          <td><input type="text" name="comp_nm" value="{$data.comp_nm|escape}" /></td>
+    {/capture}
+    {capture name=addres}
+          <th>{'/modules/companyinfo/label/addres'|translate}</th>
+          <td>
+            <p>{'/label/postcode'|translate}:<span class="hint">{'/label/halfwidth_number'|translate}{*半角数字*}</span><br />
+              <input size="4" maxlength="3" id="comp_zip_main" name="comp_zip_main" type="text" value="{$data.comp_zip_main}" onBlur="changeHankaku(this, 'number')" />
+              &nbsp;-&nbsp;
+              <input size="5" maxlength="4" id="comp_zip_sub" name="comp_zip_sub" type="text" value="{$data.comp_zip_sub}" onBlur="changeHankaku(this, 'number')" /></p>
+            <p>{'/label/prefecture'|translate}:<br />
+            <select id="comp_tdfk_cd" name="comp_tdfk_cd">{html_options options=$arrTdfk selected=$data.comp_tdfk_cd}</select></p>
+            <p>{'/label/address'|translate}({'/label/address_state'|translate}/{'/label/address_city'|translate}/{'/label/street_number'|translate}):<br /><textarea id="comp_add" name="comp_add" rows="2" cols="50">{$data.comp_add}</textarea></p>
+            <p>{'/label/address'|translate}({'/label/building'|translate}):<br /><input size="70" maxlength="100" id="comp_add2" name="comp_add2" type="text" value="{$data.comp_add2}" /></p>
+          </td>
+    {/capture}
+    {capture name=gmap_type}
+            <th>{'/label/map_information'|translate}{*地図*}</th>
+            <td>
+                <span class="hint">{'/modules/location/msg/help_googlemap_setting'|translate}{*地図上をクリックすると設定される位置が変わります。ズームなどの状態も設定できます。*}</span><br>
+                <input id="gmap_x" name="gmap_x" type="hidden" value="{$data.gmap_x}" />
+                <input id="gmap_y" name="gmap_y" type="hidden" value="{$data.gmap_y}" />
+                <input id="gmap_zoom" name="gmap_zoom" type="hidden" value="{$data.gmap_zoom}" />
+                <input id="gmap_type" name="gmap_type" type="hidden" value="{$data.gmap_type}" />
+                {if $data.gmap_x ne "" && $data.gmap_y ne ""}
+                    <input id="gmap_del" name="gmap_del" type="checkbox" value="1" /> {'/label/map_delete'|translate}{*地図情報を表示させない*}
+                {/if}
+                <iframe src="/management/location/location_map/gmap_x={$data.gmap_x}&gmap_y={$data.gmap_y}&gmap_zoom={$data.gmap_zoom}&gmap_type={$data.gmap_type}" name="googlemap" width=490 height=430 scrolling="auto" marginheight="0" marginwidth="0" frameborder="0"></iframe>
+            </td>
+    {/capture}
+    {capture name=business}
+          <th>{'/modules/companyinfo/label/business'|translate}</th>
+          <td><textarea name="business" rows="7" cols="50">{$data.business|escape}</textarea></td>
+    {/capture}
+    {capture name=comp_boss}
+          <th>{'/modules/companyinfo/label/comp_boss'|translate}</th>
+          <td><textarea name="comp_boss" rows="1" cols="50">{$data.comp_boss|escape}</textarea></td>
+    {/capture}
+    {capture name=esta_date}
+          <th>{'/modules/companyinfo/label/esta_date'|translate}</th>
+          <td><textarea name="esta_date" rows="1" cols="50">{$data.esta_date|escape}</textarea></td>
+    {/capture}
+    {capture name=capital}
+          <th>{'/modules/companyinfo/label/capital'|translate}</th>
+          <td><textarea name="capital" rows="1" cols="50">{$data.capital|escape}</textarea></td>
+    {/capture}
+    {capture name=earning}
+          <th>{'/modules/companyinfo/label/earning'|translate}</th>
+          <td><textarea name="earning" rows="3" cols="50">{$data.earning|escape}</textarea></td>
+    {/capture}
+    {capture name=mem_num}
+          <th>{'/modules/companyinfo/label/mem_num'|translate}</th>
+          <td><textarea name="mem_num" rows="1" cols="50">{$data.mem_num|escape}</textarea></td>
+    {/capture}
+    {capture name=avg_age}
+          <th>{'/modules/companyinfo/label/avg_age'|translate}</th>
+          <td><textarea name="avg_age" rows="2" cols="50">{$data.avg_age|escape}</textarea></td>
+    {/capture}
+    {capture name=exec}
+          <th>{'/modules/companyinfo/label/exec'|translate}</th>
+          <td><textarea name="exec" rows="2" cols="50">{$data.exec|escape}</textarea></td>
+    {/capture}
+    {capture name=bank}
+          <th>{'/modules/companyinfo/label/bank'|translate}</th>
+          <td><textarea name="bank" rows="2" cols="50">{$data.bank|escape}</textarea></td>
+    {/capture}
+    {capture name=link_comp}
+          <th>{'/modules/companyinfo/label/link_comp'|translate}</th>
+          <td><textarea name="link_comp" rows="3" cols="50">{$data.link_comp|escape}</textarea></td>
+    {/capture}
+    {capture name=client}
+          <th>{'/modules/companyinfo/label/client'|translate}</th>
+          <td><textarea name="client" rows="3" cols="50">{$data.client|escape}</textarea></td>
+    {/capture}
+    {capture name=contact_address}
+          <th>{'/modules/companyinfo/label/contact_address'|translate}</th>
+          <td><textarea name="contact_address" rows="3" cols="50">{$data.contact_address|escape}</textarea></td>
+    {/capture}
+    {capture name=profit}
+          <th>{'/modules/companyinfo/label/profit'|translate}</th>
+          <td><textarea name="profit" rows="3" cols="50">{$data.profit|escape}</textarea></td>
+    {/capture}
+    {capture name=listing_category}
+          <th>{'/modules/companyinfo/label/listing_category'|translate}</th>
+          <td><textarea name="listing_category" rows="2" cols="50">{$data.listing_category|escape}</textarea></td>
+    {/capture}
+    {capture name=stock_code}
+          <th>{'/modules/companyinfo/label/stock_code'|translate}</th>
+          <td><input type="text" name="stock_code" value="{$data.stock_code|escape}"/></td>
+    {/capture}
+    {capture name=teikoku_code}
+          <th>{'/modules/companyinfo/label/teikoku_code'|translate}</th>
+          <td><input type="text" name="teikoku_code" value="{$data.teikoku_code|escape}" /></td>
+    {/capture}
+    {capture name=company_image_url}
+          <th>{'/label/image'|translate}</th>
+          <td>
+            {if $data.company_image_url != ''}
+            <img src="{$data.company_image_url}?{$smarty.now}" id="company_image_url"/>
+            <p><a id="del_company_image_url" href="javascript:;" onClick="$('hidden_company_image_url').value='';$('hidden_company_image_type').value='';$('company_image_url').style.display='none';$('del_company_image_url').style.display='none';">削除</a></span></p>
+            <br>
+            <input type="hidden" name="company_image_url" value="{$data.company_image_url}" id="hidden_company_image_url" />
+            <input type="hidden" name="company_image_type" value="{$data.company_image_type}" id="hidden_company_image_type" />
+            {/if}
+            <input type="file" size="65" name="save_company_image_url" maxlength="100" />
+          </td>
+    {/capture}
+    {capture name=ext_title_01}
+          <th>{'/label/ext_title_01'|translate}<input type="text" name="ext_title_01" value="{$data.ext_title_01|escape}" /> </th>
+          <td><textarea name="ext_txt_01" rows="3" cols="50">{$data.ext_txt_01|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_02}
+          <th>{'/label/ext_title_02'|translate}<input type="text" name="ext_title_02" value="{$data.ext_title_02|escape}" /> </th>
+          <td><textarea name="ext_txt_02" rows="3" cols="50">{$data.ext_txt_02|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_03}
+          <th>{'/label/ext_title_03'|translate}<input type="text" name="ext_title_03" value="{$data.ext_title_03|escape}" /> </th>
+          <td><textarea name="ext_txt_03" rows="3" cols="50">{$data.ext_txt_03|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_04}
+          <th>{'/label/ext_title_04'|translate}<input type="text" name="ext_title_04" value="{$data.ext_title_04|escape}" /> </th>
+          <td><textarea name="ext_txt_04" rows="3" cols="50">{$data.ext_txt_04|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_05}
+          <th>{'/label/ext_title_05'|translate}<input type="text" name="ext_title_05" value="{$data.ext_title_05|escape}" /> </th>
+          <td><textarea name="ext_txt_05" rows="3" cols="50">{$data.ext_txt_05|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_06}
+          <th>{'/label/ext_title_06'|translate}<input type="text" name="ext_title_06" value="{$data.ext_title_06|escape}" /> </th>
+          <td><textarea name="ext_txt_06" rows="3" cols="50">{$data.ext_txt_06|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_07}
+          <th>{'/label/ext_title_07'|translate}<input type="text" name="ext_title_07" value="{$data.ext_title_07|escape}" /> </th>
+          <td><textarea name="ext_txt_07" rows="3" cols="50">{$data.ext_txt_07|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_08}
+          <th>{'/label/ext_title_08'|translate}<input type="text" name="ext_title_08" value="{$data.ext_title_08|escape}" /> </th>
+          <td><textarea name="ext_txt_08" rows="3" cols="50">{$data.ext_txt_08|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_09}
+          <th>{'/label/ext_title_09'|translate}<input type="text" name="ext_title_09" value="{$data.ext_title_09|escape}" /> </th>
+          <td><textarea name="ext_txt_09" rows="3" cols="50">{$data.ext_txt_09|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_10}
+          <th>{'/label/ext_title_10'|translate}<input type="text" name="ext_title_10" value="{$data.ext_title_10|escape}" /> </th>
+          <td><textarea name="ext_txt_10" rows="3" cols="50">{$data.ext_txt_10|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_11}
+          <th>{'/label/ext_title_11'|translate}<input type="text" name="ext_title_11" value="{$data.ext_title_11|escape}" /> </th>
+          <td><textarea name="ext_txt_11" rows="3" cols="50">{$data.ext_txt_11|escape}</textarea></td>
+    {/capture}
+
+    {capture name=ext_title_12}
+          <th>{'/label/ext_title_12'|translate}<input type="text" name="ext_title_12" value="{$data.ext_title_12|escape}" /> </th>
+          <td><textarea name="ext_txt_12" rows="3" cols="50">{$data.ext_txt_12|escape}</textarea></td>
+    {/capture}
+
+    {capture name=ext_title_13}
+          <th>{'/label/ext_title_13'|translate}<input type="text" name="ext_title_13" value="{$data.ext_title_13|escape}" /> </th>
+          <td><textarea name="ext_txt_13" rows="3" cols="50">{$data.ext_txt_13|escape}</textarea></td>
+    {/capture}
+
+    {capture name=ext_title_14}
+          <th>{'/label/ext_title_14'|translate}<input type="text" name="ext_title_14" value="{$data.ext_title_14|escape}" /> </th>
+          <td><textarea name="ext_txt_14" rows="3" cols="50">{$data.ext_txt_14|escape}</textarea></td>
+    {/capture}
+    {capture name=ext_title_15}
+          <th>{'/label/ext_title_15'|translate}<input type="text" name="ext_title_15" value="{$data.ext_title_15|escape}" /> </th>
+          <td><textarea name="ext_txt_15" rows="3" cols="50">{$data.ext_txt_15|escape}</textarea></td>
+    {/capture}
+
+    <h3>{$module_nm}</h3>
+      {lang_selector meta=$docmeta link='/management/companyinfo/companyinfo_edit/}
+      <table width="100%">
+          <thead id="item_list_header">
+            {if $docmeta.is_primary}
+            <tr>
+              <th colspan="2" align="middle" scope="col"></th>
+              <th scope="col">{'/label/display_order'|translate}</th>
+            </tr>
+            {/if}
+          </thead>
+          <tbody id="item_list_content">
+          {foreach from=$disp_items item=disp_tag}
+             <tr id="{$disp_tag}">
+                  {$smarty.capture.$disp_tag}
+                  {if $docmeta.is_primary}
+                  <td>
+                     <a href="javascript:;" onclick="swapSibling(-1, '{$disp_tag}')"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+                     <a href="javascript:;" onclick="swapSibling(1, '{$disp_tag}')"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+                  </td>
+                  {/if}
+             </tr>
+          {/foreach}
+         </tbody id="item_list_content">
+      </table>
+      <div id="hidden_items" class="edit_close">
+        <h3>{'/modules/companyinfo/label/extra_items'|translate}</h3>
+      <p><a href="javascript:void(0)" onclick="display('hidden_items');display('hidden_items2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+      </div>
+      <div id="hidden_items2" class="edit_open" style="display:none;">
+          <h3><span class="link_button">{'/modules/companyinfo/label/extra_items'|translate}</span></h3>
+          <p class="close"><a href="javascript:void(0)" onclick="display('hidden_items');display('hidden_items2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="{'/label/close'|translate}"></a></p>
+          <table>
+                {foreach from=$hidden_items item=hidden_tags}
+                    <tr>
+                         {$smarty.capture.$hidden_tags}
+                    </tr>
+                {/foreach}
+        </table>
+      </div><!-- //relation_edit2 -->      
+
+      {if $docmeta.is_primary}
+      <a id="relation_data" name="relation_data"></a>
+      {rcms_include file="management/relation_edit.html"}
+      {/if}
+
+      <div class="clear"></div>
+
+      {if $docmeta.is_primary}
+      {rcms_include file="management/open_date_box.html" id=$companyinfo_id data=$data}
+      {/if}
+
+    {buttonbox}
+      {if $docmeta.is_waiting}
+        {* これは承認待ちドキュメント *}
+
+        {if $rauth->canUpdate("/companyinfo/item", $docmeta.lang)}
+          {if $rauth->unlimitedUpdate("/companyinfo/item", $docmeta.lang)}
+            {* 許可する権限がある *}
+            <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>{* 承認する *}
+            <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>{* 拒否する *}
+          {elseif $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+          {else}
+              {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+          {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+
+      {else}
+        {* これは通常ドキュメント *}
+
+        {if $docmeta.has_waiting}
+          {* 承認待ちドキュメントがある場合は何もできない *}
+            {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+            <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+        {else}
+          {* 通常ドキュメントに対する更新処理 *}
+          {if $rauth->canUpdate("/companyinfo/item", $docmeta.lang)}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+          {/if}
+          {if !$docmeta.is_primary && $rauth->canDelete("/companyinfo/item", $docmeta.lang)}
+            <button type="submit" onclick="this.form.MODE.value='DELETE'">{'/label/delete_btn'|translate}</button>{* 更新する *}
+          {/if}
+        {/if}
+      {/if}
+
+    {/buttonbox}
+  </form>
+</div><!--//list_main-->
+</div><!--//main_contents-->
+</div>
+
+{rcms_include file="management/footer.html"}

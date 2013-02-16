@@ -1,0 +1,17 @@
+{foreach from=$errors item=item name=errlist}
+{if $smarty.foreach.errlist.first}
+<div align="center">
+<table class="errtable">
+  <tr><td class="errmsg">{'/modules/page/label/error_occurred'|translate}{*ƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½*}</td></tr>
+  <tr><td align="left">
+      <ul>
+{/if}
+    <li>{$item}</li>
+{if $smarty.foreach.errlist.last}
+      </ul>
+    </td>
+  </tr>
+</table>
+</div>
+{/if}
+{/foreach}

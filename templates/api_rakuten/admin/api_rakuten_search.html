@@ -1,0 +1,107 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript" src="/js/modules/api_rakuten/Rakuten.js"></script>
+<script type="text/javascript">
+var ra = new Rakuten.Api('{$proxy}');
+Rakuten.pathToDetails = '{$pathToDetails}';
+{literal}
+onReady(function() {
+	window.rs = new Rakuten.Search(ra);
+	window.rf = new Rakuten.Form(rs, 'arForm');
+	window.moveTo = function(page) { rs.moveTo(page); };
+
+	rs.restore();
+});
+{/literal}
+</script>
+<div class="list_right_bt">
+  <h2>商品検索</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_rakuten/api_rakuten_search/">{$module_nm}</a>
+商品検索
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/api_rakuten/api_rakuten_search/" class="active">商品検索</a></li>
+  <li><a href="/management/api_rakuten/api_rakuten_list/">商品一覧</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+
+    <p>関連させたい商品を検索します。</p>
+
+    <h3>検索</h3>
+
+    <form id="arForm" action="javascript:void(0)" onsubmit="rf.submit(); return false;">
+      <table style="width:98%">
+        <tr>
+          <th>キーワード</th>
+          <td colspan="3">
+            <input type="text" name="keyword" style="width:15em" />
+            <select name="orFlag">
+              <option value="0">AND検索</option>
+              <option value="1">OR検索</option>
+            </select>
+          </td>
+          <th>取得件数</th>
+          <td>
+            各ページ
+            <select name="hits">
+              <option value="10">10件</option>
+              <option value="20" selected="selected">20件</option>
+              <option value="30">30件</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>ジャンル</th>
+          <td colspan="5" id="arGenre">
+            <input id="arGenreLevel0" type="hidden" name="genreId" value="0" />
+          </td>
+        </tr>
+        <tr>
+          <th>最小価格</th>
+          <td><input type="text" name="minPrice" value="" /></td>
+          <th>最大価格</th>
+          <td><input type="text" name="maxPrice" value="" /></td>
+          <th>並び順</th>
+          <td>
+            <select name="sort">
+              <option value="+affiliateRate">アフィリエイト料率順 (昇順)</option>
+              <option value="-affiliateRate">アフィリエイト料率順 (降順)</option>
+              <option value="+reviewCount">レビュー件数順 (昇順)</option>
+              <option value="-reviewCount" selected="selected">レビュー件数順 (降順)</option>
+              <option value="+itemPrice">価格順 (昇順)</option>
+              <option value="-itemPrice">価格順 (降順)</option>
+              <option value="+updateTimestamp">商品更新日時順 (昇順)</option>
+              <option value="-updateTimestamp">商品更新日時順 (降順)</option>
+              <option value="random">ランダム順</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>ショップコード</th>{* 表の画面では非表示でRAKUTEN_SHOP_CODEに固定する *}
+          <td><input type="text" name="shopCode" value="{$smarty.const.RAKUTEN_SHOP_CODE}" /></td>
+        </tr>
+      </table>
+      <p><input type="submit" value="検索" /></p>
+    </form>
+
+    <h3>検索結果</h3>
+    <div id="arResults">検索結果はここに表示されます。</div>
+
+    <p><a href="http://webservice.rakuten.co.jp/" onclick="return !window.open(this.href)"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

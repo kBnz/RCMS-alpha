@@ -1,0 +1,71 @@
+{module name="shopping_detail"}
+
+
+<h2 class="module_title">{$shoppingData.subject}</h2>
+
+<div class="module_contents">
+
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="management/messages_box.html" messages=$messages}
+
+	<div class="shoppingItem">
+		<p class="category">［カテゴリ］{$shoppingData.category_nm}</p>
+		<div class="item clearFix">
+
+		{if $shoppingData.errors}
+			{$shoppingData.errors}
+		{else}
+			{foreach from = $user_profile.profile item=item key=key name=shopping_item}
+				{if $shoppingData[$item.col_header]}
+					{counter assign="count"}
+					{if $count eq 1}
+						<p class="firstItem_{$user_profile.layout}">
+					{elseif $count > 1}
+						<p>
+					{/if}
+						{if $key ne "image"}{$item.name}：{/if}{$shoppingData[$item.col_header]}
+					</p>
+					{if $count eq 1}
+						<div class="item_{$user_profile.layout}">
+					{/if}
+				{/if}
+			{/foreach}
+
+			</div>
+		</div>
+
+			{*{if $row.group_nm != ""}<span class="group">グループ：[{$shoppingData.group_nm}]</span>{/if}*}
+
+			{* 在庫数に応じてメッセージを表示 *}
+			<p class="stock_message">
+			{if $shoppingData.stock == 0}
+			{$cartSetting.msg_no_stock}
+			{elseif $shoppingData.stock >= $shoppingData.threshold}
+			{$cartSetting.msg_over_threshold}
+			{else $shoppingData.stock > 0}
+			{$cartSetting.msg_under_threshold}
+			{/if}
+			</p>
+
+			{* 在庫があった場合にフォームを表示 *}
+			{if $shoppingData.stock > 0}
+			<form method="post" action="/{$page_sysnm}/">
+				<input type="hidden" name="id" value="{$shopping_id}" />
+				<input type="hidden" name="MODE" value="ADD_CART" />
+					<p class="select">数量：<select name="amount">{html_options options=$shoppingData.amount_option}</select>
+			<input type="submit" value="カートに追加する" />
+			{if $shopping_amount_selected != 0}
+			<br>（既にカートに{$shopping_amount_selected}個入っています）
+			{/if}
+					</p>
+		</form>
+		{/if}
+		
+	{/if}
+</div>
+
+<p class="relation_link"><a href="/shopping_list{if $shopping_group_id != 1}{$shopping_group_id}{/if}/contents_type={$shoppingData.contents_type}" class="small_text">{$shoppingData.category_nm}の商品一覧へ</a></p>
+<p class="relation_link"><a href="/shopping_list{if $shopping_group_id != 1}{$shopping_group_id}{/if}/" class="small_text">商品一覧へ</a></p>
+
+</div><!--//module_contents-->
+{/module}

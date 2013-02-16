@@ -1,0 +1,16 @@
+このメールは{$site_title}のフォームから送信されたメールです。
+
+■申し込み対象
+{$target_contents}
+
+■申し込み内容
+・名前  ：{$name}
+・メール：{$email}
+{$other_contents}
+
+ログインして確認してください。
+{$smarty.const.ROOT_SSL_URL}/management/
+
+-------------------------
+{$site_title}
+{$smarty.const.ROOT_URL}/

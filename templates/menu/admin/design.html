@@ -1,0 +1,34 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{*	新しいモジュールのURLは menu/config.php に設定してね *}
+
+<h3 id="menu_title">{'/label/menus/design'|translate}</h3>
+<div class="main_contents">
+	<ul id="mainnav">
+	{foreach from=$INCLUDE_MODULE_LIST item=module}
+			{if $conf_tab[$module] eq 'design'}
+					{if $auth[$module].select}
+							<li class="mainnav_{$module}"><a href="{$management_menus[$module].link}"><span>{$module|translate_modules}</span></a></li>
+				 {/if}
+			{/if}
+	{/foreach}
+	<li style="background: url({'/images/management/icon/file_manager.gif'|lang_img_path}) no-repeat center top;"><a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a></li>
+	</ul>
+</div><!-- main_contents -->
+
+<div class="clearFloat"><br></div>
+
+<div id="add">
+	<dl>
+	<dt>{'/modules/design'|translate}{*デザイン*}</dt><dd>{'/modules/menu/msg/editing_css_and_selecting_prepared_css'|translate}{*CSSの編集や用意されているCSSの選択を行います。*}</dd>
+	<dt>{'/modules/layout'|translate}{*レイアウト*}</dt><dd>{'/modules/menu/msg/explain_about_layout'|translate}{*用意されている段組に関しての幅や配置などの設定を行います。リキッドレイアウトなどの設定はこちらで行います。*}</dd>
+	<dt>{'/modules/headerfooter'|translate}{*ヘッダフッタ*}</dt><dd>{'/modules/menu/msg/explain_about_headerfooter'|translate}{*各ページ共通で表示するヘッダ、フッタを直接編集します。*}</dd>
+	<dt>{'/modules/templateedit'|translate}{*テンプレート編集*}</dt><dd>{'/modules/menu/msg/explain_about_templateedit'|translate}{*各モジュールで利用するテンプレートを編集します。ページ毎、PC、モバイルに分けての設定可能です。*}</dd>
+	<dt>{'/modules/mobile'|translate}{*モバイル設定*}</dt><dd>{'/modules/menu/msg/explain_about_mobile'|translate}{*モバイル向けの基本的な設定を行います。*}</dd>
+	<dt>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</dt><dd>{'/modules/menu/msg/explain_about_file_manager'|translate}{*ファイルマネージャを開きます。画像のアップロードを行えます。*}</dd>
+	</dl>
+</div><!-- box -->
+
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,92 @@
+{if $view_reserve.write == 'none'}
+{elseif $accept_flg == 1}
+
+{capture name=name1}
+{if $reserve_header.user_profile.name1 == $smarty.const.RESERVE_PROFILE_ON || $reserve_header.user_profile.name1 == $smarty.const.RESERVE_PROFILE_REQUIRE}
+  {if $reserve_header.input_type.name1 == $smarty.const.RESERVE_INPUT_TEXTAREA}
+    <dt>名前:{if $reserve_header.user_profile.name1 == $smarty.const.RESERVE_PROFILE_REQUIRE}<span class="require">必須</span>{/if}</dt><dd><textarea style="width:70%" name="name1">{if $reserveData.name1 != ""}{$reserveData.name1}{else}{$reserveData.defaultNm}{/if}</textarea></dd>
+  {else}
+    <dt>名前:{if $reserve_header.user_profile.name1 == $smarty.const.RESERVE_PROFILE_REQUIRE}<span class="require">必須</span>{/if}</dt><dd><input style="width:70%" maxlength="50" id="text" name="name1" type="text" value="{if $reserveData.name1 != ""}{$reserveData.name1}{else}{$reserveData.defaultNm}{/if}" /></dd>
+  {/if}
+{/if}
+{/capture}
+
+{capture name=email}
+{if $reserve_header.user_profile.email == $smarty.const.RESERVE_PROFILE_ON || $reserve_header.user_profile.email == $smarty.const.RESERVE_PROFILE_REQUIRE}
+  {if $reserve_header.input_type.email == $smarty.const.RESERVE_INPUT_TEXTAREA}
+    <dt>メールアドレス:{if $reserve_header.user_profile.email == $smarty.const.RESERVE_PROFILE_REQUIRE}<span class="require">必須</span>{/if}</dt><dd><textarea style="width:70%" name="email">{$reserveData.email}</textarea></dd>
+  {else}
+    <dt>メールアドレス:{if $reserve_header.user_profile.email == $smarty.const.RESERVE_PROFILE_REQUIRE}<span class="require">必須</span>{/if}</dt><dd><input style="width:70%" maxlength="255" id="text" name="email" type="text" value="{$reserveData.email}" /></dd>
+  {/if}
+{/if}
+{/capture}
+
+{section name=cnt start=1 loop=6}
+  {assign var="i" value=$smarty.section.cnt.index|string_format:"%02d"}
+  {assign var="ext_title" value="ext_title_$i"}
+  {assign var="ext" value="ext_$i"}
+  {capture name=$ext_title}
+    {if $reserve_header.user_profile.$ext_title == $smarty.const.RESERVE_PROFILE_ON || $reserve_header.user_profile.$ext_title == $smarty.const.RESERVE_PROFILE_REQUIRE}
+      {if $reserve_header.input_type.$ext_title == $smarty.const.RESERVE_INPUT_TEXTAREA}
+        <dt>{$reserve_header.$ext_title}:{if $reserve_header.user_profile.$ext_title == $smarty.const.RESERVE_PROFILE_REQUIRE}<span class="require">必須</span>{/if}</dt><dd><textarea style="width:70%" name="{$ext|escape}">{$reserveData.$ext|escape}</textarea></dd>
+      {else}
+  <dt>{$reserve_header.$ext_title}:{if $reserve_header.user_profile.$ext_title == $smarty.const.RESERVE_PROFILE_REQUIRE}<span class="require">必須</span>{/if}</dt><dd><input style="width:70%" maxlength="255" id="text" name="{$ext|escape}" type="text" value="{$reserveData.$ext|escape}" /></dd>
+      {/if}
+    {/if}
+  {/capture}
+{/section}
+
+{module name="calendar_list"}
+<h2 class="module_title"><span>予約</span></h2>
+<div class="module_contents">
+<a name="reserve_form"></a>
+<form name="reserve" id="reserve" action="/{$page_sysnm}/id={$id}#reserve_form" method="POST">
+<input name="action" type="hidden" value="{$reserveData.action}" />
+<input name="random_key" type="hidden" value="{$reserveData.random_key}" />
+<input name="reserve_id" type="hidden" value="{$reserveData.reserve_id}" />
+<input name="module_id" type="hidden" value="{$reserveData.module_id}" />
+<input name="node" type="hidden" value="{$reserveData.node}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div>
+{$description}
+</div>
+
+<dl>
+  {* 申し込み項目を重要度の高い順に表示 *}
+  {foreach from=$grades key="key" item="value"}
+    {$smarty.capture.$key}
+  {/foreach}
+</dl>
+{if $smarty.const.RESERVE_USE_CAPTCHA}
+<img src="{$captcha}" /><br />
+CAPTCHA Code:<input type="text" name="phrase" class="phrase" size="5" maxlength="5" /><br />
+{/if}
+{*
+    {if $rating_flg != "2"}
+  パスワード:<input size="7" name="delkey" type="password" value="{$reserveData.delkey}" />
+    {/if}
+*}
+    <input type="submit" name="btnSubmit" value="　申し込む　">
+    {if $reserve_id != ""}
+    <input type="submit" name="btnSubmit" value="　削 除　">
+    {/if}
+
+</form>
+</div>
+{/module}
+
+{elseif $accept_flg == 2}
+{module name="calendar_list"}
+<h2 class="module_title"><span>予約</span></h2>
+<div class="module_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+予約は終了しました。
+</div>
+{/module}
+{/if}

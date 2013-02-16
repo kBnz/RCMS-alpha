@@ -1,0 +1,5 @@
+<ul class="minitabs">
+  <li><a href="/management/season/season_list/"{if $page_type eq 'season_list'} class="active"{/if}>資料一覧</a></li>
+{* 権限はsite権限 *}{if $auth.site.select}  <li><a href="/management/season/setup/"{if $page_type eq 'setup'} class="active"{/if}>資料基本設定</a></li>{/if}
+</ul>
+

@@ -1,0 +1,7 @@
+<h2>[emoji:079]<span>{'/modules/blog/label/search_blog'|translate}{*ブログ検索*}</span></h2>
+<div style="font-size:small;">
+    <form action="{if $blog_id eq ''}/blog_top/{else}/blog_my_top/blog_id={$blog_id}{/if}" method="POST">
+      {'/label/keyword'|translate}{*キーワード*}<input type="text" size="30" name="keyword" value="{$smarty.request.keyword|escape}"/>
+      <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+    </form>
+</div>

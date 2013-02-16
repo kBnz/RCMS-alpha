@@ -1,0 +1,33 @@
+{headblock}
+<style type="text/css">
+{literal}
+#container .bookmark ul{
+	list-style-type: none;
+	padding: 5px 3px 0 0;
+	margin: 0;
+}
+#container .bookmark li{
+	display: block;
+	float:right;
+	margin: 0;
+	padding: 1px;
+}
+{/literal}
+</style>
+{/headblock}
+
+<div class="bookmark">
+<iframe src="//www.facebook.com/plugins/like.php?href={$smarty.const.ROOT_URL|urlencode}{$smarty.server.PHP_SELF|escape|urlencode}&amp;layout=button_count&amp;show_faces=false&amp;width=100&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:100px; height:21px;text-align:right;"></iframe>
+<a href="//twitter.com/share" class="twitter-share-button" data-count="horizontal" {if $twitter_account}data-via="{$twitter_account}"{/if} data-lang="{$mylang}">Tweet</a>
+<script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+{if $mixi_developer_key}
+<a href="//mixi.jp/share.pl" class="mixi-check-button" data-key="{$mixi_developer_key}">Check</a>
+<script type="text/javascript" src="//static.mixi.jp/js/share.js"></script>
+{/if}
+<script type="text/javascript" src="//apis.google.com/js/plusone.js">{literal}{lang: 'ja'}{/literal}</script>
+<g:plusone count="false" size="medium"></g:plusone>
+{if !$https_flg}
+<a rel="nofollow" href="http://b.hatena.ne.jp/entry/{$smarty.const.ROOT_URL}{$smarty.server.PHP_SELF|escape}" title="はてなブックマークに追加" target="_blank"><img src="/images/modules/page/bookmark/hatena.gif" width="16" height="16" alt="はてなブックマークに追加" /></a><a rel="nofollow" href="http://b.hatena.ne.jp/entry/{$smarty.const.ROOT_URL}{$smarty.server.PHP_SELF|escape}"><img src="http://b.hatena.ne.jp/entry/image/{$smarty.const.ROOT_URL}{$smarty.server.PHP_SELF|escape}" alt=""></a>
+{/if}
+</div>
+<div class="clr"></div>

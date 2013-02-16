@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+------------------------------------------------------------ */
+body {
+	text-align:[site_align];
+}
+
+.mng_line {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#container {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#header {
+}
+
+#navi {
+}
+
+#footpath {
+	[footpath_width]
+}
+
+#contents {
+	[contents_width]
+}
+
+#top_contents {
+}
+
+#main_contents {
+	width:100%;
+	float:left;
+	margin-right:-[right_width][right_width2]; 
+}
+
+#sub_module3,
+#main_module,
+#sub_module4,
+#sub_module7 {
+	margin-right:[right_width+margin][right_width2];
+}
+
+#side_contents_right {
+	width:[right_width][right_width2];
+	float:left;
+}
+
+#bottom_contents {
+	clear:left;
+}
+
+#footer {
+	clear:left;
+}

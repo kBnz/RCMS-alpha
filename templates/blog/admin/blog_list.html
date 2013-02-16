@@ -1,0 +1,170 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="javascript" type="text/javascript" src="/js/pager.js"></script>
+
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_list'|translate}</h2>{* ブログ一覧 *}
+<ul>
+{if $rauth->canInsert("/blog/blog/")}
+    <li class="add"><a href="/management/blog/blog_edit/"><span>{'/modules/blog/label/add_blog_btn'|translate}</span></a></li>{* ブログ追加 *}
+{/if}
+{if $auth.blog_admin.update}
+    <li class="normal"><a href="/management/blog/blog_list/MODE=makeRSS&DG_CODE={$DG_CODE}"><span>{'/modules/blog/label/update_all_rss_btn'|translate}</span></a></li>{* 全RSS更新 *}
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+{'/modules/blog/label/blog_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 *}
+<div class="clear"></div>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 参加ブログ一覧 -->
+<div class="main_contents">
+<div class="hint">{'/modules/blog/msg/comment_setting_to_all_blogs'|translate}</div>{* ブログ全体のコメントに関する設定は<a href="/management/comment/comment_module_edit/module_type=blog">こちら</a>から *}
+<div class="list_main">
+
+   <!-- 承認待ちブログ一覧 -->
+  {rcms_include file="common/admin/shonin_list.html"}
+
+  <h3 class="big">{'/modules/blog/label/editable_blog_list_title'|translate:$Login_disp_nm}</h3>{* ○○さんが編集に参加しているブログ *}
+  {if $our_blog_list|@count==0}
+  {'/modules/blog/msg/no_editable_blog_msg'|translate:$Login_disp_nm}<br />{* ○○さんが編集できるブログはまだ、ありません。 *}
+  {if $rauth->canInsert("/blog/blog/")}
+    {'/modules/blog/msg/add_new_blog_setting'|translate}{* <a href="/management/blog/blog_edit/">こちら</a>から追加設定してください。 *}
+  {else}
+    {'/modules/blog/msg/new_blog_setting_by_admin'|translate}{* あなたにはブログを追加する権限がありません。お手数ですが、管理者の方に設定してもらってください。 *}
+  {/if}
+
+  {/if}
+  {foreach from=$our_blog_list name=our_blog_list_nm item=item}
+    {assign var=blog_id value=$item.blog_id}
+
+    {if $smarty.foreach.our_blog_list_nm.first}
+        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+          <tr>
+            <th width="50px">{'/modules/blog/label/blog_id'|translate}</th>{* ブログID *}
+            <th colspan="2">{'/modules/blog/label/blog_title'|translate}</th>{* ブログタイトル *}
+            <th width="100px">{'/modules/blog/label/blog_owner'|translate}</th>{* ブログオーナー *}
+            <!--th>自分の権限</th-->
+            <th width="30px">{'/label/publish'|translate}</th>{* 公開 *}
+          </tr>
+    {/if}
+          <tr>
+            <td>{$item.blog_id}</td>
+            <td>{$item.title}
+                {rcms_include file="common/admin/language_status.html" meta=$docmetas[$blog_id] link="/management/blog/blog_edit/blog_id=$blog_id"}
+            </td>
+            <td width="190px">
+            <a href="/management/blog/blog_item_edit/blog_id={$item.blog_id}">{'/modules/blog/label/add_new_entry'|translate}</a> | {* ブログ記事作成 *}
+            <a href="/management/blog/blog_item_list/blog_id={$item.blog_id}">{'/modules/blog/label/blog_entry_list'|translate}</a> | {* ブログ記事一覧 *}
+            <a href="/management/blog/blog_edit/blog_id={$item.blog_id}">{'/modules/blog/label/blog_settings'|translate}</a></td> {* 基本設定 *}
+            <td>{$item.owner_name}</td>
+            <!--td>{$blogMemberRoles[$item.role]}</td-->
+            <td>
+                {if $smarty.const.BLOG_OPEN_ON == $item.open_flg}
+                <img src="/images/management/check.gif" />
+                {elseif $smarty.const.BLOG_OPEN_OFF == $item.open_flg}
+                <img src="/images/management/batu.gif" />
+                {/if}
+            </td>
+          </tr>
+    {if $smarty.foreach.our_blog_list_nm.last}
+        </table>
+    {/if}
+  {/foreach}
+</div>
+<!-- //参加ブログ一覧 -->
+
+{if $auth.blog_admin.select}
+  <!-- その他のブログ一覧 -->
+  <div class="list_main" style="margin-top:25px;">
+    <h3>{'/modules/blog/label/other_blog'|translate}</h3>{* その他のブログ *}
+    {foreach from=$blog_list name=blog_list_nm item=item}
+    {assign var=blog_id value=$item.blog_id}
+
+      {if $smarty.foreach.blog_list_nm.first}
+        {pager info=$pageInfo}
+          <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+              <th width="50px">{'/modules/blog/label/blog_id'|translate}</th>{* ブログID *}
+              <th colspan="2">{'/modules/blog/label/blog_title'|translate}</th>{* ブログタイトル *}
+              <th width="100px">{'/modules/blog/label/blog_owner'|translate}</th>{* ブログオーナー *}
+              <th width="30px">{'/label/publish'|translate}</th>{* 公開 *}
+            </tr>
+      {/if}
+            <tr>
+              <td>{$item.blog_id}</td>
+              <td>{$item.title}
+                  {rcms_include file="common/admin/language_status.html" meta=$docmetas[$blog_id] link="/management/blog/blog_edit/blog_id=$blog_id"}
+              </td>
+              <td width="190px">
+                {if $rauth->canInsert("/blog/item/[@blog_id=$blog_id]")
+                 || $rauth->canUpdate("/blog/item/[@blog_id=$blog_id]")
+                 || $rauth->canDelete("/blog/item/[@blog_id=$blog_id]")
+                }
+                    <a href="/management/blog/blog_item_edit/blog_id={$item.blog_id}">{'/modules/blog/label/add_new_entry'|translate}</a> | {* ブログ記事作成 *}
+                {/if}
+                {if $rauth->canSelect("/blog/item/[@blog_id=$blog_id]")}
+                    <a href="/management/blog/blog_item_list/blog_id={$item.blog_id}">{'/modules/blog/label/blog_entry_list'|translate}</a> | {* ブログ記事一覧 *}
+                {/if}
+                {if $rauth->canInsert("/blog/blog/")
+                 || $rauth->canUpdate("/blog/blog/[@blog_id=$blog_id]")
+                 || $rauth->canDelete("/blog/blog/[@blog_id=$blog_id]")
+                 || ($rauth->canSelect("/blog/blog/") && $auth.blog_admin.select)
+                }
+                    <a href="/management/blog/blog_edit/blog_id={$item.blog_id}">{'/modules/blog/label/blog_settings'|translate}</a> {* 基本設定 *}
+                {/if}
+            </td>
+              <td>{$item.owner_name}</td>
+              <td>
+                  {if $smarty.const.BLOG_OPEN_ON == $item.open_flg}
+                  <img src="/images/management/check.gif" />
+                  {elseif $smarty.const.BLOG_OPEN_OFF == $item.open_flg}
+                  <img src="/images/management/batu.gif" />
+                  {/if}
+              </td>
+            </tr>
+      {if $smarty.foreach.blog_list_nm.last}
+          </table>
+        {pager info=$pageInfo}
+      {/if}
+    {/foreach}
+  </div>
+{/if}
+<!-- // その他のブログ一覧 -->
+
+<div class="info" id="blog_list_info">
+{'/modules/blog/msg/info_display_number'|translate}{* ブログ最新記事一覧の表示件数を指定することができます。…（省略）…なお、指定のない場合は２０件表示します。 *}
+</div>
+
+
+</div>
+
+{literal}
+<style>
+div.info {
+  width:95%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  border: 1px dashed #FF6600;
+  background-color: #FFCCCC;
+  padding: 10px;
+}
+div.info .code {
+  margin: 5px 15px;
+  border: 1px dashed #666;
+  background-color: #FFF;
+  padding: 4px;
+}
+</style>
+{/literal}
+
+{rcms_include file="management/footer.html"}

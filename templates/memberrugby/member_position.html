@@ -1,0 +1,63 @@
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+{if $position == "200"}
+                <td><img src="{imageurl}/modules/memberrugby/pos_staff-28.gif" usemap="#staff"></td>
+{elseif $position == "100,300"}
+                <td><img src="{imageurl}/modules/memberrugby/pos_staff-26.gif" usemap="#staff"></td>
+{else}
+                <td><img src="{imageurl}/modules/memberrugby/pos_staff-{$position}.gif" usemap="#staff"></td>
+{/if}
+                <td><img src="{imageurl}/modules/memberrugby/pos_year-{$grade}.gif" usemap="#gakunen"></td>
+
+              </tr>
+              <tr>
+{if $position == "200"}
+                <td colspan="2"><img src="{imageurl}/modules/memberrugby/pos_pos-28.gif" usemap="#Position"></td>
+{elseif $position == "100,300"}
+                <td colspan="2"><img src="{imageurl}/modules/memberrugby/pos_pos-26.gif" usemap="#Position"></td>
+{else}
+                <td colspan="2"><img src="{imageurl}/modules/memberrugby/pos_pos-{$position}.gif" usemap="#Position"></td>
+{/if}
+              </tr>
+            </table>
+
+            <map name="staff" id="staff">
+              <area shape="rect" coords="33,32,54,68" href="/member_list/position={'監督,コーチ,部長'|escape:'url'}" alt="監督/コーチ">
+              <area shape="rect" coords="54,29,114,52" href="/member_list/position={'監督,コーチ,部長'|escape:'url'}" alt="監督/コーチ">
+              <area shape="rect" coords="9,71,28,111" href="/member_list/position={'スタッフ,マネージャー,MGR,主務,副務,トレーナー'|escape:'url'}" alt="スタッフ/マネージャー/MGR/主務/副務/トレーナー">
+              <area shape="rect" coords="28,73,65,91" href="/member_list/position={'スタッフ,マネージャー,MGR,主務,副務,トレーナー'|escape:'url'}" alt="スタッフ/マネージャー/MGR/主務/副務/トレーナー">
+            </map>
+            <map name="gakunen" id="gakunen">
+              <area shape="rect" coords="9,26,29,40" href="/member_list/" alt="全て">
+              <area shape="rect" coords="16,39,36,50" href="/member_list/grade=1" alt="1年">
+              <area shape="rect" coords="21,50,40,62" href="/member_list/grade=2" alt="2年">
+              <area shape="rect" coords="27,61,43,74" href="/member_list/grade=3" alt="3年">
+              <area shape="rect" coords="30,74,50,87" href="/member_list/grade=4" alt="4年">
+            </map>
+            <map name="Position" id="Position">
+              <area shape="rect" coords="64,1,85,40" href="/member_list/position=PR" alt="プロップ">
+              <area shape="rect" coords="120,1,138,40" href="/member_list/position=PR" alt="プロップ">
+              <area shape="rect" coords="91,3,111,40" href="/member_list/position=HO" alt="フッカー">
+              <area shape="rect" coords="76,40,96,78" href="/member_list/position=LO" alt="ロック">
+              <area shape="rect" coords="106,40,126,78" href="/member_list/position=LO" alt="ロック">
+              <area shape="rect" coords="52,74,72,113" href="/member_list/position=FL" alt="フランカー">
+              <area shape="rect" coords="132,74,150,112" href="/member_list/position=FL" alt="フランカー">
+              <area shape="rect" coords="92,78,112,117" href="/member_list/position=NO8,No8" alt="ナンバーエイト">
+              <area shape="rect" coords="69,115,86,153" href="/member_list/position=SH" alt="スクラムハーフ">
+              <area shape="rect" coords="113,118,135,156" href="/member_list/position=SO" alt="スタンドオフ">
+              <area shape="rect" coords="43,154,63,190" href="/member_list/position=CTB" alt="センター">
+              <area shape="rect" coords="134,151,155,190" href="/member_list/position=CTB" alt="センター">
+              <area shape="rect" coords="25,198,45,238" href="/member_list/position=WTB" alt="ウィング">
+              <area shape="rect" coords="151,199,173,238" href="/member_list/position=WTB" alt="ウィング">
+              <area shape="rect" coords="91,245,116,282" href="/member_list/position=FB" alt="フルバック">
+              <area shape="rect" coords="181,13,199,32" href="/member_list/position=PR" alt="プロップ">
+              <area shape="rect" coords="204,13,224,33" href="/member_list/position=HO" alt="フッカー">
+              <area shape="rect" coords="181,45,205,66" href="/member_list/position=LO" alt="ロック">
+              <area shape="rect" coords="179,81,199,101" href="/member_list/position=FL" alt="フランカー">
+              <area shape="rect" coords="202,81,232,103" href="/member_list/position=NO8,No8" alt="ナンバーエイト">
+              <area shape="rect" coords="181,126,201,147" href="/member_list/position=SH" alt="スクラムハーフ">
+              <area shape="rect" coords="205,126,222,148" href="/member_list/position=SO" alt="スタンドオフ">
+              <area shape="rect" coords="180,165,213,186" href="/member_list/position=CTB" alt="センター">
+              <area shape="rect" coords="181,208,214,228" href="/member_list/position=WTB" alt="ウィング">
+              <area shape="rect" coords="179,249,207,267" href="/member_list/position=FB" alt="フルバック">
+            </map>

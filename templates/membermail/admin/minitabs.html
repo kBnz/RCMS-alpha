@@ -1,0 +1,9 @@
+<ul class="minitabs">
+  <li><a href="/management/membermail/membermail_list/"{if $page_type eq 'membermail_list'} class="active"{/if}>受信メール一覧</a></li>
+  <li><a href="/management/membermail/membermail_list2/"{if $page_type eq 'membermail_list2'} class="active"{/if}>送信メール一覧</a></li>
+  <li><a href="/management/membermail/membermail_member_list/"{if $page_type eq 'membermail_member_list'} class="active"{/if}>送信先リスト</a></li>
+  <li><a href="/management/membermail/membermail_template_list/"{if $page_type eq 'membermail_template_list' || $page_type eq 'membermail_template_edit'} class="active"{/if}>メールテンプレート</a></li>
+{if $smarty.session.member_mail_admin_flg}
+  <li><a href="/management/membermail/membermail_list3/"{if $page_type eq 'membermail_list3'} class="active"{/if}>サイト内全メール</a></li>
+{/if}
+</ul>

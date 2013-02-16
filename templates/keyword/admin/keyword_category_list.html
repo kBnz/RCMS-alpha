@@ -1,0 +1,89 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<style type="text/css">
+{literal}
+td a.child {
+  margin-left: 10px;
+  padding-left: 5px;
+  border-left: 1px dotted #000;
+}
+{/literal}
+</style>
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+  <h2>{'/label/categories_list'|translate}</h2>{*カテゴリ設定*}
+  {if $rauth->canInsert('/keyword/category')}
+  <ul>
+    <li class="add"><a href="/management/{$mt}/keyword_category_edit/"><span>{'/label/create_new_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+  </ul>
+  {/if}
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/keyword_item_list/">{'/modules/keyword'|translate}</a>
+{'/label/categories_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 用語辞典 >> カテゴリ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<ul class="minitabs">
+  <li><a href="/management/{$mt}/keyword_list/">{'/modules/keyword/label/keyword_list'|translate}</a></li>{*用語辞典一覧*}
+  <li><a href="/management/{$mt}/keyword_category_list/" class="active">{'/label/categories_list'|translate}</a></li>{*カテゴリ設定*}
+</ul>
+
+  <form name="keyword_category_list" method="POST" action="/management/{$mt}/keyword_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0" class="keyword_category_list">
+    <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'keyword_category_id[]')" /></th>
+      <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+      <th>{'/label/sort'|translate}</th>{*並び順*}
+      <th>{'/label/last_updated_time'|translate}</th>{*最終更新日時*}
+    </tr>
+    {foreach item=keyword_data from=$keyword_category_list name="keyword_data"}
+    {assign var=_id value=$keyword_data.keyword_category_id}
+
+    {if $keyword_data.parent_id != ''}{*子カテゴリの場合*}
+    <input type="hidden" name="child_keyword_category_id[{$_id}]" value="{$keyword_data.parent_id}" />
+    {/if}
+
+    <tr>
+      <td><input type="checkbox" name="keyword_category_id[]" value="{$keyword_data.keyword_category_id}" {if !$rauth->canUpdate("/keyword/category/$_id") && !$rauth->canDelete("/keyword/category/$_id")}disabled="disabled" {/if}/></td>
+      <td><a{if $keyword_data.parent_id != ''} class="child" {/if} href="/management/{$mt}/keyword_category_edit/keyword_category_id={$keyword_data.keyword_category_id}">{$keyword_data.category_name}</a></td>
+      <td>{$keyword_data.disp_order}</td>
+      <td>{$keyword_data.update_ymdhi|pg_dateformat}</td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+    {if $smarty.foreach.keyword_data.total > 0}
+    {buttonbox}
+        <p>{'/modules/irj_jobs/label/withselected'|translate}</p>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

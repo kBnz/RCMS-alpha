@@ -1,0 +1,88 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>サーバ一覧</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a> 
+<a href="/management/rcms/rcms_info_list/">お知らせ一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{literal}
+<script type="text/javascript">
+ 
+ <!--
+ var count;
+ 
+ function AllChecked(check){
+  for(count = 0; count < document.sync_list_form.elements["file_name[]"].length; count ++) {
+     document.sync_list_form.elements["file_name[]"][count].checked = check;
+   }
+ }
+
+ function confirmUpdate() {
+    if(confirm('本当に更新しますか？')) {
+         document.sync_list_form.mode.value = 'アップデートする';
+        document.sync_list_form.submit();
+    }
+ }
+
+ function confirmClose() {
+    if(confirm('選択されたサイトを無効にします。')) {
+        document.sync_list_form.mode.value = '無効にする';
+        document.sync_list_form.submit();
+    }
+ }
+ -->
+ 
+ </script>
+{/literal}
+
+<div class="list_main">
+
+<form name="sync_list_form" method="POST" action="/management/{$mt}/{$ct}/"  class="list_form">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="mode" value="">
+    <input type="submit" name="search" value="検索する"><p>
+選択したファイルを一括で 
+<input type="button" name="button" value="アップデートする" onclick="confirmUpdate();"  />
+    <table width="100%" border="1" cellspacing="2" cellpadding="0">
+        <tr>
+            <th scope="col"><input type="checkbox" name="select_all_list" value="1" onClick="AllChecked(this.checked);"></th>
+            <th scope="col">diff</th>
+            <th scope="col" width="26">タイプ</th>
+            <th scope="col">ファイル名</th>
+        </tr>
+        {section name="i" loop=$sync_list}
+        <tr class="row{$smarty.section.i.iteration%2}">
+          <td><input type="checkbox" name="file_name[]" value="{$sync_list[i].type}***{$sync_list[i].file_name}"></td>
+          <td><a href="/direct/develop/diff/?file_name={$sync_list[i].file_name}" target="_blank">diff</a></td>
+          <td>
+              {$sync_list[i].type}
+          </td>
+          <td>{$sync_list[i].file_name}</td>
+        </tr>
+        {/section}
+    </table>
+<p>
+選択したファイルを一括で 
+<input type="button" name="button" value="アップデートする" onclick="confirmUpdate();"  />
+</p>
+</form>
+</div>
+
+
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

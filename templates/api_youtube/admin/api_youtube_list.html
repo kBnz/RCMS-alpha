@@ -1,0 +1,84 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>動画一覧</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_search/">{$module_nm}</a>
+動画一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+  <div class="list_main">
+
+    <p>このサイトで紹介しているYouTube動画の一覧です。</p>
+
+    <form action="/management/{$mt}/{$mt}_list/">
+      <fieldset class="search_box">
+        カテゴリ:
+        <select name="category">
+          <option value="0">すべて</option>
+          {html_options options=$categories selected=$category}
+        </select>
+        <input type="submit" value="表示"/>
+      </fieldset>
+    </form>
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form action="/management/{$mt}/{$ct}/" method="post">
+      {pager info=$pageInfo}
+      <table style="width:100%">
+        <thead>
+          <tr>
+            {if $auth.$mt.update || $auth.$mt.delete}
+              <th><input type="checkbox" onclick="AllChecked(checked, form, 'internal_id[]')" /></th>
+            {/if}
+            <th>公開</th><th>ID</th><th>サムネイル</th><th>タイトル</th><th>カテゴリ</th><th>関連</th><th>コメント</th>
+          </tr>
+        </thead>
+        <tbody>
+          {foreach from=$items item=item}
+          <tr>
+            {if $auth.$mt.update || $auth.$mt.delete}
+              <td><input type="checkbox" name="internal_id[]" value="{$item.internal_id}" /></td>
+            {/if}
+            <td>{$item.open_flg|rcms_publicimg}</td>
+            <td>{$item.internal_id}</td>
+            <td><a href="{$item.detail}"><img src="{$item.thumb}"/></a></td>
+            <td><a href="{$item.detail}">{$item.name|mbtruncate}</a></td>
+            <td>{if $item.category}<a href="/management/{$mt}/{$mt}_list/category={$item.category}">{/if}{$categories[$item.category]|default:"なし"|mbtruncate}{if $item.category}</a>{/if}</td>
+            <td>{$item.nOfRelatedItems}件</td>
+            <td>{$item.note|default:"なし"|mbtruncate}</td>
+          </tr>
+          {/foreach}
+        </tbody>
+      </table>
+      {pager info=$pageInfo}
+
+      <p><input type="hidden" name="DG_CODE" value="{$DG_CODE}"/><input type="hidden" name="MODE" value=""/></p>
+      {if $auth.$mt.update || $auth.$mt.delete}
+        {buttonbox}
+          <p>選択した動画を一括で</p>
+          {if $auth.$mt.update}
+            <button type="submit" onclick="form.MODE.value = 'public'">公開にする</button>
+            <button type="submit" onclick="form.MODE.value = 'private'">非公開にする</button>
+          {/if}
+          {if $auth.$mt.delete}
+            <button type="submit" onclick="form.MODE.value = 'delete'; return confirm('選択した動画を削除します。')">削除する</button>
+          {/if}
+        {/buttonbox}
+      {/if}
+
+    </form>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

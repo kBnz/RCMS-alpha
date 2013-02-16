@@ -1,0 +1,23 @@
+{if $docmeta.has_waiting}
+<div class="waiting_auth">
+  <p class="subject">{'/msg/data_approval_waiting'|translate}{* 申請中のデータがあります。 *}</p>
+  <p class="body">{'/msg/until_administrator_approve_or_refuse'|translate}{* 変更を承認するか拒否するまで更新を行うことはできません。 *}</p>
+  <p class="link"><a href="{$link}&_doc_lang={$docmeta.lang}&_doc_waiting=1">{'/msg/display_data_approval_waiting'|translate}{* }申請中のデータを表示する *}</a><p>
+</div>
+{/if}
+
+{if $docmeta.is_waiting}
+<div class="waiting_auth">
+  <p class="subject">{'/msg/this_is_approval_waiting'|translate}{* これは申請中のデータです。 *}</p>
+
+  {if !$docmeta.own}
+  <p class="body">
+    {'/msg/approve_refuse_help'|translate}
+    {* 承認するとこのデータが最新版になります。拒否するとこのデータは破棄されます。再修正を依頼する場合は何もしないでください。*}  </p>
+  {/if}
+
+  {if !$docmeta.is_new}
+      <p class="link"><a href="{$link}&_doc_lang={$docmeta.lang}">{'/msg/display_latest_data'|translate}{* 最新版のデータを表示する *}</a><p>
+  {/if}
+</div>
+{/if}

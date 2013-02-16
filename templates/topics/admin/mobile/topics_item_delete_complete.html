@@ -1,0 +1,13 @@
+{rcms_include file="management/mobile/header.html"}
+
+<div class="list_right_bt">
+<h1 class="for_mng">{'/modules/topics/label/topics_delete'|translate}{* 記事削除 *}</h1>
+<ul>
+</ul>
+</div>
+<div class="list_main">
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+<a href="/management/topics/topics_list/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_list'|translate}</a>{* 記事一覧 *}
+</div>
+{rcms_include file="management/mobile/footer.html"}

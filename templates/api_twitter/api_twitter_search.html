@@ -1,0 +1,44 @@
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jtweetsanywhere/jquery.jtweetsanywhere-1.2.1.min.js"></script>
+<script type="text/javascript" src="http://platform.twitter.com/anywhere.js?id=OdksKjdNjUgI65jjMnZSg&v=1"></script>
+<link rel="stylesheet" type="text/css" href="/css/jtweetsanywhere/jquery.jtweetsanywhere-1.2.1.css" />
+
+</head>
+
+{literal}
+<style type="text/css">
+#tweetFeed .jta-tweet-list
+{
+  height: 400px;
+  overflow: auto;
+}
+</style>
+<script type='text/javascript'> 
+$(document).ready(function(){
+    $('#tweetFeed').jTweetsAnywhere({
+{/literal}
+    searchParams: ['q={$query}'],
+    count: 10,
+{literal}
+    showTweetFeed: {
+        showTimestamp: {
+            refreshInterval: 15
+        },
+        autorefresh: {
+            mode: 'trigger-insert',
+            interval: 60
+        },
+        paging: { mode: 'endless-scroll' }
+    }
+});
+{/literal}
+});
+</script>
+
+{section name=idx loop=$queries}
+	<a href=/{$page_sysnm}/?query={$queries[idx].url}> {$queries[idx].text|strip_tags:false} </a>
+{/section}
+<div id="tweetFeed">
+</div>
+

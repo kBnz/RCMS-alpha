@@ -1,0 +1,16 @@
+{if $count_data|@count > 0}
+<h2>[emoji:145]このﾍﾟｰｼﾞへのｱｸｾｽ数</h2>
+
+{if $total_count > 0}Total:{$total_count}PV{/if}<br/>
+{section name=loopname loop=$count_data}
+{if $count_data[loopname].cnt != ''}
+{if $smarty.section.loopname.first}
+今日:
+{else}
+{$smarty.section.loopname.index}日前:
+{/if}
+{$count_data[loopname].cnt}<br/>
+{/if}
+{/section}
+<hr/>
+{/if}

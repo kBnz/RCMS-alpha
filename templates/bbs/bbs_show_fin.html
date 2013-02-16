@@ -1,0 +1,39 @@
+<script type="text/javascript">
+<!--
+{literal}
+function move_url(){
+{/literal}
+  location.href = "/{$page_sysnm}/bbs_header_id={$smarty.request.bbs_header_id}";
+}
+{literal}
+window.onload = function(){
+  setTimeout(move_url, 5000);
+}
+{/literal}
+-->
+</script>
+{module name="bbs_show_fin module"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+{rcms_include file="bbs/bbs_show_menu.html"}
+{if $rootnode eq ''}
+  <h2>{'/label/first_posting'|translate}{*新規投稿*}</h2>
+{else}
+  <h2>{'/label/reply_posting'|translate}{*返信投稿*}</h2>
+{/if}
+<div align="center">
+<table class="msgtable">
+<tr>
+<td>
+<p>{'/modules/bbs/label/post_is_complete'|translate}{*投稿が完了しました。*}
+{if $canWrite == 2}{'/modules/bbs/msg/this_post_will_be_publish_after_admin_permit'|translate}{*この投稿は管理者への申請が通った後に公開されます。*}{/if}
+</p>
+<p>{'/msg/go_back_to_list_in_5_seconds'|translate:$smarty.request.bbs_header_id:$page_sysnm}
+{*5秒後に自動的にリストへ戻ります。自動で遷移しない場合は<a href="/{$page_sysnm}/bbs_header_id={$smarty.request.bbs_header_id}">ココ</a>をクリックしてください。*}
+</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+{/module}

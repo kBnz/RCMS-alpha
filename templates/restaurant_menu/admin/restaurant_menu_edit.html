@@ -1,0 +1,129 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+<ul>
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_category_edit/"><span>料理分類追加</span></a></li>
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_category_id={$restaurant_menu_category_id}"><span>{$module_nm}追加</span></a></li>
+  <li class="normal"><a href="/management/restaurant_menu/restaurant_menu_history/restaurant_menu_id={$restaurant_menu_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="view"><a href="/restaurant_menu_detail/id={$restaurant_menu_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant_menu/restaurant_menu_category_list/">{$module_nm}</a>
+{$module_nm}編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}件</a>　<a href="/restaurant_menu_detail/id={$restaurant_menu_id}">総アクセス数:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $docmeta.has_waiting}
+<div class="waiting_auth">
+  <p class="subject">承認待ちのメニューがあります。</p>
+  <p class="body">変更を承認するか拒否するまで更新を行うことはできません。</p>
+  <p class="link"><a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id={$restaurant_menu}&_doc_lang={$docmeta.lang}&_doc_waiting=1">承認待ちのメニューを表示する</a><p>
+</div>
+{/if}
+
+{if $docmeta.is_waiting}
+<div class="waiting_auth">
+  <p class="subject">これは承認待ちのメニューです。</p>
+
+  {if !$docmeta.own}
+  <p class="body">
+    承認するとこのメニューが最新版になります。<br />
+    拒否するとこのメニューは破棄されます。<br />
+    再修正を依頼する場合は何もしないでください。<br />
+  </p>
+  {/if}
+
+  <p class="link"><a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id={$restaurant_menu}&_doc_lang={$docmeta.lang}">最新版のメニューを表示する</a><p>
+</div>
+{/if}
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html"}
+  {rcms_include file="management/errors_box.html"}
+  <form name="restaurant_menu_edit" id="restaurant_menu_edit" action="/management/restaurant_menu/restaurant_menu_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="restaurant_menu_id" value="{$restaurant_menu_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="menu_img_type" value="{$formData.menu_img_type}" />
+    <input type="hidden" name="menu_img_file" value="{$formData.menu_img_file}" />
+    <input type="hidden" name="menu_img_s_file" value="{$formData.menu_img_s_file}" />
+    <input type="hidden" name="prev_menu_img_type" value="{$formData.prev_menu_img_type}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+        {if $restaurant_menu_id}
+          {lang_selector meta=$docmeta link='/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_id='|cat:$restaurant_menu_id'}
+        {/if}
+
+      <h3>メニュー情報</h3>
+      <table width="100%">
+      <tr>
+        <th>画像</th>
+        <td>
+            {if $formData.menu_img_s_url}
+            <img src="{$formData.menu_img_s_url}"><br>
+            <input type="checkbox" name="del_menu_img" value="1">画像を削除<br>
+            {/if}
+            {if $docmeta.is_primary}
+                <input type="file" name="menu_img">
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>並び順</th>
+        <td>
+            {if $docmeta.is_primary}
+                <input type="text" name="order_no" value="{$formData.order_no}" size="2">
+            {else}
+                {$formData.order_no}
+            {/if}
+            <br><span class="hint">数字の大きい順に並びます</span>
+        </td>
+      </tr>
+      <tr>
+        <th>料理の分類<span class="required">※</span></th>
+          <td><select name="restaurant_menu_category_id">{html_options options=$arrCategory selected=$formData.restaurant_menu_category_id}</select></td>
+      </tr>
+      <tr>
+        <th>メニュー名<span class="required">※</span></th>
+          <td><input type="text" name="menu_nm" value="{$formData.menu_nm|escape}" size="50" /><input type="checkbox" name="no_disp_flg" value="1" {if $formData.no_disp_flg}checked{/if}>表示しない</td>
+      </tr>
+      <tr>
+        <th>説明文</th>
+          <td><textarea name="menu_explain" cols="50" rows="6">{$formData.menu_explain|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>価格</th>
+          <td><textarea name="price" cols="50" rows="6">{$formData.price|escape}</textarea></td>
+      </tr>
+      </table>
+
+      <a id="relation_data" name="relation_data"></a>
+      {rcms_include file="management/relation_edit.html"}
+
+      <div class="clear"></div>
+
+      {rcms_include file="management/open_date_box.html" id=$restaurant_menu_id data=$formData}
+
+      {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </form>
+</div><!--//list_main-->
+</div><!--//main_contents-->
+
+{rcms_include file="management/footer.html"}

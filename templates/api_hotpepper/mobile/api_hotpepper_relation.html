@@ -1,0 +1,15 @@
+{if $shops}
+<h2>関連ﾎｯﾄﾍﾟｯﾊﾟｰ情報</h2>
+
+<div style="text-align:center;font-size:small;">
+{foreach from=$shops item=shop}
+<a href="{$shop.detail}"><img src="{$shop.thumbnail}" alt="{$shop.shop_name}"></a><br/>
+写真提供：ﾎｯﾄﾍﾟｯﾊﾟｰ.jp<br/>
+<a href="{$shop.detail}">{$shop.shop_name}</a><hr/>
+{/foreach}
+</div>
+<div style="text-align:center;font-size:small;">
+<a href="http://www.hotpepper.jp/"><img src="http://api.hotpepper.jp/content/images/hp_api_s.gif" alt="ﾎｯﾄﾍﾟｯﾊﾟｰ Webｻｰﾋﾞｽ"></a>
+</div>
+<hr/>
+{/if}

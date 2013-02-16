@@ -1,0 +1,52 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>ウィジェット一覧</h2>
+<ul>
+<li class="add"><a href="/management/rcms/rcms_site_widget_edit/"><span>ウィジェット追加</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a> 
+<a href="/management/rcms/rcms_site_widget_list/">ウィジェット一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{pager info=$pageInfo}
+
+<table width="100%">
+<tr>
+<th></th>
+<th>OEMID</th>
+<th>ID</th>
+<th>タイトル</th>
+<th>更新日時</th>
+</tr>
+{foreach from=$site_widget_list item=site_widget}
+<tr>
+<td><a href="/management/rcms/rcms_site_widget_edit/?site_widget_id={$site_widget.site_widget_id}">編集</a></td>
+<td>{$site_widget.oem_id}</td>
+<td>{$site_widget.site_widget_id}</td>
+<td>{$site_widget.widget_nm}</td>
+<td>{$site_widget.update_ymdhi|pg_dateformat}</td>
+</tr>
+{/foreach}
+</table>
+  </form>
+
+{pager info=$pageInfo}
+
+
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

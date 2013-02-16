@@ -1,0 +1,36 @@
+{module name="game_history"}
+<h2 class="module_title"><span>{$gameList.0.league_type}　試合一覧</span></h2>
+<div class="module_contents">
+{section name=mydata loop=$gameList}
+<p class="subitem_list">
+{$gameList[mydata].ymd_str} {$gameList[mydata].league_type2} {$gameList[mydata].home_team_nm}{$gameList[mydata].home_team_grade}
+<a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+
+{if $gameList[mydata].league_status eq '2' || $gameList[mydata].league_status eq '3'}
+  {if $gameList[mydata].vs_result_home eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_home eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_home eq 'even'}
+△
+  {/if}
+{$gameList[mydata].home_team_total}
+-
+{$gameList[mydata].away_team_total}
+  {if $gameList[mydata].vs_result_away eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_away eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_away eq 'even'}
+△
+  {/if}
+{elseif $gameList[mydata].league_status eq '4'}
+（雨天中止）
+{/if}
+
+</a>
+{$gameList[mydata].away_team_nm}{$gameList[mydata].away_team_grade}
+</p>
+{/section}
+</div>
+{/module}

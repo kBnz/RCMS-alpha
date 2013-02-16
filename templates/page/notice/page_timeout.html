@@ -1,0 +1,10 @@
+<div id="page_timeout">
+<h1>{'/msg/login_session_is_expired'|translate}{*ログインセッションが切れています。*}</h1>
+<p>
+{'/msg/please_log_in'|translate}{*ログインを行ってください。*}
+</p>
+<p class="link"><a href="{$login_url}">{'/label/login_page'|translate}{*ログイン画面*}</a></p>
+{if !$is_mobile}
+<p>{'/msg/this_page_auto_return'|translate:5}{*このページは5秒後、自動的に TOP へ戻ります*}</p>
+{/if}
+</div>

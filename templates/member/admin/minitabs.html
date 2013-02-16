@@ -1,0 +1,9 @@
+<ul class="minitabs">
+  <li><a href="/management/member/member_list/"{if $page_type eq 'member_list' || $page_type eq 'member_edit'} class="active"{/if}>{'/modules/member/label/member_list'|translate}{*メンバー一覧*}</a></li>
+  <li><a href="/management/member/member_analysis/"{if $page_type eq 'member_analysis'} class="active"{/if}>{'/modules/member/label/member_analysis'|translate}{*メンバー解析*}</a></li>
+  <li><a href="/management/member/member_lump/"{if $page_type eq 'member_lump'} class="active"{/if}>{'/modules/member/label/batch_process'|translate}{*一括処理*}</a></li>
+  <li><a href="/management/member/member_detail/"{if $page_type eq 'member_detail'} class="active"{/if}>{'/modules/member/label/detail_settings'|translate}{*詳細設定*}</a></li>
+{if $auth.login_history.select}
+  <li><a href="/management/login_history/login_history_list/">{'/modules/member/label/login_history'|translate}{*ログイン履歴*}</a></li>
+{/if}
+</ul>

@@ -1,0 +1,29 @@
+<h2>[emoji:176]週間ｶﾚﾝﾀﾞｰ</h2>
+{* 週間ｶﾚﾝﾀﾞｰ本体 *}
+{foreach item=item from=$cal_data.days}
+    {* 日付の色分け *}
+    {if ($item.holiday_flg == 1)}
+                <span style="color:red;">{$item.day}({$item.jweek})</span>
+    {elseif ($item.week == 'Sun')}
+                <span style="color:red;">{$item.day}({$item.jweek})</span>
+    {elseif ($item.week == 'Sat')}
+                <span style="color:blue;">{$item.day}({$item.jweek})</span>
+    {else}
+                {$item.day}({$item.jweek})
+    {/if}
+    {* 祝日など *}
+    {$item.date_nm}
+    <br/>
+    {* 関連ﾃﾞｰﾀ *}
+    {foreach item=rItem from=$item.relations}
+        <a href="/{$rItem.link}">{$rItem.table_titleval}</a><br/>
+    {/foreach}
+
+    {* ｲﾍﾞﾝﾄﾃﾞｰﾀ *}
+    {foreach item=event_item from=$item.event_data}
+                        {$event_item.event_txt}<br>
+    {/foreach}
+{/foreach}
+<div style="text-align:right;font-size:small;"><a href="/calendar_list/">月間ｶﾚﾝﾀﾞｰ</a></div>
+<hr/>
+

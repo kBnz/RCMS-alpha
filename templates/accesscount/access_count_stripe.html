@@ -1,0 +1,47 @@
+{if $total_count > 0}
+{module name="access_count_stripe"}
+<h2 class="module_title"><span>このページへのアクセス数</span></h2>
+<div class="module_contents" align="center">
+<table>
+    <tr>
+{assign var="count" value="`$length`"}
+{section name=loopname loop=$count_data}
+{if $count_data[loopname].cnt != ''}
+      <td valign="bottom" align="center" width="10">
+        <!--{$count--}-->
+        <img src="{imageurl}/modules/accesscount/graph_stripe.gif" width="10" height="{$count_data[$count].height}">
+      </td>
+{/if}
+{/section}
+    </tr>
+    <tr>
+{assign var="count" value="`$length`"}
+{section name=loopname loop=$count_data}
+{if $count_data[loopname].cnt != ''}
+      <td width="10" align="center"><!--{$count--}-->{$count_data[$count].cnt}</td>
+{/if}
+{/section}
+    </tr>
+    <tr>
+{assign var="count" value="`$length`"}
+{section name=loopname loop=$count_data}
+{if $count_data[loopname].cnt != ''}
+<!--{$count--}-->
+{if $smarty.section.loopname.last && $count==0}
+      <td align="center">今<br>日</td>
+{else}
+      <td align="center">{$count}<br>日<br>前</td>
+{/if}
+{/if}
+{/section}
+    </tr>
+    <tr>
+      <td colspan="10" align="center"><img src="{imageurl}/modules/calendar/line.gif" width="90%" height="1"></td>
+    </tr>
+    <tr>
+      <td colspan="10" align="center"><strong>total　　　{$total_count}</strong></td>
+    </tr>
+</table>
+</div>
+{/module}
+{/if}

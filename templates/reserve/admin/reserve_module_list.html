@@ -1,0 +1,81 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<style>
+{literal}
+td.cnt {
+  text-align: right;
+  padding-right: 3px;
+}
+{/literal}
+</style>
+
+<div class="list_right_bt">
+<h2>{$module_nm}モジュール一覧</h2>
+<ul>
+{if $auth.reserve.insert}
+<li class="add"><a href="/management/reserve/reserve_edit/pageID={$currentPageID}"><span>モジュール追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">{'/modules/reserve'|translate}</a>
+モジュール一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form name="reserve_module_list_form" method="POST" action="/management/reserve/reserve_module_list/">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" />
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+{if $auth.reserve.delete}
+      <th style="width:25px"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'reserve_header_id[]')" /></th>
+{/if}
+      <th style="width:40px">運用</th>
+      <th>モジュール名</th>
+      <th style="width:60px">コンテンツ</th>
+      <th style="width:60px">予約</th>
+      <th style="width:140px">最終更新日時</th>
+    </tr>
+    {foreach item=row from=$reserveModuleList}
+    <tr>
+{if $auth.reserve.update || $auth.reserve.delete}
+        <td><input type="checkbox" name="reserve_header_id[]" value="{$row.reserve_header_id}" /></td>
+{/if}
+      <td>
+        {if $row.status eq $smarty.const.RESERVE_STATUS_RUN}
+          <img src="/images/management/check.gif" border="0" title="運用中" />
+        {elseif $row.status eq $smarty.const.RESERVE_STATUS_STOP}
+          <img src="/images/management/batu.gif" border="0" title="休止中" />
+        {/if}
+      </td>
+      <td>{$row.module_type|translate_modules}<a href="/management/reserve/reserve_edit/reserve_header_id={$row.reserve_header_id}" style="margin-left:5px;">[{'/label/setting'|translate}]</a></td>
+      <td class="cnt"><a href="/management/reserve/reserve_list/reserve_header_id={$row.reserve_header_id}">{$row.contents_cnt}件</a></td>
+      <td class="cnt"><a href="/management/reserve/reserve_write_list/reserve_header_id={$row.reserve_header_id}">{$row.reserve_cnt}件</a></td>
+      <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+  {buttonbox}
+    {if $auth.reserve.delete}
+    <p>選択した予約設定を一括で</p>
+    <button type="submit" onclick="this.form.MODE.value='RUN'">運用中にする</button>
+    <button type="submit" onclick="this.form.MODE.value='STOP'">休止中にする</button>
+    {/if}
+  {/buttonbox}
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

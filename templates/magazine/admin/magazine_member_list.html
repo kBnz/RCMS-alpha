@@ -1,0 +1,103 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.mode.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/magazine/label/magazine_member_list'|translate}{*メールマガジン購読者一覧*}</h2>
+<ul>
+    {if $rauth->canInsert("/magazine/item/")}
+	    <li class="add"><a href="/management/magazine/magazine_sendmail_edit/magazine_id={$magazine_id}"><span>{'/label/create_mail_btn'|translate}{* メール作成 *}</span></a></li>
+	{/if}
+	{if $rauth->canSelect('/magazine/item/[@magazine_id=$magazine_id]')}
+		<li class="normal"><a href="/management/magazine/magazine_member_upload/magazine_id={$magazine_id}"><span>{'/label/upload'|translate}{*アップロード*}</span></a></li>
+		<li class="normal"><a href="/management/magazine/magazine_member_download/magazine_id={$magazine_id}"><span>{'/label/download'|translate}{*ダウンロード*}</span></a></li>
+	{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a> 
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a> 
+<a href="/management/magazine/magazine_list/">{'/modules/magazine/label/magazine_list'|translate}</a> 
+{'/modules/magazine/label/magazine_member_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 >> メールマガジン購読者一覧 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.magazine_name}</h3>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form  action="/management/magazine/magazine_member_list/" method="POST">
+<input type="hidden" name="mode" value="SUBSCRIBE" />
+<input type="hidden" name="magazine_id" value="{$magazine_id}" />
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+  <label for="mail_address">{'/label/mail_address'|translate}{*メールアドレス*}</label><input type="text" name="mail_address" value="{$smarty.request.mail_address}" size="50" />
+{if $rauth->canInsert("/magazine/item/[@magazine_id=$magazine_id]")}
+    <input type="button"    onclick="this.form.mode.value='SUBSCRIBE'; this.form.submit();" value="{'/label/subscribe_btn'|translate}" />{*購読する*}
+{/if}
+{if $rauth->canDelete("/magazine/item/[@magazine_id=$magazine_id]")}
+    <input type="button" onclick="this.form.mode.value='CANCEL'; this.form.submit();" value="{'/label/resign_btn'|translate}" />{*退会する*}
+{/if}
+</form>
+
+<h3>{'/modules/magazine/label/magazine_member_list'|translate}</h3>{* メールマガジン購読者一覧 *}
+
+  <form method="POST" action="/management/magazine/magazine_member_list/">
+    <input type="hidden" name="magazine_id" value="{$magazine_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="mode" value="" />
+    <input type="hidden" name="mb_pageID" value="{$mb_pageID}" />
+    
+    <input type="text" name="search_mail_address" value="{$smarty.request.search_mail_address}" />
+    <input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" />
+
+
+
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="28"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'magazine_member_id[]')" /></th>
+        <th>{'/label/mail_address'|translate}{* メールアドレス *}</th>
+        <th style="width:140px;">{'/label/registration_time'|translate}{* 登録日時 *}</th>
+      </tr>
+    {foreach item=row from=$magazine_member}
+      <tr>
+        <td><input type="checkbox" name="magazine_member_id[]" value="{$row.magazine_member_id}" {if !$rauth->canDelete("/magazine/item/$magazine_id") && !$rauth->canUpdate("/magazine/item/$magazine_id")}disabled="disabled"{/if} /></td>
+        <td>{$row.mail_address}</td>
+        <td>{$row.inst_ymdhi|pg_dateformat}</td>
+      </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {if $rauth->canDelete("/magazine/item/[@magazine_id=$magazine_id]")}
+      {buttonbox}
+        <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button></button>
+      {/buttonbox}
+    {/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

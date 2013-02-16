@@ -1,0 +1,13 @@
+{module name="charge_jpayment_detail"}
+<h2 class="module_title"><span>{'/modules/charge/label/charge_detail'|translate}</span></h2>
+<div class="module_contents">
+
+<p>{$chargeInfo.name|escape}</p>
+<form action="/direct/charge/charge_jpayment_apply/" method="get">
+  <input type="hidden" name="id" value="{$chargeInfo.charge_jpayment_id}">
+  <input type="submit" value="申込む">
+</form>
+
+<div class="clearFloat"><br></div>
+</div>
+{/module}

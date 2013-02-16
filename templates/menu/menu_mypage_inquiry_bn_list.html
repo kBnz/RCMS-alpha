@@ -1,0 +1,42 @@
+{module name="menu_mypage_inquiry_bn_list" if=$list}
+
+<h2 class="module_title"><span>{'/modules/inquiry'|translate}</span></h2>
+<div class="module_contents">
+
+<div class="mypage_content_list">
+
+{if $list.items|@count > 0}
+{if $use_pager}{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}{/if}
+  <ul class="items">
+    {foreach from=$list.items item=row}
+      <li>
+        <a href="{$row.edit_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">
+              {if $row.inquiry_category_id == '0' || $row.inquiry_category_id == '-1'}
+                  {$row.subject}
+              {elseif $row.inquiry_category_name != ''}
+                  {$row.inquiry_category_name}
+              {elseif $row.inquiry_category_id != ''}
+                  ({'/label/delete_category'|translate}{*カテゴリ削除*})
+              {else}
+                  ({'/label/no_subject'|translate}{*件名なし*})
+              {/if}({$row.mail_cnt})</a>
+        </a>
+        <ul class="info">
+          <li>{$row.update_yhdhi|pg_dateformat:"%Y/%m/%d"}</li>
+          <li><a href="{$row.edit_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/label/edit'|translate}</a></li>
+        </ul>
+      </li>
+    {/foreach}
+  </ul>
+{if $use_pager}{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}{/if}
+{/if}
+
+{if !$use_pager}
+  <ul class="info">
+    <li><a href="{$list.item_list_link}" onclick="rcmsLightWindow.showManagement(this.href);return false;">{'/modules/menu/label/more'|translate}</a></li>
+  </ul>
+{/if}
+</div>
+
+</div>
+{/module}

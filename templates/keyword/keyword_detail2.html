@@ -1,0 +1,122 @@
+{module name="keyword_detail"}
+<h2 class="module_title"><span>{$keyword_list.keyword}</span></h2>
+<div class="module_contents">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<div id="keywordDefaultView"{if $viewmode=="error" || $viewmode=="new"} style="display:none;"{/if}>
+<table style="width:100%;">
+  {if  $viewmode=="default"}
+  <tr><td style="float: right;font-size:80%;"><a href="javascript:;" onclick="keywordEditStart()">{'/label/edit'|translate}{*編集*}</a>　<a href="/keyword_detail/MODE=NEW">{'/label/add_keyword'|translate}{*用語追加*}</a></td></tr>
+  {/if}
+  <tr>
+    <td align="left" style="padding-top:2px;" class="font084height150">
+      {$keyword_list.description|nl2br}
+    </td>
+  </tr>
+  {if  $viewmode=="default"}
+  <tr><td style="float: right;font-size:80%;"><a href="javascript:;" onclick="keywordEditStart()">{'/label/edit'|translate}{*編集*}</a>　<a href="/keyword_detail/MODE=NEW">{'/label/add_keyword'|translate}{*用語追加*}</a></td></tr>
+  {/if}
+  {if $keyword_list.link_name_1 != "" || $keyword_list.link_name_2 != "" || $keyword_list.link_name_3 != "" || $keyword_list.link_name_4 != "" || $keyword_list.link_name_5 != ""}
+  <tr>
+    <td class="BottomLine"><span class="font084height150"><strong>{'/label/related_keyword_link'|translate}{*関連キーワードリンク*}</strong></span></td>
+  </tr>
+  <tr>
+    <td style="line-height:150%;">
+      <ul>
+        {if $keyword_list.link_name_1 != ""}<li><span class="font084height150"><a href="{$keyword_list.link_1}" target="_blank">{$keyword_list.link_name_1}</a></span></li>{/if}
+        {if $keyword_list.link_name_2 != ""}<li><span class="font084height150"><a href="{$keyword_list.link_2}" target="_blank">{$keyword_list.link_name_2}</a></span></li>{/if}
+        {if $keyword_list.link_name_3 != ""}<li><span class="font084height150"><a href="{$keyword_list.link_3}" target="_blank">{$keyword_list.link_name_3}</a></span></li>{/if}
+        {if $keyword_list.link_name_4 != ""}<li><span class="font084height150"><a href="{$keyword_list.link_4}" target="_blank">{$keyword_list.link_name_4}</a></span></li>{/if}
+        {if $keyword_list.link_name_5 != ""}<li><span class="font084height150"><a href="{$keyword_list.link_5}" target="_blank">{$keyword_list.link_name_5}</a></span></li>{/if}
+      </ul>
+    </td>
+  </tr>
+  {if  $viewmode=="default"}
+  <tr><td style="float: right;font-size:80%;"><a href="javascript:;" onclick="keywordEditStart()">{'/label/edit'|translate}{*編集*}</a>　<a href="/keyword_edit/">{'/label/add_keyword'|translate}{*用語追加*}</a></td></tr>
+  {/if}
+  {/if}
+</table>
+<br />
+</div>
+<div id="keywordEditView" style="{if $viewmode=="default"}display:none;{/if}background-color:#CCFFFF;padding: 20px;">
+<form name="keyword_detail" action="/{$page_sysnm}/" method="POST">
+<input type="hidden" name="keyword_id" value="{$keyword_list.keyword_id}">
+<input type="hidden" id="MODE" name="MODE" value="">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<table style="width:100%;">
+{if $keyword_list.keyword_id == ""}
+  <tr>
+    <td>{'/label/keyword_name'|translate}{*キーワード名*} : <input type="text" name="keyword" size="60" maxlength="100" value="{$keyword_list.keyword|escape}" /></td>
+  </tr>
+  <tr>
+    <td>{'/label/index'|translate}{*索引*} : <select name="index">{html_options options=$index_flat_list selected=$keyword_list.index}</select></td>
+  </tr>
+  <tr>
+    <td>{'/label/japanese_kana'|translate}{*読みカナ*} : <input type="text" name="japanese_syllabary" size="60" maxlength="100" value="{$keyword_list.japanese_syllabary|escape}" /></td>
+  </tr>
+{/if}
+  <tr>
+    <td>
+    <textarea name="description" rows="10" cols="80" style="font-size: 100%;">{$keyword_list.description_default}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td class="BottomLine"><span class="font084height150"><strong>{'/label/related_keyword_link'|translate}{*関連キーワードリンク*}</strong></span></td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+	      <ul>
+	        <li><input type="text" name="link_name_1" size="30" maxlength="100" value="{$keyword_list.link_name_1|escape}" /></li>
+	        <li><input type="text" name="link_1" size="60" maxlength="255" value="{$keyword_list.link_1|escape}" /></li>
+	        <br />
+	        <li><input type="text" name="link_name_2" size="30" maxlength="100" value="{$keyword_list.link_name_2|escape}" /></li>
+	        <li><input type="text" name="link_2" size="60" maxlength="255" value="{$keyword_list.link_2|escape}" /></li>
+	        <br />
+	        <li><input type="text" name="link_name_3" size="30" maxlength="100" value="{$keyword_list.link_name_3|escape}" /></li>
+	        <li><input type="text" name="link_3" size="60" maxlength="255" value="{$keyword_list.link_3|escape}" /></li>
+	        <br />
+	        <li><input type="text" name="link_name_4" size="30" maxlength="100" value="{$keyword_list.link_name_4|escape}" /></li>
+	        <li><input type="text" name="link_4" size="60" maxlength="255" value="{$keyword_list.link_4|escape}" /></li>
+	        <br />
+	        <li><input type="text" name="link_name_5" size="30" maxlength="100" value="{$keyword_list.link_name_5|escape}" /></li>
+	        <li><input type="text" name="link_5" size="60" maxlength="255" value="{$keyword_list.link_5|escape}" /></li>
+	      </ul>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+{if $keyword_list.keyword_id == ""}
+      <input type="button" value="{'/label/add_btn'|translate}{*追加する*}" onclick="keywordInsert()" />
+{else}
+      <input type="button" value="{'/label/update_btn'|translate}{*更新する*}" onclick="keywordUpdate()" />
+{/if}
+	  <input type="button" value="{'/label/preview_btn'|translate}{*プレビューを確認する*}" onclick="keywordPreview()" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+</div>
+{/module}
+
+<div style="display:none;padding:10px;position:absolute;left:50px;width:450px;height:200px;background-color:#EEEEEE;" id="keywordSummaryArea">
+<span style="float:right;"><a href="javascript:;" onclick="hiddenKeywordSummary()">[×]</a></span>
+<div id="keywordTitle" style="font-size:120%;font-weight:bold;"></div>
+<hr /><br />
+<div id="keywordMsgArea" style="width:440px;height:130px;overflow:auto;"></div><br />
+<div id="keywordLink" style="float: right;font-size:80%;"></div>
+</div>
+<script type="text/javascript" src="/js/jkl-parsexml.js"></script>
+<script language="javascript" type="text/javascript">
+<!--
+var summaryarea = document.getElementById('keywordSummaryArea');
+var msgarea = document.getElementById('keywordMsgArea');
+var titlearea = document.getElementById('keywordTitle');
+var keywordLink = document.getElementById('keywordLink');
+var keyword;
+
+-->
+</script>
+<script type="text/javascript" src="/js/keyword.js"></script>

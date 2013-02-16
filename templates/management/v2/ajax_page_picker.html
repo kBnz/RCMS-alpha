@@ -1,0 +1,267 @@
+{* id,name属性の定義 *}
+{if !$id}
+    {assign var=id value='ajax_page_picker'}
+{/if}
+
+{if !$name}
+    {assign var=name value=''}
+{/if}
+{if !$selected}
+    {assign var=selected value=''}
+{/if}
+
+{if $name}
+    {assign var=select_id value=page_picker_$name }
+{else}
+    {assign var=select_id value=page_picker }
+{/if}
+
+<div class="ui-widget">
+    <select name="{$name}" id="{$select_id}"></select>
+    <div class="loading_img_wrapper"></div>
+</div>
+
+{literal}
+<style type="text/css">
+    .ui-combobox {
+        position: relative;
+        display: inline-block;
+    }
+    .ui-combobox-toggle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin-left: -1px;
+        padding: 0;
+        /* adjust styles for IE 6/7 */
+        *height: 1.7em;
+        *top: 0.1em;
+    }
+    .ui-combobox-input {
+        margin: 0;
+        padding: 0.3em;
+    }
+    .loading_img {
+        width: 50px;
+        height: 50px;
+        background-color: gray;
+        margin-top: 10px;
+        margin-left: 60px;
+    }
+    .ui-autocomplete-input {
+        font-size: 5px;
+    }
+    a.ui-corner-all {
+        min-height: 19px;
+    }
+</style>
+<script type="text/javascript">
+(function($) {
+    /* グローバル変数 */
+    var tempText = "";                          // 全リスト表示時に一旦対比させる文字列
+    var select = $({/literal}"#{$select_id}"{literal});
+
+    $(function() {
+        // ajaxでリストを取得
+        ajaxSetOption();
+
+        // リスト表示に関するフィードバック(clickだとリストが表示されてからになるため、mousedownにバインド)
+        $("a.ui-button-text-icon-primary").on("mousedown", loadingImgshow);
+
+        // sabmit時に空白が選択されていた場合、値を空にする(仕様上最初からからにしておくと項目として表示されないため)
+        $("form").on("submit",function(){
+            if (select.val() == -1) {
+                select.children().eq(0).val("");
+            }
+        });
+    });
+
+    // プラグインを定義
+    function definePlugin() {
+        $.widget( "ui.combobox", {
+            _create: function() {
+                var input,
+                    isSelected = false,
+                    openCount = 0,
+                    searchCount = 0,
+                    that = this,
+                    select = this.element.hide(),
+                    selected = select.children( ":selected" ),
+                    value = selected.val() ? selected.text() : "",
+                    wrapper = this.wrapper = $( "<span>" )
+                        .addClass( "ui-combobox" )
+                        .insertAfter( select );
+    
+                // 不適切な入力をフィルタリングする
+                function removeIfInvalid(element) {
+                    var value = $( element ).val(),
+                        matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( value ) + "$", "i" ),
+                        valid = false;
+                    select.children( "option" ).each(function() {
+                        if ( $( this ).text().match( matcher ) ) {
+                            this.selected = valid = true;
+                            return false;
+                        }
+                    });
+                    if ( !valid ) {
+                        // remove invalid value, as it didn't match anything
+                        $( element )
+                            .val( "" )
+                            .attr( "title", value + " didn't match any item" );
+                        select.val( "" );
+                        input.data( "autocomplete" ).term = "";
+                        return false;
+                    }
+                }
+    
+                input = $( '<input placeholder="{/literal}-{'/label/contents'|translate}{*コンテンツ*}-{literal}">' )
+                    .appendTo( wrapper )
+                    .val( value )
+                    .attr( "title", "" )
+                    .addClass( "ui-state-default ui-combobox-input" )
+                    .autocomplete({
+                        delay: 0,
+                        minLength: 0,
+                        source: function( request, response ) {
+                            var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+                            response( select.children( "option" ).map(function() {
+                                var text = $( this ).text();
+                                if ( this.value && ( !request.term || matcher.test(text) ) )
+                                    return {
+                                        label: text.replace(
+                                            new RegExp(
+                                                "(?![^&;]+;)(?!<[^<>]*)(" +
+                                                $.ui.autocomplete.escapeRegex(request.term) +
+                                                ")(?![^<>]*>)(?![^&;]+;)", "gi"
+                                            ), "<strong>$1</strong>" ),
+                                        value: text,
+                                        option: this
+                                    };
+                            }) );
+                        },
+                        select: function( event, ui ) {
+                            ui.item.option.selected = true;
+                            that._trigger( "selected", event, {
+                                item: ui.item.option
+                            });
+                            isSelected = true;
+                        },
+                        change: function( event, ui ) {
+                            if ( !ui.item ) return removeIfInvalid( this );
+                            select.trigger("change");
+                        },
+                        open: function( event, ui ) {
+                            openCount++;
+                            $("div.loading_img_wrapper .loading_img").remove();
+                        },
+                        search: function( event, ui ) {
+                            searchCount++;
+                        },
+                        close: function( event, ui ){
+                            if (isSelected) {
+                                if ($(this).val() != "") {
+                                    $("form").submit();
+                                }
+                            }
+                            // 選択されていない且つリスト表示が1回以下且つ検索が1回以下(外側をクリックしたとき)
+                            if (!isSelected && openCount <= 1 && searchCount <= 1) {
+                                // リスト表示時に退避させていた文字列を挿入
+                                $(".ui-autocomplete-input").val(tempText);
+                            } else {
+                                isSelected = false;
+                                openCount = 0;
+                                searchCount = 0;
+                            }
+                        }
+                    })
+                    .addClass( "ui-widget ui-widget-content ui-corner-left" );
+    
+                input.data( "autocomplete" )._renderItem = function( ul, item ) {
+                    return $( "<li>" )
+                        .data( "item.autocomplete", item )
+                        .append( "<a>" + item.label + "</a>" )
+                        .appendTo( ul );
+                };
+    
+                indicator = $("<div class='loading_img' style='width:100px;height:100px;background:#f00;' />")
+                    .appendTo( wrapper ).hide();
+                
+                $( "<a>" )
+                    .attr( "tabIndex", -1 )
+                    .attr( "title", "Show All Items" )
+                    .appendTo( wrapper )
+                    .button({
+                        icons: {
+                            primary: "ui-icon-triangle-1-s"
+                        },
+                        text: false
+                    })
+                    .removeClass( "ui-corner-all" )
+                    .addClass( "ui-corner-right ui-combobox-toggle" )
+                    .click(function() {
+                        // close if already visible
+                        if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+                            // リスト表示時にボタンをクリックしたときにテキストを元に戻す
+                            $(".ui-autocomplete-input").val(tempText);
+                            input.autocomplete( "close" );
+                            removeIfInvalid( input );
+                            return;
+                        }
+                        // リストを表示するときに選択してある文字列を一旦格納し、空にする
+                        tempText = $(".ui-autocomplete-input").val();
+                        $(".ui-autocomplete-input").val("");
+                        // work around a bug (likely same cause as #5265)
+                        $( this ).blur();
+    
+                        // pass empty string as value to search for, displaying all results
+                        input.autocomplete( "search", "" );
+                        input.focus();
+                    });
+            },
+            destroy: function() {
+                this.wrapper.remove();
+                this.element.show();
+                $.Widget.prototype.destroy.call( this );
+            }
+        });
+    }
+
+    // ajaxでリストの全項目を取得
+    function ajaxSetOption() {
+        $.ajax({
+            url     : "/direct/menu/api_pagelist/",
+            type    : "POST",
+            dataType: "json",
+            success : function(data) {
+                // 取得した項目を
+                var select = $({/literal}"#{$select_id}"{literal});
+                var option = $("<option />");
+                var insert = option.clone().addClass("ui-option-item").val("-1").text("");
+                select.append(insert);
+                $.each(data, function(i) {
+                    var optElement = data[i].page_nm + "(" + data[i].page_sysnm + ")";
+                    insert = option.clone().addClass("ui-option-item").val(data[i].id).text(optElement);
+                    if ({/literal}"{$selected}"{literal} == data[i].id) {
+                        insert.attr("selected", "selected");
+                    }
+                    select.append(insert);
+                });
+                // プラグインを定義
+                definePlugin();
+                select.combobox();
+            }
+        });
+    }
+
+    // ローディング中画像を表示
+    function loadingImgshow() {
+            // リストが非表示でかつローディング画像が既に表示されていないときにローディング画像を表示する
+            if (!$("ul.ui-widget-content").is(":visible") && !($("div.loading_img").size > 0)) {
+                $("div.loading_img_wrapper").append('<div class="loading_img"></div>');
+            }
+    }
+})(jQuery);
+</script>
+
+
+{/literal}

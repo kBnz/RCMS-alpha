@@ -1,0 +1,54 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+   <li class="normal"><a href="/management/develop/develop_language_list/"><span>言語設定</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_translation_list/">i18n</a>
+<a href="/management/develop/{$ct}/">言語設定</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/{$mt}/{$ct}/" method="post">
+
+  <p class="hint">代替順は指定言語で訳語が見つからなかった場合に代わりに使用する順番です。数値が小さい方が優先度が高くなります。</p>
+  <table width="100%">
+    <thead>
+      <tr>
+        <th style="width:40px">有効</th>
+        <th style="width:40px">代替順</th>
+        <th style="width:100px">コード</th>
+        <th>言語</th>
+      </tr>
+    </thead>
+    <tbody>
+    {foreach from=$lang_list item=row}
+      <tr>
+        <td><input type="checkbox" name="enable[]" value="{$row.language}" {if $row.enable}checked="checked"{/if} /></td>
+        <td><input type="text" name="priority[{$row.language}]" value="{$row.priority}" style="width:30px"/></td>
+        <td>{$row.language}</td>
+        <td>{$row.name|escape}</td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+  {buttonbox}
+    <button type="submit">保存</button>
+  {/buttonbox}
+</form>
+
+</div><!--//list_main-->
+{rcms_include file="management/footer.html"}
+

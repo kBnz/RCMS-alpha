@@ -1,0 +1,186 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+
+<script language="javascript" type="text/javascript" src="/js/pager.js"></script>
+<script type="text/javascript">
+    Event.observe(window, 'load', function() {
+        DUI.calendar.PopupWindow({title:"日付", textId: 'post_ymd_from', btnId: 'post_ymd-btn', boxId: 'post_ymd-pop', tableId: 'post_ymd-table'});
+        DUI.calendar.PopupWindow({title:"日付", textId: 'post_ymd_to', btnId: 'post_ymd-btn1', boxId: 'post_ymd-pop', tableId: 'post_ymd-table'});
+  });
+
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_entry_list'|translate}</h2>{* ブログ記事一覧 *}
+<ul>
+{assign var=blog_id value=$header.blog_id}
+{if $rauth->canInsert("/blog/item/[@blog_id=$blog_id]")}
+    <li class="add"><a href="/management/blog/blog_item_edit/blog_id={$blog_id}"><span>{'/modules/blog/label/add_new_entry_btn'|translate}</span></a></li>{* ブログ記事追加 *}
+{/if}
+{if $header.gaibu_url}
+<li class="normal"><a href="/direct/blog/updateGaibuBlog/blog_id={$blog_id}"><span>{'/modules/blog/label/update_outside_blog_btn'|translate}</span></a></li>{* 外部ブログ更新 *}
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+{'/modules/blog/label/blog_entry_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> ブログ記事一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+<!-- 記事一覧 -->
+<div class="list_main" style="margin-top:15px;">
+
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+
+   <!-- 承認待ちブログ一覧 -->
+  {rcms_include file="common/admin/shonin_list.html"}
+
+  {pager info=$pageInfo}
+
+<form action="/management/blog/blog_item_list/" method="post">
+<input type="hidden" name="blog_id" value="{$blog_id}" />
+
+<!-- 検索 -->
+  <table width="100%">
+     <tr colspan="0" cellspanning="0">
+      <td colspan="0" cellspanning="0">
+        <label for="post_ymd">{'/label/post_date'|translate}:</label>{* 投稿日　*}
+                    <input name="post_ymd_from" id="post_ymd_from" type="text" size="15" value="{$post_ymd_from|escape}" />
+                      <button type="button" id="post_ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                      <div class="pop_calendar" id="post_ymd-pop"></div>
+
+                        <input name="post_ymd_to" id="post_ymd_to" type="text" size="15" value="{$post_ymd_to|escape}" />
+                        <button type="button" id="post_ymd-btn1"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                        <div class="pop_calendar" id="post_ymd-pop"></div>  
+      <span class="hint">{'/label/date_example'|translate}</span>{* 日付例 *}
+    <br>
+        
+{if $use_blog_theme}
+                    <select name="theme_id" id="theme_id">{html_options options=$arrThemeList selected=$theme_id}</select>
+{/if}
+        <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select>
+        {'/label/keyword'|translate}   <input type="text" name="keyword" value="{$smarty.request.keyword}">
+        <input type="submit" value="{'/label/search_btn'|translate}" />{* 検索 *}
+    </td>  
+      </tr>
+  </table>
+</form>
+
+  <form action="/management/blog/blog_item_list/" method="post">
+    <input type="hidden" name="blog_id" value="{$blog_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="DELETE" />
+
+{strip}
+  {foreach from=$item_list name=item_nm item=item}
+    {assign var=blog_item_id value=$item.blog_item_id}
+
+    {if $smarty.foreach.item_nm.first}
+
+
+        <table id="item_list" width="100%" border="0" cellspacing="2" cellpadding="0">
+          <tr>
+            <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'blog_item_id[]');" /></th>
+            <th>{'/label/post_date'|translate}</th>{* 投稿日 *}
+{if $use_blog_theme}
+            <th>{'/modules/blog/label/blog_theme_name'|translate}</th>{* theme *}
+{/if}
+            <th width="200">{'/modules/blog/label/blog_entry_title'|translate}</th>{* ブログ記事タイトル *}
+            <th>{'/label/person_who_posted'|translate}</th>{* 投稿者 *}
+            <th>{'/label/publish'|translate}</th>{* 公開 *}
+            <th width="60">{'/label/view'|translate}</th>{* アクセス数 *}
+            <th>{'/modules/blog/label/blog_comment'|translate}</th>{* コメント一覧 *}
+            <th>{'/modules/blog/label/blog_trackback'|translate}</th>{* トラックバック一覧 *}
+          </tr>
+    {/if}
+          <tr>
+            <td><input type="checkbox" name="blog_item_id[]" value="{$item.blog_item_id}" {if !$rauth->canDelete("/blog/item/$blog_item_id")}disabled="disabled"{/if}/></td>
+            <td>{$item.post_ymdhi|pg_dateformat}</td>
+{if $use_blog_theme}
+            <td>{$arrThemeList[$item.theme_id]}</td>
+{/if}
+            <td>
+{if !$item.gaibu_link}
+            <a href="/management/blog/blog_item_edit/blog_item_id={$item.blog_item_id}">{$item.subject|escape}</a>
+{else}
+            {$item.subject|escape}
+            <p><a href="{$item.gaibu_link|escape}" target="_blank">{'/modules/blog/msg/goto_outside_blog_entry'|translate}</a></p>{* 外部ブログ記事へ *}
+{/if}
+        {rcms_include file="common/admin/language_status.html" meta=$docmetas[$blog_item_id] link="/management/blog/blog_item_edit/blog_id=$blog_id&blog_item_id=$blog_item_id"}
+        </td>
+          <td>{$item.author_name|escape}</td>
+            <td>
+              {if $smarty.const.BLOG_ITEM_OPEN_ON == $item.open_flg}
+              <img src="/images/management/check.gif" title="公開中" alt="公開中" />
+              {elseif $smarty.const.BLOG_ITEM_OPEN_OFF == $item.open_flg}
+              <img src="/images/management/batu.gif" title="非公開" alt="非公開" />
+              {/if}
+            </td>
+            <td>{$item.access_cnt}pv</td>
+            <td style="white-space:nowrap">
+              {if $smarty.const.BLOG_COMM_ON == $item.comment_flg}
+              <img src="/images/management/check.gif" title="即公開" alt="即公開" />
+              {elseif $smarty.const.BLOG_COMM_OFF == $item.comment_flg}
+              <img src="/images/management/batu.gif" title="受け付けない" alt="受け付けない" />
+              {elseif $smarty.const.BLOG_COMM_CHK == $item.comment_flg}
+              <img src="/images/management/sankaku.gif" title="要申請" alt="要申請" />
+              {/if}　<a href="/management/blog/blog_comment_list/blog_id={$blog_id}&blog_item_id={$item.blog_item_id}">({$item.comment_cnt}件)</a>
+            </td>
+            <td style="white-space:nowrap">
+              {if $smarty.const.BLOG_TB_ON == $item.trackback_flg}
+              <img src="/images/management/check.gif" title="即公開" alt="即公開" />
+              {elseif $smarty.const.BLOG_TB_OFF == $item.trackback_flg}
+              <img src="/images/management/batu.gif" title="受け付けない" alt="受け付けない" />
+              {elseif $smarty.const.BLOG_TB_CHK == $item.trackback_flg}
+              <img src="/images/management/sankaku.gif" title="要申請" alt="要申請" />
+              {/if}　<a href="/management/blog/blog_tb_list/blog_id={$blog_id}&blog_item_id={$item.blog_item_id}">({$item.tb_cnt}件)</a>
+            </td>
+          </tr>
+    {if $smarty.foreach.item_nm.last}
+        </table>
+    {/if}
+  {/foreach}
+{/strip}
+  {pager info=$pageInfo}
+
+  {buttonbox}
+    <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+    <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+  </form>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+      f.submit();
+  }
+}
+{/literal}
+-->
+</script>
+{rcms_include file="management/footer.html"}

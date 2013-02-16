@@ -1,0 +1,34 @@
+{module name="magazine_bn_list"}
+<h2 class="module_title"><span>{'/modules/magazine/label/back_number_list'|translate}</span></h2>{*バックナンバーリスト*}
+<div class="module_contents">
+{if $header.err_str}
+    {$header.err_str}
+{else}
+<h3>{$header.magazine_name}</h3>
+    {foreach item=row key=key from=$bn_list name=bn_list}
+        {if $smarty.foreach.bn_list.first}
+    <p class="page_links">{$page_links}</p>
+    <table class="list">
+    <tr>
+        <th>{'/label/subject'|translate}{*件名*}</th>{if $summary_title_label}<th>{'/label/title'|translate}{*タイトル*}</th>{/if}{if $summary_label}<th>{'/label/summary'|translate}{*サマリー*}</th>{/if}<th>{'/label/publish_date'|translate}{*発行日*}</th>
+    </tr>
+        {/if}
+    <tr>
+        <td><a href="/magazine_bn_detail/id={$row.magazine_send_mail_list_id}{if $pageID}&pageID={$pageID}{/if}">{$row.subject|escape|nl2br}</a></td>
+        {if $summary_title_label}<td>{$row.summary_title|escape|nl2br}</td>{/if}
+        {if $summary_label}<td>{$row.summary|escape|nl2br}</td>{/if}
+        <td>{$row.send_ymdhi|substr:10}</td>
+    </tr>
+        {if $smarty.foreach.bn_list.last}
+    </table>
+        {/if}
+    {foreachelse}
+      <p class="noArticle">{'/modules/magazine/msg/no_backnumber_and_not_open'|translate}{*このメールマガジンのバックナンバーは存在してないか、非公開になっています。*}</p>
+    {/foreach}
+    <div class="relation_link"></a></li>
+        <p><a href="/magazine_detail/id={$header.magazine_id}" class="small_text">{'/modules/magazine/label/detail_and_apply'|translate}</a></p>{*詳細・参加申請*}
+        <p><a href="/magazine_list/" class="small_text">{'/modules/magazine/label/magazine_list_for_user'|translate}</a></p>{*メールマガジン一覧*}
+    </div>
+{/if}
+</div>
+{/module}

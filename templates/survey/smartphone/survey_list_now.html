@@ -1,0 +1,16 @@
+{if $user_survey_list_now|@count > 0}
+<h2>[emoji:085]{'/modules/survey/label/surveying'|translate}{*実施中アンケート*}</h2>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<ul data-role="listview">
+{foreach from=$user_survey_list_now item=item name=survey_list}
+  {if $item.is_target == 1}
+    <li><a href="/survey_answer/id={$item.survey_id}">{$item.title|escape}</a></li>
+  {/if}
+{/foreach}
+</ul>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<div style="text-align:right;font-size:small;">
+<a href="/survey_list/">{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</a>
+</div>
+<hr/>
+{/if}

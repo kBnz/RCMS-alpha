@@ -1,0 +1,72 @@
+{if $gameList|@count > 0}
+{module name="game_last"}
+<h2 class="module_title"><span>最新試合結果</span></h2>
+<div class="module_contents">
+
+{foreach from=$gameList item=gameData}
+<table style="margin-bottom:10px">
+  <tr>
+    <td>
+      <table width="100%" class="score_table" border="1">
+      {if $gameData.game_result_flg eq '1'}
+        <tr>
+          <th  colspan="2" width="50%" style="text-align:center;" class="self_team_nm">{$gameData.team1}</th>
+          <th  colspan="2" width="50%" style="text-align:center;" class="opp_team_nm">{$gameData.team2}</th>
+        </tr>
+        <tr>
+          <td width="45%" class="score28">
+            {if $gameData.game_result eq 'win'}○{elseif $gameData.game_result eq 'lose'}×{elseif $gameData.game_result eq 'draw'}△{/if}
+          </td>
+          <td  colspan="2">-</td>
+          <td width="45%" class="score28">
+            {if $gameData.game_result eq 'win'}×{elseif $gameData.game_result eq 'lose'}○{elseif $gameData.game_result eq 'draw'}△{/if}
+          </td>
+        </tr>
+      {else}
+        <tr>
+          <th  colspan="2" width="50%" style="text-align:center;" class="self_team_nm">{$gameData.team1}</th>
+          <th  colspan="2" width="50%" style="text-align:center;" class="opp_team_nm">{$gameData.team2}</th>
+        </tr>
+        <tr>
+          <td width="45%" class="score28">{$gameData.score_detail_arr.Self_Total}</td>
+          <td  colspan="2">-</td>
+          <td width="45%" class="score28">{$gameData.score_detail_arr.Opp_Total}</td>
+        </tr>
+      {/if}
+      </table>
+    </td>
+    <td>
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">Kick off</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+{/foreach}
+<div class="relation_link"><a href="/gamesimple_list/" class="small_text">試合一覧へ</a></div>
+</div>
+{/module}

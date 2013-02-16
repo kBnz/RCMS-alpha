@@ -1,0 +1,37 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $shopping_id}
+  {if $auth.shopping.insert}
+    <li class="add"><a href="/management/shopping/shopping_edit/"><span>商品追加</span></a></li>
+  {/if}
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/shopping_detail/id={$shopping_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/shopping/shopping_group_list/">{$module_nm}</a>
+<a href="/management/shopping/shopping_group_list/">グループ一覧</a>
+{if $shopping_id}
+<a href="/management/shopping/shopping_list/shopping_group_id={$shopping_group_id}">{$module_nm}一覧</a>
+<a href="/management/shopping/shopping_edit/shopping_id={$shopping_id}">{$module_nm}編集</a>
+更新履歴一覧
+{else}
+<a href="/management/shopping/shopping_group_edit/shopping_group_id={$shopping_group_id}">グループ編集</a>
+更新履歴一覧
+{/if}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{if $shopping_id}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/shopping/shopping_edit/shopping_id=$shopping_id" pageInfo=$pageInfo}
+{else}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/shopping/shopping_group_edit/shopping_group_id=$shopping_group_id" pageInfo=$pageInfo}
+{/if}
+
+</div>
+{rcms_include file="management/footer.html"}

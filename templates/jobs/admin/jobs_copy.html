@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/label/do_copy'|translate}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/jobs/jobs_list/">{'/modules/jobs'|translate}</a>
+<a href="/management/jobs/jobs_list/">{'/modules/jobs/label/jobs_list'|translate}</a>{*採用情報一覧*} 
+<a href="/management/jobs/jobs_edit/{if $jobs_id}jobs_id={$jobs_id}{/if}"></a>
+{'/label/do_copy'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+    <div class="list_main">
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form action="/management/jobs/jobs_copy/" method="POST">
+        <input type="hidden" name="jobs_id" value="{$jobsDetail.jobs_id}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="new_jobs_id" value="{$new_jobs_id}" />
+
+        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+                <th width="200">{'/label/job_name'|translate}{*トピックス名*}({'/label/copy_original'|translate}{*コピー元*})</th>
+                <td>
+                    <a href="/management/jobs/jobs_edit/jobs_id={$jobsDetail.jobs_id}">{$jobsDetail.job_nm|escape}</a>
+                </td>
+            </tr>
+
+            <tr>
+                <th>{'/label/copy_to'|translate}{*コピー先*}：{'/label/publish_status'|translate}{*公開状態*}</th>
+                <td>
+                    {html_radios name="public" options=$arrOpFlg selected=$formData.public}
+                </td>
+            </tr>
+
+        </table>
+
+        {buttonbox}
+        {if $new_jobs_id}
+        {* IE6対策で、リンクを別にする。こうしないとQueryStringを引き継げない *}
+        <a href="/management/jobs/jobs_edit/jobs_id={$new_jobs_id}" id="new_job_link"></a>
+        <button type="button" onclick="location.href=$(new_job_link).href;" >{'/label/edit_copied_button'|translate}</button>
+        {else}  
+        <button type="submit">{'/label/do_copy'|translate}{*コピーする*}</button>
+        {/if}
+        {/buttonbox}
+    </form>
+    </div>
+</div>
+{rcms_include file="management/footer.html"}

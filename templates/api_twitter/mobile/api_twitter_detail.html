@@ -1,0 +1,29 @@
+<h2>ぐるなび情報</h2>
+{if $error}
+{$error}
+{else}
+<h3>{$rest.name}</h3>
+<div style="text-align:center;font-size:small;">
+<img src="{$rest.image_url.shop_image1}" alt="{$rest.name}写真"><br/>
+提供：ぐるなび
+</div><br/>
+{$rest.pr.pr_short}<br/>
+{$rest.pr.pr_long}<br/>
+{$rest.opentime}<br/>
+{$rest.access.station}{$rest.access.station_exit}から{$rest.access.walk}分<br/>
+{$rest.address}<br/>
+<div style="text-align:right;font-size:small;">
+<a href="{$rest.url}">詳細情報はｺﾁﾗ</a>
+</div>
+<div style="text-align:center;font-size:small;">
+<a href="http://www.gnavi.co.jp/"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" alt="ｸﾞﾙﾒ情報検索ｻｲﾄ　ぐるなび"></a>
+</div>
+{if $rest.local.notes ne ''}
+<dl>
+	<dt>ｺﾒﾝﾄ:</dt>
+	<dd>{$rest.local.notes}</dd>
+</dl>
+{/if}
+{/if}
+<hr/>
+

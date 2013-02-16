@@ -1,0 +1,111 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function changeTemlate(temp_id,ctr_id){
+  var index = $(temp_id).selectedIndex;
+  var url = '/direct/inquiry/getTemplateData/';
+  var para = 'template_id='+$(temp_id).options[index].value
+  options = {method:'post',parameters:para,onComplete:function(httpObj){$(ctr_id).innerHTML = httpObj.responseText;}}
+  var ajaxobj = new Ajax.Request(url,options);
+}
+
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/inquiry/label/inquiry_send_mail'|translate}{*メール送信*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry/label/inquiry_list'|translate}</a>
+{'/modules/inquiry/label/inquiry_send_mail'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 問い合わせ一覧 >> メール送信 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.inquiry_name}</h3>
+{rcms_include file="inquiry/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/inquiry/inquiry_send_mail/" method="POST">
+    <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+<div id="inquiry_infomation">
+
+{if $mail_flg}
+
+    {if $rauth->canUpdate("/inquiry/mail/[@inquiry_id=$inquiry_id]")}
+    <h3>{'/label/create_new'|translate}{*新規作成*}</h3>
+    <table style="width:100%" id="table_send">
+      <tr id="tr_send_to">
+        <th id="th_send_to" style="width:150px">{'/label/send_to'|translate}{*宛先*}</th>
+        <td id="td_send_to"><input type="text" name="from_mail" value="{$formData.from_mail|escape}" size="50" /></td>
+      </tr>
+      <tr id="tr_subject">
+        <th id="th_subject">{'/label/subject'|translate}{*件名*}</th>
+        <td id="td_subject"><input type="text" name="inquiry_reply_subject" size="75" value="{$formData.inquiry_reply_subject|escape}"></td>
+      </tr>
+      <tr id="tr_template">
+        <th id="th_template">{'/label/template'|translate}{*定型文*}</th>
+        <td id="td_template">
+        <select name="template_id" id="template_id" onchange="changeTemlate(template_id,inquiry_reply_body)" style="margin-right: 20px">{html_options options=$searchTemplate selected=$template_id}</select>
+        {if $rauth->canInsert("/inquiry/template/")}
+        <a href="/management/inquiry/inquiry_template_list/">{'/modules/inquiry/msg/edit_template'|translate}{*定型文編集*}</a>
+        {/if}
+        </td>
+      </tr>
+      <tr id="tr_body">
+        <th id="th_body">{'/label/body'|translate}{*本文*}</th>
+        <td id="td_body"><textarea name="inquiry_reply_body" cols="60" rows="20">{$formData.inquiry_reply_body|escape}</textarea></td>
+      </tr>
+      <tr id="tr_status_after_sending">
+        <th id="th_status_after_sending">{'/modules/inquiry/label/status_after_sending'|translate}{*送信後のステータス*}</th>
+        <td id="td_status_after_sending"><select name="bn_status" style="margin:0 20px">{html_options options=$arrInquiry_bn_status}</select></td>
+      </tr>
+    </table>
+
+    {buttonbox}
+        <button type="button" onclick="confirm_send(this.form)">{'/modules/inquiry/label/inquiry_send_mail'|translate}{*メール送信*}</button>
+    {/buttonbox}
+    {/if}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirm_send(f){
+    // メール送信してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_send_mail'|translate}{literal}')) {
+        f.MODE.value='SEND_MAIL';
+        f.submit();
+    }
+}
+function change_sender_address() {
+  document.getElementById('sender_address').style.display = "";
+  document.getElementById('sender_address_static').style.display = "none";
+}
+{/literal}
+-->
+</script>
+
+{/if}{* mail_flg *}
+
+</div>
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

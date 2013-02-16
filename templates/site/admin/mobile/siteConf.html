@@ -1,0 +1,42 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}</a>{*管理TOP*}
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$contName[$mt]} {'/label/basic_settings'|translate}</h2>{* サイト基本設定 *}
+
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+
+  <form name="setup_edit" id="setup_edit" action="/management/{$mt}/setup/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+{foreach item=d from=$data name=list}
+  ▼{$d.disp_nm}<input type="hidden" name="send[{$d.sys_nm}]" value="1" /><br />
+  {if $d.input_type == "TEXTAREA" || $d.type == "arrayVariable"}
+    <textarea name="value[{$d.sys_nm}]">{$d.value|escape:"html"}</textarea><br />
+  {elseif $d.input_type == "CHECKBOX"}
+    <input type="checkbox" name="value[{$d.sys_nm}]" value="1" {if $d.value == "1"}checked="checked"{/if} /><br />
+  {assign var="checked" value=$d.value}
+  {elseif $d.input_type == "COLOR"}
+    <span id="swatch{$smarty.foreach.list.iteration}">■</span><input type="text" id="code{$smarty.foreach.list.iteration}" name="value[{$d.sys_nm}]" value="{$d.value|escape:"html"}" /><br />
+  {else}
+    <input type="text" name="value[{$d.sys_nm}]" value="{$d.value|escape:"html"}" /><br />
+      {if $d.disp_nm eq "RSSファイルキー"}
+         <input type="checkbox" name="random_key" value="1" {if $d.value eq ''}checked="checked"{/if} />{'/label/generate_randomly'|translate}{*ランダムに生成する*}<br />
+      {/if}
+  {/if}
+  {$d.comment|strip_tags}<br /><br />
+{/foreach}
+
+    {if $auth.site.update}
+      <input type="submit" value ="{'/label/update_btn'|translate}" />{*更新する*}
+    {/if}
+  </form>
+
+{rcms_include file="management/mobile/footer.html"}
+

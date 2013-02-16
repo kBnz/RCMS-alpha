@@ -1,0 +1,130 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link href="/css/blog/blog_management.css" rel="stylesheet" type="text/css" media="screen,print">
+<script type="text/javascript">
+// 表示用配列
+var arrMemberInputOptions = new Array({$input_item_list|@count});
+{foreach from=$input_item_list key=key item=item}
+arrMemberInputOptions['{$key}'] = '{$item}';
+{/foreach}
+
+var arrRequiredOptions = new Array({$arrRequired|@count});
+{foreach from=$arrRequired key=key item=item}
+arrRequiredOptions['{$key}'] = '{$item}';
+{/foreach}
+
+{literal}
+function InsertValue () {
+    var item, item_num;
+    var status, status_num;
+    
+    item_num = $("input_item_list").selectedIndex;
+    item  = $("input_item_list").options[item_num].value;
+    item_disp_name = arrMemberInputOptions[item];
+
+    var table = $("setting_data");
+    var index = table.rows.length;
+    var row_index = index - 1;
+    var new_row = table.insertRow(index);
+
+    var strRequiredSelect = '';
+    for(i=0; i<arrRequiredOptions.length; i++){
+        strRequiredSelect+= '<option label="'+arrRequiredOptions[i]+'" value="'+i+'">'+arrRequiredOptions[i]+'<\/option>';
+    }
+
+    new_row.id = 'order'+row_index;
+    new_row.insertCell(0).innerHTML = item_disp_name+'<input type="hidden" name="value[]" id="value[]" value="'+item+'" />';
+    new_row.insertCell(1).innerHTML = '<input type="text" name="disp_value[]" id="disp_value[]" value="'+item_disp_name+'" />';
+    new_row.insertCell(2).innerHTML = '<select name="status[]" id="status[]">'+strRequiredSelect+'<\/select>';
+    new_row.insertCell(3).innerHTML = '<a href="javascript:;" onclick="swapSibling(-1, \'order'+row_index+'\')"><img src="/images/management/up.gif" border="0" /></a><a href="javascript:;" onclick="swapSibling(1, \'order'+row_index+'\')"><img src="/images/management/down.gif" border="0" /></a>';
+    new_row.insertCell(4).innerHTML = '<input type="button" name="del_bt[]" id="del_bt[]" value="{/literal}{'/label/delete_btn'|translate}{*削除*}{literal}" onclick="DeleteValue(\'' + 'order'+row_index + '\');"/>';
+}
+
+function DeleteValue (order_row_index) {
+    var table = $("setting_data");
+    var tr_index = $(order_row_index).rowIndex;
+    table.deleteRow(tr_index);
+}
+
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_input_setting'|translate}{*初期入力項目設定*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist/label/memberregist_edit'|translate}</a>
+{'/modules/memberregist/label/memberregist_input_setting'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 新規メンバー登録設定 >> 初期入力項目設定 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+<form method="POST" action="/management/memberregist/memberregist_input_setting/" name="memberregist_input_setting_edit" id="memberregist_input_setting_edit">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="MODE" value="UPDATE">
+    <h3>{'/modules/memberregist/label/data_setting'|translate}{*設定済み項目*}</h3>
+    <span class="hint">{'/modules/memberregist/msg/memberregist_input_setting_help'|translate}{*表示名を入力しない場合はデータ名がそのまま表示されます。*}</span>
+    <table  width="100%" cellspacing="2" id="setting_data">
+    <thead id="item_list_header">
+    <tr>
+        <th>{'/modules/memberregist/label/data_name'|translate}{*データ名*}{*データ名*}</th>
+        <th>{'/modules/memberregist/label/display_name'|translate}{*表示名*}</th>
+        <th>{'/modules/memberregist/label/required_or_optional'|translate}{*必須チェック*}</th>
+        <th>{'/label/sort'|translate}{*並び順*}</th>
+        <th>{'/label/delete'|translate}{*削除*}</th>
+    </tr>
+    </thead>
+    <tbody id="item_list_content">
+    {foreach from=$data key=k item=val}
+        <tr id="order{$k}">
+            <td>
+                {$input_item_list[$val.value]}<input type="hidden" name="value[]" id="value[]" value="{$val.value}"  />
+            </td>
+            <td>
+                <input type="text" name="disp_value[]" id="disp_value[]" value="{$val.disp_value}"  />
+            </td>
+            <td>
+                <select name="status[]" id="status[]">{html_options options=$arrRequired selected=$val.status}</select>
+            </td>
+            <td>
+                <a href="javascript:;" onclick="swapSibling(-1, 'order{$k}')"><img src="/images/management/up.gif" border="0" /></a>
+                <a href="javascript:;" onclick="swapSibling(1, 'order{$k}')"><img src="/images/management/down.gif" border="0" /></a>
+            </td>
+            <td>
+                <input type="button" name="del_bt[]" id="del_bt[]" value="{'/label/delete_btn'|translate}{*削除*}" onclick="DeleteValue('order{$k}');"/>
+            </td>
+        </tr>
+    {/foreach}
+    </tbody>
+    </table>
+    <table>
+        <tr>
+            <th>{'/modules/memberregist/label/add_data'|translate}{*追加するデータ名*}</th>
+            <td>
+                <select name="input_item_list" id="input_item_list">{html_options options=$input_item_list}
+            </td>
+            <td>
+                <input type="button" onClick="InsertValue()" value="{'/label/add_btn'|translate}{*追加する*}">
+            </td>
+        </tr>
+    </table>
+    {buttonbox}
+    {if $auth.memberregist.update}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+    {/if}
+    {/buttonbox}
+</form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

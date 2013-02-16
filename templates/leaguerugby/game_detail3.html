@@ -1,0 +1,299 @@
+{module name="game_detail"}
+<h2 class="module_title">
+{$gameData.league_type} {$gameData.league_type2}
+{if $gameData.league_status eq '0' ||  $gameData.league_status eq '1'}
+試合予定
+{elseif $gameData.league_status eq '2'}
+途中経過
+{elseif $gameData.league_status eq '3'}
+試合結果
+{/if}
+</h2>
+<div class="module_contents">
+
+  <div class="score">
+    <div>
+      <table class="score_table">
+        <tr>
+          <th colspan="4" class="self_team_nm" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</th>
+          <th colspan="4" class="opp_team_nm">{$gameData.team_nm}{$gameData.opponent_grade}</th>
+        </tr>
+
+
+{if $gameData.win_default > 0}
+        <tr><td class="score28">{$arrNOGAME[$gameData.win_default]}</td></tr>
+{else}
+        <tr>
+          <td width="30" rowspan="2">&nbsp;</td>
+          <td width="45" rowspan="2" class="score28">{$gameData.score_detail_arr.Self_Total}</td>
+          <td width="20">{$gameData.score_detail_arr.Self_Half1}</td>
+          <td rowspan="2" colspan="2">-</td>
+          <td width="20">{$gameData.score_detail_arr.Opp_Half1}</td>
+          <td width="45" rowspan="2" class="score28">{$gameData.score_detail_arr.Opp_Total}</td>
+          <td width="30" rowspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>{$gameData.score_detail_arr.Self_Half2}</td>
+          <td>{$gameData.score_detail_arr.Opp_Half2}</td>
+        </tr>
+{/if}
+      </table>
+      <table class="score_table" title="T：トライ G：ゴール PG：ペナルティゴール DG：ドロップゴール">
+        <tr class="TGPD">
+          <th width="27">T</th>
+          <th width="27">G</th>
+          <th width="27">PG</th>
+          <th width="27">DG</th>
+          <th width="24">&nbsp;</th>
+          <th width="27">T</th>
+          <th width="27">G</th>
+          <th width="27">PG</th>
+          <th width="27">DG</th>
+        </tr>
+        <tr valign="middle">
+          <td height="2" colspan="9"></td>
+        </tr>
+        <tr>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_T1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_G1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_P1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_D1}</td>
+          <td class="TGPD2">前</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_T1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_G1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_P1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_D1}</td>
+        </tr>
+        <tr>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_T2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_G2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_P2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_D2}</td>
+          <td class="TGPD2">後</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_T2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_G2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_P2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_D2}</td>
+        </tr>
+        <tr>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_T3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_G3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_P3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_D3}</td>
+          <td class="TGPD2">計</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_T3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_G3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_P3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_D3}</td>
+        </tr>
+      </table>
+      <p class="small_text">T：トライ G：ゴール PG：ペナルティゴール DG：ドロップゴール</p>
+    </div>
+
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">Kick off</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">レフリー</th>
+          <td>{$gameData.referee}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">タッチジャッジ</th>
+          <td>{$gameData.touch_judge1}<br>{$gameData.touch_judge2}<br>{$gameData.touch_judge3}</td>
+        </tr>
+      </table>
+</div>
+<div class="clr"></div>
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+{if count($gameMembers.self)}
+<span class="self_team_nm" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</span>
+<div id="game_members">
+  <div class="position_space">
+  {section name=self_member loop=$gameMembers.self}
+    {if $gameMembers.self[self_member].member_order}
+    <div class="position_space{$gameMembers.self[self_member].member_order}">
+      <div class="position_nm" align="center" >{$gameMembers.self[self_member].position}</div>
+      {if $gameMembers.self[self_member].image_s_exist}
+        <a href="/member_detail/id={$gameMembers.self[self_member].member_id}">
+          <img src="/files/member/member_photo/s/{$gameMembers.self[self_member].member_id}.jpg" alt="{$gameMembers.self[self_member].position}.{$gameMembers.self[self_member].disp_name}" title="{$gameMembers.self[self_member].member_order}.{$gameMembers.self[self_member].disp_name}"  border="0" style="margin-right:15px;margin-left:15px;" /></a>
+        <br>
+        <a href="/member_detail/id={$gameMembers.self[self_member].member_id}">{$gameMembers.self[self_member].disp_name}</a><br>
+      {elseif $gameMembers.self[self_member].member_id}
+        <br>
+        <a href="/member_detail/id={$gameMembers.self[self_member].member_id}">{$gameMembers.self[self_member].disp_name}</a><br>
+      {else}
+        <br>{$gameMembers.self[self_member].disp_name}<br>
+      {/if}
+      </div>
+    {/if}
+  {/section}
+  </div>
+</div>
+{/if}
+
+{if count($gameMembers.opp)}
+<span class="opp_team_nm">{$gameData.team_nm}{$gameData.opponent_grade}</span>
+<table class="opp_member_table" cellspacing="0">
+  <tr>
+    <th width="50" class="opp_member_table">背番号</th>
+    <th width="90" class="opp_member_table">ポジション</th>
+    <th width="140" class="opp_member_table">名前</th>
+    <th class="opp_member_table">交代</th>
+  </tr>
+  {section name=opp_member loop=$gameMembers.opp}
+    {if $gameMembers.opp[opp_member].member_order}
+    <tr>
+      <td class="center">{$gameMembers.opp[opp_member].member_order}</td>
+      <td class="center">{$gameMembers.opp[opp_member].position}</td>
+      <td>{$gameMembers.opp[opp_member].member_name}</td>
+      <td>{$gameMembers.opp[opp_member].change_info}</td>
+    </tr>
+    {/if}
+  {/section}
+  </table>
+{/if}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2 class="topics_subject">{$gameTopicsList[game_topics].subject}</h2>
+<p class="topics_ymd">{$gameTopicsList[game_topics].ymd_str}</p>
+<div class="topics_contents">{$gameTopicsList[game_topics].contents}</div>
+{/section}
+<div class="relation_link"><a href="/leaguerugby_list/" class="small_text">試合一覧へ</a></div>
+</div>
+{/module}
+
+<style>
+{literal}
+.position_space{
+
+  margin-top:0px;
+
+  position:relative;
+
+  width:470px;
+{/literal}
+{if !$gameMembers.self[23].member_order}
+  height:410px;
+background-image:url(/images/modules/gamerugby/detail3_back.jpg);
+{else}
+  height:500px;
+background-image:url(/images/modules/gamerugby/detail3_back2.jpg);
+{/if}
+{literal}
+
+  text-align: center;
+
+}
+
+.position_space a{
+
+  color:#FFFFFF;
+
+  font-size: 85%;
+
+}
+
+.position_nm {
+
+  color:#FFFF00;
+
+  font-weight: bold;
+
+  font-style: italic;
+
+  font-size: 100%;
+
+  background-color:#000033;
+
+  margin : 0px 15px -3px 15px;
+
+  width:50px;
+}
+
+.position_space a:visited{
+
+  color:#FFFFFF;
+
+}
+
+.position_space1{position:absolute ;top:0px;left:75px;}
+
+.position_space2{position:absolute ;top:10px;left:190px;}
+
+.position_space3{position:absolute ;top:0px;left:295px;}
+
+.position_space4{position:absolute ;top:80px;left:130px;}
+
+.position_space5{position:absolute ;top:80px;left:255px;}
+
+.position_space6{position:absolute ;top:100px;left:45px;}
+
+.position_space7{position:absolute ;top:100px;left:335px;}
+
+.position_space8{position:absolute ;top:120px;left:190px;}
+
+.position_space9{position:absolute ;top:180px;left:120px;}
+
+.position_space10{position:absolute ;top:180px;left:260px;}
+
+.position_space11{position:absolute ;top:240px;left:-10px;}
+
+.position_space12{position:absolute ;top:215px;left:55px;}
+
+.position_space13{position:absolute ;top:215px;left:325px;}
+
+.position_space14{position:absolute ;top:240px;left:385px;}
+
+.position_space15{position:absolute ;top:260px;left:190px;}
+
+.position_space16{position:absolute ;top:340px;left:-10px;}
+
+.position_space17{position:absolute ;top:340px;left:55px;}
+
+.position_space18{position:absolute ;top:340px;left:120px;}
+
+.position_space19{position:absolute ;top:340px;left:190px;}
+
+.position_space20{position:absolute ;top:340px;left:260px;}
+
+.position_space21{position:absolute ;top:340px;left:325px;}
+
+.position_space22{position:absolute ;top:340px;left:385px;}
+
+.position_space23{position:absolute ;top:420px;left:-10px;}
+
+.position_space24{position:absolute ;top:420px;left:55px;}
+
+.position_space25{position:absolute ;top:420px;left:120px;}
+
+.position_space26{position:absolute ;top:420px;left:190px;}
+
+.position_space27{position:absolute ;top:420px;left:260px;}
+
+.position_space28{position:absolute ;top:420px;left:325px;}
+
+.position_space29{position:absolute ;top:420px;left:385px;}
+{/literal}
+</style>

@@ -1,0 +1,70 @@
+{module name="keyword_detail"}
+<h2 class="module_title"><span>{'/modules/keyword/label/keyword_edit'|translate}{*キーワード編集*}</span></h2>
+<div class="module_contents">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+  <form name="keyword_edit" action="/keyword_edit/" method="post" >
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input name="id" type="hidden" value="{$formData.keyword_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input name="MODE" type="hidden" value="" />
+
+    <table style="width: 100%">
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}</th>
+        <td><select name="keyword_category_id">{html_options options=$arrKeywordCategory selected=$formData.keyword_category_id}</select></td>
+      </tr>
+      <tr>
+        <th width="150">{'/label/keyword'|translate}</th>
+        <td><input type="text" name="keyword" size="60" maxlength="100" value="{$formData.keyword|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/index'|translate}{*索引*}</th>
+        <td><select name="index">{html_options options=$index_flat_list selected=$formData.index}</select></td>
+      </tr>
+      <tr>
+        <th>{'/label/japanese_kana'|translate}{*読みカナ*}</th>
+        <td><input type="text" name="japanese_syllabary" size="60" maxlength="100" value="{$formData.japanese_syllabary|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/explanation'|translate}{*説明*}</th>
+        <td><textarea rows="10" cols="60" name="description" style="font-size: 100%;">{$formData.description|escape}</textarea></td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold" colspan="2">{'/label/related_keyword_link'|translate}{*関連キーワードリンク*}</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <ul>
+            <li>{'/label/link_name'|translate}(1){*リンク名(1)*}<input type="text" name="link_name_1" size="30" maxlength="100" value="{$formData.link_name_1|escape}" /></li>
+            <li>URL(1)<input type="text" name="link_1" size="60" maxlength="255" value="{$formData.link_1|escape}" /></li>
+            <br />
+            <li>{'/label/link_name'|translate}(2){*リンク名(2)*}<input type="text" name="link_name_2" size="30" maxlength="100" value="{$formData.link_name_2|escape}" /></li>
+            <li>URL(2)<input type="text" name="link_2" size="60" maxlength="255" value="{$formData.link_2|escape}" /></li>
+            <br />
+            <li>{'/label/link_name'|translate}(3){*リンク名(3)*}<input type="text" name="link_name_3" size="30" maxlength="100" value="{$formData.link_name_3|escape}" /></li>
+            <li>URL(3) <input type="text" name="link_3" size="60" maxlength="255" value="{$formData.link_3|escape}" /></li>
+            <br />
+            <li>{'/label/link_name'|translate}(4){*リンク名(4)*}<input type="text" name="link_name_4" size="30" maxlength="100" value="{$formData.link_name_4|escape}" /></li>
+            <li>URL(4)<input type="text" name="link_4" size="60" maxlength="255" value="{$formData.link_4|escape}" /></li>
+            <br />
+            <li>{'/label/link_name'|translate}(5){*リンク名(5)*}<input type="text" name="link_name_5" size="30" maxlength="100" value="{$formData.link_name_5|escape}" /></li>
+            <li>URL(5)<input type="text" name="link_5" size="60" maxlength="255" value="{$formData.link_5|escape}" /></li>
+          </ul>
+        </td>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {if $formData.keyword_id == "" && $auth.keyword.insert}
+          <input type="submit" id="subflg1" value="{'/label/add_btn'|translate}{*追加する*}" onclick="this.form.MODE.value='INSERT';">
+          {/if}
+          {if $formData.keyword_id != "" && $auth.keyword.update}
+          <input type="submit" id="subflg2" value="{'/label/update_btn'|translate}{*更新する*}" onclick="this.form.MODE.value='UPDATE';">
+          {/if}
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+{/module}

@@ -1,0 +1,29 @@
+<h2>[emoji:158]{'/modules/topics/label/topics_list_user_page_name'|translate}{* トピックス一覧 *}</h2>
+
+{section name=mydata loop=$topicsList}
+    
+    {if $topicsList[mydata].link_flg eq '1'}
+      ▼<a href="/{$link_page_sysnm}{if !$link_page_flg && $topicsList[mydata].topics_group_id}{$topicsList[mydata].topics_group_id}{/if}/id={$topicsList[mydata].topics_id}">{$topicsList[mydata].subject}</a>
+    {elseif $topicsList[mydata].link_flg eq '2'}
+      ▼<a href="{$topicsList[mydata].link_url}">{$topicsList[mydata].subject}</a>
+    {else}
+      ▼{$topicsList[mydata].subject}
+    {/if}
+
+{if !$topicsList[mydata].no_use_ymd}
+    {if $topicsList[mydata].new_flg}[emoji:120]{/if}
+<div style="text-align:right;font-size:small;">
+    [{$topicsList[mydata].ymd_str}]
+</div>
+{/if}
+{/section}
+    {rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo page_num=10}
+
+{if $using_season}
+  <form action="/{if $page_sysnm ne 'top'}{$page_sysnm}/{/if}" method="post">
+  {rcms_seasonOptions name=season selected=$season firstOption=true}
+  <input type="submit" value="{'/label/search_btn'|translate}{* 検索 *}" />
+  </form>
+{/if}
+
+<hr/>

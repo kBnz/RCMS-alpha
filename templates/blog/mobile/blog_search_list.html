@@ -1,0 +1,30 @@
+<h2>[emoji:070]{'/modules/blog/label/search_blog_item'|translate}{*ブログ記事検索*}</h2>
+<div style="font-size:small;">
+<form action="/{$page_sysnm}/" method="GET">
+  {'/label/keyword'|translate}{*キーワード*}<input type="text" size="30" name="keyword" value="{$smarty.request.keyword|escape}"/>
+  <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+</form>
+{if $smarty.request.keyword !=""}<span>{'/msg/search_word_is'|translate:$smarty.request.keyword|escape}{*$smarty.request.keywordで検索*}</span>{/if}
+<span>{$page_links}</span>
+{foreach from=$blog_search_list item=item name=blog_search_list}
+    {if $smarty.foreach.blog_search_list.first}
+    <ul>
+    {/if}
+    <a href="/blog_my_top/blog_id={$item.blog_id}" ><h2>{$item.title|escape}</h2></a>
+    <a href="/blog_detail/blog_id={$item.blog_id}&id={$item.blog_item_id}" ><h4>{$item.subject|escape}</h4></a>
+    <div style="text-align:right;font-size:small;">
+    {$item.post_ymdhi|pg_dateformat}
+    </div>
+    <li>{$item.contents|mbtruncate:100}</li>
+    {if $smarty.foreach.blog_search_list.last}
+    </ul>
+    {/if}
+{foreachelse}
+    {if $smarty.request.keyword !=""}
+    <p>{'/msg/no_data_match'|translate}{*条件に一致するものは見つかりませんでした*}</p>
+    {/if}
+{/foreach}
+<span>{$page_links}</span>
+</div>
+<div style="text-align:right;font-size:small;"><a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a></div>
+<hr/>

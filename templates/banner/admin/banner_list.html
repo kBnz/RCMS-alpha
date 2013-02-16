@@ -1,0 +1,79 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/banner/label/banner_list'|translate}{*バナー一覧*}</h2>
+<ul>
+{if $auth.banner.insert}
+<li class="add"><a href="/management/banner/banner_edit/"><span>{'/modules/banner/label/create_new_banner_btn'|translate}{*バナー追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/banner/banner_contents_list/">{$module_nm}</a>
+{'/modules/banner/label/banner_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> バナー広告 >> バナー一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="banner/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/banner/banner_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="update_id" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.banner.delete}
+          <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'banner_id[]');"></th>
+        {/if}
+        <th>{'/label/title'|translate}{*タイトル*}</th>
+        <th>{'/label/banner'|translate}{*バナー*}</th>
+        <th>{'/label/update_time'|translate}{*更新日時*}</th>
+      </tr>
+    {foreach item=banner_data from=$banner_list}
+      <tr>
+        {if $auth.banner.delete}
+          <td><input type="checkbox" name="banner_id[]" value="{$banner_data.banner_id}"></td>
+        {/if}
+        <td><a href="/management/banner/banner_edit/banner_id={$banner_data.banner_id}&pageID={$currentPageID}">{$banner_data.title}</a></td>
+        <td>{$banner_data.contents}</td>
+        <td>{$banner_data.update_ymdhi|pg_dateformat}</td>
+      </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+{if $auth.banner.delete}
+  {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+  {/buttonbox}
+{/if}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

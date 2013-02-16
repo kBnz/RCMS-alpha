@@ -1,0 +1,97 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>ウィジェット編集</h2>
+<ul>
+<li class="add"><a href="/management/rcms/rcms_site_widget_edit/"><span>ウィジェット追加</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_site_widget_list/">ウィジェット一覧</a>
+ウィジェット編集
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+
+    <form name="rcms_site_widget_edit" id="rcms_site_widget_edit" action="/management/rcms/rcms_site_widget_edit/" method="POST">
+        <input type="hidden" name="site_widget_id" value="{$site_widget_id}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+
+        <table style="width:100%">
+            <tr>
+                <th>ウィジェット名<span class="required">必須</span></th>
+                <td>
+                    <input type="text" name="widget_nm" id="widget_nm" value="{$formData.widget_nm|escape}" size="80" />
+                </td>
+            </tr>
+
+            <tr>
+                <th>ウィジェットソース<span class="required">必須</span></th>
+                <td>
+                    <textarea name="widget_src" id="widget_src" cols="90" rows="30">{$formData.widget_src}</textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <th>メモ</th>
+                <td>
+                    <textarea name="memo" id="memo" cols="90" rows="5">{$formData.memo}</textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <th>OEM ID</th>
+                <td>
+                    <input type="text" name="oem_id" id="oem_id" value="{$formData.oem_id|escape}" size="10" />
+                </td>
+            </tr>
+
+            <tr>
+                <th>SITE ID</th>
+                <td>
+                    <input type="text" name="site_id" id="site_id" value="{$formData.site_id|escape}" size="10" />
+                </td>
+            </tr>
+        </table>
+
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" id=$site_widget_id data=$formData}
+
+    <div class="btn_box_bottom">
+         <ul class="bt_orange">
+         {if $site_widget_id == ""}
+         <li><a href="javascript:void(0)" onclick="document.rcms_site_widget_edit.MODE.value='INSERT';document.rcms_site_widget_edit.submit();return false;"><span>追加する</span></a></li>
+         {else}
+         <li><a href="javascript:void(0)" onclick="document.rcms_site_widget_edit.MODE.value='UPDATE';document.rcms_site_widget_edit.submit();return false;"><span>更新する</span></a></li>
+         <li><a href="javascript:void(0)" onclick="confirmDelete(); return false;"><span>削除する</span></a></li>
+         {/if}
+         </ul>
+         <div class="clear"></div>
+    </div>
+
+    </form>
+</div>
+</div>
+
+{literal}
+<script type="text/javascript">
+function confirmDelete() {
+    if(confirm("削除してもよろしいですか？")){
+        document.rcms_site_widget_edit.MODE.value='DELETE';
+        document.rcms_site_widget_edit.submit();
+    }
+}
+</script>
+{/literal}
+{rcms_include file="management/footer.html"}

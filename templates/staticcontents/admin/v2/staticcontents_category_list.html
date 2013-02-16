@@ -1,0 +1,93 @@
+{rcms_include file="management/header.html"}
+
+{literal}
+<script type="text/javascript">
+function confirmDelete(f) {
+    if(confirm('{/literal}{'/modules/msg/confirm_del_selected_categories'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+(function($) {
+    $(function() {
+
+        $("#select_sc_list_cat_config").rcmsDropdown();
+
+    });
+})(jQuery);
+</script>
+{/literal}
+
+
+<div id="top_fixed">
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents'|translate}{*自由HTML*}</a>
+            <a class="navigation_node">{'/label/categorieslist'|translate}{*カテゴリ設定*}</a>
+        </div>
+
+        <div class="setting_field">
+        {rcms_auth target="insert:/staticcontents/item/"}
+            <p id="add-new-button"><a href="/management/staticcontents/staticcontents_category_edit/" class="add-new">{'/label/add_category_btn'|translate}{*カテゴリ追加*}</a></p>
+    {/rcms_auth}
+        </div>
+    </div>
+</div>
+
+
+
+<form method="POST" action="/management/staticcontents/staticcontents_category_list/">
+    
+    <div id="main_contents">
+    
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+    {rcms_include file="common/admin/shonin_list.html"}
+    
+    
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+    {pager info=$pageInfo}
+        <table class="table-list staticcontents_category_list">
+          <tr>
+          <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'static_category_id[]');"></th>
+          <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+          <th class="language">{'/label/language'|translate}{*言語*}</th>
+          <th class="lastupdate">{'/label/last_updated_time'|translate}</th>{*更新日時*}
+          </tr>
+    {foreach from=$staticcontents_category_list item=row}
+        {assign var=category_id value=$row.static_category_id}
+    
+        <tr>
+            <td><input type="checkbox" name="static_category_id[]" value="{$row.static_category_id}" {rcms_auth not=true target="delete:/staticcontents/category/$category_id"}disabled="disabled"{/rcms_auth} /></td>
+            <td style="text-align: left;">
+                <a href="/management/staticcontents/staticcontents_category_edit/static_category_id={$row.static_category_id}">{$row.category_nm}</a>
+            </td>
+            <td>
+                {rcms_include
+                    file="common/admin/language_status.html" 
+                    meta=$docmetas[$category_id] 
+                    link="/management/staticcontents/staticcontents_category_edit/static_category_id=$category_id"
+                } 
+            </td>
+            <td>{$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+        </tr>
+    {/foreach}
+        </table>
+    {pager info=$pageInfo}
+    
+    </div><!--#main_contents-->
+    
+    <div id="bottom_fixed">
+    	<div class="buttonbox">
+            <ul>
+                <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+                <li class="list_action_delete_li"><button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button></li>
+            </ul>
+    	</div>
+    </div><!--#bottom_fixed-->
+</form>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,49 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{if $auth.$mt.insert}
+<li class="add"><a href="/management/{$mt}/{$mt}_edit/"><span>チーム追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  <form action="/management/{$mt}/{$mt}_list/">
+    <fieldset class="search_box">
+      タイプ<select name="team_type">{html_options options=$teamTypeOptions selected=$team_type}</select>
+      チーム名・短縮名<input type="text" name="team_nm" value="{$team_nm|escape}" />
+      <input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+  {pager info=$pageInfo}
+  <table width="100%">
+    <tr>
+      <th>チーム名</th>
+      <th>短縮名</th>
+      <th>タイプ</th>
+    </tr>
+    {foreach from=$team_list item=row}
+    <tr>
+      <td><a href="/management/{$mt}/{$mt}_edit/{$team_id_key}={$row.$team_id_key}">{$row.team_nm|escape}</a></td>
+      <td><a href="/management/{$mt}/{$mt}_edit/{$team_id_key}={$row.$team_id_key}">{$row.team_short_nm|escape}</a></td>
+      <td>{$row.team_type|escape}</td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

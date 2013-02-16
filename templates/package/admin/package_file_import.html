@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<style>
+{literal}
+{/literal}
+</style>
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm}インポート</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/package/package_list/">{'/modules/package'|translate}</a>
+<a href="/management/package/package_import/">インポート</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div style="color:red;">注意！！この機能はまだテスト中です。壊れて困るサイトでは試さないでください。</div>
+このインポート機能はこのサイトのページ全てを入れ替えるものになります。<br>
+現在のページ構成の入れ替えの他に<br>
+・TOPページ以外のページのアクセスカウントもリセットされます。<br>
+・ページ設定の閲覧権限の閲覧可能メンバー設定はインポートされません。<br>
+・自由HTMLの閲覧権限の設定、編集権限の設定はインポートされません。<br>
+・バナーはバナー以外のデータはインポートされません。<br>
+<form action="/management/package/package_import/" method="post" ENCTYPE="multipart/form-data">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="IMPORT" />
+
+<div class="list_main">
+  <table width="100%">
+    <tr>
+      <th>パッケージファイル</th>
+      <td><input name="page_db" type="file"></td>
+    </tr>
+    <tr>
+      <th>画像フォルダ</th>
+      <td>
+      ・<input type="radio" name="img_folder_type" value="new" {if $smarty.request.img_folder_type ne 'replace' && $smarty.request.img_folder_type ne 'overwrite'}checked="checked"{/if}>新規に<input name="img_folder" type="text" value="{$smarty.request.img_folder}">というフォルダを作る<br>
+      ・<input type="radio" name="img_folder_type" value="overwrite" {if $smarty.request.img_folder_type eq 'overwrite'}checked="checked"{/if}>上書きする<br>
+      ・<input type="radio" name="img_folder_type" value="replace" {if $smarty.request.img_folder_type eq 'replace'}checked="checked"{/if}>入れ替える<br>
+      <br><span class="hint">フォルダの追加や上書き、入れ替えをするフォルダは/files/user/です。画像追加などで使用しています。</span></td>
+    </tr>
+  </table>
+  {if $auth.page.insert}
+  <p>
+    <input type="submit" value="インポート" />
+  </p>
+  {/if}
+</div>
+
+</form>
+</div>
+
+{rcms_include file="management/footer.html"}

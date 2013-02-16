@@ -1,0 +1,25 @@
+<h2>[emoji:070]{$blog_item.subject|escape}</h2>
+
+<div style="text-align:right;font-size:small;">{$blog_item.post_ymdhi|pg_dateformat}<br/>
+[<a href="/blog_my_top/blog_id={$blog_header.blog_id}" >{$blog_header.title|escape}</a>]</div>
+{$blog_item.contents}
+
+  {if $blog_item.gaibu_link}
+    <br/>
+    <br/>
+    <div style="text-align:center;font-size:small;">
+      {'/modules/blog/msg/blog_detail_want_to_read_outside_blog'|translate}
+      {* この記事は外部ブログを参照しています。すべて見るには下のリンクをクリックしてください。*}<br/>
+      {'/modules/blog/label/blog_entry_title'|translate}{* 記事のタイトル *}：<a href="{$blog_item.gaibu_link|escape}">{$blog_item.subject|escape}</a><br/>
+      {if $blog_item.gaibu_channel_title && $blog_item.gaibu_channel_link}
+        ({'/modules/blog/label/blog_title'|translate}{* ブログのタイトル *}：<a href="{$blog_item.gaibu_channel_link|escape}">{$blog_item.gaibu_channel_title|escape}</a>)<br/>
+      {/if}
+    </div>
+  {/if}
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a>
+</div>
+<hr/>
+

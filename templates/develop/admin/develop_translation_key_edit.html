@@ -1,0 +1,55 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+  <li><a href="/management/develop/develop_language_list/"><span>言語設定</span></a></li>
+  <li><a href="/management/develop/develop_translation_key_edit/"><span>キー追加</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/develop/develop_translation_list/">i18n</a>
+<a href="/management/develop/develop_translation_key_edit/{if $key}?key={$key}{/if}">テキスト編集</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+<div class="list_main">
+
+<form action="/management/{$mt}/{$ct}/{if $key}?key={$key}{/if}" method="post">
+
+  <h2 class="title">{$key|escape}</h2>
+  <table width="100%">
+    <thead>
+      <tr>
+        <th style="width:150px">言語</th>
+        <th>テキスト</th>
+      </tr>
+    </thead>
+    <tbody>
+    {foreach from=$tr_list item=row}
+      <tr>
+        <td>{$language_options[$row.language]}</td>
+        <td><textarea name="text[{$row.language}]" style="width:90%;height:40px">{$row.text|escape}</textarea></td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+  <p style="margin-top:10px"><label for="memo">Memo:</label></p>
+  <textarea name="memo" id="memo" style="width:98%;height:60px">{$formData.memo|escape}</textarea>
+  {buttonbox}
+    <button type="submit">保存</button>
+  {/buttonbox}
+</form>
+
+<p class="hint">
+  先頭と末尾の改行は取り除きます。
+</p>
+
+</div><!--//list_main-->
+{rcms_include file="management/footer.html"}
+

@@ -1,0 +1,64 @@
+<form {$form.attributes}>
+{$form.hidden}
+<table width="740" border="0" cellpadding="0" cellspacing="0" class="box2">
+  <tr>
+    <td height="30"></td>
+  </tr>
+  <tr>
+    <td valign="top" colspan="2">
+		<span class="font084height150">
+		<ul>
+		{foreach item=err from=$form.errors name=errlist}
+			{if $smarty.foreach.errlist.iteration == 1}
+			【入力エラー】<br>
+			以下の項目でエラーがありましたので、再度確認の上、【確認画面へ】ボタンを押して下さい。
+			{/if}
+		    <li>{$err}</li><br>
+		{/foreach}
+		</ul>
+		</span>
+      <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0" class="registration_table">
+		<tr><td><span class="font084height150">{$form.login_id.label}</span></td><td>{$form.login_id.html}</td></tr>
+		<tr><td><span class="font084height150">{$form.login_pwd.label}</span></td><td>{$form.login_pwd.html}</td></tr>
+		<tr><td><span class="font084height150">{$form.name1.label}</span></td><td>{$form.name1.html} {$form.name2.html}</td></tr>
+		<tr><td><span class="font084height150">{$form.namekana1.label}</span></td><td>{$form.namekana1.html} {$form.namekana2.html}</td></tr>
+		<tr><td><span class="font084height150">{$form.email.label}</span></td><td>{$form.email.html}</td></tr>
+        <tr>
+          <td height="20" align="center" colspan="2">{$form.subflg.html}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td height="30"></td>
+  </tr>
+</table>
+</form>
+<style>
+{literal}
+.box2 {
+	border-color: gray; 
+	border-style: solid; 
+	border-width: 0px 1px 1px 0px; 
+	background-color: #ffffff; 
+}
+.black120 { font-size: 120%; line-height: 130%; color: #000000; }
+.breadcrumb {	
+	font-size: 75%; 
+	padding: 0px 6px 0px 0px;
+}
+.BottomLine {
+	border-width: 0px 0px 1px 0px;
+	border-color: #000000;
+	border-style: solid; 
+}
+.registration_table { 
+	border: 1px solid gray; 
+	font-size: 85%;
+	background-color: #efecef; 
+	line-height: 130%; 
+}
+.font080height150 { font-size: 80%;line-height: 150%; }
+.font084height150 { font-size: 84%;line-height: 150%; }
+{/literal}
+</style>

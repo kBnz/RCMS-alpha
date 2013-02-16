@@ -1,0 +1,270 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+<!--
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'post_ymd', btnId: 'post_ymd-btn', boxId: 'post_ymd-pop', tableId: 'post_ymd-table'});
+});
+function themeInput(blog_id, theme_id) {
+    var url = '/direct/blog/theme_edit/theme_id='+theme_id+'&blog_id=' + blog_id;
+    window.open(url,'','width=400,height=250,scrollbars=1,resizable=yes');
+}
+
+var flag=0;
+function set_timeflag(){
+    var a=1
+    window.setTimeout("flag=a",10000);
+}
+
+function movepage_confirm(str){
+    if(flag==1){
+        return onbeforeunload.returnValue = str;
+    }else{
+        return window.onbeforeunload=null;
+    }
+}
+//-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/blog/label/blog_entry_edit'|translate}</h2>{* ブログ記事編集 *}
+<ul>
+{if $rauth->canInsert("/blog/item/[@blog_id=$blog_id]")}
+    <li class="add"><a href="/management/blog/blog_item_edit/blog_id={$header.blog_id}"><span>{'/modules/blog/label/add_new_entry_btn'|translate}</span></a></li>{* ブログ記事追加 *}
+{/if}
+{if $blog_item_id}
+<li class="normal"><a href="/management/blog/blog_history/blog_id={$header.blog_id}&blog_item_id={$blog_item_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>{* 更新履歴 *}
+<li class="view"><a href="{$preview_link}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>{* プレビュー *}
+{/if}
+
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog'|translate}</a>
+<a href="/management/blog/blog_list/">{'/modules/blog/label/blog_list'|translate}</a>
+<a href="/management/blog/blog_item_list/blog_id={$header.blog_id}">{'/modules/blog/label/blog_entry_list'|translate}</a>
+{'/modules/blog/label/blog_entry_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> ブログ >> ブログ一覧 >> ブログ記事一覧 >> ブログ記事編集 *}
+
+<p class="page_info">
+    {if $blog_item_id}
+        <a href="/management/accesscount/accesscount_list/module_type=blog&id={$blog_item_id}">総アクセス数:{$formData.accesscount_cnt}</a>
+    {/if}
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{* 承認データメッセージ *}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/blog/blog_item_edit/blog_id=$blog_id&blog_item_id=$blog_item_id"}
+
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form name="blog_item_edit" id="blog_item_edit" action="/management/blog/blog_item_edit/" method="POST" enctype="multipart/form-data">
+        {if $blog_id}
+        <input type="hidden" name="blog_id" value="{$header.blog_id}" />
+        {/if}
+        {if $blog_item_id}
+        <input type="hidden" name="blog_item_id" value="{$blog_item_id}" />
+        {/if}
+        {if $formData.podcast_file != ""}
+            <input type="hidden" name="podcast_file" value="{$formData.podcast_file}" />
+        {/if}
+
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+        {if $latestRow.blog_item_id}
+          {lang_selector meta=$docmeta link="/management/blog/blog_item_edit/blog_id=$blog_id&blog_item_id=$blog_item_id"}
+        {/if}
+
+            <table width="100%" id="blog_table">
+                <tr id="tr_blog_entry_title">
+                    <th id="th_blog_entry_title">{'/modules/blog/label/blog_entry_title'|translate}<span class="required">{'/label/required'|translate}</span></th>{* ブログ記事タイトル 必須 *}
+                    <td id="td_blog_entry_title"><input name="subject" id="subject" type="text" size="65" value="{$formData.subject|escape}" />
+                    </td>
+                </tr>
+                <tr id="tr_post_date">
+                    <th id="th_post_date">{'/label/post_date'|translate}<span class="required">{'/label/required'|translate}</span></th>{* 投稿日時 必須 *}
+                    <td id="td_post_date">
+                    {if $docmeta.is_primary}
+                        <label for="post_ymd">{'/label/date'|translate}:</label>{* 日付 *}
+                        <input name="post_ymd" id="post_ymd" type="text" size="20" value="{$formData.post_ymd|escape}" />
+                        <button type="button" id="post_ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+                        <div class="pop_calendar" id="post_ymd-pop"></div>
+                        <label style="margin-left:10px">{'/label/time'|translate}:</label>{* 時刻 *}
+                        <select style="width:45px" name="post_h">{html_options options=$time_h_options selected=$formData.post_h}</select>　:　<select style="width:45px" name="post_m">{html_options options=$time_m_options selected=$formData.post_m}</select>
+                        <span class="hint">{'/modules/blog/label/date_example'|translate}</span>{* (例 2006/07/22 10:30) *}
+                    {else}
+                        <span style="font-size:14px;">{if $latestRow.blog_item_id}{$latestRow.post_ymd|replace:"-":"/"} {$latestRow.post_h}:{$latestRow.post_m}{/if}</span>
+                        <input name="post_ymd" id="post_ymd" type="hidden" value="{$latestRow.post_ymd}" />
+                        <input name="post_h" id="post_h" type="hidden" value="{$latestRow.post_h}" />
+                        <input name="post_m" id="post_m" type="hidden" value="{$latestRow.post_m}" />
+                    {/if}
+                    </td>
+                </tr>
+                <tr id="tr_theme_id">
+                    <th id="th_theme_id">{'/modules/blog/label/blog_theme_name'|translate}</th>{* テーマ名 *}
+                    <td id="td_theme_id">
+                    {if $docmeta.is_primary}
+                        <select name="theme_id" id="theme_id">{html_options options=$arrThemeList selected=$formData.theme_id}</select>
+                            {if $rauth->canUpdate("/blog/item/$blog_item_id")}
+                                <a href="javascript:;" onclick="themeInput('{$header.blog_id}','');">&gt;&gt;{'/modules/blog/label/add_new_theme'|translate}</a>{* 新しくテーマを増やす *}
+                            {/if}
+                        </td>
+                    {else}
+                        <span style="font-size:14px;">{$arrThemeList[$latestRow.theme_id]}</span>
+                    {/if}
+                </tr>
+                <tr id="tr_secure_flg">
+                    <th id="th_secure_flg">{'/label/viewing_limit'|translate}</th>{* 閲覧制限 *}
+                    <td id="td_secure_flg">
+                    {if $docmeta.is_primary}
+                        <input type="radio" name="secure_flg" id="secure_flg_off" value="off" onclick="display('secure_group_list', 'none');" {if $formData.secure_flg != 'on'}checked="checked"{/if}/><label for="secure_flg_off">{'/label/unlimited'|translate}</label>{* 制限なし *}
+                        <input type="radio" name="secure_flg" id="secure_flg_on" value="on" onclick="display('secure_group_list', '');" {if $formData.secure_flg == 'on'}checked="checked"{/if} style="margin-left: 10px;" /><label for="secure_flg_on">{'/label/limited'|translate}</label>{* 制限あり *}
+                         <div id="secure_group_list" style="margin: 10px 0 0 10px; {if $formData.secure_flg != 'on'}display:none;{/if}">
+                             <p class="hint">{'/msg/select_group_for_view'|translate}</p>{* 閲覧を許可するグループを選択してください。(複数選択できます) *}
+                             <select name="secure_item_level[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.secure_item_level}</select>
+                         </div>
+                    {else}
+                        {if $latestRow.secure_flg != 'on'}
+                            <span style="font-size:14px;">{'/label/unlimited'|translate}</span>{* 制限なし *}
+                        {else}
+                            <span style="font-size:14px;">{'/label/limited'|translate}</span>{* 制限あり *}
+                        {/if}
+                    {/if}
+                    </td>
+                </tr>
+{if $header.use_summary_flg}
+                <tr id="tr_summary">
+                    <th id="th_summary">{'/modules/blog/label/summary'|translate}</th>{* 概要 *}
+                    <td id="td_summary"><textarea name="summary" rows="3"  style="width:550px;">{$formData.summary|escape}</textarea>
+                    </td>
+                </tr>
+{/if}
+            </table>
+
+            {rcms_include file="common/editor_info.html"}
+
+            <div class="not_list_main" style="width:100%;background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+            <div class="wysiwyg_area">
+                    {$sw_html}
+            </div>
+            </div>
+{if $docmeta.is_primary}{* $docmeta.is_primary *}
+<!--
+            <table width="100%" id="table_podcast">
+
+                <tr id="tr_podcast">
+                    <td id="td_podcast1" valign="middle">{'/label/podcasting'|translate}{* ポッドキャスティング *}<br /><img src="/images/common/podcasticon_large.gif" /></td>
+                    <td id="td_podcast2"><input type="radio" name="podcast_type" value="0" {if $formData.podcast_type ne '1'}checked="checked"{/if} />{'/modules/blog/label/text_and_sound'|translate}{* 音声＋本文 *}
+                        <input type="radio" name="podcast_type" value="1" {if $formData.podcast_type eq '1'}checked="checked"{/if} />{'/modules/blog/label/sound_only'|translate}{* 音声のみ *}<br />
+                    {if $formData.podcast_url ne ''}
+                        <embed src="{$formData.podcast_url}" width="150" height="13" autostart="false" repeat="false" loop="false">{if $formData.podcast_length}[{$formData.podcast_length}]{/if}</embed><br />{/if}<label for="del_podcast"><input type="checkbox" name="del_podcast" id="del_podcast" />{'/modules/blog/label/delete_sound'|translate}</label> {* 音声を削除する *}
+                        <input type="file" name="podcast_mp3" />
+                    </td>
+                </tr>
+            </table>
+-->
+        {rcms_include file="management/open_date_box.html" id=$blog_item_id data=$formData}
+
+        <a name="relation_data"></a>
+        {rcms_include file="management/relation_edit.html"}
+
+    {editTagsBox docmeta=$docmeta}{/editTagsBox}
+
+    <div id="detail_setting" class="edit_close">
+        <h3>{'/label/other_settings'|translate}</h3>{* その他の設定 *}
+        <p><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+    </div>
+
+    <div id="detail_setting2" style="display:none;">
+        <div class="edit_open">
+            <h3><span class="link_button">{'/label/other_settings'|translate}</span></h3>{* その他の設定 *}
+            <p class="close"><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+        </div>
+        <div class="edit_contents">
+            <table width="100%" id="table_edit_contents">
+            {if $auther_ch_flg}
+                <tr id="tr_person_who_posted">
+                    <th id="th_person_who_posted">{'/label/person_who_posted'|translate}</th>{* 投稿者 *}
+                    <td id="td_person_who_posted">
+                        <select name="edit_member_id">
+                        {foreach from=$member_list item=item}
+                        <option value="{$item.member_id}" {if $item.member_id eq $formData.edit_member_id}selected{/if}>{$item.name}</option>
+                        {/foreach}
+                        </select>
+                    </td>
+                </tr>
+            {/if}
+                <tr id="tr_comment_flg">
+                    <th id="th_comment_flg">{'/modules/blog/label/comment_option'|translate}<span class="required">{'/label/required'|translate}</span></th>{* コメント受付 必須 *}
+                    <td id="td_comment_flg">{html_radios name=comment_flg options=$blogCommentOptions selected=$formData.comment_flg}</td>
+                </tr>
+                <tr id="tr_trackback_flg">
+                    <th id="th_trackback_flg">{'/modules/blog/label/receive_trackback'|translate}<span class="required">{'/label/required'|translate}</span></th>{* トラックバック受付 必須 *}
+                    <td id="td_trackback_flg">{html_radios name=trackback_flg options=$blogTrackbackOptions selected=$formData.trackback_flg}</td>
+                </tr>
+                <tr id="tr_ping_url">
+                    <th id="th_ping_url">{'/label/send_trackback'|translate}</th>{* トラックバック送信 *}
+                    <td id="td_ping_url"><textarea name="ping_url" cols="55" rows="2">{$input_ping_url}</textarea><br />
+                    ※{'/msg/multiple_ping'|translate}<br />{* 複数pingを送る場合は改行して一行に１URL書いてください。 *}
+                    </td>
+                </tr>
+                {if $module_installed.api_twitter}
+                <tr id="tr_twitter_id">
+                    <th id="th_twitter_id">{'/modules/twitter/label/send_twitter'|translate}{* Twiiterに送信する *}</th>
+                    <td id="td_twitter_id"><select name="twitter_id"><option value="">{'/label/not_send'|translate}</option>{html_options options=$arrTwitter_id selected=$formData.twitter_id}</select></td>
+                </tr>
+                {/if}
+                <tr id="tr_ping_server">
+                    <th id="th_ping_server">{'/label/ping_server'|translate}</th>{* ping送信サーバの選択 *}
+                    <td id="td_ping_server">
+                    {foreach item=ping from=$pingList name=ping_list}
+                            {if $blog_item_id == ""}
+                                {if $rauth->canInsert("/blog/item/[@blog_id=$blog_id]")}
+                                     <input type="checkbox" name="ping_server[{$smarty.foreach.ping_list.iteration-1}]" value="1" {if $ping.checked eq 1}checked="checked"{/if} />{$ping.name}({$ping.url})<br />
+                                {else}
+                                     <input type="checkbox" name="ping_server[{$smarty.foreach.ping_list.iteration-1}]" value="1" />{$ping.name}({$ping.url})<br />
+                                {/if}
+                            {else}
+                                 <input type="checkbox" name="ping_server[{$smarty.foreach.ping_list.iteration-1}]" value="1" />{$ping.name}({$ping.url})<br />
+                            {/if}
+                    {/foreach}
+                    </td>
+                </tr>
+                <tr id="tr_id_alias">
+                  <th id="th_id_alias">{'/label/id_alias'|translate}</th>
+                  <td id="td_id_alias"><input type="text" name="id_alias" id="id_alias" value="{$formData.id_alias|escape}" size="80" title="ファイル名を指定できます。" />.html<br>
+                  <input type="button" value="{'/modules/topics/labe/translate_file_nm'|translate}" onClick="if(j$('#subject').val().length>0){ldelim}j$.get('/direct/menu/getTranslate/?s='+encodeURI(j$('#subject').val())+'&t=en&m=ja', function(data){ldelim}j$('#id_alias').val(data.replace(/quot/g,'').replace(/[^\w_\-\s]/g,'').replace(/\s\s/g,'').replace(/\s/g,'-'));{rdelim});{rdelim}"></td>
+              </tr>
+            </table>
+        </div>
+    </div><!--//detail_setting2-->
+{/if}{* $docmeta.is_primary *}
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/blog/item/$blog_item_id", $docmeta.lang) docmeta=$docmeta link="/management/blog/blog_item_edit/blog_id=$blog_id&blog_item_id=$blog_item_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+    </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

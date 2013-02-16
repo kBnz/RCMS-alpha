@@ -1,0 +1,142 @@
+{module name="game_detail"}
+<h2 class="module_title">
+{$gameData.game_type} {$gameData.game_type2}
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+{'/label/schedule'|translate}{*予定*}
+{elseif $gameData.game_status eq '2'}
+{'/modules/game/label/process'|translate}{*途中経過*}
+{elseif $gameData.game_status eq '3'}
+{'/modules/game/label/game_result'|translate}{*試合結果*}
+{/if}
+</h2>
+<div class="module_contents">
+
+<div align="left" >
+
+<table class="scoreboard">
+  <tr>
+    <td colspan="{math equation="n+4" n=$gameData.score_detail_arr.first|@count}">{$gameData.ymd}&nbsp;{$gameData.game_type}&nbsp;
+    {if $gameData.place_id != "" && $gameData.place_id != -1}
+        <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+    {else}
+        {$gameData.place}
+    {/if}
+    </td>
+  </tr>
+  <tr>
+    <th>{'/label/team'|translate}{*チーム*}</th>
+{section name=score_bord loop=$gameData.score_detail_arr.first}
+    <th class="inning">{$smarty.section.score_bord.iteration}</th>
+{/section}
+    <th class="inning">R</th>
+    <th class="inning">H</th>
+    <th class="inning">E</th>
+  </tr>
+  <tr>
+    <td class="first_team">{$gameData.first_team_nm}</td>
+{section name=first_score loop=$gameData.score_detail_arr.first}
+    <td>{$gameData.score_detail_arr.first[first_score.index_next]}</td>
+{/section}
+    <th>{$gameData.score_detail_arr.first_Total}</td>
+    <td>{$gameData.score_detail_arr.first_hit}</td>
+    <td>{$gameData.score_detail_arr.first_error}</td>
+  </tr>
+  <tr>
+    <td class="second_team">{$gameData.second_team_nm}</td>
+{section name=second_score loop=$gameData.score_detail_arr.first}
+    <td>{$gameData.score_detail_arr.second[second_score.index_next]}</td>
+{/section}
+    <th>{$gameData.score_detail_arr.second_Total}</td>
+    <td>{$gameData.score_detail_arr.second_hit}</td>
+    <td>{$gameData.score_detail_arr.second_error}</td>
+  </tr>
+</table>
+
+<p align="left">
+{if $gameData.pitcher_detail_arr.win_pitcher}<strong>{'/modules/gamebaseball/label/winning_pitcher_short'|translate}{*勝*}：</strong>{$gameData.pitcher_detail_arr.win_pitcher}　{/if}
+{if $gameData.pitcher_detail_arr.save}<strong>S：</strong>　{$gameData.pitcher_detail_arr.save}　{/if}
+{if $gameData.pitcher_detail_arr.lose_pitcher}<strong>{'/modules/gamebaseball/label/losing_pitcher_short'|translate}{*負*}：</strong>{$gameData.pitcher_detail_arr.lose_pitcher}{/if}
+
+{if $gameData.extra_bases_arr.self_homerun || $gameData.extra_bases_arr.opp_homerun}
+<br/>
+【{'/label/home_run'|translate}{*本塁打*}】
+  {if $gameData.extra_bases_arr.self_homerun}
+    {$gameData.extra_bases_arr.self_homerun}({$smarty.const.SELF_TEAM_SNM}) &nbsp;
+  {/if}
+  {if $gameData.extra_bases_arr.opp_homerun}
+    {$gameData.extra_bases_arr.opp_homerun}({$gameData.team_nm})
+  {/if}
+{/if}
+
+{if $gameData.extra_bases_arr.self_three_base || $gameData.extra_bases_arr.opp_three_base}
+<br/>
+【{'/label/three_base_hit'|translate}{*三塁打*}】
+  {if $gameData.extra_bases_arr.self_three_base}
+    {$gameData.extra_bases_arr.self_three_base}({$smarty.const.SELF_TEAM_SNM}) &nbsp;
+  {/if}
+  {if $gameData.extra_bases_arr.opp_three_base}
+    {$gameData.extra_bases_arr.opp_three_base}({$gameData.team_nm})
+  {/if}
+{/if}
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+</p>
+
+
+</div>
+
+{section name=game_topics loop=$gameTopicsList}
+<h2 class="topics_subject">{$gameTopicsList[game_topics].subject}</h2>
+<p class="topics_ymd">{$gameTopicsList[game_topics].ymd_str}</p>
+<div class="topics_contents">{$gameTopicsList[game_topics].contents}</div>
+{/section}
+<div class="relation_link"><a href="/gamebaseball_list/" class="small_text">{'/label/game_list'|translate}{*試合情報一覧*}</a></div>
+
+</div>
+
+{/module}
+<style>
+{literal}
+.scoreboard {
+  border: 1px solid gray;
+  border-collapse: collapse;
+  border-width: 1px;
+  height:60px;
+  background-color: #FFFFFF;
+  border-spacing: 0px;
+  color:#000000;
+}
+
+.scoreboard th{
+  text-align: center;
+  border: 1px solid gray;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+
+.scoreboard td{
+  text-align: center;
+  border: 1px solid gray;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+
+th.inning{
+  width:20px;
+}
+
+td.first_team{
+  background-color:#EEFFEE;
+}
+
+td.second_team{
+  background-color:#FFEEEE;
+}
+
+{/literal}
+</style>

@@ -1,0 +1,300 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<script type="text/javascript">
+function go_preview(){
+    document.realestate_edit.action='/realestate_detail/id={/literal}{$realestate_id}{literal}';
+    document.realestate_edit.MODE.value='preview';
+}
+function confirmDelete(f){
+    if(confirm("削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+</script>
+{/literal}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+
+<ul>
+  {if $auth.realestate.insert}
+  <li class="add"><a href="/management/realestate/realestate_edit/"><span>不動産物件追加</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/realestate/realestate_history/realestate_id={$realestate_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/realestate_detail/id={$realestate_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/realestate/realestate_list/">{$module_nm}一覧</a>
+<a href="/management/realestate/realestate_edit/{if $realestate_id}&realestate_id={$realestate_id}{/if}">編集</a>
+{/pankuzu}
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>　<a href="/realestate_detail/id={$realestate_id}">総アクセス数:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  <form name="realestate_edit" id="realestate_edit" action="/management/realestate/realestate_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="realestate_id" value="{$realestate_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $realestate_id}UPDATE{else}INSERT{/if}" />
+    <input type="hidden" name="subflg" value="" />
+    <input type="hidden" name="file_type" value="{$data.file_type}" />
+    <input type="hidden" name="photo_file" value="{$data.photo_file}" />
+    <input type="hidden" name="photo_s_file" value="{$data.photo_s_file}" />
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+    <div id="photo_img">
+      <br>
+      {if $data.photo_url}<img src="{$data.photo_url}" /><br>
+      <a href="javascript:void(0);" onclick="display('photo_img_s');display('photo_img');return false;">サムネイルを確認</a>{/if}
+    </div>
+    <div id="photo_img_s" style="display:none;">
+      <br>
+      {if $data.photo_s_url}<img src="{$data.photo_s_url}" />{/if}<br>
+      <a href="javascript:void(0);" onclick="display('photo_img_s');display('photo_img');return false;">画像を確認</a>
+    </div>
+    <table width="100%" border="0">
+      <tr>
+        <th>並び順</th>
+        <td><input type="text" size="3" maxlength="3" name="order_no" value="{$data.order_no|escape}" />
+        <span class="hint">並び順は数字の大きい順に並びます。</span></td>
+      </tr>
+      <!--tr>
+        <th>画像</th>
+        <td><input type="file" name="realestate_pic" /><input name="del_photo" type="checkbox" value="1" />画像削除<br />※写真幅サイズは{$photo_width}pxを超える場合、{$photo_width}pxに縮小されます</td>
+      </tr-->
+      <tr>
+        <th width="100">物件名<span class="required">※</span></th>
+        <td><input type="text" name="realestate_nm" value="{$data.realestate_nm}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>物件概要</th>
+        <td><textarea name="summary" cols="50" rows="3">{$data.summary}</textarea></td>
+      </tr>
+      <tr>
+        <th>所在地</th>
+        <td><input type="text" name="address" value="{$data.address}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>交通</th>
+        <td><input type="text" name="access" value="{$data.access}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>地域地区</th>
+        <td><input type="text" name="tiiki_tiku" value="{$data.tiiki_tiku}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>総戸数</th>
+        <td><input type="text" name="total_number_of_houses" value="{$data.total_number_of_houses}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>販売戸数</th>
+        <td><input type="text" name="sales_number_of_houses" value="{$data.sales_number_of_houses}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>建築延床面積</th>
+        <td><input type="text" name="total_floor_area" value="{$data.total_floor_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>建築面積</th>
+        <td><input type="text" name="building_area" value="{$data.building_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>敷地面積</th>
+        <td><input type="text" name="site_area" value="{$data.site_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>構造及び階数</th>
+        <td><input type="text" name="structure" value="{$data.structure}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>専有面積</th>
+        <td><input type="text" name="possession_area" value="{$data.possession_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>バルコニー面積</th>
+        <td><input type="text" name="balcony_area" value="{$data.balcony_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>専用庭面積</th>
+        <td><input type="text" name="garden_area" value="{$data.garden_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>テラス面積</th>
+        <td><input type="text" name="terrace_area" value="{$data.terrace_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>ポーチ面積</th>
+        <td><input type="text" name="porch_area" value="{$data.porch_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>トランクルーム面積</th>
+        <td><input type="text" name="trunk_room_area" value="{$data.trunk_room_area}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>間取り</th>
+        <td><input type="text" name="room_arrangement" value="{$data.room_arrangement}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>価格</th>
+        <td><input type="text" name="price" value="{$data.price}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>最多価格帯</th>
+        <td><input type="text" name="popular_price" value="{$data.popular_price}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>駐車場</th>
+        <td><input type="text" name="parking" value="{$data.parking}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>サイクルポート</th>
+        <td><input type="text" name="cycle_port" value="{$data.cycle_port}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>駐輪場</th>
+        <td><input type="text" name="bicycle_parking_space" value="{$data.bicycle_parking_space}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>バイク置場</th>
+        <td><input type="text" name="bike_parking" value="{$data.bike_parking}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>管理費</th>
+        <td><input type="text" name="maintenance_fee" value="{$data.maintenance_fee}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>修繕積立金</th>
+        <td><input type="text" name="mending_fee" value="{$data.mending_fee}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>修繕積立基金</th>
+        <td><input type="text" name="mending_fund" value="{$data.mending_fund}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>管理準備金</th>
+        <td><input type="text" name="manage_reserve_fund" value="{$data.manage_reserve_fund}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>専用庭使用料</th>
+        <td><input type="text" name="garden_rental" value="{$data.garden_rental}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>ルーフバルコニー使用料</th>
+        <td><input type="text" name="roof_balcony_rental" value="{$data.roof_balcony_rental}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>管理形態</th>
+        <td><input type="text" name="management_form" value="{$data.management_form}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>建築確認番号</th>
+        <td><input type="text" name="confirmation_number" value="{$data.confirmation_number}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>設計・施工</th>
+        <td><input type="text" name="plan_construct" value="{$data.plan_construct}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>管理</th>
+        <td><input type="text" name="manager" value="{$data.manager}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>デザイン監修</th>
+        <td><input type="text" name="designer" value="{$data.designer}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>建物竣工</th>
+        <td><input type="text" name="completion" value="{$data.completion}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>入居時期</th>
+        <td><input type="text" name="available" value="{$data.available}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>分譲後の権利形態</th>
+        <td><input type="text" name="right_form_after" value="{$data.right_form_after}" size="80" /></td>
+      </tr>
+      <tr>
+        <th>売主</th>
+        <td><input type="text" name="seller" value="{$data.seller}" size="80" /></td>
+      </tr>
+
+      <tr>
+        <th>自由項目１<input type="text" name="ext_title_01" value="{$data.ext_title_01|escape}" /> </th>
+        <td><textarea name="ext_txt_01" rows="3" cols="50">{$data.ext_txt_01|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目２<input type="text" name="ext_title_02" value="{$data.ext_title_02|escape}" /> </th>
+        <td><textarea name="ext_txt_02" rows="3" cols="50">{$data.ext_txt_02|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目３<input type="text" name="ext_title_03" value="{$data.ext_title_03|escape}" /> </th>
+        <td><textarea name="ext_txt_03" rows="3" cols="50">{$data.ext_txt_03|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目４<input type="text" name="ext_title_04" value="{$data.ext_title_04|escape}" /> </th>
+        <td><textarea name="ext_txt_04" rows="3" cols="50">{$data.ext_txt_04|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目５<input type="text" name="ext_title_05" value="{$data.ext_title_05|escape}" /> </th>
+        <td><textarea name="ext_txt_05" rows="3" cols="50">{$data.ext_txt_05|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目６<input type="text" name="ext_title_06" value="{$data.ext_title_06|escape}" /> </th>
+        <td><textarea name="ext_txt_06" rows="3" cols="50">{$data.ext_txt_06|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目７<input type="text" name="ext_title_07" value="{$data.ext_title_07|escape}" /> </th>
+        <td><textarea name="ext_txt_07" rows="3" cols="50">{$data.ext_txt_07|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目８<input type="text" name="ext_title_08" value="{$data.ext_title_08|escape}" /> </th>
+        <td><textarea name="ext_txt_08" rows="3" cols="50">{$data.ext_txt_08|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目９<input type="text" name="ext_title_09" value="{$data.ext_title_09|escape}" /> </th>
+        <td><textarea name="ext_txt_09" rows="3" cols="50">{$data.ext_txt_09|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>自由項目１０<input type="text" name="ext_title_10" value="{$data.ext_title_10|escape}" /> </th>
+        <td><textarea name="ext_txt_10" rows="3" cols="50">{$data.ext_txt_10|escape}</textarea></td>
+      </tr>
+    </table>
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    {rcms_include file="management/open_date_box.html" id=$realestate_id data=$data}
+
+    {if $auth.realestate.update || $auth.realestate.delete}
+      {buttonbox}
+        {if $auth.realestate.update}
+          <button type="submit">更新する</button>
+          <button type="submit" onclick="go_preview()">プレビューを確認する</button>
+        {/if}
+        {if $realestate_id && $auth.realestate.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+
+      {rcms_include file="management/update_comment.html" comment=$data.update_comment}
+    {/if}
+
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,201 @@
+{module name="game_detail"}
+<h2 class="module_title">
+{$gameData.league_type} {$gameData.league2}
+{if $gameData.league_status eq '0' ||  $gameData.league_status eq '1'}
+試合予定
+{elseif $gameData.league_status eq '2'}
+途中経過
+{elseif $gameData.league_status eq '3'}
+試合結果
+{/if}
+</h2>
+<div class="module_contents">
+  <div class="score">
+    <div>
+      <table class="score_table">
+        <tr>
+          <th colspan="4" class="self_team_nm" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">{$gameData.team_nm}{$gameData.team_grade}</th>
+          <th colspan="4" class="opp_team_nm">{$gameData.opponent_nm}{$gameData.opponent_grade}</th>
+        </tr>
+        {if $gameData.league_status eq '3' && $gameData.win_default > 0}
+        <tr><td class="score28">{$arrNOGAME[$gameData.win_default]}</td></tr>
+        {else}
+        <tr>
+          <td width="30" rowspan="2">&nbsp;</td>
+          <td width="45" rowspan="2" class="score28">{$gameData.score_detail_arr.Self_Total}</td>
+          <td width="20">{$gameData.score_detail_arr.Self_Half1}</td>
+          <td rowspan="2" colspan="2">-</td>
+          <td width="20">{$gameData.score_detail_arr.Opp_Half1}</td>
+          <td width="45" rowspan="2" class="score28">{$gameData.score_detail_arr.Opp_Total}</td>
+          <td width="30" rowspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>{$gameData.score_detail_arr.Self_Half2}</td>
+          <td>{$gameData.score_detail_arr.Opp_Half2}</td>
+        </tr>
+        {/if}
+      </table>
+      <table class="score_table" title="T：トライ G：ゴール PG：ペナルティゴール DG：ドロップゴール">
+        <tr class="TGPD">
+          <th width="27">T</th>
+          <th width="27">G</th>
+          <th width="27">PG</th>
+          <th width="27">DG</th>
+          <th width="24">&nbsp;</th>
+          <th width="27">T</th>
+          <th width="27">G</th>
+          <th width="27">PG</th>
+          <th width="27">DG</th>
+        </tr>
+        <tr valign="middle">
+          <td height="2" colspan="9"></td>
+        </tr>
+        <tr>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_T1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_G1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_P1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_D1}</td>
+          <td class="TGPD2">前</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_T1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_G1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_P1}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_D1}</td>
+        </tr>
+        <tr>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_T2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_G2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_P2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_D2}</td>
+          <td class="TGPD2">後</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_T2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_G2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_P2}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_D2}</td>
+        </tr>
+        <tr>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_T3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_G3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_P3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Self_D3}</td>
+          <td class="TGPD2">計</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_T3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_G3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_P3}</td>
+          <td class="TGPD2">{$gameData.score_detail_arr.Opp_D3}</td>
+        </tr>
+      </table>
+      <p class="small_text">T：トライ G：ゴール PG：ペナルティゴール DG：ドロップゴール</p>
+    </div>
+
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">Kick off</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">レフリー</th>
+          <td>{$gameData.referee}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">タッチジャッジ</th>
+          <td>{$gameData.touch_judge1}<br>{$gameData.touch_judge2}<br>{$gameData.touch_judge3}</td>
+        </tr>
+      </table>
+</div>
+<div class="clr"></div>
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+{/if}
+
+
+{if count($gameMembers.self)}
+  <span class="self_team_nm" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">　{$gameData.team_nm}{$gameData.team_grade}　</span>
+  <table class="self_member_table" cellspacing="0" style="border:1px solid {$smarty.const.TEAMCOLOR_rugby};">
+    <tr>
+      <th width="50" class="self_member_table" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">背番号</th>
+      <th width="90" class="self_member_table" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">ポジション</th>
+      <th width="140" class="self_member_table" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">名前</th>
+      <th width="160" class="self_member_table" style="background-color:{$smarty.const.TEAMCOLOR_leaguerugby};">交代</th>
+    </tr>
+  {section name=self_member loop=$gameMembers.self}
+    {if $gameMembers.self[self_member].member_order}
+    <tr>
+      <td>{$gameMembers.self[self_member].member_order}</td>
+      <td>{$gameMembers.self[self_member].position}</td>
+      <td>{if $gameMembers.self[self_member].member_id ne ''}
+          <a href="/member_detail/id={$gameMembers.self[self_member].member_id}">
+          {/if}
+          {$gameMembers.self[self_member].disp_name}({$gameMembers.self[self_member].member_grade})
+          {if $gameMembers.self[self_member].member_id ne ''}</a>{/if}</td>
+      <td>{$gameMembers.self[self_member].change_info}</td>
+    </tr>
+    {/if}
+  {/section}
+  </table>
+{/if}
+
+{if count($gameMembers.opp)}
+  <span class="opp_team_nm">　{$gameData.opponent_nm}　</span>
+  <table class="opp_member_table" cellspacing="0">
+    <tr>
+      <th width="50" class="opp_member_table">背番号</th>
+      <th width="90" class="opp_member_table">ポジション</th>
+      <th width="140" class="opp_member_table">名前</th>
+      <th class="opp_member_table">交代</th>
+    </tr>
+  {section name=opp_member loop=$gameMembers.opp}
+    {if $gameMembers.opp[opp_member].member_order}
+    <tr>
+      <td>{$gameMembers.opp[opp_member].member_order}</td>
+      <td>{$gameMembers.opp[opp_member].position}</td>
+      <td>{if $gameMembers.opp[opp_member].member_id ne ''}
+          <a href="/member_detail/id={$gameMembers.opp[opp_member].member_id}">
+          {/if}
+          {$gameMembers.opp[opp_member].member_name}({$gameMembers.opp[opp_member].member_grade})
+          {if $gameMembers.opp[opp_member].member_id ne ''}</a>{/if}</td>
+      <td>{$gameMembers.opp[opp_member].change_info}</td>
+    </tr>
+    {/if}
+  {/section}
+  </table>
+{/if}
+
+{*
+<div class="pdf_area">
+  <ul>
+<li><img src="/images/common/pdficon_small.gif"><a href="/direct/output/pdf/update={$gameData.update_ymdhi|substr:0:19}&url=/direct.php%3fmt%3dleaguerugby%26ct%3dpdf%26id%3d{$gameData.league_id}" target="_blank">試合結果をPDFで出力</a></li>
+  </ul>
+  <div class="acrobat_link">
+    <p class="banner"><a href="http://www.adobe.co.jp/products/acrobat/readermain.html" target="_blank"><img alt="get_adobe_reader" src="/images/common/get_adobe_reader.gif" height="31" width="88"></a></p>
+
+    <p>※PDFファイルをご覧いただくには、Adobe Acrobat Reader が必要です。
+<a href="http://www.adobe.co.jp/products/acrobat/readermain.html" target="_blank">Adobe Acrobat Reader のダウンロード（無償）はこちら</a>から<br>
+※PDFファイルのサイズが大きい場合、表示するまで時間がかかることがございます。</p>
+  </div>
+</div>
+*}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2 class="topics_subject">{$gameTopicsList[game_topics].subject}</h2>
+<p class="topics_ymd">{$gameTopicsList[game_topics].ymd_str}</p>
+<div class="topics_contents">{$gameTopicsList[game_topics].contents}</div>
+{/section}
+<div class="relation_link"><a href="/leaguerugby_list/" class="small_text">試合一覧へ</a></div>
+</div>
+{/module}

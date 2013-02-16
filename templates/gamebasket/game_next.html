@@ -1,0 +1,122 @@
+{if $gameList|@count > 0}
+{module name="game_next"}
+<h2 class="module_title"><span>試合スケジュール</span></h2>
+<div class="module_contents">
+
+{foreach from=$gameList item=gameData}
+<table>
+  <tr>
+    <td valign="top">
+      <table width="100%" class="score_table" border="1">
+        <tr>
+          <td colspan="3" width="50%" align="center" class="team_color">{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}</td>
+          <td colspan="3" width="50%" align="center" class="opp_color"><strong>{$gameData.team_nm}{$gameData.opponent_grade}</strong></td>
+        </tr>
+        <tr>
+          <td width="20%" class="score_total" rowspan="4">{$gameData.score_detail_arr.Self_Total}</td>
+          <td width="20%" class="score">{$gameData.score_detail_arr.Self_1Q}</td>
+          <td width="20%" colspan="2" class="score_label">1st</td>
+          <td width="20%" class="score">{$gameData.score_detail_arr.Opp_1Q}</td>
+          <td width="20%" class="score_total" rowspan="4">{$gameData.score_detail_arr.Opp_Total}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_2Q}</td>
+          <td colspan="2" class="score_label">2nd</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_2Q}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_3Q}</td>
+          <td colspan="2" class="score_label">3rd</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_3Q}</td>
+        </tr>
+        <tr>
+          <td class="score">{$gameData.score_detail_arr.Self_4Q}</td>
+          <td colspan="2" class="score_label">4th</td>
+          <td class="score">{$gameData.score_detail_arr.Opp_4Q}</td>
+        </tr>
+      </table>
+      <table width="280"><tr><td>&nbsp;</td></tr></table>
+    </td>
+    <td valign="top">
+      <table width="200" class="gameinfo_table">
+        <tr>
+          <th class="gameinfo_table">日時</th>
+          <td>{$gameData.ymd_str}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">Kick off</th>
+          <td>{$gameData.ko_time}</td>
+        </tr>
+        <tr>
+          <th class="gameinfo_table">試合会場</th>
+          <td>          	
+            {if $gameData.place_id != "" && $gameData.place_id != -1}
+              <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+            {else}
+              {$gameData.place}
+            {/if}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+{/foreach}
+<div class="relation_link"><a href="/gamebasket_list/" class="small_text">試合一覧へ</a></div>
+
+</div>
+{/module}
+
+<style>
+{literal}
+
+table.score_table {
+  width: 90% ;
+  margin-left: 0 ;
+  border: 1px solid gray;
+  background-color: #ffffff;
+  border-collapse:collapse;
+  text-align:center;
+}
+
+table.score_table .score {
+  text-align: center ;
+}
+
+table.score_table .score_total {
+  font-size: 2em ;
+  text-align: center ;
+  font-weight: bold ;
+}
+
+table.score_table .score_label {
+  text-align: center ;
+  white-space: nowrap ;
+}
+
+table.score_table2_header {
+  border: 1px solid gray ;
+  margin-top: 1em;
+}
+
+table.score_table2 {
+  border: 1px solid gray ;
+}
+table.opp_member_table .score_label {
+  text-align: center ;
+}
+table.opp_member_table .score {
+  text-align: center ;
+}
+
+{/literal}
+</style>

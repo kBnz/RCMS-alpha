@@ -1,0 +1,24 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">カテゴリ設定</h2>
+{if $auth.calendar.insert}
+<a href="/management/{$mt}/calendar_category_edit/">>>カテゴリ追加</a><br />
+{/if}
+<a href="/management/{$mt}/{$mt}_list/">カレンダー一覧</a><br />
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+
+{pager info=$pageInfo}
+{foreach from=$calendar_category_list item=row}
+        <a href="/management/calendar/calendar_category_edit/event_category_id={$row.event_category_id}">{$row.category_nm|escape}</a>
+        {$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}<br /><br />
+  {/foreach}
+{pager info=$pageInfo}
+
+{rcms_include file="management/mobile/footer.html"}

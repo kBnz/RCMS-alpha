@@ -1,0 +1,75 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2 class="accesscount">{'/modules/accesscount/label/searching_robot'|translate}</h2>{* 検索ロボット *}
+</div>
+
+{* 【ぱんくず】サイト基本設定>> アクセス統計 >> 検索ロボット*}
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/accesscount/accesscount_list/">{'/modules/accesscount'|translate}</a>
+{'/modules/accesscount/label/searching_robot'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+  <table width="100%">
+    <tr>
+      <th>{'/modules/accesscount/label/searching_robot'|translate}</th>{* 検索ロボット *}
+      <th>{'/modules/accesscount/label/access_number'|translate}</th>{* アクセス数 *}
+      <th>{'/modules/accesscount/label/recent_visit_time'|translate}</th>{* 最近の訪問時間 *}
+    </tr>
+{* google *}
+    <tr>
+      <td><img src="/images/modules/accesscount/google.jpg" border="0">Google</td>
+      <td>{$robList.googlebot.count}</td>
+      <td>{if $robList.googlebot.last_access}{$robList.googlebot.last_access|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{else}-{/if}</td>
+    </tr>
+{* yahoo *}
+    <tr>
+      <td><img src="/images/modules/accesscount/yahoo.jpg" border="0">Yahoo!</td>
+      <td>{$robList.yahoobot.count}</td>
+      <td>{if $robList.yahoobot.last_access}{$robList.yahoobot.last_access|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{else}-{/if}</td>
+    </tr>
+{* msn *}
+    <tr>
+      <td><img src="/images/modules/accesscount/msn.jpg" border="0">msn</td>
+      <td>{$robList.msnbot.count}</td>
+      <td>{if $robList.msnbot.last_access}{$robList.msnbot.last_access|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{else}-{/if}</td>
+    </tr>
+{* others *}
+{foreach from=$robList key=key item=item}
+{if $key ne 'googlebot' && $key ne 'yahoobot' && $key ne 'msnbot'}
+    <tr>
+      <td>{$key}</td>
+      <td>{$item.count}</td>
+      <td>{if $item.last_access}{$item.last_access|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{else}-{/if}</td>
+    </tr>
+{/if}
+{/foreach}
+  </table>
+
+<div style="margin-top:20px">
+  <p>［{'/modules/accesscount/msg/pc_ver_reg'|translate}］</p>{* ［PC版　検索エンジンへの登録］ *}
+  <p><a href="http://www.google.co.jp/addurl/" target="_blank">・{'/modules/accesscount/msg/google_reg'|translate}</a>{* Googleへ登録 *}
+  <a href="http://submit.search.yahoo.co.jp/add/request" target="_blank">・{'/modules/accesscount/msg/yahoo_reg'|translate}</a>{* Yahoo!へ登録 *}
+  <a href="http://www.bing.com/docs/submit.aspx" target="_blank">・{'/modules/accesscount/msg/msn_reg'|translate}</a>{* Bingへ登録 *}
+  <a href="http://dir.yahoo.co.jp/" target="_blank">・{'/modules/accesscount/msg/yahoo_category_reg'|translate}</a><br/>{* Yahoo!カテゴリへ登録 *}
+  <span class="hint">※{'/modules/accesscount/msg/for_registration_text'|translate}</span>
+  {* ※Yahoo!カテゴリの登録は登録したいカテゴリに行って、そのページの横にある登録用のリンクから行います。 *}
+  </p>
+  <p>［{'/modules/accesscount/msg/mobile_ver_reg'|translate}］</p>{* ［モバイル版　検索エンジンへの登録］ *}
+  <p><a href="http://services.google.com/wireless" target="_blank">・{'/modules/accesscount/msg/google_reg'|translate}</a>{* Googleへ登録 *}
+  <a href="http://search.yahoo.com/info/submit.html" target="_blank">・{'/modules/accesscount/msg/yahoo_reg'|translate}</a>{* Yahoo!へ登録 *}
+  <a href="http://dir.yahoo.co.jp/" target="_blank">・{'/modules/accesscount/msg/yahoo_category_reg'|translate}</a><br/>{* Yahoo!カテゴリへ登録 *}
+  <span class="hint">※{'/modules/accesscount/msg/for_registration_text'|translate}</span>
+  {* ※Yahoo!カテゴリの登録は登録したいカテゴリに行って、そのページの横にある登録用のリンクから行います。 *}
+  </p>
+</div>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,310 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<style type="text/css">
+{literal}
+#divFileProgressContainer .progressWrapper {
+    width: 357px;
+    overflow: hidden;
+}
+
+#divFileProgressContainer .progressContainer {
+    margin: 5px;
+    padding: 4px;
+    border: solid 1px #E8E8E8;
+    background-color: #F7F7F7;
+    overflow: hidden;
+}
+/* Message */
+#divFileProgressContainer .message {
+    margin: 1em 0;
+    padding: 10px 20px;
+    border: solid 1px #FFDD99;
+    background-color: #FFFFCC;
+    overflow: hidden;
+}
+/* Error */
+#divFileProgressContainer .red {
+    border: solid 1px #B50000;
+    background-color: #FFEBEB;
+}
+
+/* Current */
+#divFileProgressContainer .green {
+    border: solid 1px #DDF0DD;
+    background-color: #EBFFEB;
+}
+
+/* Complete */
+#divFileProgressContainer .blue {
+    border: solid 1px #CEE2F2;
+    background-color: #F0F5FF;
+}
+
+#divFileProgressContainer .progressName {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #555;
+    width: 323px;
+    height: 14px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#divFileProgressContainer .progressBarInProgress,
+#divFileProgressContainer .progressBarComplete,
+#divFileProgressContainer .progressBarError {
+    font-size: 0;
+    width: 0%;
+    height: 2px;
+    background-color: blue;
+    margin-top: 2px;
+}
+
+#divFileProgressContainer .progressBarComplete {
+    width: 100%;
+    background-color: green;
+    visibility: hidden;
+}
+
+#divFileProgressContainer .progressBarError {
+    width: 100%;
+    background-color: red;
+    visibility: hidden;
+}
+
+#divFileProgressContainer .progressBarStatus {
+    margin-top: 2px;
+    width: 337px;
+    font-size: 7pt;
+    font-family: Arial;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#divFileProgressContainer a.progressCancel {
+    font-size: 0;
+    display: block;
+    height: 14px;
+    width: 14px;
+    background-image: url(/js/swfupload_vr52/cancelbutton.gif);
+    background-repeat: no-repeat;
+    background-position: -14px 0px;
+    float: right;
+}
+
+#divFileProgressContainer a.progressCancel:hover {
+    background-position: 0px 0px;
+}
+
+{/literal}
+</style>
+<script type="text/javascript" src="/js/swfupload_vr52/swfupload.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/js/swfupload_vr52/handlers.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/js/swfobject.js" charset="UTF-8"></script>
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+<!--
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+
+//FLASHのバージョンを判別
+var so_chk = new SWFObject("/js/swfupload_vr52/swfupload.swf", "check", "200", "200", "10", "#FFFFFF");
+
+if(so_chk.installedVer.major < 10){
+Event.observe(window, 'load', function() {
+        $('swfu_container').style.display="none";
+        $('flash_10_instll').style.display="block";
+        alert("{/literal}{'/modules/photo/msg/please_flash_10_install'|translate}{literal}");
+});
+
+}else{
+
+        var swfu;
+Event.observe(window, 'load', function() {
+            swfu = new SWFUpload({
+                // Backend Settings
+                upload_url: "/js/swfupload_vr52/upload.php",    // Relative to the SWF file or absolute
+                post_params: {"RCMSSESS": "{/literal}{$smarty.const.SID|substr:9}{literal}"},
+
+                // File Upload Settings
+                file_size_limit : "2 MB",   // 2MB
+                file_types : "*.jpg",
+                file_types_description : "JPG Images",
+                file_upload_limit : "0",
+
+                // Event Handler Settings - these functions as defined in Handlers.js
+                //  The handlers are not part of SWFUpload but are part of my website and control how
+                //  my website reacts to the SWFUpload events.
+                file_queue_error_handler : fileQueueError,
+                file_dialog_complete_handler : fileDialogComplete,
+                upload_progress_handler : uploadProgress,
+                upload_error_handler : uploadError,
+                upload_success_handler : uploadSuccess,
+                upload_complete_handler : uploadComplete,
+
+                // Button Settings
+                button_image_url : "/js/swfupload_vr52/SmallSpyGlassWithTransperancy_17x18.png",    // Relative to the SWF file
+                button_placeholder_id : "spanButtonPlaceholder",
+                button_width: 180,
+                button_height: 18,
+                button_text : '<span class="button">{/literal}{'/msg/select_images'|translate}{literal} <span class="buttonSmall">(2 MB Max)</span></span>',//画像を選択してください
+                button_text_style : '.button { font-family: Helvetica, Arial, sans-serif; font-size: 12pt; } .buttonSmall { font-size: 10pt; }',
+                button_text_top_padding: 0,
+                button_text_left_padding: 18,
+                button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+                button_cursor: SWFUpload.CURSOR.HAND,
+                
+                // Flash Settings
+                flash_url : "/js/swfupload_vr52/swfupload.swf",
+
+                custom_settings : {
+                    upload_target : "divFileProgressContainer"
+                },
+                
+                // Debug Settings
+                debug: false
+            });
+        });
+}
+
+//-->
+{/literal}
+</script>
+
+<div id="main_contents">
+
+<div class="list_right_bt">
+<h2>{'/modules/photo/label/upload_images'|translate}{*一括アップロード*}</h2>
+<ul>
+  {if $auth.photo.insert}
+  <li class="add"><a href="/management/photo/photo_edit/"><span>{'/label/add_image_btn'|translate}{*画像追加*}</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/photo/photo_list/">{'/modules/photo/label/photo_list'|translate}</a>
+{'/modules/photo/label/upload_images'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >>  画像一覧 >> 一括アップロード *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+<!-- デバッグ用 -->
+<!--
+<textarea id="SWFUpload_Console" cols="50" rows="10"></textarea>
+-->
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <form name="photo_upload" id="photo_upload" action="/management/photo/photo_upload/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <table style="width:100%">
+      <tr>
+        <th>{'/label/season'|translate}{*シーズン*}<span class="required">※</span></th>
+        <td>{rcms_seasonOptions name="season" selected=$data.season}</td>
+      </tr>
+      <tr>
+        <th>{'/label/filming_date'|translate}{*撮影日付*}<span class="required">※</span></th>
+        <td>
+          <span style="font-size:14px;">{if $data.manual_ymd_flg}{$data.ymd|replace:"-":"/"}{/if}</span>
+          <div id="manual_ymd" {if $data.manual_ymd_flg eq ''}style="display:none;"{/if}>
+            <input type="text" name="ymd" id="ymd" value="{$formData.ymd|escape}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+            <span class="hint">(例 2006/05/01)</span>
+          </div>
+          <input type="checkbox" name="manual_ymd_flg" value="1" {if $data.manual_ymd_flg}checked="checked"{/if} onclick="display('manual_ymd');" />
+          <label for="manual_ymd_flg">{'/label/set_by_hand'|translate}{*手動で設定*}</label>
+          <p class="hint">{'/msg/filming_date_is_set_automatically'|translate}{*撮影日付は自動取得します。変更したい場合はチェックしてください。*}</p>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+        <td>
+          <select name="category_id">{html_options options=$arrCategoryList selected=$data.category_id}</select>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/copy_right'|translate}{*コピーライト*}</th>
+        <td>
+          <p>{'/label/copy_right_text'|translate}{*表記*}:<input type="text" name="copyright" value="{$data.copyright}" size="60" id="copyright" /></p>
+          <p>
+            {'/label/font_size'|translate}{*大きさ*}:<input type="text" name="font_size" value="{$data.font_size}" size="4" id="font_size" >px
+            {'/label/position'|translate}{*位置*}:<select name="position" id="position" >{html_options options=$position_option selected=$data.position}</select>
+            {'/label/font'|translate}{*フォント*}:<select name="font" id="font" >{html_options options=$font_option selected=$data.font}</select>
+          </p>
+          <p class="hint">{'/msg/copy_right_will_be_put_on'|translate}{*copyrightは画像アップロードを行う時のみ埋め込み可能です。*}</p>
+        </td>
+      </tr>
+    </table>
+
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    <div class="kiji_hensyu_center">
+
+  {if $auth.photo.insert}
+      <div id="swfu_container" style="margin: 0px 10px;">
+        <div id="divFileProgressContainer" style="height: 75px;"></div>
+        <div id="thumbnails_container">
+          <table>
+          <tbody id="thumbnails">
+          {if $items|@count > 0}
+              {foreach from=$items  item=value key=image_id}
+              <tr><td><img src="/js/swfupload_vr52/thumbnail.php?id={$image_id}" style="margin: 4px;" />
+                  </td>
+                  <td><ul>
+                    <li><input type="checkbox" name="registFlg[{$image_id}]" value="on" {if $items[$image_id].registFlg}checked{/if}>{'/label/register_btn'|translate}{*登録する*}</li>
+                    <li>{'/label/title'|translate}{*タイトル*}:<input type="text" name="title[{$image_id}]" value="{$items[$image_id].title}" size="40"></li>
+                  </ul></td>
+              </tr>
+              {/foreach}
+          {/if}
+          </tbody>
+          </table>
+        </div>
+        <div style="display: inline; border: solid 1px #7FAAFF; background-color: #C5D9FF; padding: 2px;">
+            <span id="spanButtonPlaceholder">{'/label/readying'|translate}{*準備中...*}</span>
+        </div>
+      </div>
+      <div id="flash_10_instll" style="margin: 0px 10px;display: none;">
+         {'/modules/photo/msg/please_flash_10_install'|translate}{* このページではFLASH Player10が必要です。FLASH Player10をインストールしてください。。 *}
+          <p><a href="{'/label/url_of_adove_flash_player_download'|translate}{* AdobeへのURL *}" target="_blank"><img alt="get_adobe_reader" src="https://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" height="31" width="88"></a></p>
+          <p>
+          <a href="{'/label/url_of_adove_flash_player_download'|translate}{* AdobeへのURL *}" target="_blank">{'/label/download_adobe_flash_player'|translate}{* AdobeR Flash Player のダウンロード *}</a>
+         </p>
+      </div>
+  {/if}
+
+      <div class="clear"></div>
+
+    </div><!--//kiji_henshu_center-->
+    <div class="list_main">
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" data=$data}
+
+    {buttonbox}
+      {if $auth.photo.insert}
+        <button type="submit">{'/label/register_btn'|translate}{*登録する*}</button>
+      {/if}
+    {/buttonbox}
+
+    </div>
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

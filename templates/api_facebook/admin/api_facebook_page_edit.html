@@ -1,0 +1,177 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}ページ追加</h2>
+
+</div><!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_facebook/api_facebook_page_list/">{$module_nm}ページ一覧</a>
+{$module_nm}ページ詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+    <li><a href="/management/api_facebook/api_facebook_page_list/" class="active"> ウォール管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_app_list/"> アプリ管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_tab_edit/"> ページタブ管理</a></li>
+</ul>
+
+  <div class="list_main">
+
+    <form id="agForm" action="/management/api_facebook/api_facebook_page_edit/" method="post">
+        <input type="hidden" name="id" value="{$facebook.facebook_page_id}" />
+        <input type="hidden" name="MODE" value="UPDATE"  />
+        <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+
+{if $facebook.facebook_page_id}
+
+  {buttonbox}
+    <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+    <h3>ウォールの詳細</h3>
+    <table>
+        <tr>
+            <th>{if $facebook.is_group == 1}facebookグループ{else}facebookページ{/if}</th>
+            <td><img src="https://graph.facebook.com/{$facebook.page_id}/picture" /></td>
+            <td>{$facebook.page_name}</td>
+            
+            
+            <td>
+            {if $facebook.is_group == 1}
+                公開レベル:{$data.privacy}
+            {else}
+                {if $data.link}<a href="{$data.link}" target="_blank">{$data.link}</a>{else}-非公開-{/if}
+            {/if}
+            </td>
+        </tr>
+        <tr>
+            <th>管理者</th>
+            <td><img src="https://graph.facebook.com/{$facebook.user_id}/picture" /></td>
+            <td>{$facebook.user_name}</td>
+            <td><a href="http://www.facebook.com/?id={$facebook.user_id}" target="_blank">http://www.facebook.com/?id={$facebook.user_id}</a></td>
+        </tr>
+        {if $facebook.is_group != 1}
+        <tr>
+            <th>Like数</th>
+            <td colspan="3">{if $data.likes}{$data.likes}人{else}非公開ページのため取得できません{/if}</td>
+        </tr>
+        {/if}
+    </table>
+    
+    <h3>投稿設定</h3>
+    <table>
+        <tr>
+            <th>URLの添付</th>
+            <td>
+                <input type="checkbox" name="attach_link" value="1" {if $facebook.attach_link=='1'}checked{/if}>有効<br>
+                <span class="hint">有効にすると、投稿するメッセージに更新記事のURLが自動添付されます。</span>
+            </td>
+        </tr>
+    </table>
+    
+{* 「いいね」の閲覧制限は保留 2011/7/6 堀口 *}
+{*
+    <h3>グループ設定</h3>
+    <span class="hint">「いいね」をしているユーザを所属させるグループを選択します。</span>
+    <table>
+        <tr>
+            <th>「いいね!」済みユーザ</th>
+        </tr>
+        <tr>
+            <td>{html_checkboxes name='liked_groups' options=$all_group_list selected=$customer_id selected=$data.liked_groups separator='<br />'}</td>
+        </tr>
+    </table>
+*}
+
+    {if $auth[$mt].update}
+        {buttonbox}
+        <button type="button" onclick="doSubmit(this.form);">{'/label/update_btn'|translate}</button>
+        {/buttonbox}
+    {/if}
+
+    </form>
+
+{else}
+
+    {if $page_list && $user_info}
+    
+        <form action="/management/api_facebook/api_facebook_page_edit/" method="post">
+            <input type="hidden" name="MODE" value="INSERT"  />
+            <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+            <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+            <input type="hidden" name="user_id" value="{$user_info.user_id}" />
+            <input type="hidden" name="user_name" value="{$user_info.user_name}" />
+            
+            <p>追加したいfacebookページを選択してください。</p>
+            <br />
+            <select name="page_key">{html_options options=$page_list}</select>
+            {buttonbox}
+            <button type="button" onclick="doSubmit(this.form);">{'/label/add_btn'|translate}</button>
+            {/buttonbox}
+        </form>
+    
+    {else}
+    <p>あなたの管理するfacebookページの一覧を取得します。</p>
+
+    {*
+    <a href="/direct/api_facebook/fb_get_code/?callbackUrl={$smarty.const.ROOT_SSL_URL}/management/api_facebook/api_facebook_page_edit/">TEST</a>
+    *}
+    <button id="add_to_facebook_page">facebookページを追加</button>
+    <span class="hint">
+        別画面でfacebookページを管理する権限の要求ウィンドウが開きます。(初回のみ)
+    </span>
+
+    {/if}
+
+{/if}
+
+    
+
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm("{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}")) {
+      f.MODE.value='DELETE';
+      f.submit();
+  }
+}
+
+function doSubmit(f) {
+    f.submit();
+}
+
+j$(document).ready(function(){
+
+    //「アプリを新規作成」ボタンクリック時のシーケンス
+    j$("#add_to_facebook_page").click(openWindow);
+});
+
+function openWindow(){
+    //window.open("{/literal}{$direct_url}{literal}/direct/rcms/facebook_auth/?key={/literal}{$key}{literal}", "RCMS","width=500,height=500,resizable=yes,scrollbars=yes");
+    window.open("{/literal}{$direct_url}{literal}/direct/api_facebook/fb_get_code/?callbackUrl={/literal}{$smarty.const.ROOT_SSL_URL}/management/api_facebook/api_facebook_page_edit/{literal}", "","width=500,height=500,resizable=yes,scrollbars=yes");
+return false;
+}
+
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}
+

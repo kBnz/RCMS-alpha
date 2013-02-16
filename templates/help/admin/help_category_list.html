@@ -1,0 +1,103 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<style type="text/css">
+{literal}
+td a.child {
+  margin-left: 10px;
+  padding-left: 5px;
+  border-left: 1px dotted #000;
+}
+{/literal}
+</style>
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'delete';
+        f.submit();
+    }
+}
+
+function switchVal(id, MODE) {
+   document.help_category_list.update_id.value = id;
+   document.help_category_list.MODE.value = MODE;
+   document.help_category_list.submit();
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+  <h2>{'/label/categories_list'|translate}</h2>{*カテゴリ設定*}
+  {if $rauth->canInsert('/help/category')}
+  <ul>
+    <li class="add"><a href="/management/{$mt}/help_category_edit/"><span>{'/label/create_new_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+  </ul>
+  {/if}
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/help_item_list/">{'/modules/help'|translate}</a>
+{'/label/categories_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> Q&A >> カテゴリ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="help/admin/minitabs.html" page_type=$ct auth=$auth }
+<div class="list_main">
+
+{rcms_include file="common/admin/shonin_list.html"}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="help_category_list" method="POST" action="/management/{$mt}/help_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="update_id" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0" class="help_category_list">
+    <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'help_category_id[]')" /></th>
+      <th width="30">{'/label/publish'|translate}</th>{*公開*}
+      <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+      <th>{'/label/last_updated_time'|translate}</th>{*最終更新日時*}
+    </tr>
+    {foreach item=help_data from=$help_category_list}
+    {assign var=_id value=$help_data.help_category_id}
+    <tr>
+      <td><input type="checkbox" name="help_category_id[]" value="{$help_data.help_category_id}" {if !$rauth->canUpdate("/help/category/$_id") && !$rauth->canDelete("/help/category/$_id")}disabled="disabled" {/if}/></td>
+      <td>
+        {if $help_data.open_flg eq $smarty.const.HELP_OPEN}
+          {if $rauth->canUpdate("/help/category/$_id")}
+          <a href="javascript:;" onclick="switchVal({$help_data.help_category_id}, 'private'); return false;"><img src="/images/management/check.gif" border="0"></a>
+          {else}
+          <img src="/images/management/check.gif" border="0">
+          {/if}
+        {elseif $help_data.open_flg eq $smarty.const.HELP_CLOSE}
+          {if $rauth->canUpdate("/help/category/$_id")}
+          <a href="javascript:;" onclick="switchVal({$help_data.help_category_id}, 'public'); return false;"><img src="/images/management/batu.gif" border="0"></a>
+          {else}
+          <img src="/images/management/batu.gif" border="0">
+          {/if}
+        {/if}
+      </td>
+      <td><a{if $help_data.parent_id != ''} class="child"{/if} href="/management/{$mt}/help_category_edit/help_category_id={$help_data.help_category_id}&pageID={$currentPageID}">{$help_data.category_name}</a>{rcms_include file="common/admin/language_status.html" meta=$docmetas[$_id] link="/management/$mt/help_category_edit/help_category_id=$_id"}</td>
+      <td>{$help_data.update_ymdhi|pg_dateformat}</td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+    {buttonbox}
+        <p>{'/modules/irj_jobs/label/withselected'|translate}</p>
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

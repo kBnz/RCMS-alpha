@@ -1,0 +1,64 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>{$module_nm}facebookページ一覧</h2>
+<ul>
+{if $rauth->canInsert("/api_facebook/item/")}
+    <li class="add"><a href="/management/api_facebook/api_facebook_page_edit/"><span>ページを追加</span></a></li>{* facebookアプリを新規追加 *}
+{/if}
+</ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+{$module_nm}ページ一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+    <li><a href="/management/api_facebook/api_facebook_page_list/" class="active"> ウォール管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_app_list/"> アプリ管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_tab_edit/"> ページタブ管理</a></li>
+</ul>
+
+
+  <div class="list_main">
+
+    <p>
+    RCMSから投稿可能な{$module_nm}ページの一覧です。
+    </p>
+
+    {*pager info=$pageInfo*}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th colspan="2">ページ、グループ名</th>
+          <th>Like数</th>
+          <th>種類</th>
+          <th>管理者</th>
+          <th>作成者</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$list item=item}
+        <tr>
+          <td><a href="/management/api_facebook/api_facebook_page_edit/id={$item.facebook_page_id}">編集</a></td>
+          <td>{if $item.link}<a href="{$item.link}" target="_blank">{/if}<img src="https://graph.facebook.com/{$item.page_id}/picture" width="20px" height="20px" hspace="20px" />{$item.page_name}{if $item.link}</a>{else}{/if}</td>
+          <td>{if $item.is_group==1}{else}{$item.likes}{/if}</td>
+          <td>{if $item.is_group==1}Group{else}Page{/if}</td>
+          <td><a href="http://www.facebook.com/?id={$item.user_id}" target="_blank">{$item.user_name}</a></td>
+          <td>{$item.admin_nm}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

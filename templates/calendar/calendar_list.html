@@ -1,0 +1,113 @@
+{module name="calendar_list"}
+<h2 class="module_title"><span>{'/modules/calendar/label/schedule_of_yyyymm'|translate:$this_year:$this_month}{* YYYY年MM月の予定 *}</span></h2>
+<div class="module_contents">
+
+{* 年の移動ナビ *}
+<ul class="naviYear">
+  <li class="pre"><a href="/{$page_sysnm}/?year={$this_year-1}&month=12"><span class="arrow">&lt;&lt;</span>{$this_year-1}</a></li>
+  <li class="next"><a href="/{$page_sysnm}/?year={$this_year+1}&month=1">{$this_year+1}<span class="arrow">&gt;&gt;</span></a></li>
+</ul>
+<div style="clear:both"></div>
+
+{* 月の移動ナビ *}
+<ul class="naviMonth">
+<li {if $this_month == "1"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=1">{'/label/january'|translate}{* 1月 *}</a></li>
+<li {if $this_month == "2"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=2">{'/label/february'|translate}{* 2月 *}</a></li>
+<li {if $this_month == "3"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=3">{'/label/march'|translate}{* 3月 *}</a></li>
+<li {if $this_month == "4"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=4">{'/label/april'|translate}{* 4月 *}</a></li>
+<li {if $this_month == "5"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=5">{'/label/may'|translate}{* 5月 *}</a></li>
+<li {if $this_month == "6"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=6">{'/label/june'|translate}{* 6月 *}</a></li>
+<li {if $this_month == "7"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=7">{'/label/july'|translate}{* 7月 *}</a></li>
+<li {if $this_month == "8"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=8">{'/label/august'|translate}{* 8月 *}</a></li>
+<li {if $this_month == "9"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=9">{'/label/september'|translate}{* 9月 *}</a></li>
+<li {if $this_month == "10"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=10">{'/label/october'|translate}{* 10月 *}</a></li>
+<li {if $this_month == "11"} class="current"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=11">{'/label/november'|translate}{* 11月 *}</a></li>
+<li {if $this_month == "12"} class="current last"{else} class="last"{/if}><a href="/{$page_sysnm}/?year={$this_year}&month=12">{'/label/december'|translate}{* 12月 *}</a></li>
+</ul>
+<div style="clear:both"></div>
+
+{* カテゴリーの絞り込み*}
+{if $arrCategory|@count > 0}
+<div class="search_box">
+  <form name="calendar_list_form" method="POST" action="/calendar_list/">
+    <select name="s_category">{html_options options=$arrCategory selected=$s_category}</select>&nbsp;&nbsp;
+    <input type="hidden" name="year"  value="{$this_year}" />
+    <input type="hidden" name="month" value="{$this_month}" />
+    <input type="submit" name="subflg" value="{'/label/search_btn'|translate}" />{* 検索 *}
+  </form>
+</div>
+{/if}
+
+{* カレンダーの見出*}
+<table border="0" cellspacing="0" class="header">
+  <tr valign="bottom">
+    <td class="pre">
+      <a href="/{$page_sysnm}/?year={$pre_year}&month={$pre_month}" class="month2"><span class="arrow">&lt;&lt;</span>{'/label/last_month'|translate}{* 前月 *}</a>
+    </td>
+    <td class="this"><span class="month1">{$this_year}<span>/</span>{$this_month}</span></td>
+    <td class="next"><a href="/{$page_sysnm}/?year={$next_year}&month={$next_month}" class="month2">{'/label/next_month'|translate}{* 翌月 *}<span class="arrow">&gt;&gt;</span></a></td>
+  </tr>
+</table>
+
+{* 月間カレンダー本体 *}
+<table border="0" cellspacing="0" class="calendar">
+  <tr class="header">
+{if $start_week eq 'Sun'}
+    <th class="Sun"><span>{'/label/sunday_short'|translate}{* 日 *}</span></th>
+{/if}
+    <th class="Mon"><span>{'/label/monday_short'|translate}{* 月 *}</span></th>
+    <th class="Tue"><span>{'/label/tuesday_short'|translate}{* 火 *}</span></th>
+    <th class="Wed"><span>{'/label/wednesday_short'|translate}{* 水 *}</span></th>
+    <th class="Thu"><span>{'/label/thursday_short'|translate}{* 木 *}</span></th>
+    <th class="Fri"><span>{'/label/friday_short'|translate}{* 金 *}</span></th>
+    <th class="Sat"><span>{'/label/saturday_short'|translate}{* 土 *}</span></th>
+{if $start_week ne 'Sun'}
+    <th class="Sun"><span>{'/label/sunday_short'|translate}{* 日 *}</span></th>
+{/if}
+  </tr>
+{foreach item=cal_line from=$cal_data.days name="cal_line_nm"}
+  <tr {if $smarty.foreach.cal_line_nm.first}class="first"{/if}{if $smarty.foreach.cal_line_nm.last} class="last"{/if}>
+  {* 週毎の段 *}
+  {foreach key=key item=item from=$cal_line}
+    {* 日毎のデータ *}
+{strip}
+    <td class="{$item.week}{if $item.holiday_flg == 1} holiday{/if} {if $item.date == $today} today{/if}">
+      {*日付部分*}
+      <div class="head">{$item.day|string_format:"%2d"}<span>{$item.date_nm}</span></div>
+      {*内容部分*}
+      <div class="body">
+        {* イベントデータ *}
+        {foreach key=event_key item=event_item from=$item.event_data name=event_data_nm}
+          {if $smarty.foreach.event_data_nm.first}
+            <ul class="event_data">
+          {/if}
+          <li><a href="/calendar_detail/id={$event_item.event_id}">{$event_item.event_txt|mbtruncate:30:"..."}</a>
+          {if $event_item.cal_from_time || $event_item.cal_to_time}<br>{/if}
+          {$event_item.cal_from_time}
+          {if ($event_item.cal_from_time != '' && $event_item.cal_to_time != '') || ($event_item.from_date != $event_item.to_date && ($event_item.cal_from_time != '' || $event_item.cal_to_time != '')) }～{/if}
+          {$event_item.cal_to_time}</li>
+          {if $smarty.foreach.event_data_nm.last}
+            </ul>
+          {/if}
+        {/foreach}
+        {* 関連情報 *}
+        {foreach key=game_key item=rItem from=$item.relations name=relations_nm}
+          {if $smarty.foreach.relations_nm.first}
+            <ul class="relations_data">
+          {/if}
+          <li><a href="/{$rItem.link}">{if $rItem.icon}<img src="{$rItem.icon}">{/if}{$rItem.table_titleval}</a></li>
+          {if $smarty.foreach.relations_nm.last}
+            </ul>
+          {/if}
+        {/foreach}
+      </div>
+    </td>
+{/strip}
+  {/foreach}
+  </tr>
+{/foreach}
+</table>
+
+<div class="relation_link"><a href="/{$page_sysnm}/" class="small_text">{'/modules/calendar/label/calendar_of_this_month'|translate}{* 今月のカレンダー *}</a></div>
+</div>
+{/module}

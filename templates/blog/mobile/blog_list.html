@@ -1,0 +1,11 @@
+<h2>[emoji:070]{'/modules/blog/label/blog_list'|translate}{* ブログ一覧 *}</h2>
+<ul>
+{section name=mydata loop=$blog_list}
+        <li><a href="/blog_my_top/blog_id={$blog_list[mydata].blog_id}">{$blog_list[mydata].title|escape}</a>
+          <br/>{$blog_list[mydata].message}</li>
+{/section}
+</ul>
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo page_num=10}
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a></div>
+<hr/>

@@ -1,0 +1,187 @@
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="ja" />
+	<title>{'/modules/photo/label/photo_edit'|translate}{*画像編集*}</title>
+	<script type="text/javascript" src="/js/management/prototype.1.6.0.3/prototype.js"></script>
+	<script type="text/javascript" src="/js/management/prototype.1.6.0.3/scriptaculous.1.8.2/scriptaculous.js?load=builder,effects,dragdrop&v1.7.0"></script>
+	<script src="/js/cropperUI/cropper.js" type="text/javascript"></script>
+</head>
+<body>
+<form name="photo_edit" method='POST' action="/direct.php">
+<input type="hidden" name="mt" value="photo">
+<input type="hidden" name="ct" value="photoeditor_edit">
+<div style="float:left;padding-right:7px;">
+<a href="javascript:void(0)" onclick="rotateLeftImage();return false;">{'/label/rotate_left_90_degrees'|translate}{*90°左回転*}</a><br>
+<a href="javascript:void(0)" onclick="rotateRightImage();return false;">{'/label/rotate_right_90_degrees'|translate}{*90°右回転*}</a><br>
+<input type="text" name="resize_ratio" value="" size="3"/>%<a href="javascript:void(0)" onclick="resizeImage();return false;">{'/label/resize'|translate}{*リザイズ*}</a><br>
+<a href="javascript:void(0)" onclick="trimingImage();return false;">{'/label/trim'|translate}{*トリミングする*}</a>
+<br>（{''|translate}{*画像上で範囲指定してください*}）<br>
+<a href="javascript:void(0)" onclick="backOriginalImage();return false;">{'/label/initialize_btn'|translate}{*元に戻す*}</a><br>
+<br>
+<br>
+
+{'/label/directly'|translate}{*ディレクトリ*}：{$file_path}<br>
+{'/label/file_name'|translate}{*ファイル名*}:<input type="text" name="save_name" value="{$photo_name}" size="17"><br>
+{if !$photo_flg}
+<input type="button" value="{'/label/save_as'|translate}{*名前を付けて保存*}" onclick="compEditImage2();return false;"><br>
+{else}
+<span style="color:red;">※{'/msg/wiiLnot_be_saved_in_update_list'|translate}{*更新履歴には残りません。*}</span><br>
+{/if}
+<input type="button" value="{'/label/overwrite'|translate}{*上書き保存*}" onclick="compEditImage();return false;"><br>
+<a href="javascript:void(0);" onCLick="window.close(); return false;">{'/label/close'|translate}{*閉じる*}</a>
+</div>
+<div style="float:left;">
+{foreach from=$error item=foo}
+<font color=red>{$foo}</font><br>
+{/foreach}
+{'/label/edited_image'|translate}{*編集画像*}<br>
+<img src="{$temp_file_url}?{$smarty.now}" alt="image" id="editImage"/>
+</div>
+
+{if file_exists($tri_file_dir) && $smarty.request.triming_flg}
+<div style="position:absolute;top:50px;left:230px;background-color:#eeeeee;padding:20px;">
+{'/label/trimming_preview'|translate}{*トリミングプレビュー*}　<a href="javascript:void(0)" onclick="moveImage();return false;">{'/label/update_btn'|translate}{*更新する*}</a>｜<a href="javascript:void(0)" onclick="notmoveImage();return false;">{'/label/redo'|translate}{*やり直す*}</a><br>
+<img src="{$tri_file_url}?{$smarty.now}" alt="triming image" />
+</div>
+{/if}
+
+<input type="hidden" name="x1" id="x1" />
+<input type="hidden" name="y1" id="y1" />
+<input type="hidden" name="x2" id="x2" />
+<input type="hidden" name="y2" id="y2" />
+<input type="hidden" name="width" id="width" />
+<input type="hidden" name="height" id="height" />
+<input type="hidden" name="file_path" value="{$file_path}" />
+<input type="hidden" name="photo_name" value="{$photo_name}" />
+</form>
+
+
+	<script type="text/javascript">
+	{literal}
+    
+    function rotateLeftImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","rotate_left_flg");
+        ele.value = 1;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    function rotateRightImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","rotate_right_flg");
+        ele.value = 1;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    
+    function resizeImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","resize_flg");
+        ele.value = 1;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    
+    function trimingImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","triming_flg");
+        ele.value = 1;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    
+    function backOriginalImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","back_flg");
+        ele.value = 1;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    
+    function moveImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","move_flg");
+        ele.value = 1;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    function notmoveImage(){
+        var ele = document.createElement('input');
+        ele.setAttribute("type","hidden");
+        ele.setAttribute("name","move_flg");
+        ele.value = 0;
+        document.photo_edit.appendChild(ele);
+        document.photo_edit.submit();
+    }
+    
+    function compEditImage(){
+		// 編集画像が元画像に上書きされます。保存した画像を確認するには画像マネージャーを更新してください。
+        if(confirm('{/literal}{'/msg/edited_image_will_be_overriden'|translate}{literal}')){
+            var ele = document.createElement('input');
+            ele.setAttribute("type","hidden");
+            ele.setAttribute("name","comp_flg");
+            ele.value = 1;
+            document.photo_edit.appendChild(ele);
+            document.photo_edit.submit();
+            //window.close();
+        }
+    }
+
+    function compEditImage2(){
+		// 編集画像を保存します。保存した画像を確認するには画像マネージャーを更新してください。
+        if(confirm('{/literal}{'/msg/edited_image_will_be_saved'|translate}{literal}')){
+            var ele = document.createElement('input');
+            ele.setAttribute("type","hidden");
+            ele.setAttribute("name","comp_flg2");
+            ele.value = 1;
+            document.photo_edit.appendChild(ele);
+            document.photo_edit.submit();
+            //window.close();
+        }
+    }
+
+		// setup the callback function
+		function onEndCrop( coords, dimensions ) {
+			$( 'x1' ).value = coords.x1;
+			$( 'y1' ).value = coords.y1;
+			$( 'x2' ).value = coords.x2;
+			$( 'y2' ).value = coords.y2;
+			$( 'width' ).value = dimensions.width;
+			$( 'height' ).value = dimensions.height;
+ 		}
+
+{/literal}	
+{if file_exists($tri_file_dir) && $smarty.request.triming_flg}
+new Element.setOpacity('editImage',0.5);
+{else}
+{literal}	
+
+		// basic example
+		Event.observe( 
+			window, 
+			'load', 
+			function() { 
+				new Cropper.Img( 
+					'editImage',
+					{
+						onEndCrop: onEndCrop 
+					}
+				) 
+			}
+		); 		
+		
+		
+
+{/literal}
+{/if}
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+<head>
+<title><!--%title%--></title>
+<meta name="Keywords" content="<!--%keywords%-->" />
+<meta name="Description" content="<!--%description%-->" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<link rel="stylesheet" href="/js/jqueryMobile/1.0/jquery.mobile-1.0.min.css" />
+<script src="http{if $https_flg}s{/if}://www.google.com/jsapi"></script>
+<script>google.load("jquery", "1.7");</script>
+<script>{literal}
+$(document).bind("mobileinit", function(){
+  //apply overrides here
+  $.extend(  $.mobile , {
+    ajaxEnabled: false,
+  });
+});
+{/literal}</script>
+<script src="/js/jqueryMobile/1.0/jquery.mobile-1.0.min.js"></script>
+<style>{literal}
+img {max-width: 95%;}
+{/literal}</style>
+</head>

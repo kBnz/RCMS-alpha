@@ -1,0 +1,11 @@
+{if $couponList|@count>0}
+<h2>クーポン情報</h2>
+  <ul>
+  {section name=mydata loop=$couponList}
+    <li>
+      <a href="/coupon_detail/id={$couponList[mydata].coupon_id}">{$couponList[mydata].coupon_nm}</a>
+    </li>
+  {/section}
+  </ul>
+<hr/>
+{/if}

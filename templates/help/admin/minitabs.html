@@ -1,0 +1,8 @@
+<ul class="minitabs">
+  <li><a href="/management/{$mt}/help_item_list/" {if $page_type eq 'help_item_list' || ($page_type eq 'help_item_edit' && !$wizard)} class="active"{/if}>{'/modules/help/label/help_list'|translate}</a></li>{*Q&A一覧*}
+  <li><a href="/management/{$mt}/help_category_list/" {if $page_type eq 'help_category_list' || ($page_type eq 'help_category_edit' && !$wizard)} class="active"{/if}>{'/label/categories_list'|translate}</a></li>{*カテゴリ設定*}
+  <li><a href="/management/{$mt}/help_order_edit/"{if $page_type eq 'help_order_edit'} class="active"{/if}>{'/label/sort_setting'|translate}</a></li>{*表示順設定*}
+  {if $rauth->canInsert('/help/category') && $rauth->canInsert('/help/item')}
+  <li><a href="/management/{$mt}/help_category_edit/wizard=1">{'/modules/help/label/create_simple_help'|translate}</a></li>{*Q&A簡単作成*}
+  {/if}
+</ul>

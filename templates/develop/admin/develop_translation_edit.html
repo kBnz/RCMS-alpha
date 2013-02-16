@@ -1,0 +1,158 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+var langOptions = new Array();
+{foreach from=$language_options key=lang item=item name=lang}
+    langOptions[{$smarty.foreach.lang.iteration}] = '{$lang}';
+{/foreach}
+
+{literal}
+function confirmDelete(f) {
+    if (confirm("削除してもよろしいですか？")) {
+        f.mode.value='DELETE';
+        f.submit();
+    }
+}
+
+function viewSimilarWord() {
+
+    // 入力チェック
+    var strString = '';
+    for(i=1; i<=langOptions.length-1; i++){
+        var obj = document.getElementById(langOptions[i] + '_text');
+        strString = strString + obj.value;
+     }
+
+    if (strString == '')
+    {
+        alert('テキストを入力してください。');
+        return false;
+    }
+
+     var strQS = '';
+     for(i=1; i<=langOptions.length-1; i++){
+        var obj = document.getElementById(langOptions[i] + '_text');
+        if (obj.value != 'undefined')
+        {
+            strQS = strQS + langOptions[i] + '_text=' + obj.value + '&';
+        }
+     }
+
+     window.open('/management/develop/develop_similar_word/' + strQS ,'' ,'width=600,height=600,scrollbars=1,resizable=yes');
+}
+
+</script>
+<style type="text/css">
+dl.naming {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  line-height: 1.5em;
+}
+dl.naming dt {
+  margin-left: 10px;
+}
+dl.naming dd {
+  margin-left: 30px;
+}
+{/literal}
+</style>
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+  <li class="normal"><a href="/management/develop/develop_language_list/"><span>言語設定</span></a></li>
+  <li class="add"><a href="/management/develop/develop_translation_edit/"><span>テキスト追加</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_translation_list/">i18n</a>
+<a href="/management/develop/develop_translation_edit/{if $key}?key={$key}{/if}">テキスト編集</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/{$mt}/{$ct}/{if $key}?key={$key}{/if}" method="post">
+  <input type="hidden" name="mode" />
+  <table style="width:100%">
+    <tr>
+      <th style="width:150px">キー</th>
+      <td><input type="text" name="new_key" style="width:98%" value="{$formData.key|escape}" /></td>
+    </tr>
+    <tr>
+      <th style="width:150px">用途とかをメモ</th>
+      <td>
+        <textarea name="memo" id="memo" style="width:98%;height:60px">{$formData.memo|escape}</textarea>
+      </td>
+    </tr>
+
+    <tr>
+      <th style="width:150px">カスタマイズ設定</th>
+      <td>
+      <input name="overwrite_flg" value="1" type="checkbox" {if $formData.overwrite_flg}checked="checked"{/if} />各サイトでカスタマイズ可能な場合チェックしてください<br>
+      {'/label/title'|translate}<input type="text" name="column_nm" style="width:200px" value="{$formData.column_nm|escape}" /><br>カスタマイズ対象の画面項目名を記述してください。<br>画面項目に関するエラーで無い場合は「その他」と記述してください。
+      </td>
+    </tr>
+
+  </table>
+
+  <table style="width:100%; margin-top:20px;">
+    <thead>
+      <tr>
+        <th style="width:150px">言語</th>
+        <th>テキスト</th>
+      </tr>
+    </thead>
+    <tbody>
+    {foreach from=$formData.tr_list item=row}
+      <tr>
+        <td>{$language_options[$row.language]}</td>
+        <td><textarea id="{$row.language}_text" name="text[{$row.language}]" style="width:90%;height:40px">{$row.text|escape}</textarea></td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+
+<p class="hint">
+  保存する前に、類似の辞書データ検索を行い、確認を行ってください。<br />
+  上記に入力した各言語毎のテキストの全文を含むデータを検索し、別ウィンドウに表示します。※文章ではなく、単語がすでに登録されているか、調べると便利です。<br />
+  全体で使用する言葉としてすでに登録済みのデータを、なるべく使用するようにして下さい。<br />
+</p>
+
+  {buttonbox}
+    <button type="button" onclick="viewSimilarWord(); return false;">類似の辞書データを検索</button>
+    <button type="submit">保存</button>
+    <button type="button" onclick="confirmDelete(this.form)">削除</button>
+  {/buttonbox}
+</form>
+
+<p class="hint">
+  命名ルール<br />
+  これに当てはまらない場合は相談してください 
+  <dl class="naming">
+    <dt>モジュール名</dt>
+      <dd>/modules/xxxxx</dd>
+    <dt>全体で使うボタンなどのラベル</dt>
+      <dd>/label/xxxxx</dd>
+    <dt>全体で使うメッセージ文章</dt>
+      <dd>/msg/xxxxx</dd>
+    <dt>各モジュールで使うボタンなどのラベル(例はtopics)</dt>
+      <dd>/modules/topics/label/xxxxx</dd>
+    <dt>各モジュールで使うメッセージ文章</dt>
+      <dd>/modules/topics/msg/xxxxx</dd>
+  </dl>
+</p>
+
+<p class="hint">
+  先頭と末尾の改行は取り除きます。
+</p>
+
+</div><!--//list_main-->
+{rcms_include file="management/footer.html"}
+

@@ -1,0 +1,13 @@
+<h2>ニコニコ動画一覧</h2>
+このサイトで紹介しているニコニコ動画の一覧です。<br/>
+
+{foreach from=$items item=item}
+<div style="text-align:center;font-size:small;">
+  <a href="{$item.detail}"><img src="{$item.web->thumbnail_url}"/></a><br/>
+  <a href="{$item.detail}">{$item.name}</a><br/>
+  <br/>
+</div>
+{/foreach}
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo page_num=10}
+
+<hr/>

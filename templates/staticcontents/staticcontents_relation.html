@@ -1,0 +1,14 @@
+{foreach from=$relationList item=row}
+{if $row.canAccess}
+  {if $row.design_flg}
+    {module name="staticcontents"}
+    <h2 class="module_title"><span>{$row.subject}</span></h2>
+    <div class="module_contents">
+    {$row.contents}
+    </div>
+    {/module}
+  {else}
+    {$row.contents}
+  {/if}
+{/if}
+{/foreach}

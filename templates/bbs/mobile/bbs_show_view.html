@@ -1,0 +1,31 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+<form method="post" action="/bbs_show/bbs_header_id={$bbs_header_id}" name="bbs_show_view_form">
+  <input type="hidden" name="node" value="{$itemInfo.seq}" />
+  <input type="hidden" name="reply_seq" value="{$itemInfo.seq}" />
+  <input type="hidden" name="MODE" value="input" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+</form>
+{if $itemInfo.new}[emoji:120]{/if}▼{if $itemInfo.dflg ne '1'}{$itemInfo.title|escape}{else}{if $itemInfo.deltype eq ''}{'/msg/deleted_by_user'|translate}{else}{'/msg/deleted_by_admin'|translate}{/if}{*ﾕｰｻﾞにより or 管理者により削除されました。*}{/if}<br/>
+{if $itemInfo.dflg ne '1'}
+<div style="text-align:right;">
+    [{$itemInfo.name|escape}]
+</div>
+    <div style="text-align:right;font-size:small;">
+    [{$itemInfo.create_date|pg_dateformat:"%Y/%m/%d %H:%M:%S"}]
+    </div>
+    {$itemInfo.note|escape|nl2br|urllink:$bbs_header.auto_url_link_flg}<br/>
+    {if $itemInfo.thumb_uploadimg ne '' && $itemInfo.uploadimg ne ''}
+    <div style="text-align:center;">
+    <a href="{$smarty.const.BBS_UPLOAD_URL}{$itemInfo.uploadimg}" target="_blank"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$itemInfo.thumb_uploadimg}" /></a>
+    </div>
+    {elseif $itemInfo.uploadimg ne ''}
+    <div style="text-align:center;">
+    <img src="{$smarty.const.BBS_UPLOAD_URL}{$itemInfo.uploadimg}" />
+    </div>
+    {/if}
+    <div style="text-align:right;">
+      <a href="/bbs_show/bbs_header_id={$bbs_header_id}&MODE=input&reply_seq={$itemInfo.seq}">{'/label/send_answer_btn'|translate}{* 返信する *}</a>
+    </div>
+{/if}
+<hr/>

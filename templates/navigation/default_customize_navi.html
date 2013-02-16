@@ -1,0 +1,46 @@
+<script type="text/javascript" src="/js/swfobject.js"></script>
+{if $navi_menu_list|@count>0}
+{module name="navigation"}
+<ul>
+{foreach item="navi_menu" from=$navi_menu_list name="navi_menu_list"}
+<li>
+        {if $navi_menu.contents_type <= '4' && $navi_menu.url}
+        <a href="{$navi_menu.url}" {if $navi_menu.target_type eq '1'}target="_blank"{/if}>
+        {/if}
+
+        {if $navi_menu.contents_type eq '0'}
+            {$navi_menu.contents_text1}
+        {elseif $navi_menu.contents_type eq '1'}
+            {$navi_menu.contents_text1}<br>
+            {$navi_menu.contents_text2}
+        {elseif $navi_menu.contents_type eq '2'}
+            <img src="{$navi_menu.navigation_file_name_1}" alt="{$navi_menu.alt_text}">
+        {elseif $navi_menu.contents_type eq '3'}
+                <img src="{$navi_menu.navigation_file_name_1}" alt="{$navi_menu.alt_text}" 
+                {if $navi_menu.contents_img2_ext}
+                  onMouseOver="this.src='{$navi_menu.navigation_file_name_2}'" 
+                  onMouseOut="this.src='{$navi_menu.navigation_file_name_1}'" 
+                {/if}
+                >
+        {elseif $navi_menu.contents_type eq '4'}
+            <div id="subject_flash{$contents_id}_{$navi_menu.navigation_id}"></div>
+            <script type="text/javascript">
+            <!--
+                var so = new SWFObject("{$navi_menu.navigation_file_name_1}", "subject_flash", "{$navi_menu.contents_width}", "{$navi_menu.contents_height}", "8", "#000000");
+                so.write("subject_flash{$contents_id}_{$navi_menu.navigation_id}");
+            //-->
+            </script>
+
+        {/if}
+
+        {if $navi_menu.contents_type <= '4' && $navi_menu.url}
+        </a>
+        {/if}
+
+</li>
+
+{/foreach}
+</ul>
+<div class="clr"></div>
+{/module}
+{/if}

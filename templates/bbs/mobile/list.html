@@ -1,0 +1,22 @@
+<h2>{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</h2>
+{if $categoryInfo}
+<hr/>
+<h2>[{$categoryInfo.name}]</h2>
+{/if}
+
+{if $bbs_list}
+  {foreach from=$bbs_list item=row}
+<a href="/bbs_show/bbs_header_id={$row.bbs_header_id}">{$row.forum_title}</a>{if $row.new == '1'}[emoji:120]{/if}<br/>
+{$row.forum_explanation|nl2br}<br/>
+  {/foreach}
+
+{$page_links}
+
+{/if}
+
+<form method="post" action="/bbs_list/">
+{'/label/title'|translate}{*タイトル*}・{'/label/explanation'|translate}{*説明*}:<input type="text" name="s_forum_text" value="{$s_forum_text}" size="20" />
+<input type="submit" value="{'/label/search'|translate}{*検索*}" />
+</form>
+
+<hr/>

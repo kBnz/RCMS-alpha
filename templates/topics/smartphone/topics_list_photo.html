@@ -1,0 +1,36 @@
+<h2>[emoji:158]{'/modules/topics/label/topics_list_user_page_name'|translate}{* トピックス一覧 *}</h2>
+
+<ul data-role="listview">
+{section name=mydata loop=$topicsList}
+<li>
+
+    {if $topicsList[mydata].link_flg eq '1'}
+      <a href="/{$link_page_sysnm}{if !$link_page_flg && $topicsList[mydata].topics_group_id}{$topicsList[mydata].topics_group_id}{/if}/id={$topicsList[mydata].topics_id}">
+    {elseif $topicsList[mydata].link_flg eq '2'}">
+      <a href="{$topicsList[mydata].link_url}">
+    {else}
+      <a href="#">
+    {/if}
+    {if $row.photo_data.photo_id ne ''}
+    <img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$row.photo_data.photo_id}.jpg" alt="{$row.photo_data.title}" />
+    {/if}
+
+    <h3>{$topicsList[mydata].subject}</h3>
+    <p>{if !$topicsList[mydata].no_use_ymd}{if $topicsList[mydata].new_flg}[emoji:120]{/if}[{$topicsList[mydata].ymd_str}]{/if}</p>
+      {if $row.link_flg eq '1'}<p>{$row.contents|strip_tags:false|mbtruncate:400}</p>{/if}
+    </a>
+</li>
+{/section}
+</ul>
+{if !$using_season}
+    {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+{/if}
+
+{if $using_season}
+  <form action="/{if $page_sysnm ne 'top'}{$page_sysnm}/{/if}" method="post">
+  {rcms_seasonOptions name=season selected=$season firstOption=true}
+  <input type="submit" value="{'/label/search_btn'|translate}{* 検索 *}" />
+  </form>
+{/if}
+
+<hr/>

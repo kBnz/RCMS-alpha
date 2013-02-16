@@ -1,0 +1,11 @@
+
+<ul class="minitabs">
+  <li><a href="/management/navigation/navigation_header_edit/navigation_header_id={$navigation_header_id}" {if $page_type eq 'navigation_header_edit'}class="active"{/if}>{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+
+{if $navi_type==3}{*ナビタイプ＝カスタマイズの場合のみ表示*}
+  <li><a href="/management/navigation/navigation_list/navigation_header_id={$navigation_header_id}" {if $page_type eq 'navigation_list'}class="active"{/if}>{'/modules/navigation/label/item_list'|translate}{*素材一覧*}</a></li>
+  <li><a href="/management/navigation/navigation_edit/navigation_header_id={$navigation_header_id}" {if $page_type eq 'navigation_edit'}class="active"{/if}>{'/modules/navigation/label/item_edit'|translate}{*素材編集*}</a></li>
+{/if}
+
+</ul>
+<div class="clear"></div>

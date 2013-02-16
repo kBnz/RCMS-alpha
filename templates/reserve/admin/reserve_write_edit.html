@@ -1,0 +1,117 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirm_delete(){
+    if (confirm("削除してもよろしいですか？")) {
+        document.reserve_write_edit.MODE.value='DELETE';
+        document.reserve_write_edit.submit();
+    }
+}
+//管理者コメント欄制御用関数
+function switchTextfield(){
+    if(document.getElementById('admin_note').style.display == "none"){
+            document.getElementById('admin_note').style.display = "block";
+            document.getElementById('open').style.display = "none";
+    }else{
+          document.getElementById('admin_note').style.display = "none";
+            document.getElementById('open').style.display = "block";
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>予約詳細</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">{'/modules/reserve'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">モジュール一覧</a>
+<a href="/management/reserve/reserve_write_list/reserve_header_id={$header.reserve_header_id}">予約一覧</a>
+予約詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">【{$header.module_type_nm}】{if $content_title}{$content_title}{/if}</h3>
+<ul class="minitabs">
+  <li><a href="/management/reserve/reserve_edit/reserve_header_id={$header.reserve_header_id}">基本設定</a></li>
+  <li><a href="/management/reserve/reserve_list/reserve_header_id={$header.reserve_header_id}">コンテンツ一覧</a></li>
+  <li><a href="/management/reserve/reserve_write_list/reserve_header_id={$header.reserve_header_id}&module_id={$module_id}" class="active">予約</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="reserve_write_edit" id="reserve_write_edit" action="/management/reserve/reserve_write_edit/" method="POST">
+    <input type="hidden" name="reserve_header_id" value="{$reserve_header_id}" />
+    <input type="hidden" name="reserve_id" value="{$reserve_id}" />
+    <input type="hidden" name="module_id" value="{$module_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table width="100%">
+      <tr>
+        <th width="120px">名前</th>
+        <td>{$data.name1}</td>
+      </tr>
+            <tr>
+        <th width="120px">申し込み日時</th>
+        <td>{$data.inst_ymdhi}</td>
+            </tr>
+      <tr>
+        <th>メールアドレス</th>
+        <td>{$data.email}</td>
+      </tr>
+      {section name=cnt start=1 loop=6}
+        {assign var="i" value=$smarty.section.cnt.index|string_format:"%02d"}
+        {assign var="ext_title" value="ext_title_$i"}
+        {assign var="ext" value="ext_$i"}
+        {if $data.$ext_title != ""}
+          <tr>
+        <th>{$data.$ext_title}</th>
+        <td>{$data.$ext|escape}</td>
+      </tr>
+    {/if}
+      {/section}
+      <tr>
+        <th>管理側のメモ</th>
+        <td>{$data.admin_note|nl2br}
+          {if $auth.reserve.update}
+            <div style="display:block;" id="open"><a href="javascript:void(0)" onclick="switchTextfield()">書き込む</a></div>
+            <div  style="display: none;" id="admin_note">
+              <textarea name="admin_note" cols="30" rows="5" >{$data.admin_note}</textarea>
+              <p class="hint">下の更新ボタンを押さないと保存されないので気をつけてください</p>
+              <a href="javascript:void(0)" onclick="switchTextfield()">閉じる</a>
+            </div>
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>処理状況</th>
+        <td>{html_radios name="syori_flg" options=$arrSyoriFlg selected=$data.syori_flg}</td>
+      </tr>
+            <tr>
+        <th width="120px">最終更新日</th>
+        <td>{$data.update_ymdhi}</td>
+            </tr>
+    </table>
+
+    {buttonbox}
+      {if $auth.reserve.update && $reserve_id != ''|| $auth.reserve.insert && $reserve_id == ''}
+        <button type="submit">更新する</button>
+      {/if}
+      {if $auth.reserve.delete && $reserve_id != ''}
+        <button type="button" onclick="confirm_delete()">削除する</button>
+      {/if}
+    {/buttonbox}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

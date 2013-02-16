@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="robots" content="noindex,nofollow">
+<script type="text/javascript"> 
+{if $list}
+  window.opener.location.reload();
+{else}
+  var theme_nm = '{$theme_nm|escape:"javascript"}';
+  var theme_id = '{$theme_id|escape:"javascript"}';
+{literal}
+  var p = self.opener;
+  var opt = null;
+  try {
+      // ie
+      opt = p.Option(theme_nm, theme_id, false, false);
+  }
+  catch (e) {
+      opt = new Option(theme_nm, theme_id, false, false);
+  }
+  var sel = self.opener.document.getElementById('theme_id');
+  sel.options[sel.length] = opt;
+{/literal}
+{/if}
+</script>
+</head>
+<body>
+<p>{'/msg/updated'|translate}</p>
+
+<input type="button" value="{'/label/close'|translate}" onclick="window.self.close();" />
+</body>
+</html>

@@ -1,0 +1,12 @@
+<h2>[emoji:068]{'/modules/photo/label/search_images_by_category'|translate}{*画像をカテゴリで検索*}</h2>
+<form method="get" action="/photo_list/">
+  <input type="hidden" name="type" value="category" />
+  <input type="hidden" name="season" value="{$season}" />
+  {if $searched_type == "category"}
+  {'/label/category'|translate}{*カテゴリ*}：<select name="search_id">{html_options options=$photo_search_category_list selected=$searched_value}</select><br/>
+  {else}
+  {'/label/category'|translate}{*カテゴリ*}：<select name="search_id">{html_options options=$photo_search_category_list}</select><br/>
+  {/if}
+  <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+</form>
+<hr/>

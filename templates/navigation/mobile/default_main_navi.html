@@ -1,0 +1,12 @@
+{if $navi_menu_list|@count>0}
+<ul>
+{foreach item="navi_menu" from=$navi_menu_list name="navi_menu_list"}
+  {if $navi_menu.this eq '1'}
+    <li>{$navi_menu.page_nm}</li>
+  {else}
+    <li><a href="/{if $navi_menu.page_sysnm ne 'top'}{$navi_menu.page_sysnm}/{/if}">{$navi_menu.page_nm}</a></li>
+  {/if}
+{/foreach}
+</ul>
+<hr/>
+{/if}

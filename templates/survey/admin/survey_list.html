@@ -1,0 +1,163 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</h2>
+<ul>
+{if $rauth->canInsert('/survey/item/')}
+<li class="add"><a href="/management/survey/survey_edit/"><span>{'/label/create_survey_btn'|translate}{*アンケート追加*}</span></a></li>
+{/if}
+<li class="normal"><a href="/management/survey/survey_color_template_list/"><span>{'/label/graph_color_setting_btn'|translate}{*グラフ色設定*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> >> アンケート一覧   *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}{* 承認待ち一覧 *}
+
+<form action="/management/survey/survey_list/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th width="30"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'survey_id[]')" /></th>
+      <th>{'/label/id'|translate}{*アンケートID*}</th>
+      <th>{'/modules/survey/label/survey_name'|translate}{*アンケート名*}</th>
+      <th>{'/label/period'|translate}{*実施期間*}</th>
+      <th>{'/modules/survey/label/publish_survey'|translate}{*アンケート公開*}</th>
+      <th>{'/label/publish_result'|translate}{*結果公開*}</th>
+      <th>{'/label/total'|translate}{*集計*}</th>
+      <th colspan="2">{'/label/sort'|translate}{*表示順*}</th>
+    </tr>
+  {foreach item=item key=key name=header_list from=$header_list}
+    {assign var=survey_id value=$item.survey_id}
+
+    <tr>
+      <td>
+        <input type="checkbox" name="survey_id[]" value="{$item.survey_id}" {if !$rauth->canDelete("/survey/item/$survey_id")}disabled="disabled"{/if} />
+      </td>
+      <td>{$item.survey_id}</td>
+      <td>
+          <a href="/management/survey/survey_edit/survey_id={$item.survey_id}">{$item.title}</a>
+         {rcms_include file="common/admin/language_status.html" meta=$docmetas[$survey_id] link="/management/survey/survey_edit/survey_id=$survey_id"}
+      </td>
+      <td>
+        {if $item.valid_date == "now"}
+          <p style="color:red">{'/modules/survey/msg/on_survey'|translate}{*アンケート実施中です。*}</p>
+        {elseif $item.valid_date == "before"}
+          <p style="color:gray">{'/modules/survey/msg/not_start_yet'|translate}{*アンケートまだは実施していません。*}</p>
+        {elseif $item.valid_date == "after"}
+          <p style="color:gray">{'/modules/survey/msg/survey_is_over'|translate}{*アンケート終了しました。*}</p>
+        {/if}
+        {'/label/start'|translate}{*開始*}：{if $item.sta_valid_date != ""}{$item.sta_valid_date|pg_dateformat}{else}{'/label/not_appoint'|translate}{*指定なし*}{/if}<br />
+        {'/label/end'|translate}{*終了*}：{if $item.end_valid_date != ""}{$item.end_valid_date|pg_dateformat}{else}{'/label/not_appoint'|translate}{*指定なし*}{/if}
+      </td>
+      <td style="text-align:center">
+        {if $item.public eq '0'}
+          {if $rauth->canUpdate("/survey/item/$survey_id")}
+            <a href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'switch_pub', '1');return false;"><img src="/images/modules/survey/public.png" border="0"/></a>
+          {else}
+            <img src="/images/modules/survey/public.png" border="0"/>
+          {/if}
+        {else}
+          {if $rauth->canUpdate("/survey/item/$survey_id")}
+            <a href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'switch_pub', '0');return false;"><img src="/images/modules/survey/publicx.png" border="0"/></a>
+          {else}
+            <img src="/images/modules/survey/publicx.png" border="0"/>
+          {/if}
+        {/if}
+      </td>
+      <td style="text-align:center">
+        {if $item.public_total eq '0'}
+          {if $rauth->canUpdate("/survey/item/$survey_id")}
+            <a href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'switch_pub_total', '1');return false;"><img src="/images/modules/survey/public.png" border="0"/></a>
+          {else}
+            <img src="/images/modules/survey/public.png" border="0"/>
+          {/if}
+        {else}
+          {if $rauth->canUpdate("/survey/item/$survey_id")}
+            <a href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'switch_pub_total', '0');return false;"><img src="/images/modules/survey/publicx.png" border="0"/></a>
+          {else}
+            <img src="/images/modules/survey/publicx.png" border="0"/>
+          {/if}
+        {/if}
+
+      </td>
+      <td style="text-align:right">
+      {if $item.can_result}
+          <a href="/management/survey/survey_report/survey_id={$item.survey_id}">{$item.answer_cnt}{'/label/item'|translate}{*件*}</a>
+      {elseif $item.can_dl}
+          <a href="/management/survey/survey_download/survey_id={$item.survey_id}">{$item.answer_cnt}{'/label/item'|translate}{*件*}</a>
+      {else}
+          -
+      {/if}
+      </td>
+      {if $rauth->canUpdate("/survey/item/$survey_id")}
+        <td style="text-align:center">
+          {if !$smarty.foreach.header_list.first}
+            <a class="allow-first" href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'shownum', 'first');return false;"><img src="/images/management/up2.gif" border="0" title="最初へ" /></a>
+            <a class="allow-up" href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'shownum', 'up');return false;"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+          {/if}
+        </td>
+        <td style="text-align:center">
+          {if !$smarty.foreach.header_list.last}
+            <a class="allow-down" href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'shownum', 'down');return false;"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+            <a class="allow-last" href="javascript:void(0)" onclick="switchVal({$item.survey_id}, 'shownum', 'last');return false;"><img src="/images/management/down2.gif" border="0" title="最後へ" /></a>
+          {/if}
+        </td>
+      {else}
+        <td style="text-align:center">
+        </td>
+        <td style="text-align:center">
+        </td>
+      {/if}
+    </tr>
+  {/foreach}
+  </table>
+    {buttonbox}
+      <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+  </form>
+
+  {* 公開非公開・表示順のフォーム *}
+  <form action="/management/survey/survey_list/" method="post" name="switch_form">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="id" value="" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="val" value="" />
+  </form>
+
+</div>
+</div>
+
+{literal}
+<script type="text/javascript">
+function confirmDelete(f) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+    }
+}
+function switchVal(id, mode, val) {
+    document.switch_form.id.value   = id;
+    document.switch_form.MODE.value = mode;
+    document.switch_form.val.value  = val;
+    document.switch_form.submit();
+}
+
+</script>
+{/literal}
+
+{rcms_include file="management/footer.html"}

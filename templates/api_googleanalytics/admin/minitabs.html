@@ -1,0 +1,9 @@
+<ul class="minitabs">
+  <li><a href="/management/api_googleanalytics/access_data/" {if $ct eq 'access_data'}class="active"{/if}>{'/modules/api_googleanalytics/label/access_data'|translate}</a></li>{* アクセス統計 *}
+  {if $auth.site.select}
+  <li><a href="/management/api_googleanalytics/google_setup/" {if $ct eq 'google_setup'}class="active"{/if}>{'/modules/api_googleanalytics/label/google_setup'|translate}</a></li>{* 訪問者情報 *}
+  {/if}
+{if $smarty.const.USE_ClickHeat eq 1}
+  <li><a href="/tools/clickheat/" target="_blank">クリックヒート</a></li>
+{/if}
+</ul>

@@ -1,0 +1,12 @@
+<h2>[emoji:068]{'/label/image'|translate}{*画像*}</h2>
+<div align="text-align:center;font-size:small;">
+{$photoList.0.title}<br/>
+[{$photoList.0.ymd_str}]<br/>
+<a href="/photo_detail/id={$photoList.0.photo_id}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList.0.photo_id}.jpg" alt="{$photoList.0.title}"></a>
+</div>
+<br/>
+<div align="text-align:right;font-size:small;">
+<a href="/photo_list/">{'/label/to_other_images'|translate}{*他の画像を見る*}</a>
+</div>
+<hr/>
+

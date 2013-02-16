@@ -1,0 +1,60 @@
+<li
+    data-page-id           = "{$page_data.page_id}"
+    data-page-nm           = "{$page_data.page_nm}"
+    data-page-sysnm        = "{$page_data.page_sysnm}"
+    data-page-url          = "/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/"
+    data-parent-page-id    = "{$page_data.parent_page_id}"
+    data-template          = "{$page_data.template}"
+    data-sitemap-flg       = "{$page_data.sitemap_flg}"
+    data-menu-flg          = "{$page_data.menu_flg}"
+    data-menu-head-sub_flg = "{$page_data.menu_head_sub_flg}"
+    data-menu-footer-flg   = "{$page_data.menu_footer_flg}"
+    data-open-flg          = "{$page_data.open_flg}"
+    data-mobile-flg        = "{$page_data.mobile_flg}"
+    data-ssl-flg           = "{$page_data.ssl_flg}"
+    data-page-require      = "{$page_data.page_require}"
+    data-page-weight       = "{$page_data.page_weight}"
+    data-level             = "{$page_data.level}"
+    data-page-require      = "{$page_data.page_require}"
+>
+    <div class="nest_level_{$page_data.level} col_1">
+        <span>{$page_data.page_nm}</span>
+    </div>
+    <div class="col_2">
+        <span>
+            <a href="{$smarty.const.ROOT_URL}/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/" target="_blank">/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/</a>
+        </span>
+    </div>
+</li>
+
+{*
+<dl class="sm2_s_published"><a href="#" {if $page_data.child}class="sm2_expander"{/if}>&nbsp;</a>
+	<input name="page_id[{$count}]" type="hidden" value="{$page_data.page_id}">
+	<dt><a class="sm2_title" href="/management/page/page_edit/page_page_id={$page_data.page_id}">{$page_data.page_nm|mbtruncate:30}</a>
+	<span class="gray">(<a href="{$smarty.const.ROOT_URL}/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/" target="_blank" class="link_blank">/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/</a>)</span>
+	{if $page_data.page_require}<span class="required">[{'/label/viewing_limit'|translate}]</span>{/if}
+	</dt>
+	<dd>
+	<p class="page_type">{$arrTemplateType[$page_data.template]}</p>
+
+	|
+	<input type="checkbox" name="menu_flg[{$count}]" value="1" {if $page_data.menu_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+
+	<input type="checkbox" name="menu_head_sub_flg[{$count}]" value="1" {if $page_data.menu_head_sub_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+
+	<input type="checkbox" name="menu_footer_flg[{$count}]" value="1" {if $page_data.menu_footer_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+
+	<input type="checkbox" name="sitemap_flg[{$count}]" value="1" {if $page_data.sitemap_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+	|
+	<input type="checkbox" name="mobile_flg[{$count}]" value="1" {if $page_data.mobile_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+	{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+	<input type="checkbox" name="ssl_flg[{$count}]" value="1" {if $page_data.ssl_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+	{else}
+	  <input type="hidden" name="ssl_flg[{$count}]" value="0">
+	{/if}
+	<input type="checkbox" name="open_flg[{$count}]" value="1" {if $page_data.open_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+
+	<input name="page_weight[{$count}]" type="hidden" value="{$page_data.page_weight}" {if $page_data.ssl_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}>
+	</dd>
+</dl>
+*}

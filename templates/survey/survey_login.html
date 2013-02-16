@@ -1,0 +1,30 @@
+{module name="answer_fin"}
+<h2 class="module_title"><span>{'/modules/survey'|translate}{*アンケート*}</span></h2>
+<div class="module_contents">
+  <div style="width:70%;margin-top:30px;margin-bottom:30px;text-align:center">
+{if $target_user_error == "1"}
+    <p>
+      {'/modules/survey/msg/please_login_to_answer_this_survey'|translate}{*このアンケートに回答するにはログインを行ってください。*}
+    </p>
+    <p><a href="/direct/login/login/">{'/label/to_login'|translate}{*ログインへ*}</a></p>
+{elseif $target_user_error == "2"}
+    <p>
+       {'/modules/survey/msg/you_might_not_be_able_to_answer_this_survey'|translate}
+        {*このアンケートに回答するにはログインを行ってください。<br /><br />
+      （注意）このアンケートには、回答を受付けるグループが指定されているため、<br />
+       ログイン後も回答することができない可能性があります。<br />*}
+    </p>
+    <p><a href="/direct/login/login/">{'/label/to_login'|translate}{*ログインへ*}</a></p>
+{elseif $target_user_error == "3"}
+    <p>
+      {'/modules/survey/msg/only_target_group_can_answer'|translate}{*回答対象のグループのメンバーでないため回答することができません。*}
+    </p>
+{elseif $target_user_error == "4"}
+    <p>
+      {'/modules/survey/msg/unable_to_answer_twice'|translate}{*二重回答できません。*}
+    </p>
+{/if}
+  </div>
+  <div class="relation_link"><a href="/survey_list/" class="small_text">{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</a></div>
+</div>
+{/module}

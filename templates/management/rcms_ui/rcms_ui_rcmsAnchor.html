@@ -1,0 +1,41 @@
+{literal}
+<!-- rcmsCustomizableTemplatePicker -->
+<script type="text/javascript">
+(function($){
+
+    /**
+    * rcmsAnchor
+    * 任意のタグにアンカーを指定出来る（trタグなどのaタグを使えない時に用いる）
+    * 
+    * 使い方
+    *   任意のタグにrcms_anchorクラスを付与し、data-href,data-target(任意)を指定する。
+    *
+    *   <tr class="rcms_anchor" data-href="/hoge/hoge/?id=1" data-target="blank" >...</tr>
+    */
+    
+    var selector = ".rcms_anchor";
+    
+    $(document).ready(function(){
+        $(selector).live("click.rcmsAnchor",link);
+    });
+    
+    // リダイレクト
+    function link(event){
+
+        if(!$(event.target).is($("a"))){
+            var href   = $(this).data("href");
+            var target = $(this).data("target");
+    
+            if(href){
+                if(target == "blank" || target == "_blank"){
+                    window.open(href);
+                }else{
+                    location.href = href;
+                }
+            }
+        }
+    }
+
+})(jQuery);
+</script>
+{/literal}

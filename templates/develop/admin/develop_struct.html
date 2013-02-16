@@ -1,0 +1,51 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$edit_table_nm}&nbsp;テーブル情報</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/develop/develop_list/">RCMS_DB</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<ul class="tabnavi" style="width:100%;">
+  <li id="here" class="regist_000"><a href="/management/develop/develop_struct/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">構造</div></a></li>
+  <li class="regist_000"><a href="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">レコード</div></a></li>
+  <li class="regist_000"><a href="/management/develop/develop_sql/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">SQL</div></a></li>
+</ul>
+
+
+<div class="list_main">
+
+<h3>テーブル情報</h3>
+<table cellspanding="10">
+<caption align="top">{$edit_table_nm}</caption>
+<tr>
+    <th align="center">Field</th>
+    <th align="center">Type</th>
+    <th align="center">Null</th>
+    <th align="center">Default</th>
+    <th align="center">Primary</th>
+</tr>
+{section name="field_loop" loop=$table_info}
+<tr>
+        <td align="center">{$table_info[field_loop].name}</td>
+        <td align="center">{$table_info[field_loop].type} </td>
+        <td align="center">{$table_info[field_loop].null}</td>
+        <td align="center">{$table_info[field_loop].default}</td>
+{if $table_info[field_loop].primary_key eq "true"}
+        <td align="center">*</td>
+{else}
+        <td align="center">&nbsp;</td>
+{/if}
+</tr>
+{/section}
+</table>
+</form>
+</div>
+</div><!--//list_main-->
+
+{rcms_include file="management/footer.html"}

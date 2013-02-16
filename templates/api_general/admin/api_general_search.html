@@ -1,0 +1,119 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>外部データ検索</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_general/api_general_source_list/">{$module_nm}</a>
+外部データ検索
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+  <ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_source_list/">データソース一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_search/" class="active">外部データ検索</a></li>
+    <li><a href="/management/{$mt}/{$mt}_list/">外部データ一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_edit/">外部データ編集</a></li>
+  </ul>
+
+  <div class="list_main">
+
+    <form id="agSearch" action="/management/api_general/api_general_search/">
+      <fieldset class="search_box">
+        検索方法:
+        <select name="axis" onchange="swapSources($F(this));">
+          {html_options options=$axes selected=$axis}
+        </select>
+        データソース:
+        <select id="agSources" name="data_source"></select><br/>
+        <span id="agQuery"></span>&nbsp;
+        <input type="submit" value="検索"/>
+      </fieldset>
+    </form>
+
+    <p>※一度に表示できる件数には限りがあります。目的のデータが見つからないときは、キーワードを追加して絞り込んでください。</p>
+
+    <script type="text/javascript">
+      //<![CDATA[
+      var query = {$query}, enabled = {$enabled};
+      {literal}
+      var swapSources = function(axis, selected) {
+        var select = $('agSources'), span = $('agQuery');
+        if (selected == null) { selected = $F(select); }
+
+        select.length = 0;
+        var options = select.options;
+        $H(enabled[axis] || {}).each(function(pair, i) {
+          options[i] = new Option(pair[1], pair[0]);
+          if (selected == pair[0]) { select.selectedIndex = i; }
+        });
+
+        span.innerHTML = '';
+        if (axis == 'keyword') {
+          span.innerHTML = 'キーワード: <input type="text" name="query[searchTerms]" value="' + (query.searchTerms || '') + '"/>';
+        } else if (axis == 'position') {
+          span.innerHTML = '緯度: <input type="text" name="query[latitude]" value="' + (query.latitude || '') + '"/> 経度: <input type="text" name="query[longitude]" value="' + (query.longitude || '') + '"/>';
+        } else if (axis == 'datetime') {
+          span.innerHTML = '日付: <input type="text" name="query[date]" value="' + (query.date || '') + '"/> 時刻: <input type="text" name="query[time]" value="' + (query.time || '') + '"/>';
+        }
+      };
+
+      function capture(a, id, name) {
+        a.onclick   = null;
+        a.innerHTML = '...';
+        new Ajax.Request('/management/api_general/api_general_capture/', {
+            parameters: $H({"xid": id, "name": name}),
+            onSuccess: function(xhr) {
+                if (xhr.responseText == 'true') {
+                    a.innerHTML = 'Done!';
+                }
+            }
+        });
+      }
+      {/literal}
+      swapSources('{$axis|default:"keyword"}', {$sourceId|default:"0"});
+      //]]>
+    </script>
+
+    {if $source}
+
+      <table style="width:100%">
+        <tr>
+          <th>名前</th><th>内容</th>{if $auth.$mt.insert}<th>&nbsp;</th>{/if}
+        </tr>
+        {foreach from=$items item=item}
+          <tr>
+            {if $item->isFindable()}
+              <td><a href="/management/{$mt}/{$mt}_edit/xid={$sourceId}%3A{$item->getId()}">{$item->getName()}</a></td>
+            {else}
+              <td>{$item->getName()}</td>
+            {/if}
+            <td>{$item->getSummary()}</td>
+            {if $auth.$mt.insert}
+            <td>
+              {if $item->isFindable()}
+              <a href="javascript:void 0" onclick="capture(this, '{$sourceId}:{$item->getId()|escape:"javascript"}', '{$item->getName()|escape:"javascript"}')">取り込む</a>
+              {/if}
+            </td>
+            {/if}
+          </tr>
+        {foreachelse}
+          <tr>
+            <td colspan="2">条件に一致する情報は見つかりませんでした。</td>
+          </tr>
+        {/foreach}
+      </table>
+
+      <p><a href="#agSearch">検索フォームへ</a></p>
+
+      <div>{$source.credit}</div>
+    {/if}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

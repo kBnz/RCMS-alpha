@@ -1,0 +1,116 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}リスト</h2>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/output/output_list/">{'/modules/output'|translate}</a>
+<a href="/management/output/output_rss_list/">出力RSS一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="main_contents">
+<div id="output_rss_list" class="list_main">
+<p>Atom/RSSフィード出力用のURLの一覧です。</p>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<br/>
+
+  {foreach from=$output_rss_list key=key item=item name=output_rss}
+    {if $smarty.foreach.output_rss.first}
+    <form name="output_rss_list" action="/management/output/output_rss_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="UPDATE" />
+
+    <h3>Atom/RSS受信を許可するIPアドレス</h3>
+    <textarea cols="60" rows="5" id="output_rss_permission_ip_address" name="output_rss_permission_ip_address">{$output_rss_permission_ip_address|escape}</textarea>
+    <p><span class="hint">何も記述しなければ、全てのIPアドレスに受信を許可します。</span></p>
+
+    <h3>出力URL</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'output_rss[]')" />有効</th>
+        <th>モジュール</th>
+        <th>形式</th>
+        <th>URL</th>
+      </tr>
+    {/if}
+        {foreach from=$arrMenu[$key] key=key2 item=item2 name=output_rss2}
+            {if $item2.atom != ''}
+            <tr>
+            <td><input type="checkbox" name="output_rss[]" value="{$item2.atom}" {if $item2.atom_checked != 0}checked="checked"{/if} /></td>
+            <td>{$item} {$item2.group}</td>
+            <td>[Atom]</td>
+            <td><a href="{$item2.atom}" target="_blank">{$item2.atom}</a></td>
+            </tr>
+            {/if}
+            {if $item2.georss != ''}
+            <tr>
+            <td><input type="checkbox" name="output_rss[]" value="{$item2.georss}" {if  $item2.georss_checked != 0}checked="checked"{/if} /></td>
+            <td>{$item} {$item2.group}</td>
+            <td>[geoRSS]</td>
+            <td><a href="{$item2.georss}" target="_blank">{$item2.georss}</a></td>
+            </tr>
+            {/if}
+            {if $item2.kml != ''}
+            <tr>
+            <td><input type="checkbox" name="output_rss[]" value="{$item2.kml}" {if $item2.kml_checked != 0}checked="checked"{/if} /></td>
+            <td>{$item} {$item2.group}</td>
+            <td>[KML]</td>
+            <td><a href="{$item2.kml}" target="_blank">{$item2.kml}</a></td>
+            </tr>
+            {/if}
+            {if $item2.ical != ''}
+            <tr>
+            <td><input type="checkbox" name="output_rss[]" value="{$item2.ical}" {if $item2.ical_checked != 0}checked="checked"{/if} /></td>
+            <td>{$item} {$item2.group}</td>
+            <td>[ICAL]</td>
+            <td>
+            <a href="{$item2.ical}" target="_blank">{$item2.ical}</a><br />
+            <span class="hint">パラメータを指定しない場合、今月の予定を出力します。</span><br />
+            <span class="hint">yearパラメータのみを指定すると、指定年の予定を全て出力します</span><br />
+            <span class="hint">monthパラメータのみを指定すると、今年の指定月の予定を出力します</span><br />
+            <span class="hint">yearパラメータとmonthパラメータの両方を指定すると、指定年・指定月の予定を出力します</span><br />
+            </td>
+            </tr>
+            {/if}
+            {if $item2.gcal != ''}
+            <tr>
+            <td><input type="checkbox" name="output_rss[]" value="{$item2.gcal}" {if $item2.gcal_checked != 0}checked="checked"{/if} /></td>
+            <td>{$item} {$item2.group}</td>
+            <td>[GCAL]</td>
+            <td><a href="{$item2.gcal}" target="_blank">{$item2.gcal}</a><br />
+            <span class="hint">パラメータを指定しない場合、今月の予定を出力します。</span><br />
+            <span class="hint">yearパラメータのみを指定すると、指定年の予定を全て出力します</span><br />
+            <span class="hint">monthパラメータのみを指定すると、今年の指定月の予定を出力します</span><br />
+            <span class="hint">yearパラメータとmonthパラメータの両方を指定すると、指定年・指定月の予定を出力します</span><br />
+            </td>
+            </tr>
+            {/if}
+        {/foreach}
+    {if $smarty.foreach.output_rss.last}
+    </table>
+    {buttonbox}
+      <button type="submit">更新</button>
+    {/buttonbox}
+<br />
+<span class="hint">出力形式が[Atom]の各URLのパラメータに「id」を指定すると、そのidで絞り込んだRSS/Atomを表示します。</span><br />
+(例)blog_id=9999のデータだけのRSS/Atomを取得したい場合、<br />
+{$smarty.const.ROOT_URL}/direct/output/atom/kbn=blog&id=9999<br /><br />
+
+<span class="hint">kbnパラメータが{foreach from=$Output_Module_Group_Module key=key item=item }{$key}、{/foreach}いずれかの場合に、パラメータに「group」を指定すると、そのgroupで絞り込んだRSS/Atomを表示します。</span><br />
+(例)group=9999のデータだけのXMLを取得したい場合、<br />
+{$smarty.const.ROOT_URL}/direct/output/xml/kbn=blog&group=9999<br /><br />
+    </form>
+    {/if}
+  {/foreach}
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

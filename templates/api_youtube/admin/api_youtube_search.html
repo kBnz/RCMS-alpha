@@ -1,0 +1,68 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript" src="/js/modules/{$mt}/YouTubeSearch.js"></script>
+<script type="text/javascript">
+  YouTube.pathToSearcher = '{$pathToSearcher}';
+  onReady(YouTube.init.bind(YouTube, 'ayForm', 'ayResults'));
+</script>
+
+<div class="list_right_bt">
+  <h2>動画検索</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_search/">{$module_nm}</a>
+動画検索
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+
+  <div class="list_main">
+
+    <p>関連させたい動画を検索します。</p>
+
+    <h3>検索</h3>
+    <form id="ayForm" action="javascript:void 0" onsubmit="return YouTube.submit()">
+      <table style="width:100%">
+        <tr>
+          <th>フリーワード</th>
+          <td><input type="text" name="videoQuery" style="width:15em"/></td>
+          <th>並び替え</th>
+          <td>
+            <select name="orderBy">
+              <option value="relevance" selected="selected">関連度</option>
+              <option value="published">追加日</option>
+              <option value="viewCount">再生回数</option>
+              <option value="rating">評価</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>作者名</th>
+          <td><input type="text" name="author" style="width:15em"/></td>
+          <th>取得件数</th>
+          <td>
+            <select name="maxResults">
+              <option value="10" selected="selected">10件</option>
+              <option value="25">25件</option>
+              <option value="50">50件</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+
+      <p><input type="submit" value="検索" /></p>
+    </form>
+
+    <h3>検索結果</h3>
+    <div id="ayResults">検索結果はここに表示されます。</div>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

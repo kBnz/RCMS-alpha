@@ -1,0 +1,12 @@
+{if $linkList|@count>0}
+<h2>{'/label/related_link'|translate}{*関連リンク*}</h2>
+<ul>
+  {foreach from=$linkList item=link}
+    <li>
+      {if $link.link_image_type != ""}<a href="{$link.link_url}" target="_blank"><img src="{$smarty.const.LINK_S_SAVE_URL}/s{$link.link_id}.jpg" alt="{$link.link_image_alt}"></a>{/if}
+      <a href="{$link.link_url}">{$link.link_string}</a>
+    </li>
+  {/foreach}
+</ul>
+<hr/>
+{/if}

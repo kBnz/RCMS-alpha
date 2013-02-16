@@ -1,0 +1,107 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{rcms_include file="management/fileupload.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/link/label/link_edit'|translate}{*リンク編集*}</h2>
+  <ul>
+{if $auth.link.insert}
+    <li class="add"><a href="/management/link/link_edit/"><span>{'/modules/link/label/create_new_link_btn'|translate}{*リンク追加*}</span></a></li>
+{/if}
+    <li class="normal"><a href="/management/link/link_history/link_id={$formData.link_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/link/link_list/">{'/modules/link'|translate}</a>
+<a href="/management/link/link_list/">{'/modules/link/label/link_list'|translate}</a>
+{'/modules/link/label/link_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> リンク >> リンク一覧 >> リンク編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="link/admin/minitabs.html" page_type=$ct}
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/link/link_edit/" method="post" enctype="multipart/form-data" id="form_link_edit">
+  <input name="MAX_FILE_SIZE" type="hidden" value="1048576" />
+  <input type="hidden" name="link_id" value="{$formData.link_id}" />
+  <input type="hidden" name="pageID" value="{$pageID}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="link_image_type" value="{$formData.link_image_type}" />
+
+  <table width="100%" id="table_link_edit">
+    <tr id="tr_link_category">
+      <th id="th_link_category" width="200">{'/label/category'|translate}{*カテゴリー*}<span class="required" >{'/label/required'|translate}</span></th>
+      <td id="td_link_category"><select name="link_category_id">{html_options options=$arrLink_category selected=$formData.link_category_id}</select></td>
+    </tr>
+    <tr id="tr_link_string">
+      <th id="th_link_string" width="200">{'/label/link_character_string'|translate}{*リンク文字列*}</th>
+      <td id="td_link_string"><input size="50" name="link_string" type="text" value="{$formData.link_string|escape}" /></td>
+    </tr>
+    <tr id="tr_link_url">
+      <th id="th_link_url" width="200">{'/label/link_url'|translate}{*リンク先URL*}</th>
+      <td id="td_link_url"><input size="50" name="link_url" type="text" value="{$formData.link_url|escape}" /></td>
+    </tr>
+    <tr id="tr_url_of_the_origin_page">
+      <th id="th_url_of_the_origin_page" width="200">{'/modules/link/label/url_of_the_origin_page'|translate}{*リンク元ページのURL*}</th>
+      <td id="td_url_of_the_origin_page"><input size="50" name="link_page" type="text" value="{$formData.link_page|escape}" /></td>
+    </tr>
+    <tr id="tr_link_information">
+      <th id="th_link_information" width="200">{'/label/link_information'|translate}{*リンク情報*}</th>
+      <td id="td_link_information"><textarea cols="60" rows="5" name="link_info" style="font-size: 100%;">{$formData.link_info|escape}</textarea></td>
+    </tr>
+    <tr id="tr_link_image">
+        <th id="th_link_image">{'/modules/link/label/specify_the_image_of_link'|translate}{*リンク画像*}</th>
+        <td id="td_link_image">
+            {fileupload id=1 url='/direct/link/file_upload/' default=$formData.photo_url hidden_nm='photo_url' file_type='jpg'}{/fileupload}
+            <p>※{'/msg/if_image_size_is_wider_than_photo_width'|translate:$photo_width:$photo_width}</p>{*写真幅サイズは{$photo_width}pxを超える場合、{$photo_width}pxに縮小されます*}
+        </td>
+    </tr>
+    <tr id="tr_link_image_alternate_text">
+      <th id="th_link_image_alternate_text" width="200">{'/modules/link/label/link_image_alternate_text'|translate}{*リンク画像代替テキスト*}</th>
+      <td id="td_link_image_alternate_text"><input size="50" name="link_image_alt" type="text" value="{$formData.link_image_alt|escape}" /></td>
+    </tr>
+    {if $formData.applicant_email}
+    <tr id="tr_link_applicant_information">
+      <th id="th_link_applicant_information" width="200">{'/modules/link/label/link_applicant_information'|translate}{*リンク申込者の連絡先*}</th>
+      <td id="td_link_applicant_information"><ul><li>{$formData.applicant_name}</li>
+              <li>{$formData.applicant_email}</li></ul></td>
+    </tr>
+    {/if}
+    {if $formData.application_type != 0}
+    <tr id="tr_link_application_type">
+      <th id="th_link_application_type" width="200">{'/label/application_type'|translate}{*申し込み種別*}</th>
+      <td id="td_link_application_type">{$arrApplicationType[$formData.application_type]}</td>
+    </tr>
+    <tr id="tr_link_status_of_applying">
+      <th id="th_link_status_of_applying" width="200">{'/label/status_of_applying'|translate}{*申請状況*}</th>
+      <td id="td_link_status_of_applying">{foreach from=$arrSubmitStatus item=disp_status key=key}
+          <input type="radio" name="status" value="{$key}" {if $formData.status == $key}checked{/if}> {$disp_status}
+          {/foreach}</td>
+    </tr>
+    {/if}
+  </table>
+
+{rcms_include file="management/open_date_box.html" id=$formData.link_id data=$formData}
+
+  <br style="clear: both;">
+  <a id="relation_data" name="relation_data"></a>
+  {rcms_include file="management/relation_edit.html"}
+  <br style="clear: both;">
+
+  {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+</form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

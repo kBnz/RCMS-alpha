@@ -1,0 +1,7 @@
+<span class="hint">{'/modules/location/msg/help_googlemap_setting'|translate}{*地図上をクリックすると設定される位置が変わります。ズームなどの状態も設定できます。*}</span><br>
+          <input id="gmap_x{$item.repeatCnt}" name="{$item.name}[gmap_x]" type="hidden" value="{$item.value.gmap_x}" />
+          <input id="gmap_y{$item.repeatCnt}" name="{$item.name}[gmap_y]" type="hidden" value="{$item.value.gmap_y}" />
+          <input id="gmap_zoom{$item.repeatCnt}" name="{$item.name}[gmap_zoom]" type="hidden" value="{$item.value.gmap_zoom}" />
+          <input id="gmap_type{$item.repeatCnt}" name="{$item.name}[gmap_type]" type="hidden" value="{$item.value.gmap_type}" />
+          <iframe src="/management/location/location_map/gmap_x={$item.value.gmap_x}&gmap_y={$item.value.gmap_y}&gmap_zoom={$item.value.gmap_zoom}&gmap_type={$item.value.gmap_type}&repeatCnt={$item.repeatCnt}" name="googlemap" width=490 height=430 scrolling="auto" marginheight="0" marginwidth="0" frameborder="0"></iframe>
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}

@@ -1,0 +1,183 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</h2>
+<ul>
+{if $auth.bbs.insert}
+<li class="add"><a href="/management/bbs/bbs_edit/"><span>{'/modules/bbs/label/add_bbs'|translate}{*掲示板追加*}</span></a></li>
+{/if}
+<li class="normal"><a href="/management/bbs/bbs_history/bbs_header_id={$header.bbs_header_id}"><span>{'/label/update_history'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs'|translate}</a>
+<a href="/management/bbs/bbs_list/">{'/modules/bbs/label/bbs_list'|translate}</a>
+{'/modules/bbs/label/bbs_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 掲示板 >> 掲示板一覧  >> 基本設定*}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{if $header.forum_title}{$header.forum_title|escape}{else}{'/label/create_new'|translate}{*新規作成*}{/if}</h3>
+<ul class="minitabs">
+  {if $header.bbs_header_id}
+    <li><a href="/management/bbs/bbs_edit/bbs_header_id={$header.bbs_header_id}" class="active">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/bbs/bbs_detail_list/bbs_header_id={$header.bbs_header_id}">{'/modules/bbs/label/post'|translate}{*投稿記事*}</a></li>
+    <li><a href="/management/bbs/bbs_detail_category_list/bbs_header_id={$header.bbs_header_id}">{'/modules/bbs/label/classification_labels'|translate}{*分類ラベル*}</a></li>
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><a href="/management/bbs/bbs_edit/" class="active">{'/modules/bbs/label/bbs_edit'|translate}{*基本設定*}</a></li>
+    <li><span>{'/modules/bbs/label/post'|translate}{*投稿記事*}</span></li>
+  {/if}
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+  <form name="bbs_edit" id="bbs_edit" action="/management/bbs/bbs_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="bbs_header_id" value="{$bbs_header_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="{if $bbs_header_id}UPDATE{else}INSERT{/if}" />
+    {if $formData.photo_file != ""}
+        <input type="hidden" name="photo_file" value="{$formData.photo_file}" />
+    {/if}
+    <table width="100%">
+      <tr>
+        <th>{'/label/title'|translate}{*タイトル*}</th>
+        <td><input type="text" name="forum_title" size="30" maxlength="50" value="{$formData.forum_title|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/image'|translate}</th>{*画像*}
+        <td>{if $formData.photo_url != ""}<img src="{$formData.photo_url}" style="border:solid #E1E1E1 10px;"><br>{/if}
+          <input name="bbs_photo" type="file" />
+          <input name="del_photo" type="checkbox" value="1" />{'/label/delete_image'|translate}{*画像削除*}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}</th>
+        <td><select name="category_id">{html_options options=$categoryList selected=$formData.category_id}</select></td>
+      </tr>
+      <tr>
+        <th>{'/label/explanation'|translate}{*説明*}</th>
+        <td><textarea name="forum_explanation" rows="5" cols="60">{$formData.forum_explanation|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>{'/label/publish_settings'|translate}{*公開設定*}</th>
+        <td>{html_radios name=open_flg options=$bbs_openFlg_options selected=$formData.open_flg}</td>
+      </tr>
+
+      <tr>
+        <th>{'/modules/bbs/msg/send_email_when_post'|translate}{*投稿時に管理者へメール送信するか?*}</th>
+        <td>{html_radios name=mail_flg options=$bbs_mail_flag_option2 selected=$formData.mail_flg}</td>
+      </tr>
+      <tr>
+        <th>{'/modules/bbs/label/violation_report'|translate}{*違反報告*}</th>
+        <td>
+        {'/modules/bbs/msg/setting_for_violation_report'|translate}{*違反報告設定*} {html_radios name=report_flg options=$bbs_report_flag_option selected=$formData.report_flg}<br>
+        {'/modules/bbs/msg/send_email_for_violation_report'|translate} {*管理者へメール送信するか?*}{html_radios name=report_mail_flg options=$bbs_mail_flag_option selected=$formData.report_mail_flg}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/admin_email_eddress'|translate}{*管理者メールアドレス*}</th>
+        <td><input type="text" name="admin_mail" size="60" maxlength="255" value="{$formData.admin_mail}" />
+            <p class="hint">{'/msg/enter_email_if_send_email'|translate}{*メール送信する場合は入力してください。*}</p>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/authority_settings'|translate}{*権限設定*}</th>
+        <td>
+          <table>
+            <tr >
+              <th>{'/label/group'|translate}{*グループ*}</th>
+              <th>{'/label/browse'|translate}{*閲覧*}</th>
+              <th>{'/label/write'|translate}{*書込*}</th>
+            </tr>
+            <tr>
+              <td>{'/label/all_unlogin_users'|translate}{*非ログインユーザ*}</td>
+              <td>
+                <select name="mode_flg_view[0]">{html_options options=$bbs_viewmode_options selected=$formData.mode_flg_view[0]}</select>
+              </td>
+              <td>
+                <select name="mode_flg_write[0]">{html_options options=$bbs_writemode_options selected=$formData.mode_flg_write[0]}</select>
+              </td>
+            </tr>
+    {foreach from=$arrAdminList item=item1 key=key1}
+            <tr>
+      {assign var="key_id" value=$item1.group_id}
+              <td>{$item1.group_nm}</td>
+              <td><select name="mode_flg_view[{$item1.group_id}]">{html_options options=$bbs_viewmode_options selected=$formData.mode_flg_view.$key_id}</select></td>
+              <td><select name="mode_flg_write[{$item1.group_id}]">{html_options options=$bbs_writemode_options selected=$formData.mode_flg_write.$key_id}</select></td>
+            </tr>
+    {/foreach}
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/display_thread_item_count'|translate}{*表示スレッド件数*}</th>
+        <td><input type="text" name="thread_num" size="3" maxlength="3" value="{$formData.thread_num}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/display_item_count_for_display_list'|translate}{*表示一覧件数*}</th>
+        <td><input type="text" name="page_num" size="3" maxlength="3" value="{$formData.page_num}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/maximum_upload_file_size'|translate}{*最大アップロードファイルサイズ*}</th>
+        <td><input type="text" name="img_size" size="10" value="{$formData.img_size}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/sort'|translate}{*並び順*}<br />({'/msg/data_order'|translate})</th>
+        <td><input type="text" name="grade" size="10" value="{$formData.grade}" /></td>
+      </tr>
+      <tr>
+        <th rowspan="2">{'/label/meta_data'|translate}{*メタ情報*}</th>
+        <td>Keywords<input type="text" name="keywords" value="{$formData.keywords}" size="100" /></td>
+      </tr>
+      <tr>
+        <td>Description<input type="text" name="description" value="{$formData.description}" size="100" /></td>
+      </tr>
+      <tr>
+        <th>{'/modules/bbs/label/auto_url_link_flg'|translate}{*URLに自動的にリンクを張る*}</th>
+        <td><input type="checkbox" name="auto_url_link_flg" value="1" {if $formData.auto_url_link_flg}checked{/if}>{'/label/enable_flg'|translate}{*有効*}</td>
+      </tr>
+      <tr>
+        <th>{'/label/use_image_authentication'|translate}{*画像認証を使用する*}</th>
+        <td><input type="checkbox" name="use_captcha" value="1" {if $formData.use_captcha}checked="checked"{/if} />{'/label/enable_flg'|translate}{*有効*}</td>
+      </tr>
+      <tr>
+        <th>{'/modules/bbs/label/reject_1bit_flg'|translate}{*英数字のみを拒否*}</th>
+        <td><input type="checkbox" name="reject_1bit_flg" value="1" {if $formData.reject_1bit_flg}checked{/if}>{'/label/enable_flg'|translate}{*有効*}</td>
+      </tr>
+    </table>
+    {buttonbox}
+      {if $bbs_header_id == "" && $auth.bbs.insert}
+        <button type="submit">{'/label/add_btn'|translate}{* 追加する *}</button>
+      {/if}
+      {if $bbs_header_id != "" && $auth.bbs.update}
+        <button type="submit">{'/label/update_btn'|translate}{* 更新する *}</button>
+      {/if}
+      {if $bbs_header_id != "" && $auth.bbs.delete}
+        <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}{* 削除する *}</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

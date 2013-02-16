@@ -1,0 +1,28 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>
+<ul>
+{if $auth.navigation.insert}
+<li class="add"><a href="/management/navigation/navigation_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+{/if}
+<li class="normal"><a href="/management/navigation/navigation_history/navigation_id={$navigation_id}"><span>{'/label/update_history'|translate}</span></a></li>
+
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/navigation/navigation_list/">{'/modules/navigation'|translate}</a>
+<a href="/management/navigation/navigation_list/">{$module_nm}{'/label/list'|translate}</a>
+<a href="/management/navigation/navigation_edit/navigation_id={$navigation_id}">{$module_nm}{'/label/edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/navigation/navigation_edit/navigation_id=$navigation_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

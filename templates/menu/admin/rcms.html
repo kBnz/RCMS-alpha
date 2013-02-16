@@ -1,0 +1,223 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+
+
+<div class="main_contents">
+
+<div class="list_main">
+
+<h3>{'/modules/menu/label/site_registration'|translate}</h3>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/menu/rcms/" method="post">
+<input type="hidden" name="MODE" value="UPDATE">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<table width="100%">
+<tr>
+<th>{'/modules/menu/label/registration_status'|translate}{*お申し込み状況*}</th>
+<td>
+{if $sitedata.plan eq 10}
+{'/modules/menu/label/paid_version'|translate}{*有料版*}
+{elseif $sitedata.plan eq 20}
+{'/modules/menu/label/trial_version'|translate}{*試用版*}
+{else}
+{'/modules/menu/label/free_version'|translate}{*無料版*}
+{/if}
+</td>
+<td>
+{if $sitedata.plan eq 10}
+
+{else}
+{'/modules/menu/msg/selecting_paid_version'|translate}{*有料版にすると、独自ドメインが使えるようになります。*}
+{/if}
+
+</td>
+</tr>
+<tr>
+<th>{'/label/site_name'|translate}{*サイト名*}</th><td><input type="text" name="site_nm" value="{$sitedata.site_nm}" size="50"></td><td>{'/modules/menu/msg/different_site'|translate}{*サイト管理で設定するものとは別のものになります。*}</td>
+</tr>
+<tr>
+<th>{'/label/site_url'|translate}{*サイトURL*}</th><td>
+{if $smarty.const.OEM_ID eq 10001}
+<input type="text" name="site_url" value="{$smarty.const.ROOT_URL}" size="50" {if $sitedata.plan ne '10'}disabled{/if}>
+<input type="hidden" name="site_url2" value="{$sitedata.site_url2}">
+{if $sitedata.plan eq '10'}<br><input type="checkbox" name="dns_ignore_flg" value="1" {if $sitedata.dns_ignore_flg}checked{/if}>DNSの設定を確認せずに登録する{/if}
+{else}
+{$smarty.const.ROOT_URL}
+{/if}
+</td><td>※http://で始めて、最後に/は入れないでください。例）http://www.r-cms.jp</td>
+</tr>
+{if $sitedata.status ne '80'}
+<tr>
+
+<th>{'/label/publish_status'|translate}</th><td>{* 公開状況 *}
+<input type="radio" name="status" value="10" {if $sitedata.status eq 10}checked{/if}>{$arrRCMS_Status.10}<br>
+<input type="radio" name="status" value="20" {if $sitedata.status eq 20}checked{/if}>{$arrRCMS_Status.20}<br>
+<input type="radio" name="status" value="30" {if $sitedata.status eq 30}checked{/if}>{$arrRCMS_Status.30}<br>
+</td>
+<td>{'/modules/menu/msg/if_you_set_site_status_open'|translate}
+{*公開中にすると、上記のサイト名でRCMSサイト(<a href="http://www.r-cms.jp/" target="_blank">http://www.r-cms.jp/</a>)に掲載されます。*}<br>
+{'/modules/menu/msg/about_constructing_unpublish'|translate}{*・構築中、非公開の場合はRCMSサイトからリンクされません。・実際に非公開にする作業はBASIC認証やIPアドレス、ページ設定での閲覧制限などで行ってください。*}
+</td>
+</tr>
+{/if}
+<tr>
+<th>{'/modules/menu/label/access_limit_basic'|translate}{*アクセス制限(BASIC認証)*}</th>
+<td>
+<input type="checkbox" name="basic_auth_flg" value="1" {if $sitedata.basic_auth_flg}checked{/if}>{'/msg/enable'|translate}{*有効にする*}<br>
+ID:<input type="text" name="basic_auth_id" value="{$sitedata.basic_auth_id}" size="15">　PWD:<input type="text" name="basic_auth_pwd" value="{$sitedata.basic_auth_pwd}" size="15">
+</td>
+<td>{'/modules/menu/msg/ID_PWD'|translate}{*・ID,PWDは半角英数字で設定してください。・管理画面には適用されません。*}</td>
+</tr>
+{if $sitedata.plan eq 10}
+<tr>
+<th>{'/modules/menu/label/access_limit_ip'|translate}{*アクセス制限(IPアドレス)*}</th>
+<td>
+<input type="checkbox" name="ip_auth_flg" value="1" {if $sitedata.ip_auth_flg}checked{/if}>{'/msg/enable'|translate}{*有効にする*}<br>
+<textarea name="limit_ip" rows="3" cols="30">{$sitedata.limit_ip}</textarea><br><br>
+{'/modules/rcms/label/limit_type'|translate}{*アクセス制限の適用範囲*}<br>
+<input type="radio" name="limit_type_ip" value="0" {if $sitedata.limit_type_ip eq 0 || $sitedata.limit_type_ip eq ''}checked{/if}>{$arrAccessLimit_type.0}
+<input type="radio" name="limit_type_ip" value="1" {if $sitedata.limit_type_ip eq 1}checked{/if}>{$arrAccessLimit_type.1}<br>
+<span style="color:red;">{'/modules/menu/msg/now_accessing_from'|translate:$smarty.server.REMOTE_ADDR}{*現在、{$smarty.server.REMOTE_ADDR}からアクセスしています。*}</span>
+</td>
+<td>{'/modules/menu/msg/line_break'|translate}{*・改行区切りでIPアドレスを入力してください。・このIPアドレス以外からアクセスを拒否します。・IPアドレスとBASIC認証の両方の制限がある場合はどちらかをクリアするとアクセスできるようになります。*}</td>
+</tr>
+{/if}
+<tr>
+<th>{'/modules/menu/label/maintaining_setting'|translate}{*メンテナンスの設定*}</th>
+<td>
+<input type="checkbox" name="rcms_mente_flg2" value="1" {if $sitedata.rcms_mente_flg2}checked{/if}>{'/msg/enable'|translate}{*有効にする*}<br>
+{'/label/title'|translate}{*タイトル*}<br>
+<textarea name="rcms_mente_title" rows="1" cols="60">{$sitedata.rcms_mente_title}</textarea><br>
+{'/label/schedule'|translate}{*スケジュール*}<br>
+<textarea name="rcms_mente_date" rows="2" cols="60">{$sitedata.rcms_mente_date}</textarea><br>
+{'/modules/page/label/works'|translate}{*メンテナンス内容（作業内容など）*}<br>
+<textarea name="rcms_mente_contents" rows="4" cols="60">{$sitedata.rcms_mente_contents}</textarea><br>
+</td>
+<td>{'/modules/menu/msg/maintaining_setting'|translate}{*・管理画面には適用されません。また、ログインしているスーパーユーザーにはメンテナンス画面を表示しません。*}</td>
+</tr>
+<tr>
+<th>多言語設定</th><td>
+<input type="checkbox" name="use_multilang" value="1" {if $sitedata.use_multilang}checked{/if}>利用する<br>
+{if $site_lang_flg}
+主言語：{$enableLangList[$sitedata.site_lang]}<br>
+{else}
+主言語：<select name="site_lang">{html_options options=$enableLangList selected=$sitedata.site_lang}</select><br>
+{/if}
+副言語：<br>
+<select name="site_ext_lang[]"><option value=""></option>{html_options options=$enableLangList selected=$sitedata.site_ext_lang.0}</select><br>
+<select name="site_ext_lang[]"><option value=""></option>{html_options options=$enableLangList selected=$sitedata.site_ext_lang.1}</select><br>
+<select name="site_ext_lang[]"><option value=""></option>{html_options options=$enableLangList selected=$sitedata.site_ext_lang.2}</select><br>
+<select name="site_ext_lang[]"><option value=""></option>{html_options options=$enableLangList selected=$sitedata.site_ext_lang.3}</select><br>
+<select name="site_ext_lang[]"><option value=""></option>{html_options options=$enableLangList selected=$sitedata.site_ext_lang.4}</select><br>
+
+</td>
+<td></td>
+</tr>
+{if $smarty.const.OEM_ID eq 10001}
+<tr>
+<th>管理画面ロゴURL</th>
+<td>
+{if $smarty.const.MNG_LOGO_URL}<img src="{$smarty.const.MNG_LOGO_URL}">{/if}
+<input type="text" name="mng_logo_url" value="{$smarty.const.MNG_LOGO_URL|escape}" size="50" /><br>
+<span class="hint">必ずhttps://で始まるURLにしてください。</span>
+</td><td></td>
+</tr>
+<tr>
+<th>管理画面フッターテキスト</th>
+<td>
+<textarea name="management_footer" style="width:350px;" rows="2">{$smarty.const.MANAGEMENT_FOOTER|escape}</textarea>
+</td><td></td>
+</tr>
+{/if}
+{*
+<tr>
+<th>ユーザー側クレジットテキスト</th>
+<td>
+<input type="text" name="edition_text" value="{$formData.EDITION_TEXT|escape}" size="50" />
+</td><td></td>
+</tr>
+*}
+<tr>
+<th>{'/modules/menu/label/email'|translate}{*EMAIL*}</th><td><input type="text" name="email" value="{$sitedata.email}" size="40"></td>
+<td>{'/modules/menu/msg/notice_administration'|translate}{*RCMSからのお知らせや管理情報などが配信されます。*}</td>
+</tr>
+<tr>
+<th>{'/label/name'|translate}{*名前*}</th><td><input type="text" name="name1" value="{$sitedata.name1}" size="10"> <input type="text" name="name2" value="{$sitedata.name2}" size="10"></td>
+<td>{'/modules/menu/msg/rcms_aplicant'|translate}{*RCMSの申込者のお名前です。*}</td>
+</tr>
+<tr>
+<th>{'/modules/menu/label/registration_date'|translate}{*登録日時*}</th><td>{$sitedata.inst_ymdhi|pg_dateformat:"%Y/%m/%d %H:%M"}</td>
+<td></td>
+</tr>
+</table>
+<input type="submit" name="subflg" value="{'/label/update_btn'|translate}{*更新する*}">
+</form>
+
+{if $sitedata.plan eq 10}
+<br>
+<h3>{'/modules/menu/label/site_copy'|translate}{*コピーする*}</h3>
+<form action="/management/menu/rcms/" method="post" onSubmit="{literal}return confirm('本当にコピーしますか？');{/literal}">
+<input type="hidden" name="MODE" value="COPY">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<table class="list" cellspacing="0" cellpadding="0">
+	<tbody>
+	<tr>
+		<th>ご希望のURL</th>
+		<td>http:// <input type="text" name="site_url" value="{$smarty.request.site_url}" style="width:80px;">{$rcms_base_url}/</td>
+		<td><p>半角英数字のみ有効です。記号は-（ハイフン）のみ使用可能です。</p></td>
+	</tr>
+
+	<tr>
+		<th>サイト名</th>
+		<td><input type="text" name="site_nm" value="{$smarty.request.site_nm}" style="width:150px;"></td>
+		<td><p>後からの変更も可能です。</p></td>
+	</tr>
+	<tr>
+		<th>メールアドレス</th>
+		<td><input type="text" name="email" value="{if $smarty.request.email}{$smarty.request.email}{else}{$smarty.session.email}{/if}" style="width:250px;"></td>
+		<td><p>管理者のログインIDになる他、お知らせ等も配信されます。</p></td>
+	</tr>
+	<tr>
+		<th>メールアドレス(確認)</th>
+		<td><input type="text" name="email2" value="" style="width:250px;"></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th>パスワード</th>
+		<td><input type="password" name="login_pwd" value="" style="width:150px;"><input type="checkbox" name="auto_pwd_flg" value="1">自動的に作成する</td>
+		<td><p>4文字以上で入力してください。</p></td>
+	</tr>
+	<tr>
+		<th>お名前</th>
+		<td>
+		<input type="text" name="name1" value="{if $smarty.request.name1}{$smarty.request.name1}{else}{$smarty.session.name1}{/if}" style="width:100px;">
+		<input type="text" name="name2" value="{if $smarty.request.name2}{$smarty.request.name2}{else}{$smarty.session.name2}{/if}" style="width:100px;">
+		</td>
+		<td></td>
+	</tr>
+</tbody>
+</table>
+<input type="hidden" name="agree_flg" value="1"><br>
+<input type="submit" name="subflg" value="{'/label/copy_btn'|translate}{*コピーする*}">
+</form>
+{/if}
+
+<br>
+<h3>{'/modules/menu/label/resign'|translate}{*退会する*}</h3>
+{'/modules/menu/msg/cancel_membership'|translate}{*下記のボタンで退会できます。一度、退会するとサイトの復活はできませんので、ご注意ください。*}<br><br>
+<form action="/management/menu/rcms/" method="post" onSubmit="{literal}if(this.close_flg.checked){return confirm('本当に退会いたしますか？');}else{alert('サイト、コンテンツの消去に同意してください。');return false;}{/literal}">
+<input type="checkbox" name="close_flg" value="1">{'/modules/menu/msg/resign_agreement'|translate}{*これまで構築したサイトやコンテンツが消去されることに同意します。*}<br>
+<input type="hidden" name="MODE" value="CLOSE">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<input type="submit" name="subflg" value="{'/label/resign_btn'|translate}{*退会する*}">
+</form>
+
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

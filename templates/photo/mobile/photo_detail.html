@@ -1,0 +1,9 @@
+{if $photoData}
+<h2>[emoji:068]{$photoData.title}</h2>
+<div style="text-align:right;font-size:small;">
+[{$photoData.ymd}]
+</div>
+<img src="{if $is_SmartPhone}{$photoData.photo_url}{else}{$photoData.photo_s_url}{/if}" alt="{$photoList.0.title}"><br/>
+{$photoData.comment|escape|nl2br}<br/>
+<hr/>
+{/if}

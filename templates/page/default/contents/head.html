@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<title><!--%title%--></title>
+<meta name="Keywords" content="<!--%keywords%-->">
+<meta name="Description" content="<!--%description%-->">
+<meta property="og:title" content="{if $ogp_data.og_title}{$ogp_data.og_title}{else}<!--%title%-->{/if}">
+<meta property="og:description" content="{if $ogp_data.og_description}{$ogp_data.og_description}{else}<!--%description%-->{/if}">
+{if $ogp_data.og_image}
+<meta property="og:image" content="{$ogp_data.og_image}">
+{elseif $smarty.const.OGP_SITE_IMAGE}
+<meta property="og:image" content="{$smarty.const.ROOT_URL}{$smarty.const.OGP_SITE_IMAGE}">
+{/if}
+<meta property="og:type" content="{if $ogp_data.og_type}{$ogp_data.og_type}{else}website{/if}">
+<meta property="og:site_name" content="{if $ogp_data.og_site_name}{$ogp_data.og_site_name}{else}{$smarty.const.SITE_TITLE}{/if}">
+<meta property="og:url" content="{if $ogp_data.og_url}{$ogp_data.og_url}{else}{$smarty.const.ROOT_URL}{$smarty.server.REQUEST_URI|escape}{/if}">
+{if $ogp_data.fb_app_id}
+<meta property="fb:app_id" content="{$ogp_data.fb_app_id}">
+{elseif $smarty.const.OGP_FB_APP_ID}
+<meta property="fb:app_id" content="{$smarty.const.OGP_FB_APP_ID}">
+{/if}
+<link rel="home" href="/" title="<!--%site_nm%-->" >
+<link rel="index" href="/sitemap/" title="<!--%site_nm%--> {'/label/site_map'|translate}{*サイトマップ*}" >
+<link rel="alternate" media="handheld" href="{$smarty.server.PHP_SELF|escape}" >
+{if $i18n_supported_languages|@count > 1}{foreach from=$i18n_supported_languages item=item}{if $item.lang|strtolower ne $mylang|strtolower}<link rel="alternate" hreflang="{$item.lang_hyphen}" href="{$lang_url[$item.lang]}" />
+{/if}{/foreach}{/if}
+<meta name="robots" content="INDEX,FOLLOW">
+<meta name="robots" content="NOODP">
+<meta name="robots" content="NOYDIR">
+<link href="/css/front/default.v2.css" rel="stylesheet" type="text/css">
+<link href="/files/css/front/layout<!--%template_id%-->.css" rel="stylesheet" type="text/css">
+<link href="/css/front/import.css" rel="stylesheet" type="text/css" media="screen,print">
+<link rel="icon" href="/favicon.ico">
+<link rel="SHORTCUT ICON" href="/favicon.ico">
+<link rel="alternate" type="application/rss+xml" title="<!--%site_nm%-->" href="{$smarty.const.ROOT_URL}/RSS.rdf">
+<link rel="alternate" type="application/rss+xml" title="<!--%site_nm%-->" href="{$smarty.const.ROOT_URL}/files/blog/rss/RSS_BLOG_ALL.rdf">
+<script src="http{if $https_flg}s{/if}://www.google.com/jsapi"></script>
+<script type="text/javascript" src="/js/default.v2.js"></script>
+<meta name="author" content="<!--%author%-->">
+{if $smarty.const.DEFAULT_FONT_SIZE}
+<script type="text/javascript">
+<!--
+default_font_size = "{$smarty.const.DEFAULT_FONT_SIZE}";
+//-->
+</script>
+{/if}
+</head>

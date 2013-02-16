@@ -1,0 +1,128 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>>>
+<a href="/management/{$mt}/{$mt}_list/">カレンダー一覧</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$module_nm}予定編集</h2>
+
+{if $auth.calendar.insert}
+<a href="/management/{$mt}/{$mt}_edit/">>>予定追加</a><br />
+{/if}
+<a href="/management/{$mt}/{$mt}_category_list/">{'/label/categorieslist'|translate}</a><br />
+
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/calendar/calendar_edit/event_id=$event_id"}
+
+  <form name="calendar_edit" id="calendar_edit" action="/management/calendar/calendar_edit/{if $event_id}event_id={$event_id}{/if}" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+▼イベント<span style="color:red;">※</span><br />
+<input type="text" name="event_txt" value="{$data.event_txt|escape}" /><br />
+▼カテゴリ<br />
+<select name="event_category_id">{html_options options=$arrCategoryId selected=$data.event_category_id}</select><br />
+▼日付設定<br />
+開始日:<span style="color:red;">※</span><br />
+<input type="text" name="from_date" id="from_date" value="{$data.from_date|escape}" {istyle type="n"} /><br />
+<span class="hint">(例 2008/03/13)</span><br />
+終了日:<br />
+<input type="text" name="to_date" id="to_date" value="{if $data.from_date != $data.to_date}{$data.to_date|escape}{/if}" {istyle type="n"} /><br />
+<span class="required">日付をまたぐ場合は必須</span><span class="hint">(例 2008/03/15)</span><br />
+▼時間設定<br />
+<label for="setTime">時間を指定</label>
+<select name="from_hour" id="from_hour">{html_options options=$hours selected=$data.from_hour}</select>{'/label/hour'|translate}{*時*}
+<select name="from_minute" id="from_minute">{html_options options=$minutes selected=$data.from_minute}</select>{'/label/minute'|translate}{*分*}
+～
+<select name="to_hour" id="to_hour">{html_options options=$hours selected=$data.to_hour}</select>{'/label/hour'|translate}{*時*}
+<select name="to_minute" id="to_minute">{html_options options=$minutes selected=$data.to_minute}</select>{'/label/minute'|translate}{*分*}
+<span class="required">時間を指定する場合、開始時刻は必須</span><span class="hint">(例 15:30)</span><br />
+<label for="allDayFlg">終日</label><input type="checkbox" name="allDayFlg" id="allDayFlg" {if $data.allDayFlg}checked="checked"{/if} /><br />
+▼詳細<br />
+<textarea name="event_detail">{$data.event_detail|escape}</textarea><br />
+
+
+<!--公開設定-->
+{rcms_include file="management/mobile/open_date_box.html" id=$topics_id data=$formData}
+
+{if $event_id != ""}
+    {if $docmeta.is_waiting}
+    {* これは承認待ちドキュメント *}
+        {if $rauth->canUpdate("/calendar/item/$event_id", $docmeta.lang)}
+            {if $rauth->unlimitedUpdate("/calendar/item/$event_id", $docmeta.lang)}
+            {* 許可する権限がある *}
+            <input type="hidden" name="MODE" value="ACCEPT" />
+            <input type="submit" value ="{'/label/accept'|translate}" />
+            {elseif $docmeta.own}       
+            {* 自分が作成したので再修正できる *}
+            <input type="hidden" name="MODE" value="UPDATE" />
+            <input type="submit" value ="{'/label/update_btn'|translate}" />
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <input type="hidden" name="MODE" value="UPDATE" />
+            <input type="submit" value ="{'/label/update_btn'|translate}" />
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+    {else}
+    {* これは通常ドキュメント *}
+        {if $docmeta.has_waiting}
+        {* 承認待ちドキュメントがある場合は何もできない *}
+        {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+        <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+        {else}
+        {* 通常ドキュメントに対する更新処理 *}
+            {if $rauth->canUpdate("/calendar/item/$event_id", $docmeta.lang)}
+            <input type="hidden" name="MODE" value="UPDATE" />
+            <input type="submit" value ="{'/label/update_btn'|translate}" />
+            {/if}
+        {/if}
+    {/if}
+{else}
+    {if $rauth->canInsert("/calendar/item/")}
+    <input type="hidden" name="MODE" value="INSERT" />
+    <input type="submit" value ="{'/label/add_btn'|translate}" />
+    {/if}
+{/if}
+</form>
+
+{if $event_id != ""}
+    {if $docmeta.is_waiting}
+    {* これは承認待ちドキュメント *}
+        {if $rauth->canUpdate("/calendar/item/$event_id", $docmeta.lang)}
+            {if $rauth->unlimitedUpdate("/calendar/item/$event_id", $docmeta.lang)}
+            {* 承認拒否する権限がある *}
+            <form name="calendar_edit_reject" id="calendar_edit_reject" action="/management/calendar/calendar_edit/" method="POST">
+            <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+            <input name="event_id" type="hidden" value="{$event_id}" />
+            <input type="hidden" name="MODE" value="REJECT" />
+            <input type="submit" value ="{'/label/reject'|translate}" />
+            </form>
+            {/if}
+        {/if}
+    {else}
+    {* これは通常ドキュメント *}
+        {if !$docmeta.has_waiting}
+        {* 通常ドキュメントに対する削除処理 *}
+            {if $rauth->canDelete("/calendar/item/$event_id", $docmeta.lang)}
+            <form name="calendar_edit_delete" id="calendar_edit_delete" action="/management/common/mobile_delete_yesno/" method="POST">
+            <input type="hidden" name="delete_action"     value="/management/calendar/calendar_edit/event_id={$event_id}&MODE=DELETE&DG_CODE={$DG_CODE}" />
+            <input type="hidden" name="not_delete_action" value="/management/calendar/calendar_edit/event_id={$event_id}" />
+            <input type="hidden" name="module_nm"         value="{$module_nm}" />
+            <input type="submit" value ="{'/label/delete_btn'|translate}" />
+            </form>
+            {/if}
+        {/if}
+    {/if}
+{/if}
+
+{rcms_include file="management/mobile/footer.html"}

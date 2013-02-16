@@ -1,0 +1,20 @@
+<h3>{$name}</h3>
+<form action="{$SCRIPT_NAME}" method="post">
+<dl>
+{foreach from=$items item=item}
+{if $item.displayName}<dt>{$item.displayName}</dt>{/if}
+{if $item.type == 'checkbox'}
+<dd>{html_checkboxes name=$item.name options=$item.options}</dd>
+{elseif $item.type == 'radio'}
+<dd>{html_radios name=$item.name options=$item.options}</dd>
+{elseif $item.type == 'select'}
+<dd>{html_options name=$item.name options=$item.options}</dd>
+{elseif $item.type == 'direct'}
+<dd>{$item.html}</dd>
+{else}
+<dd><input type="{$item.type}" value="{$item.value|escape}" name="{$item.name}" /></dd>
+{/if}
+{/foreach}
+</dl>
+<p><input type="hidden" name="{$key}" value="{$id|escape}" /><input type="submit" value="検索" /></p>
+</form>

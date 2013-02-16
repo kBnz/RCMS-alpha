@@ -1,0 +1,99 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}結果入力</h2>
+<ul>
+<li class="view"><a href="{$smarty.const.ROOT_URL}/convention_detail/id={$convention_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/convention/convention_list/">{$module_nm}</a>
+<a href="/management/convention/convention_list/">{$module_nm}一覧</a>
+結果入力
+{/pankuzu}
+
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">アクセス数：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/convention/convention_edit/convention_id={$convention_id}">基本設定</a></li>
+  <li><a href="/management/convention/convention_detail_list/convention_id={$convention_id}" class="active">結果入力</a>
+  </ul>
+
+<div class="list_main">
+  <form name="convention_edit" id="convention_edit" action="/management/convention/convention_detail_list/" method="POST">
+    <input type="hidden" name="convention_id" value="{$convention_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{$convention_list.comment}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+        <tr>
+            <th>チーム</th>
+            {foreach name="colTeams" item=colTeam from=$joined_teams_list}
+            <th>{$colTeam}</th>
+            {/foreach}
+            {foreach name="colExts" item=colExt from=$ext_titles}
+              {if $colExt.val}
+                <th>{$colExt}</th>
+              {/if}
+            {/foreach}
+        </tr>
+        {foreach  item="rowTeams" key=rowKey item=rowTeam from=$joined_teams_list}
+        <tr>
+            <th>{$rowTeam}</th>
+            {foreach name="colTeams" key=colKey item=colTeam from=$joined_teams_list}
+            {if $rowTeam == $colTeam}
+            <td align="center">＊</td>
+            {else}
+            <td align="center">
+              {if $detail_list[$rowKey][$colKey].game_id eq ''}
+                {if $rowKey < $colKey}
+                <a href="/management/convention/convention_detail_edit/convention_id={$convention_id}&first_team={$joined_teams_list.$rowKey|escape:'url'}&second_team={$joined_teams_list.$colKey|escape:'url'}">編集<a><br>
+                {else}
+                <a href="/management/convention/convention_detail_edit/convention_id={$convention_id}&first_team={$joined_teams_list.$colKey|escape:'url'}&second_team={$joined_teams_list.$rowKey|escape:'url'}">編集<a><br>
+                {/if}
+              {else}
+              <a href="/management/convention/convention_detail_edit/game_id={$detail_list[$rowKey][$colKey].game_id}&convention_id={$convention_id}">編集<a><br>
+              {/if}
+              {if $detail_list[$rowKey][$colKey].first_total ne ''}
+                {if $rowKey < $colKey}
+                  {$detail_list[$rowKey][$colKey].first_result}{$detail_list[$rowKey][$colKey].first_total}-{$detail_list[$rowKey][$colKey].second_total}
+                {else}
+                  {$detail_list[$rowKey][$colKey].second_result}{$detail_list[$rowKey][$colKey].second_total}-{$detail_list[$rowKey][$colKey].first_total}
+                {/if}
+              {elseif $detail_list[$rowKey][$colKey].place}
+                {$detail_list[$rowKey][$colKey].ymd_str}　{$detail_list[$rowKey][$colKey].ko_time}<br>
+                @{$detail_list[$rowKey][$colKey].place}
+              {/if}
+            </td>
+            {/if}
+            {/foreach}
+            {foreach name="colExts" item=colExt from=$ext_titles}
+              {if $colExt}
+              {assign var=key value="ext_col_0"|cat:$smarty.foreach.colExts.iteration}
+                <td><input type="text" name="{$key}[]" value="{$ext_data[$key][$rowKey]}" size="5"></td>
+              {/if}
+            {/foreach}
+        </tr>
+        {/foreach }
+    </table>
+    {if $auth.convention.update && $ext_titles}
+      {buttonbox}
+          <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+      {/buttonbox}
+    {/if}
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}
+

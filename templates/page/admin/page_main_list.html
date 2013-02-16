@@ -1,0 +1,66 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+{/literal}
+</script>
+
+<style type="text/css">
+{literal}
+{/literal}
+</style>
+
+<div class="list_right_bt">
+<h2 class="page">{'/modules/page'|translate}</h2>
+<ul>
+{rcms_auth target="insert:/page/item/"}
+  <li class="add"><a href="/management/page/page_main_edit/"><span>{'/label/add_new'|translate}</span></a></li>
+{/rcms_auth}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+{'/modules/page/label/page_main_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form method="post" action="/management/page/page_main_list/">
+  <input type="hidden" name="MODE" />
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+  <tr>
+    <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'resource[]');" /></th>
+    <th>{'/label/page'|translate}</th>
+    <th>{'/label/contents'|translate}</th>
+  </tr>
+  {foreach from=$page_list item=row}
+  <tr>
+    <td><input type="checkbox" name="resource[]" value="{$row.resource.raw}" /></td>
+    <td>{$row.page_sysnm|escape}</td>
+    <td><a href="/management/page/page_main_edit/resource={$row.resource.raw|escape}">{$row.resource.raw|escape}({$row.resource.link.title|escape})</a></td>
+  </tr>
+  {/foreach}
+</table>
+
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+    {/buttonbox}
+
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

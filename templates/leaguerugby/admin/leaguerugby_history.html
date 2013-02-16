@@ -1,0 +1,25 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $auth.leaguerugby.insert}
+<li class="add"><a href="/management/leaguerugby/leaguerugby_edit/"><span>試合追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/leaguerugby_detail/id={$league_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/leaguerugby/leaguerugby_list/">{$module_nm}一覧</a>
+<a href="/management/leaguerugby/leaguerugby_edit/league_id={$league_id}">{$module_nm}編集</a>
+更新履歴一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/leaguerugby/leaguerugby_edit/league_id=$league_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

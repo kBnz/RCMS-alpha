@@ -1,0 +1,152 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/keyword/label/keyword_edit'|translate}{*キーワード編集*}</h2>
+<ul>
+  {if $auth.keyword.insert}
+  <li class="add"><a href="/management/keyword/keyword_edit/"><span>{'/label/add_keyword'|translate}{*用語追加*}</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/keyword/keyword_history/keyword_id={$formData.keyword_id}"><span>{'/label/update_history'|translate}{*更新履歴*}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=keyword&id={$formData.keyword_id}"><span>{'/label/access_analysis'|translate}{*アクセス解析*}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/keyword_detail/id={$formData.keyword_id}" target="_blank"><span>{'/label/view_page'|translate}{*サイト確認*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/keyword/keyword_list/">{'/modules/keyword'|translate}</a>
+<a href="/management/keyword/keyword_list/">{'/modules/keyword/label/keyword_list'|translate}</a>
+<a href="/management/keyword/keyword_edit/">{'/modules/keyword/label/keyword_edit'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >>  キーワード辞典 >> キーワード一覧 >> キーワード編集*}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{*関連情報*}：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>　<a href="/keyword_detail/id={$formData.keyword_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+<ul class="minitabs">
+  <li><a href="/management/{$mt}/keyword_list/" class="active">{'/modules/keyword/label/keyword_list'|translate}</a></li>{*用語辞典一覧*}
+  <li><a href="/management/{$mt}/keyword_category_list/">{'/label/categories_list'|translate}</a></li>{*カテゴリ設定*}
+</ul>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="keyword_edit" action="/management/keyword/keyword_edit/" method="post" >
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input name="keyword_id" type="hidden" value="{$formData.keyword_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input name="MODE" type="hidden" value="" />
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}</th>
+        <td><select name="keyword_category_id">{html_options options=$arrKeywordCategory selected=$formData.keyword_category_id}</select></td>
+      </tr>
+      <tr>
+        <th width="150">{'/label/keyword'|translate}{*キーワード*}</th>
+        <td><input type="text" name="keyword" size="60" maxlength="100" value="{$formData.keyword|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/index'|translate}{*索引*}</th>
+        <td><select name="index">{html_options options=$index_flat_list selected=$formData.index}</select></td>
+      </tr>
+      <tr>
+        <th>{'/label/japanese_kana'|translate}{*読みカナ*}</th>
+        <td><input type="text" name="japanese_syllabary" size="60" maxlength="100" value="{$formData.japanese_syllabary|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/explanation'|translate}{*説明*}</th>
+        <td><textarea rows="10" cols="60" name="description" style="font-size: 100%;">{$formData.description|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_name'|translate}(1){*リンク名(1)*}</th>
+        <td><input type="text" name="link_name_1" size="60" maxlength="100" value="{$formData.link_name_1|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_address'|translate}(1){*リンクアドレス(1)*}</th>
+        <td><input type="text" name="link_1" size="60" maxlength="255" value="{$formData.link_1|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_name'|translate}(2){*リンク名(2)*}</th>
+        <td><input type="text" name="link_name_2" size="60" maxlength="100" value="{$formData.link_name_2|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_address'|translate}(2){*リンクアドレス(2)*}</th>
+        <td><input type="text" name="link_2" size="60" maxlength="255" value="{$formData.link_2|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_name'|translate}(3){*リンク名(3)*}</th>
+        <td><input type="text" name="link_name_3" size="60" maxlength="100" value="{$formData.link_name_3|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_address'|translate}(3){*リンクアドレス(3)*}</th>
+        <td><input type="text" name="link_3" size="60" maxlength="255" value="{$formData.link_3|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_name'|translate}(4){*リンク名(4)*}</th>
+        <td><input type="text" name="link_name_4" size="60" maxlength="100" value="{$formData.link_name_4|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_address'|translate}(4){*リンクアドレス(4)*}</th>
+        <td><input type="text" name="link_4" size="60" maxlength="255" value="{$formData.link_4|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_name'|translate}(5){*リンク名(5)*}</th>
+        <td><input type="text" name="link_name_5" size="60" maxlength="100" value="{$formData.link_name_5|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/link_address'|translate}(5){*リンクアドレス(5)*}</th>
+        <td><input type="text" name="link_5" size="60" maxlength="255" value="{$formData.link_5|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/publish_settings'|translate}{*公開設定*}</th>
+        <td><select name="open_flg">{html_options options=$arrOpFlg selected=$formData.open_flg}</select></td>
+      </tr>
+    </table>
+    <br style="clear: both;" />
+    {rcms_include file="management/relation_edit.html"}
+
+    {buttonbox}
+      {if $auth.keyword.update}
+        {if $formData.keyword_id == ""}
+          <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}{*追加する*}</button>
+        {else}
+          <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        <button type="submit" onclick="go_preview(this.form)">{'/label/preview_btn'|translate}{*プレビューを確認する*}</button>
+      {/if}
+      {if $auth.keyword.delete}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+      {/if}
+    {/buttonbox}
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </form>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function go_preview(f){
+{/literal}
+    f.action='/keyword_detail/id={$keyword_id}';
+    f.MODE.value='preview';
+{literal}
+}
+
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

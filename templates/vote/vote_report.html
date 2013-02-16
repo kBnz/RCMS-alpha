@@ -1,0 +1,22 @@
+<script type="text/javascript" src="/js/amchart_column_swfobject.js"></script>
+<script type="text/javascript">
+{assign var=option_cnt value=$arrOptions|@count}
+{assign var=height value=$option_cnt*22}
+{literal}
+Event.observe(window, 'load', function() {
+    var so = new SWFObject("/images/common/amcharts/amcolumn.swf", "column", "250", "{/literal}{$height}{literal}", "8", "#FF00FF");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape('{/literal}/direct/vote/vote_chart_settings/vote_header_id={$header.vote_header_id}{literal}'));
+    so.addVariable("data_file", escape('{/literal}/direct/vote/vote_chart_data/vote_header_id={$header.vote_header_id}&page_id={$mainInfo.page_id}&module_id={$mainInfo.module_id}{literal}'));
+
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_vote_report{/literal}{$contents_id}{literal}");
+});
+{/literal}
+</script>
+
+<h3>{'/modules/vote/label/vote_report'|translate}{*投票集計結果*}</h3>
+<div id="flash_vote_report{$contents_id}">
+ <strong>Loadding data.....</strong>
+</div>

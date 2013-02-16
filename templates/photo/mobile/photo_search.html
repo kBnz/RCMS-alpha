@@ -1,0 +1,44 @@
+<h2>[emoji:068]{'/label/search_images'|translate}{*画像を検索*}</h2>
+
+  <h3>{'/label/search_images_by_game'|translate}{*画像を試合で検索*}</h3>
+  <form name="game_form" method="get" action="">
+    <input type="hidden" name="type" value="gamerugby" />
+    <input type="hidden" name="page_sysnm" value="photo_list" />
+    <input type="hidden" name="season" value="{$season}" />
+    {if $searched_type == "gamerugby"}
+      {'/label/game_type'|translate}{*試合形式*}：<select name="game_type" onChange="onChangeGameData(this.value, {$season})">{html_options options=$photoSearch.game selected=$photoSearch.selected_game_type}</select><br />
+      {'/label/game'|translate}{*試合*}：<select name="search_id" id="photo_game">{html_options options=$photoSearch.default_game selected=$searched_value}</select><br/>
+    {else}
+      {'/label/game_type'|translate}{*試合形式*}：<select name="game_type" onChange="onChangeGameData(this.value, {$season})">{html_options options=$photoSearch.game}</select><br/>
+      {'/label/game'|translate}{*試合*}：<select name="search_id" id="photo_game">{html_options options=$photoSearch.default_game}</select><br/>
+    {/if}
+    <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+  </form>
+
+  <h3>{'/label/search_images_by_player'|translate}{*画像を選手で検索する*}</h3>
+  <form name="member_form" method="get" action="">
+    <input type="hidden" name="page_sysnm" value="photo_list" />
+    <input type="hidden" name="type" value="member" />
+    <input type="hidden" name="season" value="{$season}" />
+    {if $searched_type == "member"}
+      {'/label/grade'|translate}{*学年*}：<select name="grade" onChange="onChangeMmeberData(this.value, {$season})">{html_options options=$photoSearch.member selected=$photoSearch.selected_grade}</select><br/>
+      {'/label/name'|translate}{*名前*}：<select name="search_id" id="photo_member">{html_options options=$photoSearch.default_member selected=$searched_value}</select><br/>
+    {else}
+      {'/label/grade'|translate}{*学年*}：<select name="grade" onChange="onChangeMmeberData(this.value, {$season})">{html_options options=$photoSearch.member}</select><br/>
+      {'/label/name'|translate}{*名前*}：<select name="search_id" id="photo_member">{html_options options=$photoSearch.default_member}</select><br/>
+    {/if}
+    <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+  </form>
+  <h3>{'/label/search_images_by_topic'|translate}{*画像をトピックスで検索する*}</h3>
+  <form name="topics_select" method="get" action="">
+    <input type="hidden" name="type" value="topics" />
+    <input type="hidden" name="page_sysnm" value="photo_list" />
+    <input type="hidden" name="season" value="{$season}" />
+    {if $searched_type == "topics"}
+    {'/label/title'|translate}{*タイトル*}：<select name="search_id">{html_options options=$photoSearch.topics selected=$searched_value}</select><br/>
+    {else}
+    {'/label/title'|translate}{*タイトル*}：<select name="search_id">{html_options options=$photoSearch.topics}</select><br/>
+    {/if}
+    <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+  </form>
+<hr/>

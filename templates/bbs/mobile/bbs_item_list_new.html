@@ -1,0 +1,10 @@
+<h2>{'/modules/bbs/label/new_post'|translate}{*掲示板 最新投稿*}</h2>
+<ul>
+{foreach from=$bbs_list item=row name=bbs_list}
+<li><a href="/bbs_show/MODE=view&id={$row.seq}&bbs_header_id={$row.bbs_header_id}">{$row.title|mbtruncate:100|escape}</a>{if $row.new_flg}<span style="color:red;">new!!</span>{/if}</li>
+{/foreach}
+</ul>
+<div style="text-align:right;font-size:small;">
+<a href="/bbs_list/">{'/modules/bbs/label/bbs_list'|translate}{*掲示板一覧*}</a>
+</div>
+<hr/>

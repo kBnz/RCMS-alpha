@@ -1,0 +1,73 @@
+{module name="manual_detail"}
+<h2 class="manual_title">{$manualHeaderData.manual_title}</h2>
+    <div class ="main_contents">
+    <p>{$manualHeaderData.manual_outline}</p>
+    <p>[{'/modules/manual/label/manual_index'|translate}{* 目次 *}]</p>
+    <ul>
+    {foreach item=manual from=$manualData}
+        {if $manual.contents_title}
+            <li><a href="#manual_id{$manual.manual_id}">{$manual.contents_title}</a></li>
+        {/if}
+    {/foreach}
+    {if $manualHeaderData.template_flg == 1}
+        <li><a href="#templist">{'/modules/manual/label/template'|translate}{* テンプレート *}</a></li>
+    {/if}
+    {if $manualHeaderData.faq_flg == 1} 
+        <li><a href="#faqlist">FAQ</a></li>
+    {/if}
+    </ul>
+    {if $relation_list}
+        <p>[{'/label/related_info'|translate}{* 関連情報 *}]</p>
+        <ul>
+        {foreach item=relation_item from=$relation_list}
+                <li><a href="/{$sys_nm}/id={$relation_item.manual_header_id}">{$relation_item.manual_title}</a></li>
+        {/foreach}
+        </ul>
+    {/if}
+    
+    {foreach item=manual from=$manualData}
+    <h2 class="module_title" id="manual_id{$manual.manual_id}">{$manual.contents_title}</h2>
+        <div class ="main_contents">
+        <p>
+            {$manual.contents}
+        </p>
+        </div>
+    {/foreach}
+    
+    <br>
+    <!--Template-->
+    {if $manualHeaderData.template_flg == 1} 
+        <h2 class="manual_title" id="templist">{'/modules/manual/label/template'|translate}{* テンプレート *}</h2>
+        <table id="temp_list"  class="list">
+            <tr>
+                <th>{'/label/contents_type'|translate}{* コンテンツタイプ *}</th>
+                <th>{'/modules/manual/label/template'|translate}{* テンプレート *}</th>
+                <th>{'/label/explanation'|translate}{* 説明 *}</th>
+            </tr>
+            {foreach item=temp from=$TempData}
+            <tr>
+                <td>{$temp.module_php_nm}</td>
+                <td>{$temp.module_tpl_nm}</td>
+                <td>{$temp.comment}</td>
+            </tr>
+            {/foreach}
+        </table>
+    {/if}
+    <!--FAQ -->
+    {if $manualHeaderData.faq_flg == 1} 
+        <h2 class="manual_title" id="faqlist">FAQ</h2>
+        <table id="faq_list"  class="list">
+            {foreach item=faq from=$FAQData key=num}
+            <tr>
+                <th>Q.{$key+1}</th>
+                <td>{$faq.question}</td>
+            </tr>
+            <tr>
+                <th>A.{$key+1}</th>
+                <td>{$faq.answer}</td>
+            </tr>
+            {/foreach}
+        </table>
+    {/if}
+    </div>
+{/module}

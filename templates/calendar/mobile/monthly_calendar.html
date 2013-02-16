@@ -1,0 +1,17 @@
+<h2>[emoji:176]{$this_year}年{$this_month}月</h2>
+{* 月間カレンダー本体 *}
+{foreach item=cal_line from=$cal_data.days}
+		{* 週毎の段 *}
+		{foreach key=key item=item from=$cal_line}
+			{* 日毎のデータ *}
+			{if $item.relation_data|@count>0}
+				{$item.day}<br/>
+					{* 関連データ *}
+					{foreach key=relation_key item=relation_item from=$item.relation_data}
+						{$relation_item.title}{$relation_item.receive_ymdhi}<br/>
+					{/foreach}
+				<br/>
+			{/if}
+		{/foreach}
+{/foreach}
+<hr/>

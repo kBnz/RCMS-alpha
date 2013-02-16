@@ -1,0 +1,20 @@
+<h2>{'/modules/topics/label/topics_list_by_category_user_page_name'|translate}{* カテゴリ毎記事一覧 *}</h2>
+{foreach from=$topicsList item=rows_by_category}
+<h3>{$rows_by_category.category_nm}</h3>
+<ul data-role="listview">
+{foreach from=$rows_by_category.topics_list item=row}
+    <li>
+      <h3>
+  {if $row.link_flg eq '1'}
+    <a href="/{$link_page_sysnm}{if !$link_page_flg && $row.topics_group_id}{$row.topics_group_id}{/if}/id={$row.topics_id}">{$row.subject|escape}</a>
+  {elseif $row.link_flg eq '2'}
+    <a href="{$row.link_url}" {if $row.link_target eq '_blank'}target="_blank"{/if}>{$row.subject|escape}</a>
+  {else}
+    {$row.subject|escape}
+  {/if}
+      </h3>
+      <p>{if !$row.no_use_ymd}{$row.ymd_str}{if $row.new_flg}<span style="color:red;">new!!</span>{/if}{/if}</p>
+    </li>
+{/foreach}
+  </ul>
+{/foreach}

@@ -1,0 +1,36 @@
+{if $bbs_list.items|@count >= 1}
+{module name="member_bbs"}
+<h2 class="module_title"><span>{'/modules/member_bbs'|translate}</span></h2>
+<div class="module_contents">
+<div class="mypage_content_list">
+{if $bbs_list.items.thread|@count > 0}
+  <p>{'/label/thread'|translate}</p>
+  <ul class="items">
+    {foreach from=$bbs_list.items.thread item=row}
+      <li><a href="{$row.link}">{$row.title}</a>
+        <ul class="info">
+          <li>{$row.thread_update|pg_dateformat:"%Y/%m/%d"}</li>
+          <li><a href="{$row.link}">{'/label/comments'|translate}({$row.cnt})</a></li>
+        </ul>
+      </li>
+    {/foreach}
+  </ul>
+{/if}
+{if $bbs_list.items.comment|@count > 0}
+  <p>{'/label/comments'|translate}</p>
+  <ul class="items">
+    {foreach from=$bbs_list.items.comment item=row}
+      <li><a href="{$row.link}">{$row.title}</a>
+        <ul class="info">
+          <li>{$row.note|mbtruncate:10:"..."}</li>
+          <li>{$row.thread_update|pg_dateformat:"%Y/%m/%d"}</li>
+          <li><a href="{$row.link}"></a></li>
+        </ul>
+      </li>
+    {/foreach}
+  </ul>
+{/if}
+</div>
+</div>
+{/module}
+{/if}

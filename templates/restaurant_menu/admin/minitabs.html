@@ -1,0 +1,5 @@
+<ul class="minitabs">
+  <li><a href="/management/restaurant_menu/restaurant_menu_category_list/" {if $ct eq 'restaurant_menu_category_list' || $ct eq 'restaurant_menu_category_edit'}class="active"{/if}>料理分類</a></li>
+  <li><a href="/management/restaurant_menu/restaurant_menu_list/restaurant_menu_category_id={$restaurant_menu_category_id}" {if $ct eq 'restaurant_menu_list' || $ct eq 'restaurant_menu_edit'}class="active"{/if}>メニュー</a></li>
+  <li><a href="/management/restaurant_menu/restaurant_menu_disp_type/" {if $ct eq 'restaurant_menu_disp_type'}class="active"{/if}>表示設定</a></li>
+</ul>

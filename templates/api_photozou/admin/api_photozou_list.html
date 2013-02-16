@@ -1,0 +1,41 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>写真一覧</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_photozou/api_photozou_search/">{$module_nm}</a>
+写真一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <div class="list_main">
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <p>過去に関連させたり、コメントしたりしたことのある写真の一覧です。</p>
+
+    {pager info=$pageInfo}
+
+        {foreach from=$photo item=rest}
+          <div style="float:left;margin:5px;"><a href="/management/api_photozou/api_photozou_edit/photo_id={$rest.photo_id}"><img src="{$rest.thumbnail_image_url}" alt="{$rest.photo_title}"></a><br>
+          関連：{$rest.nOfRelatedItems}件</div>
+        {/foreach}
+        <div class="clearFloat"></div>
+    {pager info=$pageInfo}
+
+    <p style="margin-top:3em"><a href="http://photozou.jp/" onclick="return !window.open(this.href)"><img src="http://photozou.jp/img/photozou_logo.gif" width="120" height="30" alt="写真共有サイト「フォト蔵」は簡単に写真や動画を投稿・共有することができる無料のフォトアルバムです。" /></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

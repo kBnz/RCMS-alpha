@@ -1,0 +1,27 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{* 更新履歴一覧 *}</h2>
+<ul>
+{if $auth.jobs.insert}
+<li class="add"><a href="/management/jobs/jobs_edit/"><span>{'/modules/jobs/label/add_jobdata'|translate}{*採用情報追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/jobs_detail/id={$jobs_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/jobs/jobs_list/">{$module_nm}</a>
+<a href="/management/jobs/jobs_list/">{'/modules/jobs/label/jobs_list'|translate}</a>{*採用情報一覧*} 
+<a href="/management/jobs/jobs_edit/{if $jobs_id}jobs_id={$jobs_id}{/if}">{'/modules/jobs/label/jobs_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 採用情報 >> 採用情報一覧 >> 採用情報編集 >> 更新履歴一覧*}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/jobs/jobs_edit/jobs_id=$jobs_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

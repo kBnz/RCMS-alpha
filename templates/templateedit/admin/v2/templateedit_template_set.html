@@ -1,0 +1,121 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="management/rcms_ui/rcms_ui.html"}
+
+<div class="main_contents">
+
+
+
+<form action="/management/templateedit/templateedit_template_set/" method="post" name="page_data_form" id="page_data_form">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="" />
+
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+
+<div id="" >
+<div class="">
+
+  <h3>テンプレートセット編集</h3>
+  <table width="100%">
+    <tr>
+      <th style="width:150px;" nowrap>モジュール</th>
+      <td >{*valueは後ほど要実装*}
+        <select id="module_type" name="module_type">
+          <option value="">選択してください</option>
+          <option value="topics" {if $form_data.module_type}selected{/if}>記事</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <th>コントローラー </th>
+      <td>
+        <select id="controller_id" name="controller_id">
+          <option value="">選択してください</option>
+          <option value="50" {if $form_data.controller_id}selected{/if}>記事一覧</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <th>テンプレート</th>
+      <td >
+        <select id="template_id" name="template_id">
+          <option value="">選択してください</option>
+          <option value="57" {if $form_data.template_id}selected{/if}>記事一覧</option>
+        </select>
+      </td>
+    </tr>  
+    <tr>
+      <th>テンプレートセット名</th>
+      <td>
+        <input type="text" id="template_set_nm" name="template_set_nm"  value="{$form_data.template_set_nm|escape}" />
+      </td>
+    </tr>
+
+  </table>
+</div><!--//list_main-->
+</div><!--//blk_contents-->
+{*  ============================= //コンテンツ設定ブロック ========================= *}
+
+{*  ============================= 送信ボタン ============================= *}
+{buttonbox}
+        {if $latestRow.page_id != ""}
+      {assign var=page_id value=$latestRow.page_id}
+      {if $docmeta.is_waiting}
+        {* これは承認待ちドキュメント *}
+
+        {if $rauth->canUpdate("/page/item/$page_id", $docmeta.lang)}
+          {if $rauth->unlimitedUpdate("/page/item/$page_id", $docmeta.lang)}
+            {* 許可する権限がある *}
+            <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}{*承認する*}</button>
+            <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}{*拒否する*}</button>
+          {elseif $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+          {else}
+          {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+          {/if}
+        {else}
+            {if $docmeta.own}
+            {* 自分が作成したので再修正できる *}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+            {else}
+            {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+            {/if}
+        {/if}
+      {else}
+        {* これは通常ドキュメント *}
+
+        {if $docmeta.has_waiting}
+          {* 承認待ちドキュメントがある場合は何もできない *}
+            {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+            <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+        {else}
+          {* 通常ドキュメントに対する更新処理 *}
+          {if $rauth->canUpdate("/page/item/$page_id", $docmeta.lang)}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+          {/if}
+          {if $rauth->canDelete("/page/item/$page_id", $docmeta.lang)}
+            {* 削除権限がある *}
+            {if $pageForm.fundamental_flg == 1}
+
+            {else}
+              <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+            {/if}
+          {/if}
+        {/if}
+      {/if}
+    {else}
+      {if $rauth->canInsert("/page/item/")}
+        <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+      {/if}
+    {/if}
+{/buttonbox}
+{* 削除権限がある *}
+  {if $pageForm.fundamental_flg == 1}
+    <p><span class="required">({'/modules/page/msg/cant_delete_this_page'|translate}{*このページは削除できません*})</span></p>
+  {/if}
+</form>
+</div>
+
+
+

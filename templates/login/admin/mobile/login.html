@@ -1,0 +1,43 @@
+{rcms_include file="management/mobile/header.html"}
+<h1 class="for_mng">{'/label/login'|translate}{*ログイン*}</h1>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+{if !$is_SmartPhone}
+<h2 class="for_mng">{'/label/easy_login'|translate}{*簡単ﾛｸﾞｲﾝ*}</h2>
+<form action="/direct/login/login/" method="post" utn="utn">
+<input type="hidden" name="Retrun_URL" value="{$Retrun_URL}" />
+<input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL}" />
+<input type="submit" value="{'/label/login'|translate}{*ログイン*}"/>
+</form>
+
+{'/modules/login/msg/about_easy_login_setting'|translate}{*簡単ﾛｸﾞｲﾝは一度、ﾛｸﾞｲﾝをすると自動的に設定されます。解除をする場合にはﾛｸﾞｱｳﾄをしてください。*}
+
+<hr class="for_mng"/>
+{/if}
+
+<h2 class="for_mng">{'/label/login'|translate}{*ログイン*}</h2>
+<form action="/direct/login/login/" method="post" utn="utn">
+<input type="hidden" name="Retrun_URL" value="{$Retrun_URL}" />
+<input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL}" />
+
+<div>{'/label/mail_address'|translate}{*メールアドレス*}({'/label/login_id'|translate}{*ログインID*})</div>
+<div><input name="email" type="text" value="{$email|escape}" {istyle type="en"} /></div>
+<div>{'/label/password'|translate}{*パスワード*}</div>
+<div><input name="password" type="text" {istyle type="en"} /></div>
+<div><input type="submit" name="subflg" value="{'/label/login'|translate}{*ログイン*}" /></div>
+</form>
+
+<p>パスワードを忘れた場合は、<a href="/management/login/reminder/">こちら</a></p>
+
+{*
+<p>ここから先はﾛｸﾞｲﾝが必要です。</p>
+<p>* <a href="/management/login/reminder/">ﾊﾟｽﾜｰﾄﾞを再確認する</a></p>
+{if $Memberregist_permission}
+<p>* <a href="/management/login/regist/">ﾒﾝﾊﾞｰ登録をする</a></p>
+{/if}
+<p>* <a href="/inquiry_list/">お問い合わせ</a></p>
+*}
+
+{rcms_include file="management/mobile/footer.html"}

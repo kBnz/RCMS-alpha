@@ -1,0 +1,11 @@
+{$name}さんからメールがありました。
+
+題名：{$subject}
+
+サイトにログイン後、下記ＵＲＬよりご確認ください。
+{$smarty.const.ROOT_SSL_URL}/management/membermail/membermail_disp/member_mail_id={$member_mail_id}
+
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/
+■管理画面
+{$smarty.const.ROOT_SSL_URL}/management/

@@ -1,0 +1,135 @@
+<h2>{$jobsData.subject}</h2>
+{if $jobsData.jobs_img_exists}
+    <img src="{$smarty.const.JOBS_SAVE_URL}/{$jobsData.jobs_id}.jpg"><br/>
+{/if}
+■{'/label/job_name'|translate}{*職名*}<br/>
+{$jobsData.job_nm}
+{if $jobsData.explanation}<br/><br/>
+■{'/label/job_description'|translate}{*仕事内容*}<br/>
+{$jobsData.explanation|nl2br}<br/><br/>
+{/if}
+{if $jobsData.category_name}<br/><br/>
+■{'/label/category'|translate}<br/>
+{$jobsData.category_name|nl2br}<br/><br/>
+{/if}
+{if $jobsData.lowest_age || $jobsData.highest_age}
+■{'/label/age'|translate}<br/>
+{$jobsData.lowest_age} ～ {$jobsData.highest_age}<br/><br/>
+{/if}
+
+{if $jobsData.edu_background}
+■{'/label/education_record'|translate}{*学歴*}<br/>
+{$jobsData.edu_background|nl2br}<br/><br/>
+
+{/if}
+{if $jobsData.welcomed_skills}
+■{'/modules/jobs/label/welcomed_skills'|translate}{*歓迎される経験、スキル、資格*}<br/>
+{$jobsData.welcomed_skills|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.indispensable_skills}
+■{'/modules/jobs/label/qualifications'|translate}{*必須の経験、スキル、資格*}<br/>
+{$jobsData.indispensable_skills|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.area || $jobsData.location}
+■{'/label/work_place'|translate}{*勤務地*}<br/>
+  {if $jobsData.location ne ''}
+      {$jobsData.location|nl2br}
+  {else}
+      {$jobsData.area}
+  {/if}
+  <br/><br/>
+{/if}
+
+{if $jobsData.from_time || $jobsData.to_time || $jobsData.time_note}
+■{'/label/work_time'|translate}{*勤務時間*}<br/>
+{$jobsData.from_time}{if $jobsData.from_time || $jobsData.to_time} ～ {/if}{$jobsData.to_time}
+{$jobsData.time_note|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.salary || $jobsData.salary_note}
+■{'/label/salary'|translate}{*給与*}<br/>
+{$jobsData.salary}
+{$jobsData.salary_note|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.bonus}
+■{'/label/bonus'|translate}{*ボーナス*}<br/>
+{$jobsData.bonus|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.allowance}
+■{'/label/allowance'|translate}{*諸手当*}<br/>
+{$jobsData.allowance}<br/><br/>
+{/if}
+
+{if $jobsData.holiday}
+■{'/label/holiday'|translate}{*休日、休暇*}<br/>
+{$jobsData.holiday}<br/><br/>
+{/if}
+{if $jobsData.welfare}
+■{'/modules/jobs/label/benefit'|translate}{*待遇、福利厚生*}<br/>
+{$jobsData.welfare|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.edu_system}
+■{'/modules/jobs/label/training_program'|translate}{*教育制度*}<br/>
+{$jobsData.edu_system|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_01}
+■{$jobsData.ext_title_01}<br/>
+{$jobsData.ext_txt_01|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_02}
+■{$jobsData.ext_title_02}<br/>
+{$jobsData.ext_txt_02|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_03}
+■{$jobsData.ext_title_03}<br/>
+{$jobsData.ext_txt_03|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_04}
+■{$jobsData.ext_title_04}<br/>
+{$jobsData.ext_txt_04|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_05}
+■{$jobsData.ext_title_05}<br/>
+{$jobsData.ext_txt_05|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_06}
+■{$jobsData.ext_title_06}<br/>
+{$jobsData.ext_txt_06|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_07}
+■{$jobsData.ext_title_07}<br/>
+{$jobsData.ext_txt_07|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_08}
+■{$jobsData.ext_title_08}<br/>
+{$jobsData.ext_txt_08|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_09}
+■{$jobsData.ext_title_09}<br/>
+{$jobsData.ext_txt_09|nl2br}<br/><br/>
+{/if}
+
+{if $jobsData.ext_title_10}
+■{$jobsData.ext_title_10}<br/>
+{$jobsData.ext_txt_10|nl2br}<br/><br/>
+{/if}
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/jobs_list/" >{'/modules/jobs/label/jobs_list'|translate}{* 採用情報一覧 *}</a>
+</div>
+<hr/>

@@ -1,0 +1,259 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}アプリ詳細</h2>
+
+</div><!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_facebook/api_facebook_app_list/">{$module_nm}アプリ一覧</a>
+{$module_nm}アプリ詳細
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+    <li><a href="/management/api_facebook/api_facebook_page_list/"> ウォール管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_app_list/" class="active"> アプリ管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_tab_edit/"> ページタブ管理</a></li>
+</ul>
+
+
+  <div class="list_main">
+
+    <form id="agForm" action="/management/api_facebook/api_facebook_app_edit/" method="post">
+        <input type="hidden" name="id" value="{$facebook.facebook_id}" />
+        <input type="hidden" name="MODE" value="{$MODE}"  />
+        <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+
+{if $facebook.facebook_id}
+
+  {buttonbox}
+    <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+{else}
+
+{/if}
+
+    </form>
+        
+    <h3>1.facebookアプリを新規作成します（別ウィンドウ）</h3>
+    <button id="create_new_app">アプリを新規作成</button>
+    <h3>2.作成したアプリの情報を貼付け</h3>
+    
+    <form name="app_propeties" action="/management/api_facebook/api_facebook_app_edit/" method="post">
+        <input type="hidden" name="id" value="{$facebook.facebook_id}" />
+        <input type="hidden" name="MODE" value="{if $facebook.facebook_id}UPDATE{else}INSERT{/if}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+        <input type="hidden" name="tab_url" id="fb_tab_url" value="{$facebook.tab_url}">
+    
+    <table>
+        <tr>
+            <th>APP ID</th><td><input type="text" name="app_id" id="fb_app_id" size="60" value="{$facebook.app_id}" /></td>
+        </tr>
+        <tr>
+            <th>APP Secret</th><td><input type="text" name="app_secret" id="fb_app_secret" size="60" value="{$facebook.app_secret}" /></td>
+        </tr>
+    </table>
+    
+        <br />
+        
+    <h3>3.作成したアプリの情報を入力</h3>
+    <table>
+        <tr>
+            <th>コンテンツ</th>
+            <td><select name="page_sysnm" id="fb_page_sysnm">{html_options options=$pageList selected=$facebook.page_sysnm}</select></td>
+        </tr>
+        <tr>
+            <th>タブの名前</th>
+            <td><input type="text" name="tab_name" id="fb_tab_name" size="60" value="{$facebook.tab_name}" /></td>
+        </tr>
+        <tr>
+            <th>アイコンのURL</th>
+            <td>{if $facebook.small_icon_url}<div id="fb_small_icon_url_view"><img src="{$facebook.small_icon_url}" width="16" height="16"></div>{else}<div id="fb_small_icon_url_view"></div>{/if}<br>
+            <input type="text" name="small_icon_url" id="fb_small_icon_url" size="60" value="{$facebook.small_icon_url}" /><br>
+            <span class="hint">http://~ の形式で入力してください。大きさは16×16ピクセルです。facebookページのタブ等で使われます。</span>
+            </td>
+        </tr>
+        <tr>
+            <th>ロゴのURL</th>
+            <td>{if $facebook.large_icon_url}<div id="fb_large_icon_url_view"><img src="{$facebook.large_icon_url}" width="75" height="75"></div>{else}<div id="fb_large_icon_url_view"></div>{/if}<br>
+            <input type="text" name="large_icon_url" id="fb_large_icon_url" size="60" value="{$facebook.large_icon_url}" /><br>
+            <span class="hint">http://~ の形式で入力してください。大きさは75×75ピクセルです。プロフィールページやwallへの投稿時などに使われます。</span>
+            </td>
+        </tr>
+    </table>
+    
+    
+    <h3>4.作成したアプリの設定を適用</h3>
+
+    <div id="set_app_progress"><button id="set_app_propety">アプリを設定する</button></div>
+    
+    <h3>5.アプリをfacebookページに追加（別ウィンドウ）</h3>
+    <button type="button" id="add_to_facebook_page" disabled="disabled">facebookページにアプリを追加</button><br>
+
+
+{* 暫定措置:キャンバスページを使いたい場合の拡張項目 *}
+  <h3>その他の設定</h3>
+
+    <table>
+        <tr>
+            <th>Like状態を引き継ぐfacebookページ</th>
+            <td>
+                <input type="text" name="liked_page_id" value="{$facebook.liked_page_id}"><br><span class="hint">facebookページのIDを入力してください。</span>
+            </td>
+        </tr>
+    </table>
+
+
+    
+{*  まだパーミッションの取得モジュールが完成していないので、コメントアウト    
+    <h3>グループ設定</h3>
+    <span class="hint">ユーザ（アプリをインストールしているユーザ・「いいね」をしている）を所属させるグループをそれぞれ選択します。</span>
+    <table>
+        <tr>
+            <th>インストール済みユーザ</th>
+            <td>{html_checkboxes name='installed_groups' options=$all_group_list selected=$facebook.installed_groups  separator='<br />'}</td>
+        </tr>
+    </table>
+*}
+    
+  {if $facebook.facebook_id}
+  {buttonbox}
+    <button type="button" onclick="doSubmit(this.form);"/>{'/label/update_btn'|translate}</button>
+  {/buttonbox}
+  {else}
+  {buttonbox}
+    <button type="button" onclick="doSubmit(this.form);"/>{'/label/add_btn'|translate}</button>
+  {/buttonbox}
+  {/if} 
+    </form>
+
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+      f.MODE.value='DELETE';
+      f.submit();
+  }
+}
+
+function doSubmit(f) {
+    f.submit();
+}
+
+function setActive(){
+    if(j$("#fb_app_id").val()){
+        j$("#add_to_facebook_page").attr({disabled:""});
+    }else{
+        j$("#add_to_facebook_page").attr({disabled:"disabled"});
+    }
+    return false;
+}
+
+j$(document).ready(function(){
+
+    setActive();
+    
+    j$("#fb_app_id").change(setActive);
+
+    //「アプリを新規作成」ボタンクリック時のシーケンス
+    j$("#create_new_app").live("click",function(){
+        window.open("http://www.facebook.com/developers/createapp.php", "アプリを新規作成","width=1000,height=600,resizable=yes,scrollbars=yes");
+        return false;
+    });
+
+    //「facebookページにアプリを追加」ボタンクリック時のシーケンス
+    j$("#add_to_facebook_page").live("click",function(){
+        var app_id = j$("#fb_app_id").val();
+        window.open("http://www.facebook.com/add.php?api_key=" + app_id + "&pages", "facebook page","width=1000,height=500,resizable=yes,scrollbars=yes");
+        return false;
+    });
+
+    //「アイコンのURL」変更時のシーケンス
+    j$("#fb_small_icon_url").live("change",showSmallIcon);
+    j$("#fb_large_icon_url").live("change",showLargeIcon);
+
+    //「アプリを設定」ボタンクリック時のシーケンス
+    j$("#set_app_propety").live("click",setAppPropety);
+
+});
+
+function setAppPropety(){
+
+    var app_id = j$("#fb_app_id").val();
+    var app_secret = j$("#fb_app_secret").val();
+    var page_sysnm = j$("#fb_page_sysnm").val();
+    var tab_name = j$("#fb_tab_name").val();
+    var small_icon_url = j$("#fb_small_icon_url").val();
+    var large_icon_url = j$("#fb_large_icon_url").val();
+    
+
+    if(app_id.match(/^\w+$/) && app_secret.match(/^\w+$/)){
+        
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/api_facebook/fb_app_modifier/",
+            data: {"app_id":app_id,"app_secret":app_secret,"page_sysnm":page_sysnm,"tab_name":tab_name,"small_icon_url":small_icon_url,"large_icon_url":large_icon_url},
+            success: onSuccessSetup
+        });
+        
+        j$("#set_app_progress").html("<img src=\"/images/modules/api_facebook/processing.gif\"> 設定中です...");
+        
+    }else{
+        alert("入力された値が不正です");
+    }
+    return false;
+
+}
+
+function showSmallIcon(){
+    j$("#fb_small_icon_url_view").html("<img src='" + j$("#fb_small_icon_url").val() + "' width='16' height='16'>");
+    return false;
+}
+
+function showLargeIcon(){
+    j$("#fb_large_icon_url_view").html("<img src='" + j$("#fb_large_icon_url").val() + "' width='75' height='75'>");
+    return false;
+}
+
+function onSuccessSetup(response){
+    if(response == "false"){
+        j$("#set_app_progress").html("<button id=\"set_app_propety\">アプリを設定する</button> 入力に誤りがあります");
+        return false;
+    }
+    if(response == "error"){
+        j$("#set_app_progress").html("<button id=\"set_app_propety\">アプリを設定する</button> 設定に失敗しました");
+        return false;
+    }
+    j$("#set_app_progress").html("<button id=\"set_app_propety\">アプリを設定する</button> 完了しました");
+    var result = eval("(" + response + ")");
+    j$("#fb_app_id").val(decodeURIComponent(result.app_id));
+    j$("#fb_tab_url").val(decodeURIComponent(result.tab_url));
+    return false;
+}
+
+
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}
+

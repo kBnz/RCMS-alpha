@@ -1,0 +1,76 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript" src="/js/modules/api_gnavi/GnaviSearch.js"></script>
+<script type="text/javascript">
+var aga = new GnaviApi('{$proxy}');
+{literal}
+onReady(function() {
+  window.ags = new GnaviSearch(aga);
+  window.agf = new GnaviForm(aga, ags, 'agForm');
+  window.moveTo = function(page) { ags.moveTo(page); };
+
+  ags.restore();
+});
+{/literal}
+</script>
+{literal}
+<style type="text/css">
+#agResultViewer p { margin: 1em 0em; }
+</style>
+{/literal}
+<div class="list_right_bt">
+  <h2>レストラン検索</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_gnavi/api_gnavi_search/">{$module_nm}</a>
+レストラン検索
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/api_gnavi/api_gnavi_search/" class="active">レストラン検索</a></li>
+  <li><a href="/management/api_gnavi/api_gnavi_list/">レストラン一覧</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+
+    <p>関連させたいレストランを検索します。</p>
+
+    <h3>検索</h3>
+    <form id="agForm" action="javascript:void(0);" onsubmit="agf.submit(); return false">
+      <table style="width:98%">
+        <tr>
+          <th>店舗名</th><td><input type="text" name="name" value="" /></td>
+          <th>店舗名（カタカナ）</th><td><input type="text" name="name_kana" value="" /></td>
+        </tr>
+        <tr>
+          <th>都道府県</th><td><select name="pref"><option value="" selected="selected">未指定</option></select></td>
+          <th>住所</th><td><input type="text" name="address" value="" /></td>
+        </tr>
+        <tr>
+          <th>カテゴリ</th>
+          <td colspan="3">
+            <select name="category_l" onchange="agf.loadSmallCategories(this.value)"><option value="" selected="selected">未指定</option></select>
+            <select name="category_s"><option value="" selected="selected">未指定</option></select>
+          </td>
+        </tr>
+      </table>
+      <p><input type="submit" value="検索" /></p>
+    </form>
+
+    <h3>検索結果</h3>
+    <div id="agResultViewer">検索結果はここに表示されます。</div>
+
+    <p style="margin-top:3em"><a href="http://www.gnavi.co.jp/" onclick="return !window.open(this.href)"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" width="90" height="35" alt="グルメ情報検索サイト　ぐるなび" /></a></p>
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

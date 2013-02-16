@@ -1,0 +1,141 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+
+function confirmDelete(f) {
+   if (confirm('選択されたカテゴリを削除します。\nよろしいですか？')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+
+// パラメータ生成
+function generateParam() {
+    var param = new Array();
+    var cb = document.module_param_form.module_param_contents_type;
+    if (cb.length) {
+        for (var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                param.push('contents_type[]=' + cb[i].value);
+            }
+        }
+    }
+    else {
+        if (cb.checked) {
+            param.push('contents_type[]=' + cb.value);
+        }
+    }
+    document.module_param_form.module_param.value = param.join('&');
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$module_nm} カテゴリ設定</h2>
+<ul>
+{if $auth.rss.insert}
+<li class="add"><a href="/management/rss/rss_category_edit/"><span>カテゴリ追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/rss/rss_edit/">{$module_nm}</a>
+カテゴリ設定
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/rss/rss_edit/">RSS一覧</a></li>
+  <li><a href="/management/rss/rss_category_list/" class="active">カテゴリ設定</a></li>
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="rss_category_list" method="POST" action="/management/rss/rss_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+
+    <p class="page_links">{$page_links}</p>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.rss.update || $auth.rss.delete}
+        <th style="width:20px;"><input type="checkbox" name="select_all_list" value="1" onClick="AllChecked(this.checked, this.form, 'rss_category_id[]');"></th>
+{/if}
+        <th style="width:30px;">ID</th>
+        <th>カテゴリ名</th>
+        <th>メモ</th>
+      </tr>
+    {foreach from=$rss_category_list item=row}
+      <tr>
+        {if $auth.rss.update || $auth.rss.delete}
+          <td><input type="checkbox" name="rss_category_id[]" value="{$row.rss_category_id}"></td>
+        {/if}
+        <td>{$row.rss_category_id}</td>
+        <td {if $row.parent_id !== ''}class="child"{/if}><a href="/management/rss/rss_category_edit/rss_category_id={$row.rss_category_id}">{$row.category_nm}</a></td>
+        <td>{$row.memo|escape|nl2br}</td>
+      </tr>
+    {/foreach}
+    </table>
+    <p class="page_links">{$page_links}</p>
+
+    {buttonbox}
+      {if $auth.rss.delete}
+        <p>選択した項目を一括で</p>
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+  </form>
+
+  <div style="margin-top:20px">
+    <a href="javascript:;" onclick="display('generate_param_box');return false;">&gt;&gt;カテゴリを指定してサイト表示したい場合はこちら</a>
+    <div id="generate_param_box" style="display:none">
+      <p>
+        カテゴリを指定してRSS一覧をサイト表示することができます。<br>
+        方法は<a href="/management/page/page_list/">サイト基本設定／ページ設定</a>でページ編集を行うときに、コンテンツのパラメータを設定することです。<br/><br/>
+        ここでは、そのパラメータを生成します。<br />
+        １．一覧に表示したいカテゴリを選択して「パラメータ生成」をクリックしてください。複数選択できます。<br >
+        ２．するとテキストボックスにパラメータ文字列が生成されます。<br />
+        ３．この文字列をコピーしてページ編集画面で貼り付けて使用してください。
+      </p>
+      <form name="module_param_form">
+      <ul>
+      {foreach from=$rss_category_list item=row}
+        <li><input type="checkbox" name="module_param_contents_type" id="module_param_contents_type{$row.rss_category_id}" value="{$row.rss_category_id}" /><label for="module_param_contents_type{$row.rss_category_id}">{$row.category_nm}</label></li>
+      {/foreach}
+      </ul>
+      <input type="button" onclick="generateParam()" value="パラメータ生成" /><br />
+      <input type="text" size="80" name="module_param" id="module_param" />
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+{literal}
+
+<style>
+td.child a{
+  margin-left: 10px;
+  padding-left: 5px;
+  border-left: 1px dotted #000;
+}
+#generate_param_box {
+  margin-top:5px;
+  padding:10px 10px 10px 10px;
+  border: 1px solid #999;
+}
+#generate_param_box p {
+  margin-bottom:10px;
+  line-height: 1.25em;
+}
+</style>
+{/literal}
+
+{rcms_include file="management/footer.html"}

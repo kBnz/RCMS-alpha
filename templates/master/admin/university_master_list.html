@@ -1,0 +1,119 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>大学マスタを編集</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/master/masterMenu/">{$module_nm}管理</a>
+大学マスタを編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <form action="/management/master/university_master_list/" method="post" name="univ_list" onsubmit="return validate_univ_list(this);">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+      <p>
+        頭文字<select name="s_kana">{html_options options=$kana_list selected=$s_kana}</select>&nbsp;&nbsp;
+        大学名・短縮名<input size="20" name="s_name" type="text" value="{$s_name}" />&nbsp;
+        <input name="search" value="検索する" type="submit" />
+      </p>
+
+      {pager info=$pageInfo}
+      <table width="100%" border="0" cellspacing="2" cellpadding="0">
+        <tr>
+          <th scope="col" width="58">修正</th>
+          <th scope="col">大学名</th>
+          <th scope="col">短縮名</th>
+          <th scope="col">頭文字</th>
+          <th scope="col">ホームページURL</th>
+          <th scope="col" width="58">削除</th>
+        </tr>
+
+{if $duplicate_list}
+  {* 重複チェックのリスト *}
+
+    {foreach name="univloop" item="item" from=$univ_list}
+      {assign var="i" value=$smarty.foreach.univloop.index}
+        <tr>
+          <td width="58">
+            <input type="hidden" name="duplicateOK[{$i}]" value="ok">
+            {if $item.univ_id}<input type="hidden" name="univ_id[{$i}]" value="{$item.univ_id}"/>{/if}
+            {if $auth.master.update && $item.univ_id}
+              <input type="submit" name="update[{$i}]" value="更新"/>
+            {elseif $auth.master.insert}
+              <input type="submit" name="insert[{$i}]" value="新規追加"/>
+            {/if}
+          </td>
+          <td nowrap>{$item.univ_name}<input type="hidden" name="univ_name[{$i}]" value="{$item.univ_name}"/></td>
+          <td>{$item.univ_short_nm}<input type="hidden" name="univ_short_nm[{$i}]" value="{$item.univ_short_nm}"/></td>
+          <td>{$kana_list[$item.univ_kana]}<input type="hidden" name="univ_kana[{$i}]" value="{$item.univ_kana}" ></td>
+          <td>{$item.univ_url}<input type="hidden" name="univ_url[{$i}]" value="{$item.univ_url}"/></td>
+          <td width="58">
+              <input type="submit" name="cancel" value="キャンセル">
+          </td>
+        </tr>
+    {/foreach}
+
+    {foreach item="item" from=$duplicate_list}
+        <tr>
+          <td width="58">&nbsp;</td>
+          <td nowrap>{$item.univ_name}</td>
+          <td>{$item.univ_short_nm}</td>
+          <td>{$kana_list[$item.univ_kana]}</td>
+          <td>{$item.univ_url}</td>
+          <td width="58">&nbsp;</td>
+        </tr>
+    {/foreach}
+
+{else}
+  {* 通常のリスト *}
+
+    {* 更新処理で入力エラーがあった場合に、更新前データをここに表示する *}
+    {if $univ_before_list}
+            <tr>
+              <td><span style="color:red;">更新前の内容</span></td>
+              <td>{$univ_before_list.univ_name}</td>
+              <td>{$univ_before_list.univ_short_nm}</td>
+              <td>{$kana_list[$univ_before_list.univ_kana]}</td>
+              <td>{$univ_before_list.univ_url}</td>
+              <td>&nbsp;</td>
+            </tr>
+    {/if}
+
+    {foreach name="univloop" item="item" from=$univ_list}
+      {assign var="i" value=$smarty.foreach.univloop.index}
+            <tr>
+              <td width="58">
+                {if $item.univ_id}<input type="hidden" name="univ_id[{$i}]" value="{$item.univ_id}"/>{/if}
+                {if $auth.master.update && $item.univ_id}
+                  <input type="submit" name="update[{$i}]" value="更新"/>
+                {elseif $auth.master.insert}
+                  <input type="submit" name="insert[{$i}]" value="新規追加"/>
+                {/if}
+              </td>
+              <td><input type="text" name="univ_name[{$i}]" value="{$item.univ_name}"/></td>
+              <td><input type="text" name="univ_short_nm[{$i}]" value="{$item.univ_short_nm}"/></td>
+              <td><select name="univ_kana[{$i}]">{html_options options=$kana_list selected=$item.univ_kana}</select></td>
+              <td><input type="text" name="univ_url[{$i}]" value="{$item.univ_url}"/></td>
+              <td width="58">
+                {if $auth.master.delete && $item.univ_id}
+                  <input type="submit" name="delete[{$i}]" onclick="if (!confirm('削除してよろしいですか')) return false ;" value="削除">
+                {/if}
+              </td>
+            </tr>
+    {/foreach}
+{/if}
+
+      </table>
+      {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,16 @@
+{if $img_list|@count > 0}
+{module name="restaurant_tabelog"}
+<h2 class="module_title"><span>食べログ写真</span></h2>
+
+<div class="module_contents">
+
+	<ul>
+{foreach from=$img_list item=img}
+	<li><img alt="" src="{$img.ImageUrlL}" /></li> 
+{/foreach}
+	</ul>
+
+<p><a href="http://apiblog.kakaku.com/"><img src="http://img.tabelog.com/images/banner/tabelog_api_135x17.gif " alt="食べログ.com WEB サービス" title="食べログ.com WEB サービス" border="0" /></a></p>
+</div>
+{/module}
+{/if}

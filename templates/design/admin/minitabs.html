@@ -1,0 +1,4 @@
+<ul class="minitabs">
+  <li><a href="/management/design/design_list/"{if $page_type eq 'design_list'} class="active"{/if}>{'/modules/design/label/design_list'|translate}{*デザイン一覧*}</a></li>
+  {if $auth.site.select}<li><a href="/management/design/setup/"{if $page_type eq 'setup'} class="active"{/if}>{'/modules/design/label/basic_settings'|translate}{*デザイン基本設定*}</a></li>{/if}
+</ul>

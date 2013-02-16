@@ -1,0 +1,33 @@
+{if $auth.menu.update}
+    <div>
+    <div id="use_widget">
+      <h3>この画面で使うガジェットを設定</h3>
+{foreach from=$menu_all key=key item=item}
+<label for="use_widget_{$key}"><input type="checkbox" name="{$key}" value="1" id="use_widget_{$key}" onChange="j$('#{$key}').toggle(100);updateUseWidget();" {if $key|@in_array:$menu_easy_disp}checked{/if}>{$item}</label>
+{/foreach}
+<div class="use_widget_input">
+<input type="button" value="デフォルトに戻す" onClick="new Ajax.Request('/direct/menu/update_menu_order/', {literal}{ 'method': 'post', 'parameters': 'mng_type={/literal}{$MNG_TYPE}{literal}&reset=1',onComplete:function(res){location.reload();}}{/literal});">
+{if $smarty.session.super_flg}
+<input type="button" value="この構成をサイトのデフォルトにする" onClick="alert('実装中です。');">
+{/if}
+</div>
+      </div>
+    </div>
+{headblock}
+{literal}
+<script type="text/javascript">
+<!--
+function updateUseWidget(){
+  var use_widget=[];
+  j$("#use_widget input:checkbox").each(function(i,v){
+    if(j$(v).attr("checked")){
+      use_widget.push(v.id);
+    }
+  });
+  new Ajax.Request("/direct/menu/update_menu_order/", { "method": "post", "parameters": "mng_type={/literal}{$MNG_TYPE}{literal}&use_widget="+use_widget.toString()});
+}
+//-->
+</script>
+{/literal}
+{/headblock}
+{/if}

@@ -1,0 +1,54 @@
+{module name="seminar_new_list"}
+<h2 class="module_title"><span>{'/modules/seminar/label/seminar_new_list'|translate}{* セミナー新着一覧 *}</span></h2>
+<div class="module_contents">
+<div class="lists_num">
+    {include file="common/pageLinks.html" pageInfo=$pageInfo}
+</div>
+{foreach from=$seminar_list item=seminar}
+  <table class="list" width="700">
+    <tr>
+        <th colspan="7" ><a href="/seminar_detail/?id={$seminar.seminar_id}"><span align="left">{$seminar.seminar_title}</span></th>
+    </tr>
+    <tr>
+        <th align="center">{'/label/start_time'|translate}{*開始時刻*}</th>
+        <th align="center">{'/label/apply_end_date'|translate}{*申込・募集締切日*}</th>
+        <th align="center">{'/modules/seminar/label/tdfk_cd'|translate}{*都道府県*}</th>
+        <th align="center">{'/modules/seminar/label/place_nm'|translate}{*会場名*}</th>
+        <th width="100"  align="center">{'/modules/seminar/label/station'|translate}{*最寄駅*}</th>
+        <th width="100"  align="center">{'/label/sponsor'|translate}</th>
+        {if $seminar.no_disp_fee_flg != "1"}
+        <th align="center">{'/modules/seminar/label/fee'|translate}{*料金*}</th>
+        {/if}
+    </tr>
+    <tr>
+        <td align="center">{$seminar.start_date|escape}{if $seminar.end_date}～{$seminar.end_date|escape}{/if}<br>{$seminar.start_time|escape}{if $seminar.end_time}～{$seminar.end_time|escape}{/if}</td>
+        <td align="center">{$seminar.apply_end_date|escape|nl2br}</td>
+        <td align="center">{$tdfk_list[$seminar.tdfk_cd]}</td>
+        {if $seminar.place_nm !="" && $seminar.map_url !=""}
+        <td align="center"><a href="{$seminar.map_url}" target="_blank">{$seminar.place_nm|escape}</a></td>
+        {else}
+        <td align="center">{$seminar.place_nm|escape}</td>
+        {/if}
+        <td align="center">{if $seminar.railway_line_name|escape}<p>{$seminar.railway_line_name|escape}</p>{/if}
+                           {if $seminar.station_name}<p>{$seminar.station_name|escape}</p>{/if}
+        </td>
+        <td align="center">{$seminar.organization_name|escape|nl2br}</td>
+        {if $seminar.no_disp_fee_flg != "1"}
+        <td align="center">{$seminar.fee}</td>
+        {/if}
+    </tr>
+  </table>
+{foreachelse}
+<div style="text-align:center;padding-top:30px;">
+{'/msg/no_data'|translate}{* 表示するデータがありません *}
+</div>
+{/foreach}
+<div class="lists_num">
+    {include file="common/pageLinks.html" pageInfo=$pageInfo}
+</div>
+<div class="relation_link">
+    <a href="/calendar_list/" class="small_text">{'/modules/seminar/label/seminar_of_this_month'|translate}{* 今月のセミナー *}</a>
+</div>
+
+</div>
+{/module}

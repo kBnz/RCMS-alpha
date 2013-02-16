@@ -1,0 +1,162 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{head_include file="common/calendar_scripts.html"}
+{rcms_include file="management/fileupload.html"}
+
+{headblock}
+<script type="text/javascript" src="/js/jquery/jquery-ui-1.7.2.min.js"></script>
+<script src="/js/jqueryAlerts/jquery.alerts.js" type="text/javascript"></script>
+<link href="/js/jqueryAlerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen,print" />
+
+<style type="text/css">
+{literal}
+{/literal}
+</style>
+
+<script type="text/javascript">
+{literal}
+{/literal}
+</script>
+<script src="/js/swfobject.js" type="text/javascript"></script>
+
+{/headblock}
+
+<div class="list_right_bt">
+<h2>ダウンロード課金編集</h2>
+<ul>
+</ul>
+
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_download_list/">ダウンロード課金一覧</a>
+<a href="/management/charge/charge_download_edit/{if $charge_download_id}charge_download_id={$charge_download_id}{/if}">ダウンロード課金編集</a>
+{/pankuzu}
+
+<p class="page_info">
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="charge/admin/minitabs.html" page_type="download"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form name="charge_download_edit" id="charge_download_edit" action="/management/charge/charge_download_edit/" method="POST" enctype="multipart/form-data">
+    {if $charge_download_id}
+      <input type="hidden" name="charge_download_id" value="{$charge_download_id}" />
+    {/if}
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+    {if $formData.swf_file}
+      <input type="hidden" name="swf_file" value="{$formData.swf_file}" />
+    {/if}
+    {if $formData.thumbnail_file}
+      <input type="hidden" name="thumbnail_file" value="{$formData.thumbnail_file}" />
+    {/if}
+      <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    <table width="100%">
+      <tr>
+        <th>名前</th>
+        <td><input size="80" type="text" name="name" value="{$formData.name|escape}" /></td>
+      </tr>
+      <tr>
+        <th>説明</th>
+        <td><textarea name="description" style="width: 500px; height: 80px">{$formData.description|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>情報料</th>
+        <td><input size="80" type="text" name="price" value="{$formData.price|escape}" /></td>
+      </tr>
+      <tr>
+        <th>サムネイル画像</th>
+        <td>
+          {if $formData.thumbnail_url}<div><img src="{$formData.thumbnail_url}" /></div>{/if}
+          <input type="file" name="thumbnail" />
+        </td>
+      </tr>
+    </table>
+
+    <h3>キャリア設定</h3>
+    <table width="100%">
+      <tr>
+        <th>Docomo<br />サイトID(個別課金)</th>
+        <td>
+          <input type="text" name="docomo_site_id" value="{$formData.docomo_site_id}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Docomo<br />サイトID(マイメニュー)</th>
+        <td>
+          <input type="text" name="docomo_mmcid" value="{$formData.docomo_mmcid}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Softbank<br />SID</th>
+        <td>
+          <input type="text" name="sb_sid" value="{$formData.sb_sid}" />
+        </td>
+      </tr>
+      <tr>
+        <th>au<br />サービス提供者コード</th>
+        <td>
+          <input type="text" name="au_cp_cd" value="{$formData.au_cp_cd}" />
+        </td>
+      </tr>
+      <tr>
+        <th>au<br />サービスコード</th>
+        <td>
+          <input type="text" name="au_cp_srv_cd" value="{$formData.au_cp_srv_cd}" />
+        </td>
+      </tr>
+      <tr>
+        <th>au<br />商品コード</th>
+        <td>
+          <input type="text" name="au_item_cd" value="{$formData.au_item_cd}" />
+        </td>
+      </tr>
+    </table>
+
+    <p class="title">Flash</p>
+    {if $formData.swf_url}
+          <div id="swf{$formData.charge_download_id}" ></div>
+<script type="text/javascript">
+<!--
+var so = new SWFObject("/images/common/swf_player.swf","swf{$formData.charge_download_id}", "520", "390", "8", "#000000");
+so.addVariable("swf_file", "{$formData.swf_url}");
+so.write("swf{$formData.charge_download_id}");
+//-->
+</script>
+    {/if}
+    <table width="100%">
+      <tr>
+        <td>
+          <input type="file" name="swf" />{if $formData.swf_url}<input type="checkbox" name="del_swf" id="del_swf" {if $formData.del_swf}checked="checked"{/if}/><label for="del_swf">{'/label/delete_flash'|translate}</label>{/if}{* FLASHファイル削除 *}
+        </td>
+      </tr>
+    </table>
+
+  {if $docmeta.is_primary}
+
+    <!--公開設定-->
+{*
+    {rcms_include file="management/open_date_box.html" id=$charge_download_id data=$formData}
+*}
+
+  {/if}
+
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+    </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

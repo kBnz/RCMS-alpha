@@ -1,0 +1,126 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--{literal}
+
+var cur_word;
+
+function showGraphImg(word) {
+    cur_word = word;
+    var date = new Date();
+    document.getElementById('graphSpan').style.display = '';
+    var span = document.getElementById('span').options[document.getElementById('span').selectedIndex].value;
+    document.getElementById('graph_img').setAttribute('src', '/direct/seo/searchRank_graph/searchWord='+word+'&span='+span+'&date='+date.getTime());
+ }
+
+{/literal}//-->
+</script>
+<div class="list_right_bt">
+<h2 class="seo">{'/modules/seo/label/page_info'|translate}{*ページ情報*}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/seo/pageInfo/">{'/modules/seo'|translate}</a>
+{'/modules/seo/label/page_info'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> SEO >> ページ情報 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+<p class="hint">{'/modules/seo/msg/not_search_top_100_to_more'|translate}{*検索語ランクは100位以上は検索していません。*}</p>
+<h3>{'/modules/seo/lable/sitemap.xml_status'|translate}{*sitemap.xmlの作成状況*}</h3>
+{if $exists_sitemap}
+{'/msg/created_with_time'|translate:$sitemap_make_time}{*$sitemap_make_timeに作成しました。*}
+[<a href="/sitemap.xml" target="_blank">{'/label/confirm_on_pc'|translate}{*PC版を確認する*}</a>({$sitemap_filesize}KB)]
+{else}
+{'/label/has_not_created'|translate}{*未作成*}
+{/if}
+{if $exists_sitemap_m}
+[<a href="/sitemap_m.xml" target="_blank">{'/label/confirm_on_mobile'|translate}{*モバイル版を確認する*}</a>({$sitemap_m_filesize}KB)]
+{/if}
+{if $exists_sitemap_news}
+[<a href="/sitemap_news.xml" target="_blank">{'/label/confirm_on_topics'|translate}{*トピックス版を確認する*}</a>({$sitemap_news_filesize}KB)]
+{/if}
+{if $exists_sitemap_video}
+[<a href="/sitemap_video.xml" target="_blank">{'/label/confirm_on_movie'|translate}{*動画版を確認する*}</a>({$sitemap_video_filesize}KB)]
+{/if}
+  <p class="hint">    
+    {'/modules/seo/msg/add_date_to_sitemap.xml'|translate}
+    {* sitemap.xmlにURLを追加したい場合は、<a href="/management/seo/sitemap_csv_upload/">こちら</a>から追加してください。*}
+  </p>
+  <p class="hint">{'/modules/seo/msg/webmasters_and_siteexplorer'|translate}{*<a href="https://www.google.com/webmasters/tools?hl=ja" target="_blank">Google ウェブマスター ツール</a>に登録することで検索エンジンにページが登録されやすくなります。*}<br>
+　{'/label/site_map_url_on_pc'|translate}{*PC版のサイトマップURL*}: {$smarty.const.ROOT_URL}/sitemap.xml<br>
+　{'/label/site_map_url_on_mobile'|translate}{*モバイル版のサイトマップURL*}: {$smarty.const.ROOT_URL}/sitemap_m.xml<br>
+　{'/label/site_map_url_on_topics'|translate}{*トピックス版のサイトマップURL*}: {$smarty.const.ROOT_URL}/sitemap_news.xml<br>
+　{'/label/site_map_url_on_movie'|translate}{*動画版のサイトマップURL*}: {$smarty.const.ROOT_URL}/sitemap_video.xml
+  </p>
+<br>
+<h3>{'/label/search_word_rank'|translate}{*検索語のランク*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th scope="col">{'/label/rank_trend'|translate}{*順位の推移*}</th>
+      <th scope="col">{'/label/search_word'|translate}{*検索語*}</th>
+      <th scope="col">Google(PC)</th>
+      <th scope="col">Yahoo(PC)</th>
+    </tr>
+{foreach item=searchWord from=$pageInfo.keyword_rank}
+    <tr>
+      <td><input type="button" onclick="showGraphImg('{$searchWord.keyword|urlencode}')" value="{'/label/display'|translate}{*表示*}" {if $searchWord.noData} disabled="1"{/if}></td>
+      <td>{$searchWord.keyword}</td>
+      <td>{$searchWord.google}</td>
+      <td>{$searchWord.yahoo}</td>
+    </tr>
+{foreachelse}
+    <tr><td colspan="4">{'/modules/seo/msg/no_search_word_so_far'|translate}{*現在検索中の検索語はありません。*}</tr>
+{/foreach}
+  </table>
+
+<h3>{'/label/index_count'|translate}{*インデックス数*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th scope="col">{'/label/search_engine'|translate}{*検索エンジン*}</th>
+      <th scope="col">{'/label/index_count'|translate}{*インデックス数*}</th>
+      <th scope="col">{'/label/index_page_list'|translate}{*インデックスページ一覧*}</th>
+    </tr>
+    <tr>{* google *}
+      <td>Google</td>
+      <td>{$pageInfo.indexLinks.google}</td>
+      <td><a href="http://www.google.co.jp/search?q=site:{$site_domain}" target="_brank">{'/label/confirm_on_list'|translate}{*一覧で確認する*}</a></td>
+    </tr>
+    <tr>{* yahoo *}
+      <td>Yahoo!</td>
+      <td>{$pageInfo.indexLinks.yahoo}</td>
+      <td><a href="http://search.yahoo.co.jp/search?p=site:{$site_domain}" target="_brank">{'/label/confirm_on_list'|translate}{*一覧で確認する*}</a></td>
+    </tr>
+  </table>
+
+<h3>{'/label/incoming_links_count'|translate}{*被リンク数*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th scope="col">{'/label/search_engine'|translate}{*検索エンジン*}</th>
+      <th scope="col">{'/label/incoming_links_count'|translate}{*被リンク数*}</th>
+      <th scope="col">{'/label/incoming_links_page_list'|translate}{*被リンクページ一覧*}</th>
+    </tr>
+    <tr>{* google *}
+      <td>Google</td>
+      <td>{$pageInfo.backLinks.google}</td>
+      <td><a href="http://www.google.co.jp/search?q=link:{$smarty.const.ROOT_URL}" target="_brank">{'/label/confirm_on_list'|translate}{*一覧で確認する*}</a></td>
+    </tr>
+    <tr>{* yahoo *}
+      <td>Yahoo!</td>
+      <td>{$pageInfo.backLinks.yahoo}</td>
+      <td><a href="http://search.yahoo.co.jp/search?p=link:{$smarty.const.ROOT_URL}" target="_brank">{'/label/confirm_on_list'|translate}{*一覧で確認する*}</a></td>
+    </tr>
+  </table>
+
+  <img id="graph_img" src="">
+  <div id="graphSpan" style="display:none;"><select id="span" onchange="showGraphImg(cur_word)">{html_options options=$spanOptions slected='three_month'}</select></div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}
+

@@ -1,0 +1,72 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{rcms_include file="menu/admin/menu_common.html"}
+
+<div class="host">
+	<h2>{'/label/wellcome_admin_top_page'|translate:$smarty.const.SITE_TITLE}{*管理画面*}</h2>
+</div>
+
+
+{*---JavascriptとFlashの確認---*}
+<noscript>
+<div style="border:solid 4px #ffaa00; text-align:center; padding:20px;">
+<p>RCMSの管理画面を利用するにはJavascriptを有効にする必要があります。</p>
+</div>
+</noscript>
+{literal}
+<script type="text/javascript">
+
+j$(document).ready(function(){
+    function getFlashPlayerVersion() {
+        var vsn = '';
+        if( navigator.plugins && navigator.mimeTypes.length ) {     // not IE
+            var tmp = navigator.plugins["Shockwave Flash"].description.match(/([0-9]+)/);
+            vsn = tmp[0];
+        } else {    // IE
+            var tmp = new ActiveXObject("ShockwaveFlash.ShockwaveFlash").GetVariable
+("$version").match(/([0-9]+)/);
+            vsn = tmp[0];
+        }
+        return vsn;
+    }
+
+    var flash = getFlashPlayerVersion();
+    if(flash<=8){ //flashの最低バージョンを指定
+        j$("#main").before('<div style="border:solid 4px #ffaa00; text-align:center; padding:20px;"><h2>最新版のFlash Playerをインストールしてください</h2><br><p>RCMSの管理にはFlashPlayer（無料）が必要です。下記のリンクからFlashPlayerをインストールしてください。</p><br><p><a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="http://www.adobe.com/macromedia/style_guide/images/160x41_Get_Flash_Player.jpg"><br>Flash Playerをインストール</a></p></div>');
+    }
+});
+
+</script>
+{/literal}
+{*---JavascriptとFlashの確認 ここまで---*}
+
+<div id="main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+		<div id="left" class="column">
+
+{foreach from=$menu_easy_order.main item=order}
+{$smarty.capture.$order}
+{/foreach}
+
+		</div><!-- left -->
+
+		<div id="right" class="column">
+
+
+{foreach from=$menu_easy_order.right item=order}
+{$smarty.capture.$order}
+{/foreach}
+
+				<div class="clearFloat"><br></div>
+
+		</div><!-- right -->
+
+
+</div><!-- main -->
+
+<div class="clearFloat"></div>
+{rcms_include file="menu/admin/menu_select_widget.html"}
+
+{rcms_include file="management/footer.html"}

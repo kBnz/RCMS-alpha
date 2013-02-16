@@ -1,0 +1,68 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+{/literal}
+//-->
+</script>
+<div class="list_right_bt">
+<h2>ファイル更新</h2>
+<ul>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/fileserver/fileserver_list/folder_id={$folder_id}">ファイル管理</a>
+<a href="/management/fileserver/fileserver_file_update/file_id={$file_id}">ファイル更新</a>
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div id="fileserver_file_update" class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form enctype="multipart/form-data" action="/management/fileserver/fileserver_file_update/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="file_id" value="{$file_id}" />
+
+    <p>
+      アップロードするファイルを選択してください。<br/>
+      アップロードされたファイルでサーバーに保存してあるファイルを更新します。<br />
+    </p>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>対象のファイル<br />(タイトル／ファイル名)</th>
+        <td>{$fileInfo.title}／{$fileInfo.name}</td>
+      </tr>
+      <tr>
+        <th>ファイル</th>
+        <td>
+          <input type="file" size="40" name="file" /><span class="required">必須</span>
+        </td>
+      </tr>
+      <tr>
+        <th>ファイル名の変更</th>
+        <td>
+          <input type="checkbox" name="rename_flg" value="1" />
+          <span class="hint">チェックを付けると今回アップロードするファイル名を新しいファイル名にします。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>更新メモ</th>
+        <td>
+          <p class="hint">変更ポイントなどを記入してください</p>
+          <textarea name="memo" style="width:350px;height:100px"></textarea>
+        </td>
+      </tr>
+    </table>
+    <input type="submit" value="送信" />
+    <input type="button" onclick='window.location="/management/fileserver/fileserver_list/folder_id={$folder_id}"' value="フォルダに戻る" />
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

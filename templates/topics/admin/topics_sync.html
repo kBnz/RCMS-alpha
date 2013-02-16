@@ -1,0 +1,50 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{if $topics_group_nm}{'/modules/topics/label/topics_list_of_the_group'|translate:$topics_group_nm}{else}{'/modules/topics/label/topics_sync'|translate}{/if}</h2>
+
+<ul>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+{'/modules/topics/label/topics_sync'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{*
+{rcms_include file="topics/admin/minitabs.html" page_type=$ct}
+*}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<table width="100%" cellspacing="2">
+  <tr>
+    <th>{'/label/group_id'|translate}</th>
+    <th>{'/label/group_name'|translate}</th>
+    <th>同期先</th>
+    <th>同期</th>
+  </tr>
+{foreach from=$sync_list item=row}
+  <tr>
+    <td>{$row.topics_group_id}</td>
+    <td>{$row.group_nm|escape}</td>
+    <td>
+      {foreach from=$row.clients item=client}
+        <p>{$client.host|escape}</p>
+      {/foreach}
+    </td>
+    <td><a href="/management/topics/topics_sync/sync={$row.topics_group_id}">同期</a></td>
+  </tr>
+{/foreach}
+<table>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

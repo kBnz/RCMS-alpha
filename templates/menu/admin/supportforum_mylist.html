@@ -1,0 +1,61 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="main_contents">
+<p class="btn_ask"><a href="javascript:void(0);" onClick="window.open('/management/menu/supportforum_input/&supportforum_root_id={$header.supportforum_id}', 'supportforum_input', 'width=500, height=600, menubar=no, toolbar=no, scrollbars=yes');"><img src="{'/images/management/forum/btn_ask.gif'|lang_img_path}" alt="質問する"></a></p>
+
+<ul class="minitabs">
+    <li><a href="/management/menu/supportforum_mylist/" class="active">{'/modules/menu/label/my_question'|translate}</a></li>{* 自分の質問一覧 *}
+    <li><a href="/management/menu/supportforum_list/">{'/modules/menu/label/questions_list'|translate}</a></li>{* 質問一覧 *}
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+    <form name="supportforum_list_form" method="POST" action="/management/menu/supportforum_mylist/">
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+
+        <fieldset class="search_box">
+            <label for="s_module_type">{'/label/module'|translate}</label>{* モジュール *}
+            <select name="s_module_type" id="s_module_type">{html_options options=$moduleList selected=$s_module_type}</select>
+            <label for="s_category_id">{'/label/category'|translate}</label>{* カテゴリ *}
+            <select name="s_category_id" id="s_category_id">{html_options options=$supportforum_category selected=$s_category_id}</select>
+            <label for="s_forum_text">{'/modules/menu/label/title_contents'|translate}</label>{* タイトル・内容 *}
+            <input type="text" id="s_forum_text" name="s_forum_text" size="30" value="{$s_forum_text|escape}" />&nbsp;&nbsp;
+            <input type="submit" value="{'/label/search'|translate}" />{* 検索 *}
+        </fieldset>
+
+        {pager info=$pageInfo}
+        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+                <th style="width:80px">{'/label/module'|translate|sort_link:module_nm:$sort_url:$sort:$desc}</th>{* モジュール *}
+                <th style="width:80px">{'/label/category'|translate|sort_link:supportforum_category_id:$sort_url:$sort:$desc}</th>{* カテゴリ *}
+                <th>{'/modules/menu/label/title'|translate|sort_link:title:$sort_url:$sort:$desc}</th>{* タイトル *}
+                <th>{'/modules/menu/label/submitted_by'|translate|sort_link:name:$sort_url:$sort:$desc}</th>{* 投稿者 *}
+                <th>{'/modules/menu/label/replies'|translate|sort_link:supportforum_cnt:$sort_url:$sort:$desc}</th>{* 回答数 *}
+                <th>{'/modules/menu/label/suggested'|translate|sort_link:good_cnt:$sort_url:$sort:$desc}</th>{* お役立ち度 *}
+                <th>{'/modules/menu/label/views_number'|translate|sort_link:view_cnt:$sort_url:$sort:$desc}</th>{* 閲覧数 *}
+                <th style="width:130px">{'/modules/menu/label/last_updated'|translate|sort_link:thread_update:$sort_url:$sort:$desc}</th>{* 最終更新日時 *}
+            </tr>
+            {foreach item=supportforum_data from=$supportforum_list}
+            <tr>
+                <td>{$supportforum_data.module_nm|escape}</td>
+                <td>{$supportforum_data.category_name|escape}</td>
+                <td><a href="/management/menu/supportforum_detail_list/supportforum_id={$supportforum_data.rootnode}&pageID={$pageInfo.pageNo}">{$supportforum_data.title|escape}</a>{if $supportforum_data.new_flg}<img src="/images/management/forum/icon_new.gif" alt="new">{/if}{if $supportforum_data.resolved_flg==1}<img src="{'/images/management/forum/solved.gif'|lang_img_path}" alt="解決済み">{/if}</td>
+                <td>{$supportforum_data.name|escape}</td>
+                <td>{$supportforum_data.supportforum_cnt}件</td>
+                <td>{$supportforum_data.good_cnt|escape}</td>
+                <td>{$supportforum_data.view_cnt|escape}</td>
+                <td>{$supportforum_data.thread_update|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+            </tr>
+            {/foreach}
+        </table>
+        {pager info=$pageInfo}
+
+    </form>
+    <br>
+    <a href="/management/menu/supportforum_list/">{'/modules/menu/msg/other_question'|translate}</a>{* その他の質問はこちら *}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,126 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/catalog/label/catalog_group_edit'|translate}{* グループ設定*}　{if $formData.version_no}{'/modules/catalog/label/catalog_version_no'|translate:$formData.version_no}{* 第n版 *} {if $formData.latest_flg eq '1'}({'/label/latest'|translate}{* 最新 *}){/if}{/if}</h2>
+<ul>
+  {if $rauth->canInsert('/catalog/group')}
+  <li class="add"><a href="/management/catalog/catalog_group_edit/"><span>{'/modules/catalog/label/create_group_btn'|translate}{* グループ追加 *}</span></a></li>
+  {/if}
+  {if $catalog_group_id}
+  <li class="normal"><a href="/management/catalog/catalog_history/catalog_group_id={$catalog_group_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog/label/catalog_group_list'|translate}</a>
+{'/modules/catalog/label/catalog_group_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カタログ >> グループ一覧 >> グループ設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $catalog_group_id}
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth catalog_group_nm=$formData.group_nm}
+{/if}
+
+<div class="list_main">
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/catalog/catalog_group_edit/catalog_group_id=$catalog_group_id"}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="catalog_group_edit" id="catalog_group_edit" action="/management/catalog/catalog_group_edit/" method="POST">
+{if $catalog_group_id}  
+    <input type="hidden" name="catalog_group_id" value="{$catalog_group_id}" />
+{/if}
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="subflg" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{if $catalog_group_id}  
+    {lang_selector meta=$docmeta link="/management/catalog/catalog_group_edit/catalog_group_id=$catalog_group_id"}
+{/if}   
+
+    <table width="100%">
+      <tr>
+        <th style="width:150px">{'/label/group_id'|translate}{* グループID *}</th>
+        <td>
+          {$catalog_group_id|escape}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/group_name'|translate}{* グループ名 *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+        <td>
+          <input type="text" name="group_nm" value="{$formData.group_nm|escape}" size="80" />
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/display_form'|translate}{* 表示形式 *}</th>
+        <td>
+            {if $docmeta.is_primary}    
+                <select name="disp_type">{html_options options=$arrCatalogDispType selected=$formData.disp_type}</select>
+            {else}  
+                {$arrCatalogDispType[$latestRow.disp_type]}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/multi_column'|translate}{* 段組 *}</th>
+        <td>
+            {if $docmeta.is_primary}
+                <input type="text" name="catalog_col_num" value="{$formData.catalog_col_num}" size="3">{'/label/multi_column_unit'|translate}{* 段組 *}
+            {else}
+                {$latestRow.catalog_col_num}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/column_width'|translate}{* 段の幅 *}</th>
+        <td>
+            {if $docmeta.is_primary}
+                <input type="text" name="catalog_col_width" value="{$formData.catalog_col_width}" size="3">px
+            {else}
+                {$latestRow.catalog_col_width}
+            {/if}
+          <span class="hint">{'/modules/catalog/msg/about_column_width'|translate}{* 一つのブロックの幅です。この幅x段組数が表示される領域の幅になります。 *}</span>
+        </td>
+      </tr>
+    </table>
+
+{if $docmeta.is_primary}
+      <h3><span class="link_button">{'/label/detail_settings'|translate}{* 詳細設定 *}</span></h3>
+      <table width="100%">
+        <tr>
+          <th style="width:150px">{'/label/access_limit'|translate}{* アクセス制限 *}:</th>
+          <td><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select>
+              <p class="hint">{'/modules/catalog/msg/select_usergroup_viewing_this_cataloggroup'|translate}{* 閲覧を許可するユーザ・グループを選択してください。(複数選択できます) *}</p>
+          </td>
+        </tr>
+        <tr>
+          <th style="width:150px">{'/label/editing_limit'|translate}{* 編集制限 *}:</th>
+          <td><select name="edit_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrEdit_level}</select>
+             <p class="hint">{'/modules/catalog/msg/select_usergroup_editing_this_cataloggroup'|translate}{* 編集を許可するグループを選択してください。(複数選択できます) *}</p>
+          </td>
+        </tr>
+      </table>
+    {rcms_include file="management/open_date_box.html" id=$catalog_group_id data=$formData}
+{/if}
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/catalog/group/$catalog_group_id", $docmeta.lang) link="/management/catalog/catalog_group_edit/catalog_group_id=$catalog_group_id"}
+
+    {editActionBox docmeta=$docmeta confirmMessage='/modules/catalog/msg/confirm_del_catalog_groups'|translate}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,9 @@
+<h2><span style="color: #FF6600; font-size: medium;">{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+<span style="font-size: medium;">[{'/modules/bbs/label/post_display_limit'|translate}{*記事表示制限*}]</span><br />
+{if $isLogin}
+{'/msg/not_allowed_to_select'|translate}{*権限がないため閲覧することはできません*}<br />
+{else}
+{'/msg/browse_this_content_after_login'|translate}{*このコンテンツはログインしてご覧ください。*}<a href="{$login_page}"><br><br>>>{'/label/login'|translate}{*ログイン*}</a>
+{/if}
+</div>

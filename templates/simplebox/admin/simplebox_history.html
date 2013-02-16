@@ -1,0 +1,24 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $auth.simplebox.insert}
+<li class="add"><a href="/management/simplebox/simplebox_edit/"><span>付箋追加</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ管理</a>
+<a href="/management/simplebox/simplebox_list/">付箋一覧</a>
+<a href="/management/simplebox/simplebox_edit/simplebox_id={$simplebox_id}">付箋詳細</a>
+<a href="/management/simplebox/simplebox_history/simplebox_id={$simplebox_id}">更新履歴一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/simplebox/simplebox_edit/simplebox_id=$simplebox_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

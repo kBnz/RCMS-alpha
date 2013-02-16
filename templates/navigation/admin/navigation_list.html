@@ -1,0 +1,130 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete() {
+    var msg = '{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}';
+    if (confirm(msg)) {
+        document.navigation_list.MODE.value = "DELETE";
+        document.navigation_list.submit();
+    }
+}
+{/literal}
+//-->
+</script>
+<script type="text/javascript" src="/js/swfobject.js"></script>
+
+<div class="list_right_bt">
+<h2>{'/modules/navigation'|translate}</h2>
+<ul>
+{if $rauth->canInsert("/navigation/item/[@navigation_header_id=$navigation_header_id]")}
+<li class="add"><a href="/management/navigation/navigation_edit/navigation_header_id={$smarty.request.navigation_header_id}"><span>{'/label/add_btn'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation'|translate}</a>
+<a href="/management/navigation/navigation_header_list/">{'/modules/navigation/label/navigation_list'|translate}</a>
+{'/modules/navigation/label/item_list'|translate}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{if $navigation_nm}{$navigation_nm|escape}{else}{'/label/create_new'|translate}{/if}</h3>
+
+{rcms_include file="navigation/admin/minitabs.html" page_type=$ct}
+
+<div id="navigation_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}{* 承認待ち一覧 *}
+
+
+
+{if $rauth->canSelect("/navigation/item/[@navigation_header_id=$navigation_header_id]")}
+  {foreach from=$navigations item=item name=files_nm}
+    {assign var=navigation_id value=$item.navigation_id}
+    {assign var=navigation_header_id value=$item.navigation_header_id}
+
+    {if $smarty.foreach.files_nm.first}
+    <form name="navigation_list" action="/management/navigation/navigation_list/navigation_header_id={$smarty.request.navigation_header_id}" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+    {'/msg/data_order'|translate}{*並び順は大きい順に並びます*}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'navigation_id[]')" /></th>
+        <th width="26">{'/label/publish'|translate}</th>{*公開*}
+        <th>{'/label/content'|translate}</th>
+        <th>URL</th>
+        <th>{'/label/last_updated_time'|translate}</th>{*更新日時*}
+        <th>{'/label/edit'|translate}</th>{*編集*}
+        <th>{'/label/order_no'|translate}{*表示順*}</th>
+      </tr>
+    {/if}
+      <tr>
+        <td><input type="checkbox" name="navigation_id[]" value="{$item.navigation_id}" {if !$rauth->canDelete("/navigation/item/$navigation_id") && !$rauth->canUpdate("/navigation/item/$navigation_id")}disabled="disabled"{/if} /></td>
+        <td>{$item.open_flg|rcms_publicimg}</td>
+        <td>
+        {* contents_type == 2,3,4 のときは画像/swfを表示 *}
+        {if $item.contents_type >= '2'}
+            {if $item.contents_img1_ext eq 'swf'}
+            <div id="contents_flash{$item.navigation_id}"></div>
+            <script type="text/javascript">
+            <!--
+                var so = new SWFObject("{$item.navigation_file_name_1}", "contents_flash", "{$item.contents_width}", "{$item.contents_height}", "8", "#000000");
+                so.write("contents_flash{$item.navigation_id}");
+            //-->
+            </script>
+            {else}
+                {if $item.contents_img1_ext}
+                <img src="{$item.navigation_file_name_1}" 
+                {if $item.contents_img2_ext}
+                  onMouseOver="this.src='{$item.navigation_file_name_2}'" 
+                  onMouseOut="this.src='{$item.navigation_file_name_1}'" 
+                {/if}
+                alt="{$item.alt_text}">
+                {else}
+                {'/label/no_images'|translate}{*画像無し*}
+                {/if}
+            {/if}
+        {/if}
+            {* contents_type == 0,1 のときはテキスト1を表示 *}
+            {if $item.contents_type <= '1'}{$item.contents_text1}{/if}
+            {* contents_type == 2,3,4 のときは改行とテキスト1を表示 *}
+            {if $item.contents_type >= '2'}<br />{$item.contents_text1}{/if}
+            {* contents_type == 1 のときはテキスト2を表示 *}
+            {if $item.contents_type == '1'}<br />{$item.contents_text2}{/if}
+
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$navigation_id] link="/management/navigation/navigation_edit/navigation_header_id=$navigation_header_id&navigation_id=$navigation_id"}{* 言語ステータス *}
+        </td>
+        <td style="width:200px;">{$item.url}</td>
+        <td width="120px" style="white-space:nowrap">{$item.update_ymdhi|pg_dateformat}</td>
+        <td><a href="/management/navigation/navigation_edit/navigation_header_id={$item.navigation_header_id}&navigation_id={$item.navigation_id}">{'/label/edit'|translate}</td>
+        <td><input type="text" name="order_no[{$navigation_id}]" value="{$item.order_no}" size="3" onBlur="return changeHankaku(this, 'number');" /></td>
+      </tr>
+    {if $smarty.foreach.files_nm.last}
+    </table>
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}</button>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+        {* 並び順更新ボタンは右寄せ *}
+        </ul><ul style="float:right;"><button type="submit" onclick="this.form.MODE.value='CHANGE_ORDER'">{'/label/change_order_btn'|translate}</button>
+    {/buttonbox}
+    </form>
+    {/if}
+  {/foreach}
+{else}
+  <p style="margin-top:10px">{'/msg/not_allowed_to_select'|translate}</p>
+{/if}
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

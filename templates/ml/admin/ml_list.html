@@ -1,0 +1,101 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/JavaScript">
+{literal}
+function confirmDelete(f) {
+    if (confirm('選択されたメーリングリストを削除します。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{if $auth.ml.insert}
+<li class="add"><a href="/management/ml/ml_edit/"><span>メーリングリスト追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}</a>
+{'/modules/ml'|translate}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<p class="hint">※メーリングリストの参加可能人数は各メーリングリスト合計で{$smarty.const.ml_max_person}人までになります。（重複も含みます）</p>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/ml/ml_list/">
+    <input type="hidden" name="pageID" value="{$currentPageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+{if $auth.ml.update || $auth.ml.delete}
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'ml_id[]')" /></th>
+{/if}
+        <th>運用</th>
+        <th>メーリングリスト名</th>
+        <th>メンバー</th>
+        <th>バックナンバー</th>
+        <th>メールアドレス</th>
+        <th>最終更新日時</th>
+      </tr>
+      {foreach item=row from=$ml_list}
+      <tr>
+{if $auth.ml.update || $auth.ml.delete}
+        <td><input type="checkbox" name="ml_id[]" value="{$row.ml_id}" /></td>
+{/if}
+        <td>
+          {if $row.status == $smarty.const.ML_RUN}
+            <img src="/images/management/check.gif" border="0" />
+          {elseif $row.status == $smarty.const.ML_STOP}
+            <img src="/images/management/batu.gif" border="0" />
+          {/if}
+        </td>
+        <td><a href="/management/ml/ml_edit/ml_id={$row.ml_id}">{$row.ml_name}</a></td>
+        <td><a href="/management/ml/ml_member_list/ml_id={$row.ml_id}">{$row.member_cnt}人</a></td>
+        <td><a href="/management/ml/ml_bn_list/ml_id={$row.ml_id}">{$row.bn_cnt}件</a></td>
+        <td>{$row.ml_address}</td>
+        <td>{$row.update_ymdhi|pg_dateformat}</td>
+      </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+  {if $auth.ml.update || $auth.ml.delete}
+    {buttonbox}
+      <p>選択したメーリングリストを一括で</p>
+        {if $auth.ml.update}
+          <button type="submit" onclick="this.form.MODE.value='RUN'">運用中にする</button>
+          <button type="submit" onclick="this.form.MODE.value='STOP'">休止中にする</button>
+        {/if}
+        {if $auth.ml.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+    {/buttonbox}
+  {/if}
+  </form>
+
+  {* 公開非公開・表示順のフォーム *}
+  <form action="/management/ml/ml_list/" method="post" name="switch_form">
+    <input type="hidden" name="pageID" value="{$currentPageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="id" value="" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="val" value="" />
+  </form>
+
+</div>
+{rcms_include file="management/footer.html"}

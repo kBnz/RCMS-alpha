@@ -1,0 +1,33 @@
+{if $errors || $alerts || $messages}
+    {literal}
+    <script type="text/javascript">
+        jQuery(function($){
+            // messages以外が存在するときは、自動的に隠れない
+            var showTime = {/literal}{if $errors || $alerts}0{else}3000{/if}{literal};
+            $("#notification_box").rcmsNotificationBox({duration:300,showTime:showTime,hideButton:$("#notification_box button.ok_btn")});
+        });
+    </script>
+    {/literal}
+    
+    <div id="notification_box">
+        {foreach from=$errors item=error}
+            <div class="icon">
+                <span class="icon_alert"></span>
+            </div>
+            <div class="message">{$error|escape}</div>
+        {/foreach}
+        {foreach from=$alerts item=alert}
+            <div class="icon">
+                <span class="icon_info"></span>
+            </div>
+            <div class="message">{$alert|escape}</div>
+        {/foreach}
+        {foreach from=$messages item=message}
+            <div class="icon">
+                <span class="icon_info"></span>
+            </div>
+            <div class="message">{$message|escape}</div>
+        {/foreach}
+        <button class="ok_btn">OK</button>
+    </div>
+{/if}

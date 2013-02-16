@@ -1,0 +1,28 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{* 更新履歴一覧 *}</h2>
+<ul>
+{if $auth.photo.insert}
+<li class="add"><a href="/management/photo/photo_edit/"><span>{'/label/add_image_btn'|translate}{*画像追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/photo_detail/id={$photo_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/photo/photo_list/">{$module_nm}</a>
+<a href="/management/photo/photo_list/">{'/modules/photo/label/photo_list'|translate}</a>
+<a href="/management/photo/photo_edit/photo_id={$photo_id}">{'/modules/photo/label/photo_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 画像 >> 画像一覧 >> 画像編集 >> 更新履歴一覧 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/photo/photo_edit/photo_id=$photo_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

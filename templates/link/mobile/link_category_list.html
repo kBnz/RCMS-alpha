@@ -1,0 +1,10 @@
+{if $link_category_list|@count>0}
+<h2>{'/modules/link/label/link_category_list'|translate}{*リンクカテゴリ一覧*}</h2>
+
+<ul>
+{foreach from=$link_category_list item=category}
+<li><a href="/link_detail/category_id={$category.link_category_id}">{$category.link_category_name|escape}</a></li>
+{/foreach}
+</ul>
+<hr/>
+{/if}

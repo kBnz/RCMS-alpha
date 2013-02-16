@@ -1,0 +1,24 @@
+{if !$Login_member_id}
+{module name="login_openid"}
+<h2 class="module_title"><span>{'/modules/login/label/login_by_using_open_id_of_other_site'|translate:'mixi'}{*mixiアカウントでログイン*}</span></h2>
+<div class="module_contents">
+  <form method="post" action="/{$page_sysnm}/">
+    <p>
+      <input type="hidden" name="openid_identity" value="mixi.jp"/>
+      <input type="hidden" name="openid_client" value="/{$page_sysnm}/"/>
+      <input type="image" name="openid_action" src="/images/modules/login/mixi_a_150.gif" value="{'/modules/login/label/login_by_using_open_id_of_other_site'|translate:'mixi'}{*mixiアカウントでログイン*}" /><br>
+      <a href="javascript: void Effect.toggle('openid_help{$contents_id}', 'blind', {ldelim}duration: 0.2{rdelim})">Help</a>
+    </p>
+  </form>
+  <div id="openid_help{$contents_id}" style="display:none">
+    <p>{'/modules/login/msg/about_open_id_technology'|translate:'mixi':'http://mixi.jp/openid.pl'}
+    {*
+    mixiのアカウントでログインができます。<br>
+    このサイトで新たにアカウントを作成したり、ログインするために別々のIDやパスワードを入力する必要がなくなります。
+    OpenIDという技術を利用しています。mixiでの説明は<a href="http://mixi.jp/openid.pl" target="_blank">こちら</a>
+    *}
+    </p>
+  </div>
+</div>
+{/module}
+{/if}

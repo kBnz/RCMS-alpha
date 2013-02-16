@@ -1,0 +1,22 @@
+{*  注意事項
+<script type="text/javascript" src="/js/modules/comment/read_unread.js"></script>
+を必ず一回読み込ませること
+*}
+
+{if $Login_member_id}{* 開発メモ::　2009/08/10とりあえずログイン必須としておく 将来的にオープンIDや管理画面での設定で投稿可能を制御できるようにする *}
+<div class="module_contents"><div id="read_unread_input_{$comment_read_unread_module}_{$comment_read_unread_id}"></div></div>
+
+
+<script type="text/JavaScript">
+<!--
+
+// 呼び出し時に実行
+var module = '{$comment_read_unread_module}';
+var id = {$comment_read_unread_id};
+var queryString = '?module=' + module + '&id=' + id;
+ajaxCommentReadProc(queryString, module, id, '{'/modules/comment/msg/state_has_been_updated_to_finishing_reading'|translate}');
+
+//-->
+</script>
+
+{/if}

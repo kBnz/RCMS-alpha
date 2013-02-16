@@ -1,0 +1,77 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>外部データ一覧{if $source} ({$source.name}){/if}</h2>
+  <ul>
+    {if $source.id && $auth.api_general.insert}
+      <li class="normal"><a href="/management/api_general/api_general_source_edit/data_source={$source.id}"><span>ソース編集</span></a></li>
+    {/if}
+  </ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_general/api_general_source_list/">{$module_nm}</a>
+外部データ一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+  <ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_source_list/">データソース一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_search/">外部データ検索</a></li>
+    <li><a href="/management/{$mt}/{$mt}_list/" class="active">外部データ一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_edit/">外部データ編集</a></li>
+  </ul>
+
+
+
+  <div class="list_main">
+
+    <p>このサイトで取り込んだ外部データの一覧です。</p>
+
+    {* データソースによる検索フォーム *}
+    <form action="/management/api_general/api_general_list/">
+      <fieldset class="search_box">
+        データソース:
+        <select name="data_source">
+          <option value="0">すべて</option>
+          {foreach from=$sources item=src}
+            {if $sourceId == $src.id}
+              <option value="{$src.id}" selected="selected">{$src.name}</option>
+            {else}
+              <option value="{$src.id}">{$src.name}</option>
+            {/if}
+          {/foreach}
+        </select>
+        <input type="submit" value="表示"/>
+      </fieldset>
+    </form>
+
+    {* 外部データの一覧表示 *}
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>ソース</th><th>タイトル</th><th>コメント</th><th>クレジット</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$items item=item}
+          {assign var="source" value=$sources[$item.data_source]}
+          <tr>
+            <td><a href="/management/api_general/api_general_list/data_source={$item.data_source}">{$source.name}</a></td>
+            <td><a href="/management/api_general/api_general_edit/internal_id={$item.internal_id}">{$item.name|truncate}</a></td>
+            <td>{$item.note|truncate}</td>
+            <td>{$source.credit}</td>
+          </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

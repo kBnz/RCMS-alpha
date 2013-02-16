@@ -1,0 +1,25 @@
+<h2>ﾎﾟｼﾞｼｮﾝ検索</h2>
+{if $module_installed.gamerugby}
+  <a href="{$smarty.const.ROOT_URL}/member_list/position=PR,HO">FRONT ROW FW</a><br/>
+  [<a href="{$smarty.const.ROOT_URL}/member_list/position=PR">ﾌﾟﾛｯﾌﾟ</a>|<a href="{$smarty.const.ROOT_URL}/member_list/position=HO">ﾌｯｶｰ</a>]<br/>
+  <a href="{$smarty.const.ROOT_URL}/member_list/position=LO">2ND ROW FW</a><br/>
+  [<a href="{$smarty.const.ROOT_URL}/member_list/position=LO">ﾛｯｸ</a>]<br/>
+  <a href="{$smarty.const.ROOT_URL}/member_list/position=FL,NO8">LOOSE FW</a><br/>
+  [<a href="{$smarty.const.ROOT_URL}/member_list/position=FL">ﾌﾗﾝｶｰ</a>|<a href="{$smarty.const.ROOT_URL}/member_list/position=NO8">ﾅﾝﾊﾞｰｴｲﾄ</a>]<br/>
+  <a href="{$smarty.const.ROOT_URL}/member_list/position=SH,SO">HALF BACKS</a><br/>
+  [<a href="{$smarty.const.ROOT_URL}/member_list/position=SH">ｽｸﾗﾑﾊｰﾌ</a>|<a href="{$smarty.const.ROOT_URL}/member_list/position=SO">ｽﾀﾝﾄﾞｵﾌ</a>]<br/>
+  <a href="{$smarty.const.ROOT_URL}/member_list/position=CTB,WTB,FB">BACKS</a><br/>
+  [<a href="{$smarty.const.ROOT_URL}/member_list/position=CTB">ｾﾝﾀｰ</a>|<a href="{$smarty.const.ROOT_URL}/member_list/position=WTB">ｳｨﾝｸﾞ</a>|<a href="{$smarty.const.ROOT_URL}/member_list/position=FB">ﾌﾙﾊﾞｯｸ</a>]<br/>
+  <a href="{$smarty.const.ROOT_URL}/member_list/position={'スタッフ,マネージャー,MGR,主務,副務,トレーナー'|escape:'url'}">ｽﾀｯﾌ</a><br/>
+  [<a href="{$smarty.const.ROOT_URL}/member_list/position={'監督,コーチ,部長'|escape:'url'}">監督/ｺｰﾁ</a>|<a href="{$smarty.const.ROOT_URL}/member_list/position={'スタッフ'|escape:'url'}">ｽﾀｯﾌ</a>]
+{else}
+  {* それ以外の場合*}
+  {foreach from=$arrPosition item=Position name=arrPosition}
+    <a href="{$smarty.const.ROOT_URL}/member_list/position={$Position}">{$Position}</a>
+    {if not $smarty.foreach.arrPosition.last}
+      |
+    {/if}
+  {/foreach}
+{/if}
+<hr/>
+

@@ -1,0 +1,55 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}管理</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/master/masterMenu/">{$module_nm}管理</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+<!--<a href="/management/master/ken_all_master_list/">郵便番号マスタ編集</a>｜-->
+<a href="/management/master/highschool_master_list/">高校マスタ編集</a>｜
+<a href="/management/master/university_master_list/">大学マスタ編集</a>
+
+<p>
+<!--
+<form method="post" action="feed_zip.php" ENCTYPE="multipart/form-data">
+<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="20000000">
+<INPUT NAME="userfile" TYPE="file">
+<input type="submit" value="郵便番号取り込み">
+</form>
+<form method="post" action="feed_hs.php" ENCTYPE="multipart/form-data">
+<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="20000000">
+<INPUT NAME="userfile" TYPE="file">
+<input type="submit" value="高校マスタ取り込み">
+</form>
+<form method="post" action="feed_univ.php" ENCTYPE="multipart/form-data">
+<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="20000000">
+<INPUT NAME="userfile" TYPE="file">
+<input type="submit" value="大学マスタ取り込み">
+</form>
+<form method="post" action="feed_gps.php" ENCTYPE="multipart/form-data">
+<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="50000000">
+<INPUT NAME="userfile" TYPE="file">
+<input type="submit" value="GPSマスタ取り込み">
+</form>
+<form method="post" action="feed_eki.php" ENCTYPE="multipart/form-data">
+<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="50000000">
+<INPUT NAME="userfile" TYPE="file">
+<input type="submit" value="駅マスタ取り込み">
+</form>
+<form method="post" action="feed_rosen.php" ENCTYPE="multipart/form-data">
+<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="50000000">
+<INPUT NAME="userfile" TYPE="file">
+<input type="submit" value="路線マスタ取り込み">
+</form>
+-->
+</p>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

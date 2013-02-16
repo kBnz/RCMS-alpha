@@ -1,0 +1,29 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+{if $rauth->canInsert('/location/item/')}
+<li class="add"><a href="/management/location/location_edit/"><span>{'/modules/location/label/create_new_location_btn'|translate}{*地図情報追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/location_detail/id={$location_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/location/location_list/">{'/modules/location'|translate}</a>
+<a href="/management/location/location_list/">{'/modules/location/label/location_list'|translate}</a>
+<a href="/management/location/location_edit/location_id={$location_id}">{'/modules/location/label/location_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 地図情報 >> 地図情報一覧 >> 地図情報編集 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/location/location_edit/location_id=$location_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

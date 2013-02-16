@@ -1,0 +1,74 @@
+<script>
+<!--
+{literal}
+function changeAction(form, strAction) {
+  form.MODE.value = strAction;
+}
+{/literal}
+-->
+</script>
+<div class="bbs_show_report_verify module">
+  <div class="module_top"></div>
+  <div class="module_body">
+  <div class="module_body_centertop">
+  <div class="module_body_centerleft">
+  <div class="module_body_centerright">
+  <div class="module_body_centerbottom">
+  <div class="module_body_lefttop">
+  <div class="module_body_righttop">
+  <div class="module_body_leftbottom">
+  <div class="module_body_rightbottom">
+<h2><SPAN STYLE="color: #FF6600; font-size: medium;">{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</SPAN></h2><br>
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+<h2>{'/modules/bbs/label/violation_report_confirm'|translate}{*違反報告の確認*}</h2>
+
+<form method="post" action="/bbs_show/">
+  <table border="0" class="bbs_report_form">
+    <tr>
+      <th>{'/modules/bbs/label/violation_reason'|translate}{*違反理由*}</th>
+      <td>{$formData.reason_txt|escape}</td>
+    </tr>
+    <tr>
+      <th>{'/modules/bbs/label/url_of_target_post'|translate}{*対象投稿のURL*}</th>
+      <td><a href="{$baseItem.targetUrl|escape}">{$baseItem.targetUrl|escape}</a></td>
+    </tr>
+    <tr>
+      <th>{'/label/content'|translate}{* 内容 *}</th>
+      <td>{$formData.text|escape|nl2br}</td>
+    </tr>
+    <tr>
+      <th>{'/label/name'|translate}{*名前*}</th>
+      <td>{$formData.name|escape}</td>
+    </tr>
+    <tr>
+      <th>{'/label/mail_address'|translate}{*メールアドレス*}</th>
+      <td>{$formData.mail|escape}</td>
+    </tr>
+  </table>
+  <input type="submit" value="{'/modules/bbs/label/report_violation_btn'|translate}{*違反報告する*}" /><input type="submit" value="{'/label/modify_btn'|translate}{*修正する*}" onClick="changeAction(this.form, 'report_modify');" />
+
+<!--入力データ-->
+<input type="hidden" name="reason_type" value="{$formData.reason_type|escape}" />
+<input type="hidden" name="bbs_seq" value="{$baseItem.seq}" />
+<input type="hidden" name="text" value="{$formData.text|escape}" />
+<input type="hidden" name="name" value="{$formData.name|escape}" />
+<input type="hidden" name="mail" value="{$formData.mail|escape}" />
+<input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}" />
+<input type="hidden" name="MODE" value="report_fin" />
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+</form>
+</div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  <div class="module_bottom"></div>
+</div>

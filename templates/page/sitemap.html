@@ -1,0 +1,63 @@
+{module name="sitemap"}
+<h2 class="module_title"><span>{'/label/site_map'|translate}{*サイトマップ*}</span></h2>
+<div class="module_contents">
+<table>
+    <tr>
+        <td width="220" height="25">&nbsp;</td>
+        <td width="20">&nbsp;</td>
+        <td width="310">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="3"><a href="/"><strong>{$smarty.const.SITE_TITLE}<!-- {$topInfo.page_nm} --></strong></a><br>
+            <img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_1.gif" alt="" width="26" height="14">
+        </td>
+    </tr>
+{foreach item="page_data" from=$page_list name="row"}
+    <tr>
+        <td valign="top">
+    {if !$smarty.foreach.row.last}
+        <img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_2.gif" alt="" width="26" height="14">
+    {else}
+        <img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_3.gif" alt="" width="26" height="14">
+    {/if}
+        <a href="{$page_data.link}"><strong>{$page_data.page_nm}</strong></a><br>
+        <td>{if $page_data.description}…{else}&nbsp;{/if}</td>
+        <td class="font12px">{$page_data.description}&nbsp;</td>
+    </tr>
+    {if $page_data.child1}
+        <tr>
+            <td valign="top" nowrap class="font14px">
+    {foreach item="page_data1" from=$page_data.child1 name="row1"}
+        {if !$smarty.foreach.row.last}
+                <img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_1.gif" alt="" width="26" height="14">
+        {/if}
+        {if !$smarty.foreach.row1.last}
+                　　<img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_2.gif" alt="" width="26" height="14">
+        {else}
+                　　<img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_3.gif" alt="" width="26" height="14">
+        {/if}
+                        <a href="{$page_data1.link}">{$page_data1.page_nm}</a><br>
+            {foreach item="page_data2" from=$page_data1.child2 name="row2"}
+                <img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_1.gif" alt="" width="26" height="14">
+                {if !$smarty.foreach.row2.last}
+                    　　　　<img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_2.gif" alt="" width="26" height="14">
+                {else}
+                    　　　　<img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_3.gif" alt="" width="26" height="14">
+                {/if}
+                        <a href="{$page_data2.link}">{$page_data2.page_nm}</a><br>
+            {/foreach }
+    {/foreach}
+            </td>
+        </tr>
+    {/if}
+    {if !$smarty.foreach.row.last}
+        <tr>
+            <td valign="top" nowrap><img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_1.gif" alt="" width="26" height="14"></td>
+            <td class="font12px">&nbsp;</td>
+            <td class="font12px">&nbsp;</td>
+        </tr>
+    {/if}
+{/foreach}
+</table>
+</div>
+{/module}

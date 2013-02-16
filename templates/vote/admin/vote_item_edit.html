@@ -1,0 +1,112 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/vote/label/vote_item_edit'|translate}{*回答詳細*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote'|translate}</a>
+<a href="/management/vote/vote_list/">{'/modules/vote/label/vote_list'|translate}</a>
+<a href="/management/vote/vote_module_list/vote_header_id={$vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}</a>
+<a href="/management/vote/vote_item_list/vote_header_id={$vote_header_id}&page_jd={$page_id}&module_id={$module_id}">{'/modules/vote/label/vote_item_list'|translate}</a>
+{'/modules/vote/label/vote_item_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 投票 >> 投票一覧 >> モジュール一覧　>>　回答一覧 >> 回答詳細*}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">【{$header.title}】</h3>
+<ul class="minitabs">
+  <li><a href="/management/vote/vote_edit/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_edit'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/vote/vote_module_list/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}</a></li>
+  <li><a href="/management/vote/vote_item_list/vote_header_id={$header.vote_header_id}" class="active">{'/modules/vote/label/vote_item_list'|translate}{*回答一覧*}</a></li>
+  <li><a href="/management/vote/vote_report/vote_header_id={$header.vote_header_id}">{'/modules/vote/label/vote_report'|translate}{*投票結果*}</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/vote/vote_item_edit/" method="POST">
+    <input type="hidden" name="vote_header_id" value="{$vote_header_id}" />
+    <input type="hidden" name="vote_id" value="{$vote_id}" />
+    <input type="hidden" name="module_id" value="{$module_id}">
+    <input type="hidden" name="page_id" value="{$page_id}" />
+     <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table width="100%">
+    <tr>
+        <th width="120px">{'/label/module'|translate}{*モジュール*}</th>
+        <td>{$voteData.module_nm}・{$voteData.contents_title}</td>
+    </tr>
+    {if $header.name_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.name_flg == $smarty.const.VOTE_PROFILE_ON || $voteData.name}
+        <tr>
+            <th>{'/label/name'|translate} {*名前*} </th>
+            <td>{$voteData.name}</td>
+        </tr>
+    {/if}
+    {if $header.sex_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $vote_list.sex_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr >
+            <th>{'/label/sex'|translate} {*性別*} </th>
+            <td>{$sex_options[$voteData.sex]}</td>
+        </tr>
+    {/if}
+    {if $header.age_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.age_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr >
+            <th> {'/label/age_category'|translate} {*年齢層*}</th>
+            <td>{$age_options[$voteData.age]}</td>
+        </tr>
+    {/if}
+    {if $header.area_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.area_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr >
+            <th> {'/label/prefecture'|translate} {*地域*} </th>
+            <td>{$tdfk_options[$voteData.area]}</td>
+        </tr>
+    {/if}
+    {if $header.comment_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.comment_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr >
+            <th> {'/label/comments'|translate} {*コメント*}</th>
+            <td>{$voteData.comment|nl2br}</td>
+        </tr>
+    {/if}
+      <tr>
+        <th>{'/label/evaluation'|translate}{*評価*}</th>
+        <td>{$voteData.answer_title}</td>
+      </tr>
+      <tr>
+        <th>{'/label/publish'|translate}{*公開*}・{'/label/unpublish'|translate}{*非公開*}</th>
+        <td>{html_radios name="open_flg" options=$arrOpFlg selected=$voteData.open_flg}</td>
+      </tr>
+    </table>
+
+    {buttonbox}
+      {if $auth.vote.update && $vote_id != ''|| $auth.vote.insert && $vote_id == ''}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+      {/if}
+      {if $auth.vote.delete && $vote_id != ''}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

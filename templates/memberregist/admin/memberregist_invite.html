@@ -1,0 +1,73 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_invite'|translate}{*招待する*}</hs>
+<ul>
+{if $type == 3}
+<li class="normal"><a href="/management/memberregist/memberregist_invite/"><span>{'/modules/memberregist/label/invite_btn'|translate}{*招待する*}</span></a></li>
+</ul>
+{/if}
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+{'/modules/memberregist/label/memberregist_invite'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 招待する *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <div class="list_main">
+    <form action="/management/memberregist/memberregist_inviteedit/" method="POST">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <h3>{'/modules/memberregist/label/input_your_friends_mail_address'|translate}{*友人のメールアドレスを入力*}</h3>
+      <table width="100%">
+        <tr>
+          <th width="30%">{'/modules/memberregist/msg/input_mail_address_you_want_to_invite'|translate}{*招待したい人のメールアドレスを入力してください。*}</th>
+          <td width="70%">
+            <textarea name="email" cols="55" rows="10">{$smarty.request.email}</textarea>
+            <p class="hint">{'/modules/memberregist/msg/explain_about_input_multi_mail_address'|translate}{*複数のメールアドレスに送る場合は改行して1行に1メールアドレスを書いてください。*}</p>
+            <p class="hint">{'/modules/memberregist/msg/you_can_send_100_mails'|translate}{*100メールアドレスまで招待できます。*}</p>
+          </td>
+        </tr>
+      </table>
+
+      {buttonbox}
+        <button type="submit">{'/label/next'|translate}{*次へ*}</button>
+      {/buttonbox}
+    </form>
+  </div>
+
+  {if $invited_persons}
+    <div class="list_main">
+      <form action="/management/memberregist/memberregist_inviteedit/" method="POST">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="delete" value="on" />
+      <table width = "100%">
+        <tr>
+          <th colspan="2" align="center">{'/modules/memberregist/label/inviting_mail'|translate}{*招待中のメールアドレス*}</th><th>{'/modules/memberregist/label/invited_date'|translate}{*招待した日時*}</th>
+        </tr>
+        {foreach from=$invited_persons item="person"}
+          <tr>
+            <td align="center"><input type="checkbox" name="delete_list[]" value="{$person.email}" ></td>
+            <td>{$person.email}</td>
+            <td>{$person.date|pg_dateformat}</td>
+          </tr>
+        {/foreach}
+      </table>
+      {buttonbox}
+        <button type="submit">{'/label/delete_btn'|translate}{*削除*}</button>
+      {/buttonbox}
+      </form>
+    </div>
+  {/if}
+
+</div>
+{rcms_include file="management/footer.html"}
+

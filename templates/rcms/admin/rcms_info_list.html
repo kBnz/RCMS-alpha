@@ -1,0 +1,50 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>お知らせ一覧</h2>
+<ul>
+<li class="add"><a href="/management/rcms/rcms_info_edit/"><span>お知らせ追加</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a> 
+<a href="/management/rcms/rcms_info_list/">お知らせ一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{pager info=$pageInfo}
+
+<table width="100%">
+<tr>
+<th></th>
+<th>日時</th>
+<th>タイトル</th>
+<th>更新日時</th>
+</tr>
+{foreach from=$rcms_info_list item=info}
+<tr>
+<td><a href="/management/rcms/rcms_info_edit/?rcms_info_id={$info.rcms_info_id}">編集</a></td>
+<td>{$info.ymd|pg_dateformat:"%Y/%m/%d"}</td>
+<td>{$info.title}</td>
+<td>{$info.update_ymdhi|pg_dateformat}</td>
+</tr>
+{/foreach}
+</table>
+  </form>
+
+{pager info=$pageInfo}
+
+
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

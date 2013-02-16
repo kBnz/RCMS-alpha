@@ -1,0 +1,36 @@
+{module name="monthly_calendar"}
+<h2 class="module_title"><span>{$this_year}/{$this_month}</span></h2>
+<div class="module_contents">
+
+<div style="text-align:center;">
+<a href="/{$page_sysnm}/?year={$pre_year}&month={$pre_month}">&lt;&lt;{'/label/last_month'|translate}{* 前月 *}</a> | <a href="/{$page_sysnm}/?year={$next_year}&month={$next_month}">{'/label/next_month'|translate}{* 翌月 *}&gt;&gt;</a>
+</div>
+<table class="list">
+  <tr>
+    <th>{'/label/monday_short'|translate}{* 月曜日 *}</th>
+    <th>{'/label/tuesday_short'|translate}{* 火曜日 *}</th>
+    <th>{'/label/wednesday_short'|translate}{* 水曜日 *}</th>
+    <th>{'/label/thursday_short'|translate}{* 木曜日 *}</th>
+    <th>{'/label/friday_short'|translate}{* 金曜日 *}</th>
+    <th>{'/label/saturday_short'|translate}{* 土曜日 *}</th>
+    <th>{'/label/sunday_short'|translate}{* 日曜日 *}</th>
+  </tr>
+
+{* 月間カレンダー本体 *}
+{foreach item=cal_line from=$cal_data.days}
+  <tr>
+    {* 週毎の段 *}
+    {foreach key=key item=item from=$cal_line}
+      {* 日毎のデータ *}
+      <td class="calendar_data_{$item.day_type}">{$item.day|string_format:"%2d"}<br>
+        {* 関連データ *}
+        {foreach key=relation_key item=relation_item from=$item.relation_data}
+          {$relation_item.title}{$relation_item.receive_ymdhi}<br>
+        {/foreach}
+      </td>
+    {/foreach}
+  </tr>
+{/foreach}
+</table>
+</div>
+{/module}

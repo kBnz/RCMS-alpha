@@ -1,0 +1,31 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+{if $rauth->canInsert('/page/item/')}
+    <li class="add"><a href="/management/page/page_edit/"><span>{'/modules/page/label/add_page_btn'|translate}{*ページ追加*}</span></a></li>
+{/if}
+  {if $pageForm.page_id ne ''}
+    <li class="normal"><a href="/management/page/page_history/page_page_id={$page_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>{* 更新履歴 *}
+    <li class="view"><a href="/{$pageForm.page_sysnm}/" target="_BLANK"><span>{'/label/view_page'|translate}{*ページ確認*}</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page'|translate}</a>
+<a href="/management/page/page_list/">{'/modules/page/label/page_list'|translate}</a>
+<a href="/management/page/page_edit/page_page_id={$page_page_id}">{'/modules/page/label/page_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/page/page_edit/page_page_id=$page_page_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

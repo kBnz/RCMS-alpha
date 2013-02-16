@@ -1,0 +1,62 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function resetConfirm(f) {
+    //これまで編集した内容を破棄して、\nRCMSの初期設定値を読み込みます。\nよろしいですか？
+    var msg = "{/literal}{'/modules/headerfooter/msg/reset_confirm'|translate}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "reset";
+        f.submit();
+        f.MODE.value = "";
+    }
+
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2 class="for_mng">{'/modules/mobile/label/template_edit'|translate}{*テンプレート編集*}</h2>
+<ul>
+<li class="add"><a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/mobile/mobile_setting/">{'/modules/mobile'|translate}</a>
+{'/modules/mobile/label/template_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】デザイン >> モバイル設定 >> テンプレート編集*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<h3 class="for_mng">【{if $device_type eq "smartphone"}{'/label/smart_phone'|translate}{*スマートフォン*}{elseif $device_type eq "mobileapp"}{'/label/mobileapp'|translate}{*モバイルアプリ*}{else}{'/label/mobile'|translate}{*モバイル*}{/if}】{$headerfooterList.$device_type.$region_id.title}</h3>
+
+<div style="margin-top: 10px" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/mobile/mobile_template_edit/">
+    <input type="hidden" name="region_id" value="{$region_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="update" />
+    <input type="hidden" name="device_type" value="{$smarty.request.device_type}" />
+    <textarea name="html_text" id="html_text" style="width:650px;height:400px">{$html_text|escape}</textarea>
+
+    {if $auth.headerfooter.update}
+      {buttonbox}
+        <button type="submit">{'/label/update_btn'|translate}{* 更新する *}</button>
+        <button type="button" onclick="resetConfirm(this.form)">{'/label/initialize_btn'|translate}{*元に戻す*}</button>
+      {/buttonbox}
+    {/if}
+
+    <p class="hint">{'/msg/when_you_write_mt_rand'|translate}{*{1|mt_rand:5}と書くと数字の1～5の数字がランダムで表示されます。画像のランダム表示などにご利用ください。*}</p>
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

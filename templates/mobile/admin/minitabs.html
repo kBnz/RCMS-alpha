@@ -1,0 +1,5 @@
+<ul class="minitabs">
+  <li><a href="/management/mobile/mobile_setting/"{if $page_type eq 'mobile_setting'} class="active"{/if}>{'/modules/mobile'|translate}{*モバイル設定*}</a></li>
+{* 権限はsite権限 *}
+{if $auth.site.select}  <li><a href="/management/mobile/setup/"{if $page_type eq 'setup'} class="active"{/if}>{'/modules/mobile/label/mobile_basic_settings'|translate}{*モバイル基本設定*}</a></li>{/if}
+</ul>

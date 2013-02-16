@@ -1,0 +1,19 @@
+{if $blog_list|@count >= 1}
+<h2>[emoji:070]{'/modules/blog/label/blog_button'|translate}{* ブログ投稿ボタン *}</h2>
+<ul>
+{foreach from=$blog_list item=blog}
+  <li>
+      <div>{$blog.title|escape}</div>
+      <form name="blog_button{$blog.blog_id}" action="/management/blog/blog_item_edit/">
+      <div><input type="submit" value="{'/label/post_btn'|translate}{*投稿する*}" onclick="call_light_window('/management/blog/blog_item_edit/blog_id={$blog.blog_id}');return false;" >
+           <input type="hidden" name="blog_id" value="{$blog.blog_id}">
+      </div>
+      </form>
+  </li>
+{/foreach}
+</ul>
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a>
+</div>
+<hr/>
+{/if}

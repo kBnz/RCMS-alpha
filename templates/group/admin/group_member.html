@@ -1,0 +1,208 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<link href="/css/management/selector.css" rel="stylesheet" type="text/css" media="screen,print">
+<script language="javascript" type="text/javascript" src="/js/pager.js"></script>
+
+<div class="list_right_bt">
+<h2 class="group">{'/modules/group/label/group_member'|translate}{*グループメンバー登録*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/group/group_list/">{'/modules/group'|translate}</a>
+<a href="/management/group/group_list/">{'/modules/group/label/group_list'|translate}</a>
+{'/modules/group/label/group_member'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> グループ >> グループ一覧 >> グループメンバー登録*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$groupInfo.group_nm|escape}</h3>
+<ul class="minitabs">
+  <li><a href="/management/group/group_edit/group_id={$groupInfo.group_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/group/group_member/group_id={$groupInfo.group_id}" class="active">{'/label/menber_registration'|translate}{*メンバー登録*}</a></li>
+  <li><a href="/management/group/group_secure_member/group_id={$groupInfo.group_id}">{'/label/viewing_limit'|translate}{*閲覧制限*}</a></li>
+</ul>
+
+    <p class="hint">({'/msg/group_setting_is_available_after_login'|translate}{*所属グループの変更は次回のログインから有効になります*})</p>
+
+  <form name="group_member" id="group_member" action="/management/group/group_member/" method="POST">
+    <input type="hidden" name="group_id" value="{$group_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <table width="100%" id="selector">
+      <tr>
+        <td colspan="3">
+          <div class="search_box">
+{if $module_installed.memberrugby }
+          {'/label/grade'|translate}{*学年*}：<select name="s_grade">{html_options options=$arrGrade selected=$s_grade}</select>
+          {'/label/the_year'|translate}{*年度*}：<select name="s_season">{html_options options=$arrYearGraduate selected=$s_season}</select>
+{/if}
+          {'/label/name'|translate}{* 名前 *}：<input type="text" name="s_name" value="{$s_name}"/>
+          <input type="submit" value="{'/modules/group/label/unselected_members_search_btn'|translate}{*補充リスト検索*}" onclick="document.group_member.MODE.value='SEARCH';" />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" width="49%">
+
+{if $alternate_member|@count <= $alternate_max}
+  {assign var=totalcnt1 value=$alternate_member|@count}
+{else}
+  {assign var=totalcnt1 value=$alternate_max}
+{/if}
+{assign var=totalcnt2 value=$member_list|@count}
+
+<!-- メンバー補充リスト -->
+          <h3>{'/modules/group/label/unselected_members_list'|translate}{*補充リスト*}</h3>
+          {if $alternate_member|@count > $alternate_max}
+            <p style="color:red">{'/modules/blog/msg/too_many_data_cant_display_all'|translate:$alternate_max}</p>
+            {* ○○件以上データがあります。他のメンバーを表示したい場合は絞り込みを行ってください。 *}
+          {/if}
+          <p id="nav_info1"></p>
+          <div>
+            <input id="page_nav_first1" type="button" onclick="bm_al.first();" value="{'/label/first'|translate}{*最初へ*}">
+            <input id="page_nav_prev1" type="button" onclick="bm_al.prev();" value="{'/label/prev'|translate}{*前へ*}">
+            <input id="page_nav_next1" type="button" onclick="bm_al.next();" value="{'/label/next'|translate}{*次へ*}">
+            <input id="page_nav_last1" type="button" onclick="bm_al.last();" value="{'/label/last'|translate}{*最後へ*}">
+          </div>
+
+          <table id="bm_al" width="100%">
+            <tr><th>{'/label/member_id'|translate}{* メンバーID *}</th><th>{'/label/name'|translate}{* 名前 *}</th><th>{'/label/add'|translate}{* 追加 *}</th></tr>
+
+          {section loop=$alternate_member name=bm_al max=$alternate_max}
+<tr id="bm_al{$alternate_member[bm_al].member_id}"style="display:none">
+<td>{$alternate_member[bm_al].member_id}</td><td>{$alternate_member[bm_al].name}</td>
+<td><input type="button" onclick="bm.addItem({$alternate_member[bm_al].member_id}, new Array('{$alternate_member[bm_al].member_id}','{$alternate_member[bm_al].name}'))" value="追加"/></td>
+</tr>
+              {if $smarty.section.bm_al.last}
+              {/if}
+          {/section}
+
+          </table>
+<!-- //メンバー補充リスト -->
+
+        </td>
+        <td valign="top" width="2%"></td>
+        <td valign="top" width="49%">
+
+<!-- メンバー既存or編集中 -->
+          <h3>{'/modules/group/label/selected_members_list'|translate}{*選択済みリスト*}</h3>
+          <p id="nav_info2"></p>
+          <p>
+            <input id="page_nav_first2" type="button" onclick="bm_sl.first();" value="{'/label/first'|translate}{*最初へ*}">
+            <input id="page_nav_prev2" type="button" onclick="bm_sl.prev();" value="{'/label/prev'|translate}{*前へ*}">
+            <input id="page_nav_next2" type="button" onclick="bm_sl.next();" value="{'/label/next'|translate}{*次へ*}">
+            <input id="page_nav_last2" type="button" onclick="bm_sl.last();" value="{'/label/last'|translate}{*最後へ*}">
+          </p>
+          <table id="bm_sl" width="100%">
+            <tr><th>{'/label/member_id'|translate}{* メンバーID *}</th><th>{'/label/name'|translate}{* 名前 *}</th><th>{'/label/add'|translate}{* 追加 *}</th></tr>
+          {section loop=$member_list name=bm_sl}
+<tr id="bm_sl{$member_list[bm_sl].member_id}" style="display:none">
+<input id="bm_sl_id{$member_list[bm_sl].member_id}" type="hidden" name="bm_sl_selected_id[]" value="{$member_list[bm_sl].member_id}" />
+<input id="bm_sl_sts{$member_list[bm_sl].member_id}" type="hidden" name="bm_sl_sts[{$member_list[bm_sl].member_id}]"; value="{$member_list[bm_sl].status}" />
+<td>{$member_list[bm_sl].member_id}</td>
+<td>{$member_list[bm_sl].name}</td>
+<td>
+  {if $member_list[bm_sl].role != "owner"}
+    {if $member_list[bm_sl].status == "init"}
+        <input id="bm_sl_del{$member_list[bm_sl].member_id}" type="button" onclick="bm.delItem({$member_list[bm_sl].member_id});" value="参加中"/>
+        <input id="bm_sl_cdel{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.cancelDelItem({$member_list[bm_sl].member_id});" value="{'/label/delete_btn'|translate}{*削除*}" />
+    {elseif $member_list[bm_sl].status == 'del'}
+        <input id="bm_sl_del{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.delItem({$member_list[bm_sl].member_id});" value="参加中"/>
+        <input id="bm_sl_cdel{$member_list[bm_sl].member_id}" type="button" onclick="bm.cancelDelItem({$member_list[bm_sl].member_id});" value="{'/label/delete_btn'|translate}{*削除*}" />
+    {else}
+        <input type="button" onclick="bm.cancelAddItem({$member_list[bm_sl].member_id});" value="{'/label/cancel_btn'|translate}{*キャンセル*}"/>
+    {/if}
+  {/if}
+</td>
+</tr>
+          {/section}
+
+          </table>
+
+          <input type="submit" value="{'/label/update_btn'|translate}{*更新する*}" onclick="document.group_member.MODE.value='UPDATE';" />
+          <input type="submit" value="{'/label/cancel_btn'|translate}{*キャンセル*}" onclick="document.group_member.MODE.value='';" />
+
+
+<!-- //メンバー既存or編集中 -->
+
+        </td>
+      </tr>
+    </table>
+
+  </form>
+
+</div>
+
+<script type="text/javascript">
+
+// ===== Pager & Selector =====
+// インスタンス生成
+
+var bm_al = new Pager("bm_al", {$totalcnt1}, 15, 2);
+var bm_sl = new Pager("bm_sl", {$totalcnt2}, 15, 2);
+var bm_initList = new Array({foreach from=$member_list item=item name=bm_initList}"{$item.member_id}"{if !$smarty.foreach.bm_initList.last},{/if}{/foreach});
+var bm = new ItemSelector(bm_al, bm_sl, "bm", bm_initList);
+
+var member_unit = "{'/label/member_unit'|translate}";{* 人 *}
+var page_unit = "{'/label/page_unit'|translate}";{* ページ *}
+
+{literal}
+
+bm_al.speed = 0;
+bm_sl.speed = 0;
+
+document.getElementById("page_nav_first1").disabled = true;
+document.getElementById("page_nav_prev1").disabled = true;
+document.getElementById("page_nav_next1").disabled = true;
+document.getElementById("page_nav_last1").disabled = true;
+document.getElementById("page_nav_first2").disabled = true;
+document.getElementById("page_nav_prev2").disabled = true;
+document.getElementById("page_nav_next2").disabled = true;
+document.getElementById("page_nav_last2").disabled = true;
+
+bm_al.onChangePage = function() {
+    //ボタンのonoffとか操作する。
+    var cu = this.getCurrentPageNo();
+    var fi = document.getElementById("page_nav_first1");
+    var pr = document.getElementById("page_nav_prev1");
+    var ne = document.getElementById("page_nav_next1");
+    var la = document.getElementById("page_nav_last1");
+    var nv = document.getElementById("nav_info1");
+    fi.disabled = (cu == this.getFirstPageNo());
+    pr.disabled = (cu == this.getFirstPageNo());
+    ne.disabled = (cu == this.getLastPageNo());
+    la.disabled = (cu == this.getLastPageNo());
+    nv.innerHTML = this.getRowCount() + member_unit + "  " + cu + "/" + this.getLastPageNo() + page_unit ;
+
+}
+bm_sl.onChangePage = function() {
+    //ボタンのonoffとか操作する。
+    var cu = this.getCurrentPageNo();
+    var fi = document.getElementById("page_nav_first2");
+    var pr = document.getElementById("page_nav_prev2");
+    var ne = document.getElementById("page_nav_next2");
+    var la = document.getElementById("page_nav_last2");
+    var nv = document.getElementById("nav_info2");
+    fi.disabled = (cu == this.getFirstPageNo());
+    pr.disabled = (cu == this.getFirstPageNo());
+    ne.disabled = (cu >= this.getLastPageNo());
+    la.disabled = (cu >= this.getLastPageNo());
+    nv.innerHTML = this.getRowCount() + member_unit + "  " + cu + "/" + this.getLastPageNo() + page_unit ;
+}
+bm_al.initView(1);
+bm_sl.initView(1);
+
+
+</script>
+
+{/literal}
+
+{rcms_include file="management/footer.html"}

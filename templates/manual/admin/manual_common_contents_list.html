@@ -1,0 +1,91 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択した項目を削除します。よろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'delete';
+       f.submit();
+   }
+}
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{'/modules/manual/label/manual_common_contents_list'|translate}</h2>
+<ul>
+{if $rauth->canInsert('/manual/common/')}
+<li class="add"><a href="/management/manual/manual_common_contents_edit/"><span>{'/modules/manual/label/add_manual_contents_btn'|translate}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/manual_newlist/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/manual/manual_list/">{'/modules/manual'|translate}</a>
+{'/modules/manual/label/manual_common_contents_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> マニュアル >> マニュアル共通コンテンツ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/manual/manual_list/" >{'/modules/manual/label/manual_list'|translate}</a></li>
+  <li><a href="/management/manual/manual_category_list/" >{'/label/categories_list'|translate}</a></li>
+  <li><a href="/management/manual/manual_common_contents_list/" class="active">{'/modules/manual/label/manual_common_contents_list'|translate}</a></li>
+</ul>
+
+<div class="clear"></div>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}{* 承認待ち一覧 *}
+
+  <form method="get" action="/management/manual/manual_common_contents_list/">
+    <fieldset class="search_box">
+      {'/label/title'|translate}<input type="text" id="s_title_text" name="s_title_text" size="30" value="{$s_title_text}" />&nbsp;&nbsp;
+      <input type="submit" value="{'/label/search'|translate}" />
+    </fieldset>
+  </form>
+
+  <form method="POST" action="/management/manual/manual_common_contents_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="manual_common_id" value="{$manual_common_id}" />
+    <input type="hidden" name="s_manual_title" value="{$s_manual_title|escape}" />
+    
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+        <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'manual_header_id[]');" /></th>
+        <th style="width:150px">{'/modules/manual/label/manual_contents_title'|translate|sort_link:contents_title:$sort_url:$sort:$desc}</th>
+        <th style="width:150px">{'/label/updatetime'|translate|sort_link:update_ymdhi:$sort_url:$sort:$desc}</th>
+      </tr>
+  {foreach from=$manual_common_contents_list item=row}
+    {assign var=manual_common_id value=$row.manual_common_id}
+      <tr>
+        <td><input type="checkbox" name="manual_common_id[]" value="{$row.manual_common_id}" {if !$rauth->canDelete("/manual/common/$manual_common_id")}disabled="disabled"{/if} /></td>
+        <td>
+            <a href="/management/manual/manual_common_contents_edit/manual_common_id={$row.manual_common_id}">{$row.contents_title}</a>
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$manual_common_id] link="/management/manual/manual_common_contents_edit/manual_common_id=$manual_common_id"}
+        </td>
+        <td>{$row.update_ymdhi|pg_dateformat}</td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+      <p>{'/modules/manual/label/withselected'|translate}</p>
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+    {/buttonbox}
+
+  </form>
+  <p style="margin-top:20px" class="hint">    
+    {'/modules/manual/msg/changeable_layout'|translate}
+  </p>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

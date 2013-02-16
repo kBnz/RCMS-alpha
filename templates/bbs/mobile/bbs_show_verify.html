@@ -1,0 +1,58 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+
+{if $formData.reply_seq eq ''}
+ <h2>{'/label/first_posting'|translate}{*新規投稿*}</h2>
+{else}
+<h2>{'/label/reply_posting'|translate}{*返信投稿*}</h2>
+{/if}
+
+<form method="post" action="/{$page_sysnm}/">
+  {if $formData.name|escape}
+      {'/label/name'|translate}{*名前*}:<br/>{$formData.name|escape}<br/>
+  {/if}
+      {'/label/title'|translate}{*タイトル*}:<br/>{$formData.title|escape}<br/>
+      URL:<br/>{$formData.url|escape}<br/>
+      {'/label/mail_address'|translate}{*メールアドレス*}:<br/>{$formData.mail|escape}<br/>
+      {'/label/content'|translate}:<br/>{$formData.note|escape|nl2br}<br/>
+{if $formData.temp_imgfile|escape != ''}
+      {'/label/upload_image'|translate}{*画像アップロード*}:<br/>
+      <a href="{$smarty.const.TEMP_URL}/{$formData.temp_imgfile|escape}" target="_BLANK"><img src="{$smarty.const.TEMP_URL}/{if $formData.temp_s_imgfile|escape}{$formData.temp_s_imgfile|escape}{else}{$formData.temp_imgfile|escape}{/if}" border="0" /></a>
+{/if}
+  <input type="submit" value="{'/label/post_btn'|translate}{*投稿する*}" />
+
+<!--入力データ-->
+<input type="hidden" name="temp_imgfile" value="{$formData.temp_imgfile|escape}" />
+<input type="hidden" name="temp_s_imgfile" value="{$formData.temp_s_imgfile|escape}" />
+<input type="hidden" name="name" value="{$formData.name|escape}" />
+<input type="hidden" name="title" value="{$formData.title|escape}" />
+<input type="hidden" name="url" value="{$formData.url|escape}" />
+<input type="hidden" name="mail" value="{$formData.mail|escape}" />
+<input type="hidden" name="note" value="{$formData.note|escape}" />
+<input type="hidden" name="delkey" value="{$formData.delkey|escape}" />
+<input type="hidden" name="reply_seq" value="{$formData.reply_seq}" />
+<input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}" />
+<input type="hidden" name="MODE" value="fin" />
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+</form>
+
+<form method="post" action="/{$page_sysnm}/">
+  <input type="submit" value="{'/label/modify_btn'|translate}{*修正する*}" />
+
+<!--入力データ-->
+<input type="hidden" name="temp_imgfile" value="{$formData.temp_imgfile|escape}" />
+<input type="hidden" name="temp_s_imgfile" value="{$formData.temp_s_imgfile|escape}" />
+<input type="hidden" name="name" value="{$formData.name|escape}" />
+<input type="hidden" name="title" value="{$formData.title|escape}" />
+<input type="hidden" name="url" value="{$formData.url|escape}" />
+<input type="hidden" name="mail" value="{$formData.mail|escape}" />
+<input type="hidden" name="note" value="{$formData.note|escape}" />
+<input type="hidden" name="delkey" value="{$formData.delkey|escape}" />
+<input type="hidden" name="reply_seq" value="{$formData.reply_seq}" />
+<input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}" />
+<input type="hidden" name="MODE" value="modify" />
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+</form>
+
+<hr/>

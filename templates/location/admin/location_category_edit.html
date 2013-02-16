@@ -1,0 +1,77 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/location/label/location_category_edit'|translate}{*カテゴリ編集*}</h2>
+  <ul>
+{if $rauth->canInsert('/location/item/')}
+    <li class="add"><a href="/management/location/location_category_edit/"><span>{'/label/create_new_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/location/location_list/">{'/modules/location'|translate}</a>
+<a href="/management/location/location_category_list/">{'/modules/location/label/location_category_list'|translate}</a>
+{'/modules/location/label/location_category_edit'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/location/location_category_edit/location_category_id="|cat:$cateInfo.location_category_id}
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/location/location_category_edit/" method="post">
+  <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+  <input name="location_category_id" type="hidden" value="{$formData.location_category_id}" />
+  <input name="pageID" type="hidden" value="{$pageID}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+  {if $cateInfo.location_category_id}
+    {lang_selector meta=$docmeta link='/management/location/location_category_edit/location_category_id='|cat:$cateInfo.location_category_id}
+  {/if}
+
+  <table width="100%" border="0">
+    <tr>
+      <th>{'/label/category_name'|translate}{*カテゴリ*}</th>
+      <td><input size="50" maxlength="50" name="location_category_name" type="text" value="{$formData.location_category_name|escape}" /></td>
+    </tr>
+  {if $docmeta.is_primary}
+    <tr>
+      <th>Keyword</th>
+      <td><input size="50" name="keywords" type="text" value="{$formData.keywords|escape}" /></td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td><input size="50" name="description" type="text" value="{$formData.description|escape}" /></td>
+    </tr>
+  {/if}
+
+  {section name=extension_cols loop=$smarty.const.LOCATION_MAX_EXTENSION}
+    <tr>
+      {assign var="extension_no" value=$smarty.section.extension_cols.iteration|string_format:"%02d"}
+      {assign var="ext_col_name" value="ext_title_"|cat:$extension_no}
+
+      <th>{'/label/ext_col_name'|translate}{$smarty.section.extension_cols.iteration}</th>
+      <td><input size="50" name="{$ext_col_name}" type="text" value="{$formData.$ext_col_name}" /></td>
+    </tr>
+  {/section}
+
+  </table>
+
+  {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

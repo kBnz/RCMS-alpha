@@ -1,0 +1,43 @@
+<h2>[emoji:085]{'/modules/survey/label/survey_reseach_result'|translate}{*アンケート集計結果*}</h2>
+■{$header.title}<br/>
+<br/>
+  {section loop=$ans_list name=i}
+          ▼Q{$ans_list[i].shownum}.{$ans_list[i].question|nl2br}{if $ans_list[i].formtype == 4}({'/label/multiple_answers'|translate}){*複数回答*}{/if}
+          {if $ans_list[i].require == 1}※{'/label/require_answer'|translate}{*必須回答*}{/if}<br/>
+          <br/>
+            {if $ans_list[i].public_total == 0}
+              <!-- 長文の場合 -->
+              {if $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_TEXTAREA}
+                {foreach from=$ans_list[i].answers.text name=f item=item1}
+                  {$item1|escape|nl2br}<br/>
+                {/foreach}
+              <!-- 短文の場合 -->
+              {elseif $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_TEXT}
+                {foreach from=$ans_list[i].answers.text name=f item=item1}
+                  {if $smarty.foreach.f.first}<ul>{/if}
+                  <li>{$item1|escape}</li>
+                  {if $smarty.foreach.f.last}</ul>{/if}
+                {/foreach}
+              <!-- 単一選択の場合 -->
+              {elseif $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_RADIO || $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_SELECTBOX}
+                {foreach from=$ans_list[i].answers.summary_order item=ignore key=okey}
+                  {assign var=item1 value=$ans_list[i].options[$okey]}
+                    {$item1.text|escape}({$item1.cnt})<br/>
+                {/foreach}
+              <!-- 複数選択の場合 -->
+              {elseif $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_CHECKBOX}
+                {foreach from=$ans_list[i].answers.summary_order item=ignore key=okey}
+                  {assign var=item1 value=$ans_list[i].options[$okey]}
+                  {$item1.text|escape}({$item1.cnt})<br/>
+                {/foreach}
+              {/if}
+            {else}
+              {'/modules/survey/msg/question_reseach_result_is_unpublish'|translate}{*この質問の集計結果は非公開です。*}
+            {/if}
+<hr/>
+  {/section}
+
+<div style="text-align:right;font-size:small;">
+<a href="/survey_list/">{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</a>
+</div>
+<hr/>

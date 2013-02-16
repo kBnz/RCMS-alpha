@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="/css/management/default.css" rel="stylesheet" type="text/css">
+{literal}
+<style>
+
+span.auth_o {
+        text-widht: bold;
+}
+</style>
+{/literal}
+</head>
+<body>
+
+<div id="content_pop">
+<div class="list_right_bt">
+<h2 class="group">{'/modules/group/msg/authority_status_for_new_member'|translate}{*新規メンバーの操作権限*}</h2>
+<ul>
+<li class="normal"><a href="#" onclick="window.close();"><span>{'/label/close'|translate}{*閉じる*}</span></a></li>
+</ul>
+</div>
+
+<div class="list_main">
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+        <tr>
+            <th>{'/label/module_name'|translate}{*モジュール名*}</th>
+            {foreach from=$authOptions key=opt item=nm}
+                <th width="70">{$nm}</th>
+            {/foreach}
+        </tr>
+    {foreach key=key item=adm from=$auth_list}
+        <tr>
+            <th>{$contName.$key}</th>
+            {foreach from=$authOptions key=opt item=nm}
+                <td>
+                    {if $adm[$opt]}
+                        <img src="/images/management/check.gif">
+                    {else}
+                        <img src="/images/management/batu.gif">
+                    {/if}
+                </td>
+            {/foreach}
+        </tr>
+    {/foreach}
+    </table>
+</div>
+</div>
+
+</body>
+</html>

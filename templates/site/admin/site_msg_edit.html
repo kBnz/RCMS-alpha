@@ -1,0 +1,109 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+var langOptions = new Array();
+{foreach from=$language_options key=lang item=item name=lang}
+    langOptions[{$smarty.foreach.lang.iteration}] = '{$lang}';
+{/foreach}
+
+{literal}
+function confirmDelete(f) {
+    if (confirm("{/literal}{'/modules/api_youtube/msg/confirm_del_data'|translate}{literal}")) {
+        f.mode.value='DELETE';
+        f.submit();
+    }
+}
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/site/label/each_sites_customized_messages'|translate}{*サイト毎のメッセージ*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/site/site_msg_list/">{'/label/list'|translate}{*一覧*}</a>
+<a href="/management/site/site_msg_edit/{if $key}?key={$key}{/if}">{'/label/edit'|translate}{*編集*}</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/{$mt}/{$ct}/{if $key}?key={$key}{/if}" method="post">
+  <input type="hidden" name="mode" />
+  <input type="hidden" name="new_key" style="width:98%" value="{$formData.key|escape}" />
+  <table style="width:100%">
+    <tr>
+      <th style="width:150px">{'/label/module_name'|translate}</th>
+      <td>{$module_nm}</td>
+    </tr>
+
+    <tr>
+      <th style="width:150px">{'/modules/templateedit/label/coverage'|translate}{* 適用ページの制限 *}</th>
+      <td>{$contentNm}<input type="hidden" name="module_id" style="width:30px" value="{$formData.module_id|escape}" /></td>
+    </tr>
+
+    <tr>
+      <th style="width:150px">{'/label/item_name'|translate}{*項目名*}</th>
+      <td>{$column_nm}</td>
+    </tr>
+
+    <tr>
+      <th style="width:150px">{'/label/pc_mobile'|translate}</th>
+      <td>{if $formData.device_kbn!=' '}{$siteMsgDeviceOptions[$formData.device_kbn]}{else}{'/modules/site/lable/all_devices_msg'|translate}{/if}
+        <input type="hidden" name="device_kbn" value="{$formData.device_kbn}" />
+      </td>
+    </tr>
+
+    <tr>
+      <th style="width:150px">{'/label/memo'|translate}</th>
+      <td>
+        <textarea name="memo" id="memo" style="width:98%;height:60px">{$formData.memo|escape}</textarea>
+      </td>
+    </tr>
+
+  </table>
+
+  <table style="width:100%; margin-top:20px;">
+    <thead>
+      <tr>
+        <th style="width:150px" rowspan="2">{'/label/language'|translate}{*言語*}</th>
+        <th>{'/modules/site/label/default_message'|translate}</th>
+      </tr>
+      <tr>
+        <th>{'/modules/site/label/customized_message'|translate}{*カスタマイズメッセージ*}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {foreach from=$formData.tr_list item=row}
+      <tr>
+        <td rowspan="2">{$language_options[$row.language]}</td>
+        <td>{$row.uncustomized_text|escape}</td>
+      </tr>
+      <tr>
+        <td>
+        <textarea id="{$row.language}_text" name="text[{$row.language}]" style="width:90%;height:40px">{$row.text|escape}</textarea>
+        </td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+
+  {buttonbox}
+    <button type="submit">{'/label/save_btn'|translate}</button>
+    <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+  {/buttonbox}
+</form>
+
+
+</div><!--//list_main-->
+
+{rcms_include file="management/footer.html"}
+

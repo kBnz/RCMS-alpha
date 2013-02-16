@@ -1,0 +1,27 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $auth.convention.insert}
+<li class="add"><a href="/management/convention/convention_edit/"><span>大会追加</span></a></li>
+{/if}
+<li class="view"><a href="/convention_detail/id={$convention_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/convention/convention_list/">{$module_nm}</a>
+<a href="/management/convention/convention_list/">{$module_nm}一覧</a>
+<a href="/management/convention/convention_edit/convention_id={$convention_id}">{$module_nm}基本設定</a>
+更新履歴一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/convention/convention_edit/convention_id=$convention_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

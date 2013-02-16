@@ -1,0 +1,153 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+    <h2>{'/modules/invoice/label/invoice_client_edit'|translate}</h2>
+    <ul>
+        {if $auth.invoice.insert}
+        <li class="add"><a href="/management/invoice/invoice_client_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+        {/if}
+    </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/invoice/invoice_client_list/">{'/modules/invoice'|translate}</a>
+<a href="/management/invoice/invoice_client_list/">{'/modules/invoice/label/invoice_client_list'|translate}</a>
+{'/modules/invoice/label/invoice_client_edit'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+    {rcms_include file="invoice/admin/minitabs.html" page_type=$ct}
+
+    <div class="clearFloat"><br /></div>
+
+    <div class="list_main">
+
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+
+        <form action="/management/invoice/invoice_client_edit/" method="post" name="invoice_client_edit" id="invoice_client_edit" enctype="multipart/form-data"> 
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" value="" />
+            <input type="hidden" name="id" value="{$id}" />
+            <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+            {if $latestRow.invoice_client_id}
+            {lang_selector meta=$docmeta link='/management/invoice/invoice_client_edit/id='|cat:$id}
+            {/if}
+
+            <table width="100%">
+
+                <tr>
+                    <th>{'/label/name'|translate}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+                    <td>
+                        <input size="70" maxlength="100" id="client_name" name="client_name" type="text" value="{$formData.client_name|escape}" />
+                    </td>
+                </tr>
+
+                {if $docmeta.is_primary}
+                <tr>
+                    <th>{'/label/postcode'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td>
+                    <input size="3" maxlength="3" id="zip_main" name="zip_main" type="text" value="{$formData.zip_main|escape}" /> - <input size="4" maxlength="4" id="zip_sub" name="zip_sub" type="text" value="{$formData.zip_sub|escape}" />
+                    </td>
+                </tr>
+                {/if}
+
+                <tr>
+                    <th>{'/label/address'|translate}1（{'/label/address_state'|translate}/{'/label/address_city'|translate}/{'/label/street_number'|translate}）<span class="required">{'/label/required'|translate}</span></th>
+                    <td>
+                        <input size="70" maxlength="100" id="address1" name="address1" type="text" value="{$formData.address1|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/address'|translate}2（{'/label/building'|translate}{*建物名*}）</th>
+                    <td>
+                        <input size="70" maxlength="100" id="address2" name="address2" type="text" value="{$formData.address2|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/modules/invoice/label/person_name'|translate}</th>
+                    <td>
+                        <input size="70" maxlength="100" id="person_name" name="person_name" type="text" value="{$formData.person_name|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/department'|translate}</th>
+                    <td>
+                        <input size="70" maxlength="100" id="person_dept" name="person_dept" type="text" value="{$formData.person_dept|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/official_position'|translate}</th>
+                    <td>
+                        <input size="70" maxlength="100" id="person_position" name="person_position" type="text" value="{$formData.person_position|escape}" />
+                    </td>
+                </tr>
+
+                {if $docmeta.is_primary}
+                <tr>
+                    <th>{'/label/tel'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td>
+                        <input size="50" maxlength="20" id="person_tel" name="person_tel" type="text" value="{$formData.person_tel|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/fax_no'|translate}</th>
+                    <td>
+                        <input size="50" maxlength="20" id="person_fax" name="person_fax" type="text" value="{$formData.person_fax|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/mail_address'|translate}</th>
+                    <td>
+                        <input size="50" maxlength="100" id="person_mail" name="person_mail" type="text" value="{$formData.person_mail|escape}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>{'/label/tax_calc_setting'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                    <td>
+                        {html_radios name="tax_flg" options=$INVOICE_TAX_FLG_LIST selected=$formData.tax_flg separator=""}
+                    </td>
+                </tr>
+                {/if}
+
+            </table>
+
+            {editActionBox docmeta=$docmeta}{/editActionBox}
+            {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+        </form>
+
+    </div>
+
+</div>
+
+
+{literal}
+<script type="text/javascript">
+<!--
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+    }
+}
+window.onload = function() {
+}
+-->
+</script>
+{/literal}
+{rcms_include file='management/footer.html'}

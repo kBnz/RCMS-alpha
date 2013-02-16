@@ -1,0 +1,103 @@
+{* 生年月日 *}
+{capture name=birth}
+<select name="member_register[birth_y]" style="width:60px">{html_options options=$arrYear selected=$formData.birth_y}</select>年
+<select name="member_register[birth_m]" style="width:40px">{html_options options=$arrMonth selected=$formData.birth_m}</select>月
+<select name="member_register[birth_d]" style="width:40px">{html_options options=$arrDate selected=$formData.birth_d}</select>日<br />
+{/capture}
+
+{* 都道府県 *}
+{capture name=tdfk_cd}
+<select name="member_register[tdfk_cd]">{html_options options=$arrTdfk selected=$formData.tdfk_cd}</select><br />
+{/capture}
+
+{* 都道府県 *}
+{capture name=com_tdfk_cd}
+<select name="member_register[com_tdfk_cd]">{html_options options=$arrTdfk selected=$formData.com_tdfk_cd}</select><br />
+{/capture}
+
+{* 性別 *}
+{capture name=sex}
+<input type="radio" name="member_register[sex]" value="m" {if $formData.sex eq 'm'}checked="checked"{/if}>{'/label/man'|translate}{*男性*}
+<input type="radio" name="member_register[sex]" value="f" {if $formData.sex eq 'f'}checked="checked"{/if}>{'/label/woman'|translate}{*女性*}<br />
+<input type="radio" name="member_register[sex]" value="" {if $formData.sex eq ''}checked="checked"{/if}>{'/label/no_select'|translate}{*選択なし*}
+{/capture}
+
+
+<h2 id="module{$contents_id}">{'/modules/member/label/member_regist'|translate}{*メンバー登録*}</h2>
+{if $regist_complete}
+{'/msg/regist_complete'|translate}{*登録が完了いたしました。*}<br/>
+{if $Retrun_URL}<a href="{$Retrun_URL}">{'/label/back_to_the_previous_page'|translate}{*前のページに戻る*}</a>{/if}
+{else}
+
+<form action="/{$page_sysnm}/" method="POST">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="REGIST" />
+  <input type="hidden" name="Retrun_URL" value="{$Retrun_URL}" />
+
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+    {foreach from=$columnsToAsk key=key item=val}
+    {if $key != 'high_school' && $key != 'university' && $key != 'member_photo'}
+        {if $default_pwd_setting == $smarty.const.MEMBERREGIST_PWD_USER && $key == 'login_pwd'}
+        {*パスワード*}
+            {if $smarty.const.NEED_STRONG_PASSWORD eq 1}
+            {assign var=length value=8}
+            {else}
+            {assign var=length value=4}
+            {/if}
+            {$val.name|escape} (※{'/msg/alphanumeric_char_with_length_limit'|translate:$length}{*半角英数字$length文字以上*}<br/>
+            <input name="member_register[password]" type="text" {istyle type="en"} /><br/>
+            {$val.name|escape} ({'/label/for_confirmation'|translate}{*確認用*})<br/>
+            <input name="member_register[password2]" type="text" {istyle type="en"} /><br/>
+
+        {elseif $key == 'login_id'}
+        {*ログインID*}
+            {$val.name|escape}{if $val.required} ({'/label/required'|translate}{*必須*}){/if}:
+            <input type="text" name="member_register[login_id]" value="{$formData.login_id}" {istyle type="en"} /><br/>
+
+        {elseif $key == 'email'}
+        {*メールアドレス*}
+            {$val.name|escape}{if $val.required} ({'/label/required'|translate}{*必須*}){/if}:
+            <input type="text" name="member_register[email]" value="{$formData.email}" {istyle type="en"} /><br/>
+
+        {else}
+
+            {$val.name|escape}{if $val.required} ({'/label/required'|translate}{*必須*}){/if}<br/>
+            {if $key eq 'birth' || $key eq 'tdfk_cd' || $key eq 'com_tdfk_cd' || $key eq 'sex'}
+                {$smarty.capture.$key}<br/>
+            {elseif $val.options}
+                {if $val.type=='checkbox'}
+                    {if $val.options|@count==1}
+                    <input type="checkbox" name="member_register[{$key|escape}]" value="1" {if $formData[$key]}checked{/if}>{$val.options.1}<br/>
+                    {else}
+                    {foreach from=$val.options key=checkkey item=checkval}<input type="checkbox" name="member_register[{$key|escape}][]" value="{$checkkey}" {foreach from=$formData[$key] item=dataKey}{if $dataKey==$checkkey}checked{/if}{/foreach}>{$checkval}<br/>{/foreach}
+                    {/if}
+                {elseif $val.type=='radio'}
+                    {foreach from=$val.options key=r_key item=r_val}<input type="radio" name="member_register[{$key|escape}]" value="{$r_key}" {if $formData[$key]==$r_key}checked{/if}>{$r_val} {/foreach}<br/>
+                {else}
+                    <select name="member_register[{$key|escape}]">{if $val.options|@key ne ''}<option value="">{'/msg/please_select'|translate}{*選択してください*}</option>{/if}{html_options options=$val.options selected=$formData[$key]}</select><br/>
+                {/if}
+            {else}
+                {if $val.type=='textarea'}
+                    <textarea name="member_register[{$key|escape}]" cols="50" rows="2" />{$formData[$key]|escape}</textarea><br/>
+                {else}
+                    <input type="text" name="member_register[{$key|escape}]" value="{$formData[$key]|escape}" /><br/>
+                {/if}
+            {/if}
+
+        {/if}
+    {/if}
+    {/foreach}
+
+    {if $use_terms_of_service}
+        <input type="checkbox" name="agree_terms_of_service" value="1" />{'/labels/accept_terms_of_service'|translate}<br/>
+        <a href="{$terms_url}">{'/label/terms_of_service'|translate}</a><br/>
+    {/if}
+
+  {if $default_pwd_setting != $smarty.const.MEMBERREGIST_PWD_USER}
+  {'/modules/member/msg/system_decides_password'|translate}{*パスワードはシステムが決定し、メールアドレスへ送信させていただきます。*}<br/>
+  {/if}
+  <input type="submit" name="subflg" value="{'/label/register_btn'|translate}{*登録する*}" />
+</form>
+{/if}
+<hr/>

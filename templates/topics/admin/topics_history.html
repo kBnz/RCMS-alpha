@@ -1,0 +1,40 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+{if $topics_id}
+  {if $auth.topics.insert || $auth.topics_admin.insert}
+    <li class="add"><a href="/management/topics/topics_edit/"><span>{'/modules/topics/label/add_topic_btn'|translate}</span></a></li>{* 記事追加 *}
+  {/if}
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/topics_detail/id={$topics_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>{* サイトを確認 *}
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics/label/topics_group_list'|translate}</a>
+{if $topics_id}
+  <a href="/management/topics/topics_list/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_list'|translate}</a>
+  <a href="/management/topics/topics_edit/topics_id={$topics_id}">{'/modules/topics/label/topics_edit'|translate}</a>
+{else}
+  <a href="/management/topics/topics_group_edit/topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_group_edit'|translate}</a>
+{/if}
+{'/label/update_history_list'|translate}{* 更新履歴一覧 *}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> 記事一覧 >> 記事編集 *}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> 記事グループ編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $topics_id}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/topics/topics_edit/topics_id=$topics_id" pageInfo=$pageInfo}
+{else}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/topics/topics_group_edit/topics_group_id=$topics_group_id" pageInfo=$pageInfo}
+{/if}
+
+</div>
+{rcms_include file="management/footer.html"}

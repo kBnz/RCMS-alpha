@@ -1,0 +1,20 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{* 更新履歴一覧 *}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/templateedit/templateedit_list/">{'/modules/templateedit'|translate}</a>
+<a href="/management/templateedit/templateedit_edit/templateedit_id={$templateedit_id}">{'/modules/templateedit/label/templateedit_edit'|translate}</a>
+{'/label/update_history_list'|translate}{* 更新履歴一覧 *}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/templateedit/templateedit_edit/templateedit_id=$templateedit_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

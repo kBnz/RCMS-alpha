@@ -1,0 +1,114 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>>>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}一覧</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$module_nm}編集</h2>
+  {if $auth.$mt.insert}
+  >><a href="/management/{$mt}/{$ct}/">試合追加</a>
+  {/if}
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+  <form name="game_edit" id="game_edit" action="/management/{$mt}/{$ct}/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="self_mem" value="{$self_mem}" />
+    <input type="hidden" name="opp_mem" value="{$opp_mem}" />
+    <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+
+▼ｼｰｽﾞﾝ<span style="color:red;">※</span><br/>
+<select name="season">{rcms_seasonOptions selected=$data.season}</select><br/>
+▼日付<span style="color:red;">※</span><br/>
+<input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" {istyle type="n"} /><br/>
+▼試合開始時間<br/>
+<input type="text" name="ko_time" value="{$data.ko_time|escape}" {istyle type="n"} /><br/>
+▼試合会場<span style="color:red;">※</span><br/>
+<input type="text" name="place" value="{$data.place|escape}" /><br/>
+▼試合形式<span style="color:red;">※</span><br/>
+<input type="text" name="game_type" value="{$data.game_type|escape}" /><br/>
+<input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked="checked"{/if} />公式戦<br/>
+▼ﾄｰﾅﾒﾝﾄ<br/>
+<input type="text" name="game_type2" value="{$data.game_type2|escape}" /><br/>
+▼対戦相手<span style="color:red;">※</span><br/>
+{$smarty.const.SELF_TEAM_SNM}<input type="text" name="team_grade" value="{$data.team_grade|escape}" size="4" />
+            vs
+<select name="opponent">
+<option value="">------</option>
+{html_options options=$opponent_arr_mobile selected=$data.opponent}
+</select>
+<input type="text" name="opponent_grade" value="{$data.opponent_grade|escape}" size="4" /><br/>
+※2つめの入力欄にはA､B､OB等のﾁｰﾑの種類を入力してください。<br/>
+▼試合結果（得点）<br/>
+#自チーム<br/>
+1Q:<input type="text" name="Self_1Q" value="{$data.Self_1Q}" size="3" {istyle type="n"} /><br />
+2Q:<input type="text" name="Self_2Q" value="{$data.Self_2Q}" size="3" {istyle type="n"} /><br />
+3Q:<input type="text" name="Self_3Q" value="{$data.Self_3Q}" size="3" {istyle type="n"} /><br />
+4Q:<input type="text" name="Self_4Q" value="{$data.Self_4Q}" size="3" {istyle type="n"} /><br />
+Total:<input type="text" name="Self_Total" value="{$data.Self_Total}" size="3" {istyle type="n"} /><br />
+<br/>
+#相手チーム<br/>
+1Q:<input type="text" name="Opp_1Q" value="{$data.Opp_1Q}" size="3" {istyle type="n"} /><br />
+2Q:<input type="text" name="Opp_2Q" value="{$data.Opp_2Q}" size="3" {istyle type="n"} /><br />
+3Q:<input type="text" name="Opp_3Q" value="{$data.Opp_3Q}" size="3" {istyle type="n"} /><br />
+4Q:<input type="text" name="Opp_4Q" value="{$data.Opp_4Q}" size="3" {istyle type="n"} /><br />
+Total:<input type="text" name="Opp_Total" value="{$data.Opp_Total}" size="3" {istyle type="n"} /><br />
+<br/>
+<br/>
+▼試合結果（詳細）<br/>
+#自チーム<br/>
+３Ｐ(回数-成功):<input type="text" name="Self_3P_CNT" value="{$data.Self_3P_CNT|escape}" size="3" {istyle type="n"} />-<input type="text" name="Self_3P_GET" value="{$data.Self_3P_GET|escape}" size="3" {istyle type="n"} /><br/>
+２Ｐ(回数-成功):<input type="text" name="Self_2P_CNT" value="{$data.Self_2P_CNT|escape}" size="3" {istyle type="n"} />-<input type="text" name="Self_2P_GET" value="{$data.Self_2P_GET|escape}" size="3" {istyle type="n"} /><br/>
+フリースロー(回数-成功):<input type="text" name="Self_FT_CNT" value="{$data.Self_FT_CNT|escape}" size="3" {istyle type="n"} />-<input type="text" name="Self_FT_GET" value="{$data.Self_FT_GET|escape}" size="3" {istyle type="n"} /><br/>
+リバウンド(OFF-DEF-TOTAL):<input type="text" name="Self_OFF_RBD" value="{$data.Self_OFF_RBD|escape}" size="3" {istyle type="n"} />-<input type="text" name="Self_DEF_RBD" value="{$data.Self_DEF_RBD|escape}" size="3" {istyle type="n"} />-<input type="text" name="Self_RBD_TOT" value="{$data.Self_RBD_TOT|escape}" size="3" {istyle type="n"} /><br/>
+アシスト:<input type="text" name="Self_AST" value="{$data.Self_AST|escape}" size="3" {istyle type="n"} /><br/>
+スティール:<input type="text" name="Self_STL" value="{$data.Self_STL|escape}" size="3" {istyle type="n"} /><br/>
+ブロックシュート:<input type="text" name="Self_BLK" value="{$data.Self_BLK|escape}" size="3" {istyle type="n"} /><br/>
+ターンオーバー:<input type="text" name="Self_TO" value="{$data.Self_TO|escape}" size="3" {istyle type="n"} /><br/>
+ファウル:<input type="text" name="Self_FAUL" value="{$data.Self_FAUL|escape}" size="3" {istyle type="n"} /><br/>
+<br/>
+#相手チーム<br/>
+３Ｐ(回数-成功):<input type="text" name="Opp_3P_CNT" value="{$data.Opp_3P_CNT|escape}" size="3" {istyle type="n"} />-<input type="text" name="Opp_3P_GET" value="{$data.Opp_3P_GET|escape}" size="3" {istyle type="n"} /><br/>
+２Ｐ(回数-成功):<input type="text" name="Opp_2P_CNT" value="{$data.Opp_2P_CNT|escape}" size="3" {istyle type="n"} />-<input type="text" name="Opp_2P_GET" value="{$data.Opp_2P_GET|escape}" size="3" {istyle type="n"} /><br/>
+フリースロー(回数-成功):<input type="text" name="Opp_FT_CNT" value="{$data.Opp_FT_CNT|escape}" size="3" {istyle type="n"} />-<input type="text" name="Opp_FT_GET" value="{$data.Opp_FT_GET|escape}" size="3" {istyle type="n"} /><br/>
+リバウンド(OFF-DEF-TOTAL):<input type="text" name="Opp_OFF_RBD" value="{$data.Opp_OFF_RBD|escape}" size="3" {istyle type="n"} />-<input type="text" name="Opp_DEF_RBD" value="{$data.Opp_DEF_RBD|escape}" size="3" {istyle type="n"} />-<input type="text" name="Opp_RBD_TOT" value="{$data.Opp_RBD_TOT|escape}" size="3" {istyle type="n"} /><br/>
+アシスト:<input type="text" name="Opp_AST" value="{$data.Opp_AST|escape}" size="3" {istyle type="n"} /><br/>
+スティール:<input type="text" name="Opp_STL" value="{$data.Opp_STL|escape}" size="3" {istyle type="n"} /><br/>
+ブロックシュート:<input type="text" name="Opp_BLK" value="{$data.Opp_BLK|escape}" size="3" {istyle type="n"} /><br/>
+ターンオーバー:<input type="text" name="Opp_TO" value="{$data.Opp_TO|escape}" size="3" {istyle type="n"} /><br/>
+ファウル:<input type="text" name="Opp_FAUL" value="{$data.Opp_FAUL|escape}" size="3" {istyle type="n"} /><br/>
+<br/>
+▼ハーフタイム<br/>
+<input type="text" name="half_time" value="{$data.half_time|escape}" size="4"/><br/>
+▼主審<br/>
+<input type="text" name="referee" value="{$data.referee|escape}" /><br/>
+▼副審<br/>
+<input type="text" name="assistant_referee1" value="{$data.assistant_referee1|escape}" /><br/>
+<input type="text" name="assistant_referee2" value="{$data.assistant_referee2|escape}" /><br/>
+▼コメント<br/>
+<textarea name="game_comment">{$data.game_comment|escape}</textarea><br/>
+▼ステータス<span style="color:red;">※</span><br/>
+{html_radios name="game_status" options=$arrGameStatus selected=$data.game_status}<br/>
+<br/>
+
+      {rcms_include file="management/mobile/open_date_box.html" id=$game_id data=$data}
+
+      {if $auth.$mt.update}
+        <input type="submit" value="更新する" /><br />
+      {/if}
+  </form>
+<br/>
+      {if $auth.$mt.delete && $game_id != ''}
+        <form  action="/management/common/mobile_delete_yesno/" method="POST">
+        <input type="hidden" name="delete_action"     value="/management/{$mt}/{$ct}/game_id={$game_id}&MODE=DELETE&DG_CODE={$DG_CODE}&{$smarty.const.SID}" />
+        <input type="hidden" name="not_delete_action" value="/management/{$mt}/{$ct}/game_id={$game_id}&{$smarty.const.SID}" />
+        <input type="hidden" name="module_nm"         value="{$module_nm}" />
+        <input type="submit" value="削除する" />
+        </form>
+      {/if}
+{rcms_include file="management/mobile/footer.html"}

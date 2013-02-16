@@ -1,0 +1,9 @@
+{if !$docmeta.is_primary && $ext_columns_disp_primary.group[$cols_key][$item_key].value!=''}
+  {assign var="primary_value" value=$ext_columns_disp_primary.group[$cols_key][$item_key].value}
+  <span class="step">{$ext_columns_disp_primary.group[$cols_key][$item_key].options[$primary_value]|escape}</span>({'/label/primary_language_translation'|translate})<br />
+{/if}
+<select name="{$item.name}">
+  <option value="">{'/label/no_select'|translate}</option>
+  {html_options options=$item.options selected=$item.value|nvl:$item.default_selection}
+</select>
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}

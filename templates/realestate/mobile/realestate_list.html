@@ -1,0 +1,10 @@
+<h2>物件一覧</h2>
+{if $realestateList|@count>0}
+{section name=mydata loop=$realestateList}
+■<a href="/realestate_detail/id={$realestateList[mydata].realestate_id}">{$realestateList[mydata].realestate_nm}</a><br/>
+{$realestateList[mydata].summary|strip_tags:false|mbtruncate:100}<br/><br/>
+{/section}
+{else}
+現在、物件はありません。
+{/if}
+<hr/>

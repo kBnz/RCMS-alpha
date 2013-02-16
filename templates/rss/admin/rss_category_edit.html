@@ -1,0 +1,90 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete(f) {
+    if(confirm("削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm} カテゴリ編集</h2>
+<ul>
+{if $auth.rss.insert}
+<li class="add"><a href="/management/rss/rss_category_edit/"><span>カテゴリ追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/rss/rss_edit/">{$module_nm}</a>
+<a href="/management/rss/rss_category_list/">カテゴリ設定</a>
+カテゴリ編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/rss/rss_edit/">RSS一覧</a></li>
+  <li><a href="/management/rss/rss_category_list/" class="active">カテゴリ設定</a></li>
+</ul>
+<h3 class="title">{if $cateInfo.rss_category_id}{$cateInfo.category_nm|escape}{else}カテゴリ新規作成{/if}</h3>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/rss/rss_category_edit/" method="POST">
+    <input type="hidden" name="rss_category_id" value="{$cateInfo.rss_category_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table width="100%" border="0">
+      <tr>
+        <th>カテゴリ名</th>
+        <td>
+          <input type="text" style="width: 400px" name="category_nm" value="{$formData.category_nm}" /><span class="required">必須</span>
+        </td>
+      </tr>
+      <tr>
+        <th>親カテゴリ</th>
+        <td>
+          <select name="parent_id">{html_options options=$category_parent_options selected=$formData.parent_id}</select><span class="required">必須</span>
+        </td>
+      </tr>
+      <tr>
+        <th>メモ</th>
+        <td>
+          <textarea name="memo" style="height: 150px; width: 400px">{$formData.memo}</textarea>
+          <p class="hint">用途などを記入しておくと便利です。</p>
+        </td>
+      </tr>
+    </table>
+
+    {buttonbox}
+      {if $auth.rss.update && $cateInfo}
+        <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+      {/if}
+      {if $auth.rss.insert && !$cateInfo}
+        <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+      {/if}
+      {if $auth.rss.delete && $cateInfo}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

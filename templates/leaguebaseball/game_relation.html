@@ -1,0 +1,36 @@
+{if $gameList.0.league_id ne''}
+{module name="game_relation"}
+<h2 class="module_title"><span>関連試合</span></h2>
+<div class="module_contents">
+{section name=mydata loop=$gameList}
+<p class="subitem_list">
+{$gameList[mydata].ymd} {$gameList[mydata].home_team_nm}
+<a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+{if $gameList[mydata].league_status eq '2' || $gameList[mydata].league_status eq '3'}
+  {if $gameList[mydata].vs_result_home eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_home eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_home eq 'even'}
+△
+  {/if}
+{$gameList[mydata].home_team_total}
+-
+{$gameList[mydata].away_team_total}
+  {if $gameList[mydata].vs_result_away eq 'win'}
+○
+  {elseif $gameList[mydata].vs_result_away eq 'lose'}
+●
+  {elseif $gameList[mydata].vs_result_away eq 'even'}
+△
+  {/if}
+{elseif $gameList[mydata].league_status eq '4'}
+（雨天中止）
+{/if}
+</a>
+{$gameList[mydata].away_team_nm}
+</p>
+{/section}
+</div>
+{/module}
+{/if}

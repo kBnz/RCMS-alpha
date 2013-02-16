@@ -1,0 +1,51 @@
+<h2>{$convention_list.season}年　{$convention_list.convention_name}</h2>
+{if $convention_list.comment}{$convention_list.comment}{/if}<br/>
+<br/>
+  <table>
+    <tr>
+        <th>チーム</th>
+        {foreach name="colTeams" item=colTeam from=$joined_teams_list}
+        <th>{$colTeam}</th>
+        {/foreach}
+        {foreach name="colExts" item=colExt from=$ext_titles}
+          {if $colExt.val}
+            <th>{$colExt}</th>
+          {/if}
+        {/foreach}
+    </tr>
+    {foreach  item="rowTeams" key=rowKey item=rowTeam from=$joined_teams_list}
+    <tr>
+        <th>{$rowTeam}</th>
+        {foreach name="colTeams" key=colKey item=colTeam from=$joined_teams_list}
+        {if $rowTeam == $colTeam}
+        <td align="center">＊</td>
+        {else}
+        <td align="center">
+          {if $detail_list[$rowKey][$colKey].link}
+          <a href={$detail_list[$rowKey][$colKey].link}>
+          {/if}
+          {if $detail_list[$rowKey][$colKey].first_total ne ''}
+            {if $rowKey < $colKey}
+              {$detail_list[$rowKey][$colKey].first_result}{$detail_list[$rowKey][$colKey].first_total}-{$detail_list[$rowKey][$colKey].second_total}
+            {else}
+              {$detail_list[$rowKey][$colKey].second_result}{$detail_list[$rowKey][$colKey].second_total}-{$detail_list[$rowKey][$colKey].first_total}
+            {/if}
+          {elseif $detail_list[$rowKey][$colKey].place}
+            {$detail_list[$rowKey][$colKey].ymd_str}　{$detail_list[$rowKey][$colKey].ko_time}<br>
+            @{$detail_list[$rowKey][$colKey].place}
+          {/if}
+          {if $detail_list[$rowKey][$colKey].link}
+          </a>
+          {/if}
+        </td>
+        {/if}
+        {/foreach}
+        {foreach name="colExts" item=colExt from=$ext_titles}
+          {if $colExt}
+          {assign var=key value="ext_col_0"|cat:$smarty.foreach.colExts.iteration}
+            <td>{$ext_data[$key][$rowKey]}</td>
+          {/if}
+        {/foreach}
+    </tr>
+    {/foreach }
+</table>

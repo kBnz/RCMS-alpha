@@ -1,0 +1,56 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>レコードの追加</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_list/">RCMS_DB</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<ul class="tabnavi" style="width:100%;">
+  <li class="regist_000"><a href="/management/develop/develop_struct/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">構造</div></a></li>
+  <li id="here" class="regist_000"><a href="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">レコード</div></a></li>
+  <li class="regist_000"><a href="/management/develop/develop_sql/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">SQL</div></a></li>
+</ul>
+
+<div class="list_main">
+<h3>レコードの追加</h3>
+
+  {rcms_include file="management/errors_box.html" errors=$errors}
+<form method="POST" action="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}">
+    <input type="hidden" name="MODE" value="INSERT" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+<table width="100%">
+<tr>
+<th width="20%" align="center">フィールド</th>
+<th width="20%" align="center">型</th>
+<th width="60%" align="center">値</th>
+</tr>
+{section name="loopname" loop=$key_nam}
+{assign var="key" value=$key_nam[loopname]}
+
+<tr>
+    <td width="20%" align="center">{$key_nam[loopname]}</td>
+    <td width="20%" align="center">{$field_type[loopname].type}</td>
+    {if $field_type[loopname].html_type eq "text"}
+    <td width="60%" align="center"><input type="text" name="{$key_nam[loopname]}" value="{$update_data.$key}" /></td>
+    {elseif $field_type[loopname].html_type eq "textarea"}
+    <td width="60%" align="center"><textarea cols="60%" rows="10" name="{$key_nam[loopname]}">{$update_data.$key}</textarea></td>
+    {/if}
+</tr>
+{/section}
+</table>
+
+{buttonbox}
+  {if $auth.develop.insert}
+    <button type="submit">追加</button>
+  {/if}
+{/buttonbox}
+
+</div><!--//list_main-->
+
+{rcms_include file="management/footer.html"}

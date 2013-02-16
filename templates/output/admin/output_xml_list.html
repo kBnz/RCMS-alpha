@@ -1,0 +1,86 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+</div>
+
+{pankuzu}
+
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/output/output_list/">{'/modules/output'|translate}</a>
+{/pankuzu}
+<div class="clear"></div>
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="main_contents">
+<div id="output_url_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<h3>sitemap.xml</h3>
+{if $exists_sitemap}
+{$sitemap_make_time}に作成しました。
+[<a href="/sitemap.xml" target="_blank">PC版を確認する</a>({$sitemap_filesize}KB)]
+{else}
+未作成です。
+{/if}
+{if $exists_sitemap_m}
+[<a href="/sitemap_m.xml" target="_blank">モバイル版を確認する</a>({$sitemap_m_filesize}KB)]
+{/if}
+
+  {foreach from=$arrMenu key=key item=item name=output_xml}
+    {if $smarty.foreach.output_xml.first}
+    <form name="output_xml_list" action="/management/output/output_xml_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="UPDATE" />
+
+    <h3>XML受信を許可するIPアドレス</h3>
+    <textarea cols="60" rows="5" id="output_xml_permission_ip_address" name="output_xml_permission_ip_address">{$output_xml_permission_ip_address|escape}</textarea>
+    <p><span class="hint">何も記述しなければ、全てのIPアドレスに受信を許可します。</span></p>
+
+    <h3>XML出力一覧</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'output_xml[]')" />有効</th>
+        <th>モジュール</th>
+        <th>URL</th>
+      </tr>
+    {/if}
+        <tr>
+        <td><input type="checkbox" name="output_xml[]" value="{$item.url}" {if $item.url_checked != 0}checked="checked"{/if} /></td>
+        <td>{$item.title}</td>
+        <td><a href="{$item.url}" target="_blank">{$item.url}</a></td>
+        </tr>
+    {if $smarty.foreach.output_xml.last}
+    </table>
+    {buttonbox}
+      <button type="submit">更新</button>
+    {/buttonbox}
+<br />
+<span class="hint">各URLのパラメータに「id」を指定すると、そのidで絞り込んだXMLを表示します。</span><br />
+(例)blog_id=9999のデータだけのXMLを取得したい場合、<br />
+{$smarty.const.ROOT_URL}/direct/output/xml/kbn=blog&id=9999<br /><br />
+
+<span class="hint">kbnパラメータが{foreach from=$Output_Module_Group_Module key=key item=item }{$key}、{/foreach}いずれかの場合に、パラメータに「group」を指定すると、そのgroupで絞り込んだXMLを表示します。</span><br />
+(例)group=9999のデータだけのXMLを取得したい場合、<br />
+{$smarty.const.ROOT_URL}/direct/output/xml/kbn=blog&group=9999<br /><br />
+
+
+<span class="hint">各URLのパラメータに「keyword」を指定すると、そのkeywordで絞り込んだXMLを表示します。</span><br />
+<span class="hint">デフォルトではrecord_titleタグとrecord_cotentsタグに、keywordで指定した文字列が含まれるか検索を行います。</span><br />
+(例)record_titleタグとrecord_cotentsタグのいずれかに「2008年」を含むXMLを取得したい場合、<br />
+{$smarty.const.ROOT_URL}/direct/output/xml/kbn=blog&keyword=2008年<br /><br />
+
+<span class="hint">各URLのパラメータに「search_tag[]」を指定すると、keywordで検索する列を増やすことが出来ます。</span><br />
+(例)blog_id_nmタグ、cotentsタグ、record_titleタグ、record_cotentsタグのいずれかに「2008年」を含むXMLを取得したい場合、<br />
+{$smarty.const.ROOT_URL}/direct/output/xml/kbn=blog&keyword=2008年&search_tag[]=blog_id_nm&search_tag[]=cotents<br /><br />
+    </form>
+    {/if}
+  {/foreach}
+
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

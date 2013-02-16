@@ -1,0 +1,125 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}編集</h2>
+  <ul>
+	{if $auth.simplebox.insert}
+	<li class="add"><a href="/management/simplebox/simplebox_edit/"><span>付箋追加</span></a></li>
+	{/if}
+	{if $item.simplebox_id}
+	<li class="normal"><a href="/management/simplebox/simplebox_history/simplebox_id={$item.simplebox_id}"><span>{'/label/update_history'|translate}</span></a></li>
+	{/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">コミュニケーション</a>
+<a href="/management/simplebox/simplebox_list/">{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{if $item.simplebox_id}編集「{$item.content|mbtruncate|escape}」{else}新規作成{/if}</h3>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="list_main">
+  <form action="/management/simplebox/simplebox_edit/{if $itemID}simplebox_id={$itemID}{/if}" method="post" id="simplebox_edit">
+	<table>
+	  <tr>
+		<th>{$module_nm}の内容</th>
+		<td>
+		  <textarea name="content" wrap="soft" cols="50" rows="5">{$item.content}</textarea>
+		  <input type="hidden" name="MODE" value="" />
+		  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+		  <input type="hidden" name="simplebox_id" value="{$simplebox_id}" />
+		</td>
+	  </tr>
+	  <tr>
+		<th>{$module_nm}の配置</th>
+		<td>
+		  ページ：<input type="text" name="path" value="{$item.path}" />?<input type="text" name="query" value="{$item.query}" /><br />
+		  縦位置：<input type="text" name="y" value="{$item.y}" />
+		  横位置：<input type="text" name="x" value="{$item.x}" />
+		</td>
+	  </tr>
+	  <tr>
+		<th>スタイル</th>
+		<td>
+		  <select name="style">
+			{foreach from=$styleList item=style key=key}
+			<option value="{$key}"{if $key == $item.style} selected="selected"{/if}>{$style}</option>
+			{/foreach}
+		  </select>
+		</td>
+	  </tr>
+	  <tr>
+		<th>閲覧制限</th>
+		<td>
+		  <p>
+			<input type="radio" name="selectreaders" value="0" id="srFalse" onclick="Element.hide('readerList')"{if !$item.selectreaders} checked="checked"{/if} /><label for="srFalse">制限なし</label>
+			<input type="radio" name="selectreaders" value="1" id="srTrue" onclick="Element.show('readerList')"{if $item.selectreaders} checked="checked"{/if} /><label for="srTrue">制限あり</label>
+		  </p>
+		  <ul id="readerList"{if !$item.selectreaders} style="display:none"{/if}>
+			<li>閲覧を許可するグループを選択してください。</li>
+			<li><input type="checkbox" id="checkAll" onclick="AllChecked(this.checked, this.form, 'readers[]');"{if $group.isReader} checked="checked"{/if} /><label for="checkAll">一括選択／解除</label></li>
+			{foreach from=$groups item=group}
+			<li class="group_list"><input type="checkbox" name="readers[]" id="r{$group.group_id}" value="{$group.group_id}"{if $group.isReader} checked="checked"{/if} /><label for="r{$group.group_id}">{$group.group_nm}</label></li>
+			{/foreach}
+		  </ul>
+		</td>
+	  </tr>
+	  <tr>
+		<th>公開・非公開{$item.is_hidden}</th>
+		<td>
+		  <input type="radio" name="is_hidden" value="0" id="flg_open"	{if $item.is_hidden==''} checked="checked"{/if} /><label for="flg_open">公開</label>&nbsp;&nbsp;&nbsp;
+		  <input type="radio" name="is_hidden" value="1" id="flg_closed"{if  $item.is_hidden!=''} checked="checked"{/if} /><label for="flg_closed">非公開</label>
+		</td>
+	  </tr>
+	</table>
+
+	{rcms_include file="management/relation_edit.html"}
+
+  </form>
+</div>	<!-- end of div.list_main -->
+
+<div class="btn_box_bottom">
+  <ul class="bt_orange">
+	{if $simplebox_id}
+	<li><a href="javascript:sb.submit('UPDATE');"><span>更新する</span></a></li>
+	<li><a href="javascript:sb.submit('DELETE');"><span>削除する</span></a></li>
+	{else}
+	<li><a href="javascript:sb.submit('INSERT');"><span>追加する</span></a></li>
+	{/if}
+  </ul>
+
+  {literal}
+  <script type="text/javascript">
+  //<![CDATA[
+  var sb = {
+	form: $('simplebox_edit'),
+	submit: function(mode) {
+	  this.form.MODE.value = mode;
+	  switch (mode) {
+	  case 'INSERT':
+	  case 'UPDATE':
+		this.form.submit();
+		break;
+	  case 'DELETE':
+		if (confirm('この付箋を削除しますか？')) this.form.submit();
+		break;
+	  }
+	}
+  }
+  //]]>
+  </script>
+  {/literal}
+
+</div>	<!-- end of div.btn_box_bottom -->
+</div>
+
+{rcms_include file="management/footer.html"}

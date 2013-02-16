@@ -1,0 +1,33 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{$module_nm}一覧</h2>
+{if $auth.coupon.insert}
+  <a href="/management/coupon/coupon_edit/">>>{$module_nm}追加</a>
+{/if}
+
+
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+
+<form method="get" action="/management/coupon/coupon_list/">
+  <select name="opflg">{html_options options=$searchOpflg selected=$opflg}</select><br />
+  <input type="submit" value="検索する" />
+</form>
+
+<hr class="for_mng"/>
+
+{pager info=$pageInfo}
+{foreach from=$coupon_list item=row}
+  {$row.open_flg|rcms_publicimg}
+  <a href="/management/coupon/coupon_edit/coupon_id={$row.coupon_id}">{$row.coupon_nm}</a><br />
+  {$row.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}<br /><br />
+{/foreach}
+{pager info=$pageInfo}
+
+{rcms_include file="management/mobile/footer.html"}

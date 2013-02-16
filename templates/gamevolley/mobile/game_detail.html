@@ -1,0 +1,92 @@
+<h2>
+{$gameData.game_type} {$gameData.game_type2}　
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+試合予定
+{elseif $gameData.game_status eq '2'}
+途中経過
+{elseif $gameData.game_status eq '3'}
+試合結果
+{/if}</h2><br/>
+
+[ｽｺｱ]<br/>
+{$smarty.const.SELF_TEAM_SNM}{$gameData.team_grade}vs {$gameData.team_nm}{$gameData.opponent_grade}<br/>
+{if $gameData.game_status eq '2' ||  $gameData.game_status eq '3'}
+  {$gameData.score_detail_arr.Self_Total}
+  -
+  {$gameData.score_detail_arr.Opp_Total}<br/>
+
+  {if $gameData.score_detail_arr.Self_1S || $gameData.score_detail_arr.Opp_1S}
+    [セット]<br/>
+    {$gameData.score_detail_arr.Self_1S}-{$gameData.score_detail_arr.Opp_1S}<br/>
+  {/if}
+  {if $gameData.score_detail_arr.Self_2S || $gameData.score_detail_arr.Opp_2S}
+    {$gameData.score_detail_arr.Self_2S}-{$gameData.score_detail_arr.Opp_2S}<br/>
+  {/if}
+  {if $gameData.score_detail_arr.Self_3S || $gameData.score_detail_arr.Opp_3S}
+    {$gameData.score_detail_arr.Self_3S}-{$gameData.score_detail_arr.Opp_3S}<br/>
+  {/if}
+  {if $gameData.score_detail_arr.Self_4S || $gameData.score_detail_arr.Opp_4S}
+    {$gameData.score_detail_arr.Self_4S}-{$gameData.score_detail_arr.Opp_4S}<br/>
+  {/if}
+  {if $gameData.score_detail_arr.Self_5S || $gameData.score_detail_arr.Opp_5S}
+    {$gameData.score_detail_arr.Self_5S}-{$gameData.score_detail_arr.Opp_5S}<br/>
+  {/if}
+{/if}
+
+<br/>
+[日時]
+{$gameData.ymd_str}<br/>
+{if $gameData.ko_time}
+[開始時間]
+{$gameData.ko_time}<br/>
+{/if}
+{if $gameData.place}
+[試合会場]
+{$gameData.place}<br/>
+{/if}
+<br/>
+
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+
+{if count($gameMembers)}
+  [出場選手]<br/>
+  {section name=self_member loop=$gameMembers}
+    {if $gameMembers[self_member].member_order}
+{$gameMembers[self_member].member_no}.{$gameMembers[self_member].position_nm}
+{if $gameMembers[self_member].member_id ne ''}<a href="/member_detail/id={$gameMembers[self_member].member_id}">{/if}{$gameMembers[self_member].member_name}{if $gameMembers[self_member].member_grade}({$gameMembers[self_member].member_grade}){/if}{if $gameMembers[self_member].member_id ne ''}</a>{/if}
+<br/>
+    {/if}
+  {/section}
+{/if}
+<br/>
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/gamevolley_list/">試合一覧へ</a>
+</div>
+
+{if $gameTopicsList|@count > 0}
+<hr/>
+{/if}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2>{$gameTopicsList[game_topics].subject}</h2>
+<div style="text-align:right;font-size:small;">
+{$gameTopicsList[game_topics].ymd_str}
+</div>
+{$gameTopicsList[game_topics].contents}
+{/section}
+{if $gameTopicsList|@count > 0}
+<div style="text-align:right;font-size:small;">
+<a href="/gamevolley_list/">試合一覧へ</a>
+</div>
+{/if}
+<hr/>
+

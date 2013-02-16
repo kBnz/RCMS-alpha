@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ja" xml:lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>{'/modules/design/label/edit_header_image'|translate}{*ヘッダ画像変更*}</title>
+  <link href="/css/management/default.css" rel="stylesheet" type="text/css" />
+
+  {literal}
+  <script type="text/javascript">/*<![CDATA[*/
+  function $(e){if(typeof e=='string')e=document.getElementById(e);return e};
+
+  var selectType = function(type) {
+    var on = type;
+    var off = '';
+    var off2 = '';
+    if(type == 'image'){
+      off = 'url';
+      off2 = 'select';
+    }else if(type == 'url'){
+      off = 'image';
+      off2 = 'select';
+    }else if(type == 'select'){
+      off = 'image';
+      off2 = 'url';
+    }
+
+
+    $('label_' + on).style.fontWeight  = 'bold';
+    $('label_' + off).style.fontWeight = 'normal';
+    $('label_' + off2).style.fontWeight = 'normal';
+
+    $('input_' + on).style.display  = '';
+    $('input_' + off).style.display = 'none';
+  }
+  /*]]>*/</script>
+  {/literal}
+</head>
+
+<body class="header_change">
+
+<h1>【{'/modules/design/label/edit_header_image'|translate}{*ヘッダ画像変更*}】</h1>
+{if $error}
+<p><strong><font color=red>{$error}</font></strong></p>
+{/if}
+{if $notice}<p><strong><font color=red>{$notice}</font></strong></p>{/if}
+<form id="HIF_form" action="/direct/design/changeHeaderImage/" method="post" enctype="multipart/form-data">
+    {if $current}<p><a href="{$current}" onclick="window.open(this.href, '_blank'); return false;">≫{'/label/current_header_image'|translate}{*現在のヘッダ画像*}</a></p>{else}{'/modules/design/msg/no_header_image_is_set'|translate}{*ヘッダ画像は設定されていません。*}{/if}
+    <dl>
+      <dt><input type="radio" name="type" id="type_image" value="image" onclick="selectType(this.value)" /><label for="type_image" id="label_image">{'/label/upload_image'|translate}{*画像アップロード*}</label></dt>
+      <dd id="input_image"><input type="file" name="image" /></dd>
+      <dt><input type="radio" name="type" id="type_url" value="url" onclick="selectType(this.value)" /><label for="type_url" id="label_url">{'/label/file_url'|translate}{*ファイルURL*}</label></dt>
+      <dd id="input_url"><input type="text" name="url" value="{$current}" style="width:20em" /></dd>
+      <dt><input type="radio" name="type" id="type_select" value="select" onclick="selectType(this.value)" /><label for="type_url" id="label_select">{'/label/select_image'|translate}{*画像を選択する*}</label></dt>
+      <dd id="input_select">
+      <div style="overflow:scroll;padding-left:20px;height:350px;width:350px;">
+{foreach from=$header_img item=header}
+      <div style="padding-bottom:5px;"><input type="radio" name="selected_image" value="{$header}" onClick="$('type_select').checked=true;selectType('select');" /><img src="/images/css/header/{$header}" height="45"><br/></div>
+{/foreach}
+      </div>
+      </dd>
+    </dl>
+
+    <p><input type="submit" value="{'/label/update_btn'|translate}{* 更新する *}" class="bt" /><br>※{'/msg/new_image_will_be_set'|translate}{*この更新は即反映されます。*}</p>
+
+</form>
+<br>
+<form action="/direct/design/changeHeaderImage/" method="post">
+<input type="hidden" name="type" value="delete">
+<input type="submit" value="{'/label/delete_btn'|translate}{* 削除する *}" class="bt" /><br>
+</form>
+<script type="text/javascript">$('type_image').click();</script>
+
+<div class="close"><a href="javascript:window.close();">＜{'/label/close'|translate}{*閉じる*}＞</a></div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+    
+     // var が無いのは外部windowから呼び出せるようにするためです (window.placeChecker = ... と同じ)
+    placeChecker = new Checker({notifier : document.getElementById('subInfo'),
+                                idInput  : document.game_edit.place_id,
+                                nmInput  : document.game_edit.place});                
+});
+
+function placeInput(){
+    window.open('/direct/page/locationInput/jsObject=placeChecker&type=gamesimple_place','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameTypeInput(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type&type=gamesimple_game_type','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameType2Input(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type2&type=gamesimple_game_type2','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function teamInput() {
+    window.open('/js/teamInput.php?type=simple','','width=400,height=250,scrollbars=1,resizable=yes');
+}
+
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        
+        f.submit();
+    }
+}
+
+function Checker(option) {
+    var notifier = option.notifier; // [object HTMLSpanElement]
+    var idInput  = option.idInput;  // [object HTMLInputElement]
+    var nmInput  = option.nmInput;  // [object HTMLInputElement]
+
+    var idInputValue = idInput.value;
+    var nmInputValue = ((idInputValue == "" || idInputValue == -1) ? "" : nmInput.value);
+
+    nmInput.onblur = check;
+    check();
+
+    // called from locationInput.php
+    this.reset = function (option) {
+        nmInputValue = nmInput.value = option.location_nm;
+        idInputValue = idInput.value = option.location_id;
+        notifier.innerHTML = ((idInputValue == "" || idInputValue == -1) ? "({/literal}{'/label/not_registered_data'|translate}{literal})" : "");
+        if ((idInputValue == "" || idInputValue == -1)) nmInputValue = "";
+    }
+
+    function check (e) {
+        if (nmInputValue != nmInput.value) {
+            notifier.innerHTML = "({/literal}{'/label/not_registered_data'|translate}{literal})";
+            idInput.value = -1;
+        } else {
+            notifier.innerHTML = "";
+            idInput.value = idInputValue;
+        }
+    }
+}
+</script>
+{/literal}
+
+<style>
+<!--
+{literal}
+table.tokuten{
+  background-color: #CCCCCC;
+}
+table.tokuten td{
+  border: solid #FFFFFF 1px;
+  background: #D5D5D5;
+}
+
+{/literal}
+-->
+</style>
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm} {'/label/edit'|translate}{*編集*}</h2>
+<ul>
+  {if $auth.gamesimple.insert}
+  <li class="add"><a href="/management/gamesimple/gamesimple_edit/"><span>{'/modules/game/label/create_new_game_btn'|translate}{*試合追加*}</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/gamesimple/gamesimple_history/game_id={$game_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=gamesimple&id={$game_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/gamesimple_detail/id={$game_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm} {'/label/list'|translate}</a>
+{$module_nm} {'/label/edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 各種ゲーム >> 各種ゲーム一覧 >> 各種ゲーム編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{*関連情報*}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{*件*}</a>　<a href="/gamesimple_detail/id={$game_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="game_edit" id="gamesimple_edit" action="/management/gamesimple/gamesimple_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <br style="clear: both;">
+
+      <h3>{'/modules/game/label/game_information'|translate}{*試合情報*}</h3>
+      <table width="100%">
+        <tr>
+          <th>{'/label/season'|translate}{*シーズン*}<span class="required">※</span></th>
+          <td><select name="season" id="season">{rcms_seasonOptions selected=$data.season}</select></td>
+        </tr>
+        <tr>
+          <th>{'/label/date'|translate}{*日付*}<span class="required">※</span></th>
+          <td>
+            <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/game_beginning_time'|translate}{*試合開始時間*}<span class="required">※</span></th>
+          <td><input type="text" name="ko_time" value="{$data.ko_time|escape}" onBlur="changeHankaku(this, 'time')" /></td>
+        </tr>
+        <tr>
+          <th>{'/label/game_site'|translate}{*試合会場*}<span class="required">※</span></th>
+          <td><input type="text" name="place" value="{$data.place|escape}" /><a href="javascript:void(0);" onclick="placeInput()">{'/label/select_btn'|translate}{*選択*}</a><span id="subInfo"></span></td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/game_type'|translate}{*試合タイプ*}<span class="required">※</span></th>
+          <td><input type="text" name="game_type" value="{$data.game_type|escape}" /><a href="javascript:void(0);" onclick="gameTypeInput()">{'/label/select_btn'|translate}{*選択*}</a> <input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked="checked"{/if} />{'/modules/game/label/official_game'|translate}{*公式戦*}</td>
+        </tr>
+        <tr>
+          <th>{'/label/tournament'|translate}{*トーナメント*}</th>
+          <td><input type="text" name="game_type2" value="{$data.game_type2|escape}" /><a href="javascript:void(0);" onclick="gameType2Input()">{'/label/select_btn'|translate}{*選択*}</a></td>
+        </tr>
+        <tr>
+          <th>{'/label/sporting_events'|translate}{*試合種目*}</th>
+          <td><input type="text" name="game_category" value="{$data.game_category|escape}" /></td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/match'|translate}{*対戦*}<span class="required">※</span></th>
+          <td>
+              {'/label/team'|translate}{*チーム*} A：<input type="text" name="team1" value="{$data.team1|escape}" />
+              vs
+              {'/label/team'|translate}{*チーム*} B：<input type="text" name="team2" value="{$data.team2|escape}" />
+          </td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/game_result'|translate}{*試合結果*}</th>
+          <td>
+            <table cellpadding="0" cellspacing="5" class="not_list_main tokuten">
+              <tr>
+                <td>{'/modules/game/msg/display_result_only'|translate}{*勝敗結果のみ表示*}<input type="checkbox" name="game_result_flg" {if $data.game_result_flg == "1"}checked="checked"{/if} /></td>
+              </tr>
+              <tr>
+                <td align="center" rowspan="3">{'/modules/game/label/display_score'|translate}{*点数表示*}</td>
+              </tr>
+              <tr style="text-align:center">
+                <td>{'/label/team'|translate}{*チーム*} A</td>
+                <td>&nbsp;&nbsp;&nbsp;チームB&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td align="center"><input type="text" name="Self_Total" value="{$data.Self_Total}" size="3" onBlur="changeHankaku(this,'number')" /></td>
+                <td align="center"><input type="text" name="Opp_Total" value="{$data.Opp_Total}" size="3" onBlur="changeHankaku(this, 'number')" /></td>
+              </tr>
+              <tr>
+                <td align="center" rowspan="3">{'/modules/game/label/display_result'|translate}{*勝敗表示*}</td>
+              </tr>
+              <tr style="text-align:center">
+                <td>{'/label/team'|translate}{*チーム*} A</td>
+              </tr>
+              <tr>
+                <td><select name="game_result" id="game_result">{html_options options=$arrGameResult selected=$data.game_result}</select></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/comments'|translate}{*コメント*}</th>
+          <td><textarea name="game_comment" rows="7" cols="50">{$data.game_comment|escape}</textarea></td>
+        </tr>
+        <tr>
+          <th>{'/label/status_katakana'|translate}{*ステータス*}<span class="required">※</span></th>
+          <td>{html_radios name="game_status" options=$arrGameStatus selected=$data.game_status}</td>
+        </tr>
+      </table>
+
+      <br style="clear: both;">
+
+      {rcms_include file="management/open_date_box.html" id=$game_id data=$data}
+
+    {buttonbox}
+      {if $game_id != ""}
+        {if $auth.gamesimple.update}
+          <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+        {/if}
+        {if $auth.gamesimple.delete}
+          <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+        {/if}
+      {else}
+        {if $auth.gamesimple.insert}
+          <button type="submit">{'/label/add_btn'|translate}{*追加する*}</button>
+        {/if}
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

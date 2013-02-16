@@ -1,0 +1,9 @@
+<h2><SPAN STYLE="color: #FF6600; font-size: medium;">{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</SPAN></h2><br>
+<div class="module_contents">
+<SPAN STYLE="font-size: medium;">[{'/modules/bbs/label/post_display_limit'|translate}{*記事表示制限*}]</SPAN><br>
+{if $isLogin}
+{'/msg/authority_error'|translate}{*権限がないので処理できません。*}
+{else}
+{'/msg/write_after_login'|translate}{*ログインして書き込みください。*}<a href="{$login_page}">>>{'/label/login'|translate}{*ログイン*}</a>
+{/if}
+</div>

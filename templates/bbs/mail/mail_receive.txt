@@ -1,0 +1,8 @@
+「{$row.subject}」の投稿を受け付けました。
+
+こちらからご確認ください↓
+{$smarty.const.ROOT_URL}/bbs_show/bbs_header_id={$row.module_id}
+
+------------------------------
+{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/

@@ -1,0 +1,136 @@
+{assign var=extension_uid value=$item.name|regex_replace:'/\[(\d+)\]/':'_\1'}
+<div id="extension_row_{$extension_uid}" uid="{$extension_uid}" class="extension_relation">
+<input type="hidden" name="{$item.name}" id="{$extension_uid}" value="{$item.value}" />
+<p class="label" id="label_{$extension_uid}"></p>
+<div class="selection" style="display:none;">
+  <div class="search"></div>
+  <div>
+    <select id="choice_{$extension_uid}"><option>----</option></select>
+    <input type="button" id="btn_{$extension_uid}" value="{'/label/select_btn'|translate}" />
+  </div>
+</div>
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}
+<script type='text/javascript'>
+{literal}
+(function() {
+var init_selecteditem = {/literal}"{$item.value}";{literal}
+var idname = {/literal}"{$extension_uid}";{literal}
+var tableID = {/literal}"{$item.options.module}";{literal}
+var no_select = {/literal}"<{'/label/no_select'|translate}>";{literal}
+var allowedId = {/literal}"{$item.options.group_id|escape}";{literal}
+
+function change_condition(idx) {
+  var params = {tableID: tableID};
+  j$('#extension_row_' + idname + " .search").children().each(function() {
+    var ele = j$(this);
+    if (ele.val()) {
+      params[ele.attr('name')] = ele.val();
+    }
+  });
+  if (allowedId.length > 0) {
+    params["allowedId"] = allowedId;
+  }
+
+  var url = '/direct/topics/relation/' + j$.param(params);
+  j$.ajax({
+    type: "GET",
+    url: url,
+    dataType: 'json',
+    success: function(data, dataType) {
+
+      var current = j$("select[name='search"+idx+"']",search_box).val();// 現在の値を保持 *後で再生成されるため
+
+      var ele = j$('#choice_' + idname);
+      ele.empty();
+      ele.append(j$('<option>').attr({value: ''}).text('-----'));
+      j$.each(data['items'], function(i, item) {
+        //console.log(i);
+        ele.append(j$('<option>').attr({value: item['key']}).text(item['title']));
+      });
+
+      // 検索
+      var selectedIndexList = {};
+
+      var search_box = j$('#extension_row_' + idname + " .search");
+
+      search_box.children().each(function() {
+        var ele = j$(this);
+        selectedIndexList[ele.attr('id')] = ele.attr('selectedIndex');
+      }).remove();
+
+
+      //ele.children().remove();
+      j$.each(data['searchList'], function(i, items) {
+
+        if (items.length > 0) {
+          var idnm = "search_" + (i + 1) + "_" + idname;
+          var search_sel = j$('<select>').attr({id: idnm, name: 'search' + (i + 1)});
+          search_sel.bind('change', function() {
+            change_condition(i + 1);
+          });
+          search_box.append(search_sel);
+          search_sel.empty();
+          j$.each(items, function(j, pair) {
+
+          if(current==pair["value"] && idx==(i+1) ){
+            // 選択済みの値があった場合はデフォルトで選択状態にしておく
+            search_sel.append(j$('<option>').attr({value: pair["value"],selected:"selected"}).text(pair["label"]));
+          }else{
+            search_sel.append(j$('<option>').attr({value: pair["value"]}).text(pair["label"]));
+          }
+
+          });
+          if (i + 1 <= idx) {
+            search_sel.attr({selectedIndex: selectedIndexList[idnm]});
+          }
+        }
+      });
+    }
+  });
+}
+
+function initialize() {
+  j$('#label_' + idname).bind('click', function() {
+    j$('#extension_row_' + idname + " .selection").slideToggle("fast");
+  });
+
+  j$('#btn_' + idname).bind('click', function() {
+    var ele = j$('#choice_' + idname);
+    j$('#' + idname).val(ele.val());
+    var text = ele.val() ? ele.find('option:selected').text() : no_select;
+    j$('#label_' + idname).text(text);
+    j$('#extension_row_' + idname + " .selection").slideUp("fast");
+  });
+
+  // 設定済みの場合にタイトル表示する
+  var lang = j$('input[name=_doc_lang]').val();
+  var id = j$('#' + idname).val();
+  if (id) {
+    var params = {tableID: tableID, id: id, lang: lang};
+    if (allowedId.length > 0) {
+      params["allowedId"] = allowedId;
+    }
+    var url = '/direct/topics/relation_item/' + j$.param(params);
+    j$.ajax({
+      type: "GET",
+      url: url,
+      dataType: 'json',
+      success: function(data, dataType) {
+        j$('#label_' + idname).text(data.title);
+      }
+    });
+  }
+  else {
+    j$('#label_' + idname).text(no_select);
+  }
+}
+
+j$(function() {
+  change_condition(1);
+  initialize();
+});
+
+})();
+{/literal}
+</script>
+</div>

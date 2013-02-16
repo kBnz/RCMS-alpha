@@ -1,0 +1,80 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2 class="approvalflow">{'/modules/approvalflow/label/approvalflow_list'|translate}{*承認ワークフロー一覧*}</h2>
+<ul>
+{if $auth.approvalflow.insert}
+<li class="add"><a href="/management/approvalflow/approvalflow_edit/"><span>{'/modules/approvalflow/label/create_new_workflow_btn'|translate}{*ワークフロー追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/approvalflow/approvalflow_list/">{'/modules/approvalflow'|translate}</a>
+{'/modules/approvalflow/label/approvalflow_list'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> 承認ワークフロー >> 承認ワークフロー一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+<form action="/management/approvalflow/approvalflow_list/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <div class="clear"></div>
+    {if $auth.approvalflow.select}
+        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+                <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'approvalflow_id[]');" /></th>
+                <th scope="col">ID</th>
+                <th scope="col">{'/label/workflow_name'|translate}{*ワークフロー名*}</th>
+                <th scope="col">{'/label/status'|translate}{*ステータス*}</th>
+                <th scope="col">{'/label/basic_settings'|translate}{*基本設定*}</th>
+                <th scope="col">{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</th>
+            </tr>
+            {foreach item="approvalflow_data" from=$approvalflow_list name="approvalflow_list"}
+            <tr>
+                <td><input type="checkbox" name="approvalflow_id[]" value="{$approvalflow_data.approvalflow_id}" {if !$auth.approvalflow.update && !$auth.approvalflow.delete }disabled="disabled"{/if}/></td>
+                <td>{$approvalflow_data.approvalflow_id}</td>
+                <td>{$approvalflow_data.flow_nm}</td>
+                <td>{$arrApprovaflowEnableflg[$approvalflow_data.enable_flg]}</td>
+                <td><a href="/management/approvalflow/approvalflow_edit/approvalflow_id={$approvalflow_data.approvalflow_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></td>
+                <td><a href="/management/approvalflow/approvalflow_member_edit/approvalflow_id={$approvalflow_data.approvalflow_id}">{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</a></td>
+            </tr>
+            {/foreach}
+        </table>
+    {else}
+        {'/msg/not_allowed_to_select'|translate}{*権限がないため閲覧することができません。*}
+    {/if}
+    {if $smarty.foreach.approvalflow_list.total > 0}
+        {buttonbox}
+          <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+            <button type="submit" onclick="this.form.MODE.value='ENABLE'">{'/label/enable_btn'|translate}{* 有効にする *}</button>
+            <button type="submit" onclick="this.form.MODE.value='DISABLE'">{'/label/disable_btn'|translate}{* 無効にする *}</button>
+            <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+        {/buttonbox}
+    {/if}
+</div>
+</form>
+</div>
+
+{rcms_include file="management/footer.html"}

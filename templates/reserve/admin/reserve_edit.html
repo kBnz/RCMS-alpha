@@ -1,0 +1,168 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete() {
+    if (confirm("削除してもよろしいですか？")) {
+        document.reserve_edit.MODE.value='DELETE';
+        document.reserve_edit.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>基本設定</h2>
+<ul>
+{if $auth.reserve.insert}
+<li class="add"><a href="/management/reserve/reserve_edit/"><span>モジュール追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">{'/modules/reserve'|translate}</a>
+<a href="/management/reserve/reserve_module_list/">モジュール一覧</a>
+基本設定
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{if $header.module_type_nm}【{$header.module_type_nm}】{else}新規作成{/if}</h3>
+<ul class="minitabs">
+  {if $header.reserve_header_id}
+    <li><a href="/management/reserve/reserve_edit/reserve_header_id={$header.reserve_header_id}" class="active">基本設定</a></li>
+    <li><a href="/management/reserve/reserve_list/reserve_header_id={$header.reserve_header_id}">コンテンツ一覧</a></li>
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><a href="/management/reserve/reserve_edit/" class="active">基本設定</a></li>
+    <li><span>コンテンツ一覧</span></li>
+  {/if}
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="reserve_edit" id="reserve_edit" action="/management/reserve/reserve_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="reserve_header_id" value="{$header.reserve_header_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table width="100%">
+      <tr>
+        <th>モジュール</th>
+        <td>
+          {if $header.reserve_header_id == ''}
+            <select name="module_type">{html_options options=$cont_op selected=$data.module_type}</select>
+          {else}
+            {$header.module_type_nm}
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>運用状態</th>
+        <td>{html_radios options=$reserve_status_options name=status selected=$data.status}</td>
+      </tr>
+      <tr>
+        <th>権限設定</th>
+        <td>
+          <table class="not_list_main">
+            <tr>
+              <th>グループ</th>
+              <th申し込み</th>
+            </tr>
+{foreach from=$arrAdminList item=item1 key=key1}
+            <tr>
+{assign var="key_id" value=$item1.group_id}
+              <td>{$item1.group_nm}</td>
+              <td>
+                <select name="mode_flg_write[{$item1.group_id}]">{html_options options=$arrWriteMode selected=$data.mode_flg_write.$key_id}</select>
+              </td>
+            </tr>
+{/foreach}
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th>予約状況の表示設定</th>
+        <td>
+          <table class="not_list_main">
+          <tr><th></th><th>デフォルト</th><th>表示内容</th></tr>
+          <tr><td>空き50％～100％</td><td align="center">予約受付中</td>
+              <td><input type="text" name="msg_accept_on" size="25" value="{$data.msg_accept_on}" /></td></tr>
+          <tr><td>空き50％未満</td><td align="center">残りわずか</td>
+              <td><input type="text" name="msg_accept_little" size="25" value="{$data.msg_accept_little}" /></td></tr>
+          <tr><td>空きなし</td><td align="center">予約受付終了</td>
+              <td><input type="text" name="msg_accept_end" size="25" value="{$data.msg_accept_end}" /></td></tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th>予約についての説明<br />（予約フォームの上に表示されます。）</th>
+        <td><textarea name="description" cols="30" rows="5">{$header.description}</textarea></td>
+      </tr>
+      <tr>
+        <th>申し込み者に対する応答メッセージ</th>
+        <td><textarea name="reply_message" cols="30" rows="5">{$header.reply_message}</textarea></td>
+      </tr>
+      <tr>
+        <th>ユーザ入力情報</th>
+        <td>
+          <table id="user_profile_table" class="not_list_main">
+            <tr><td></td><th>なし</th><th>任意</th><th>必須</th><th>並び順(大きい方が上)</th><th>行数</th></tr>
+            {foreach from=$data.user_profile item=val key=key}
+              <tr>
+                {if $reserve_profile_options.$key.free}
+                  <td><input type="text" name="{$key}" value="{$reserve_profile_options.$key.name}" /></td>
+                {else}
+                  <td>{$reserve_profile_options.$key.name}</td>
+                {/if}
+                <td class="btn"><input type="radio" name="user_profile[{$key}]" value="{$smarty.const.RESERVE_PROFILE_OFF}" {if $val == $smarty.const.RESERVE_PROFILE_OFF}checked="checked"{/if} /></td>
+                <td class="btn"><input type="radio" name="user_profile[{$key}]" value="{$smarty.const.RESERVE_PROFILE_ON}" {if $val == $smarty.const.RESERVE_PROFILE_ON}checked="checked"{/if} /></td>
+                <td class="btn"><input type="radio" name="user_profile[{$key}]" value="{$smarty.const.RESERVE_PROFILE_REQUIRE}" {if $val == $smarty.const.RESERVE_PROFILE_REQUIRE}checked="checked"{/if} /></td>
+                <td><input type="text" name="grade[{$key}]" size="10" value="{$data.grade.$key}" /></td>
+                <td><select name="input_type[{$key}]">{html_options options=$arrInputType selected=$data.input_type.$key}</select></td>
+              </tr>
+            {/foreach}
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th>配送先メールアドレス</th>
+        <td>
+          <textarea name="contact_address" cols="60" rows="6" style="font-size:100%">{$data.contact_address|escape}</textarea>
+          <p class="hint">申し込みがあった場合、このアドレスに通知されます</p>
+          {html_radios name=contact_flg options=$arrReserve_contact_flg selected=$data.contact_flg}
+        </td>
+      </tr>
+      <tr>
+        <th>受付返信メール</th>
+        <td>
+          <p class="hint">申し込みがあった場合に申込者へ送信するメールです</p>
+          {html_radios name=thanksmail_flg options=$arrReserve_thanksmail_flg selected=$data.thanksmail_flg}
+        </td>
+      </tr>
+    </table>
+
+    {buttonbox}
+        {if $auth.reserve.insert && $header.reserve_header_id == '' } 
+          <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+		{/if}
+        {if $auth.reserve.update && $header.reserve_header_id != '' } 
+          <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+        {/if}
+        {if $auth.reserve.delete && $header.reserve_header_id != ''}
+          <button type="button" onclick="confirmDelete()">削除する</button>
+        {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

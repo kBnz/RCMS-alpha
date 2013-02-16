@@ -1,0 +1,36 @@
+<h2>{$gameData.team_nm}{$gameData.team_grade}と{$gameData.opponent_nm}{$gameData.opponent_grade}の戦績</h2>
+
+{if $gameRecord.start_year ne ''}
+公式戦対戦成績（{$gameRecord.start_year}年～{$gameRecord.end_year}年） {$gameData.team_nm} {$gameRecord.win_cnt}勝{$gameRecord.lose_cnt}敗{$gameRecord.even_cnt}分<br/>
+{/if}
+{if $gameList.0.opponent eq ''}
+過去の戦績はありません
+{else}
+過去３試合の対戦結果<br/>
+{section name=mydata loop=$gameList max=3}
+{$gameList[mydata].ymd_str} {$gameList[mydata].league_type}{$gameList[mydata].league_type2}<br/>
+<a href="/leaguebaseball_detail/id={$gameList[mydata].league_id}">
+{if $gameList[mydata].league_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].league_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{/if}
+</a><br/>
+{/section}
+{/if}
+<hr/>
+

@@ -1,0 +1,94 @@
+<script type="text/javascript">
+<!--
+{literal}
+function deleteAction(number) {
+    var form = document.bbs_show_list_form;
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        form.MODE.value = 'delete';
+        form.node.value = number;
+        form.delkey.value = document.getElementById('delkey'+number).value;
+        form.submit();
+    }
+}
+
+function doResponce(node) {
+    var form = document.bbs_show_list_form;
+    form.MODE.value = 'input';
+    form.reply_seq.value = node;
+    form.submit();
+}
+function doReport(number) {
+    var form = document.bbs_show_list_form;
+    form.MODE.value = 'report';
+    form.node.value = number;
+    form.submit();
+}
+
+{/literal}
+//-->
+</script>
+
+{module name="bbs_show_list"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+<!-- #main 本文スペース -->
+<h2>{'/modules/bbs/label/post_list'|translate}{*投稿記事一覧*}</h2>
+{if $pageInfo.totalCnt!=0}
+<div class="pageInfo">
+{'/label/pagination/summary'|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}{*a件中 b-c件目*}
+<span style="margin-left:5px">[{ if $pageInfo.pageNo > 1 }<a href="/bbs_show/page={$pageInfo.pageNo-1}&vm=list&bbs_header_id={$bbs_header_id}">{'/label/prev'|translate}{*前へ*}</a>{else}{'/label/prev'|translate}{*前へ*}{/if}|{ if $pageInfo.pageNo < $pageInfo.totalPageCnt }<a href="/bbs_show/page={$pageInfo.pageNo+1}&vm=list&bbs_header_id={$bbs_header_id}">{'/label/next'|translate}{*次へ*}</a>{else}{'/label/next'|translate}{*次へ*}{/if}]</span>
+</div>
+
+<form name="bbs_show_list_form" action="/bbs_show/" method="post">
+  <input type="hidden" name="bbs_header_id" value="{$bbs_header_id}">
+  <input type="hidden" name="reply_seq" value="">
+  <input type="hidden" name="node" value="">
+  <input type="hidden" name="MODE" value="input">
+  <input type="hidden" name="delkey" value="">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+
+{foreach from=$list item=bbsItem name=itemlist}
+
+
+
+  <div class="bbs_item">
+    <h3>{if $bbsItem.dflg ne '1'}{$bbsItem.title|escape}{else}{if $bbsItem.deltype eq ''}{'/msg/deleted_by_user'|translate}{else}{'/msg/deleted_by_admin'|translate}{/if}{*ユーザーにより or 管理者により削除されました。*}{/if}</h3>
+{if $bbsItem.dflg ne '1'}
+    <p class="head"><span class="name">{'/label/name'|translate}{*名前*}：{$bbsItem.name|escape}</span><span class="date">{'/label/date'|translate}{*日付*}：{$bbsItem.create_date|pg_dateformat:"%Y/%m/%e  %H:%M:%S"}</span>{if $bbsItem.new}<span class="new">new!!</span>{/if}</p>
+    <p class="body">{$bbsItem.note|escape|nl2br}</p>
+    {if $bbsItem.uploadimg|substr:-4 eq '.pdf'}
+    <a href="{$smarty.const.BBS_UPLOAD_URL}{$rootItem.uploadimg}" target="_blank"><img src="/images/common/icon_pdf.gif"></a>
+    {elseif $bbsItem.thumb_uploadimg ne '' && $bbsItem.uploadimg ne ''}
+    <a href="{$smarty.const.BBS_UPLOAD_URL}{$bbsItem.uploadimg}" target="_blank"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$bbsItem.thumb_uploadimg}"></a>
+    {elseif $bbsItem.uploadimg ne ''}
+    <img src="{$smarty.const.BBS_UPLOAD_URL}{$bbsItem.uploadimg}">
+    {/if}
+    <div class="act">
+    <div class="btn">
+      <a href="javascript:void(0);" onclick="doResponce({$bbsItem.seq});return false;">{'/label/send_answer_btn'|translate}{* 返信する *}</a>
+      <a href="javascript:void(0);" onclick="display('itemDel_{$bbsItem.seq}');return false;">{'/label/delete_btn'|translate}{* 削除する *}</a>
+{if $bbsItem.report_flg}
+      <a href="javascript:void(0);" onclick="doReport('{$bbsItem.seq}');return false;">{'/modules/bbs/label/report_violation_btn'|translate}{*違反報告する*}</a>
+{/if}
+    </div>
+    <div id="itemDel_{$bbsItem.seq}" style="display:none">
+      PASS:<input type="password" name="delkey{$bbsItem.seq}" id="delkey{$bbsItem.seq}" value="{$cookie_del_key}" size="10"><input type="button" value="{'/label/delete_btn'|translate}{* 削除する *}" onClick="deleteAction({$bbsItem.seq});">
+    </div>
+    </div>
+{/if}
+  </div>
+{/foreach}
+</form>
+<div class="pageInfo">
+{'/label/pagination/summary'|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}{*a件中 b-c件目*}
+<span style="margin-left:5px">[{ if $pageInfo.pageNo > 1 }<a href="/bbs_show/page={$pageInfo.pageNo-1}&vm=list&bbs_header_id={$bbs_header_id}">{'/label/prev'|translate}{*前へ*}</a>{else}{'/label/prev'|translate}{*前へ*}{/if}|{ if $pageInfo.pageNo < $pageInfo.totalPageCnt }<a href="/bbs_show/page={$pageInfo.pageNo+1}&vm=list&bbs_header_id={$bbs_header_id}">{'/label/next'|translate}{*次へ*}</a>{else}{'/label/next'|translate}{*次へ*}{/if}]</span>
+</div>
+{else}
+<p>{'/modules/bbs/msg/no_post_yet'|translate}{*まだ書き込みがありません*}</p>
+{/if}
+</div>
+{/module}

@@ -1,0 +1,115 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"日付", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+
+function placeInput() {
+    window.open('/js/optionAssist.php?target=convention_detail_edit.place&type=game{/literal}{$sports_type}{literal}_place','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function confirmDelete(f){
+    if(confirm("削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+</script>
+{/literal}
+
+<div id="main_contents">
+
+<div class="list_right_bt">
+<h2>{$module_nm}の結果編集</h2>
+  <ul>
+    <li class="normal"><a href="/management/convention/convention_edit/convention_id={$convention_id}"><span>大会設定</span></a></li>
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/convention/convention_list/">{$module_nm}</a>
+<a href="/management/convention/convention_list/">{$module_nm}一覧</a>
+<a href="/management/convention/convention_detail_list/convention_id={$convention_id}">結果入力</a>
+結果編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}件</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+  <div class="list_main">
+  <form name="convention_detail_edit" id="convention_detail_edit" action="/management/convention/convention_detail_edit/" method="POST">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="convention_id" value="{$convention_id}" />
+    <input type="hidden" name="first_team" value="{$first_team}" />
+    <input type="hidden" name="second_team" value="{$second_team}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <table width="100%">
+      <tr>
+        <th width="20%">日時</th>
+        <td width="80%">
+          <input type="text" name="ymd" id="ymd" value="{$data.ymd|escape}" autocomplete="off" />
+          <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="ymd-pop"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>試合開始時間</th>
+        <td><input type="text" name="ko_time" value="{$data.ko_time}" /></td>
+      </tr>
+      <tr>
+        <th>試合会場</th>
+        <td><input type="text" name="place" value="{$data.place}">
+        {if $data.sports_type ne 'direct'}<a href="javascript:void" onclick="placeInput(); return false;" />選択</a>{/if}
+        </td>
+      </tr>
+      <tr>
+        <th>試合結果</th>
+        <td>
+          <table cellpadding="0" cellspacing="5" class="not_list_main tokuten">
+            <tr>
+              <th align="center" width="50%">{if $data.first_team}{$data.first_team}{else}{$first_team}{/if}</th>
+              <th align="center" width="50%">{if $data.second_team}{$data.second_team}{else}{$second_team}{/if}</th>
+            </tr>
+            <tr>
+              <td align="center"><input type="text" name="first_total" value="{$data.first_total}" size="3" /></td>
+              <td align="center"><input type="text" name="second_total" value="{$data.second_total}" size="3" /></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <div class="clear"></div>
+      {buttonbox}
+        {if $game_id != ''}
+            {if $auth.convention.update}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+            {/if}
+            {if $auth.convention.delete}
+            <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+            {/if}
+        {else}
+            {if $auth.convention.insert}
+            <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+            {/if}
+        {/if}
+      {/buttonbox}
+  </form>
+  </div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,131 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/JavaScript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。よろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/inquiry/label/inquiry_list'|translate}{*問い合わせ一覧*}</h2>
+<ul>
+{if $rauth->canInsert("/inquiry/item/")}
+    <li class="add"><a href="/management/inquiry/inquiry_edit/"><span>{'/modules/inquiry/label/create_new_inquiry_btn'|translate}{*問い合わせ追加*}</span></a></li>
+{/if}
+
+<li class="view"><a href="{$smarty.const.ROOT_URL}/inquiry_list/" target="_blank"><span>{'/label/view_page'|translate}{*プレビュー*}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+{'/modules/inquiry/label/inquiry_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 問い合わせ一覧 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+    <li><a href="/management/inquiry/inquiry_list/" class="active">{'/modules/inquiry/label/inquiry_list'|translate}{*問い合わせ一覧*}</a></li>
+    {if $rauth->canInsert("/inquiry/template/")}
+    <li><a href="/management/inquiry/inquiry_template_list/">{'/label/template_setting'|translate}{*定型文設定*}</a></li>
+    {/if}
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<!-- 承認待ち一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="POST" action="/management/inquiry/inquiry_list/">
+    <input type="hidden" name="pageID" value="{$currentPageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+  <span class="hint">{'/msg/data_order'|translate}{*並び順は数字の大きい順に並びます。*}</span>
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th style="width: 30px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'inquiry_id[]')" /></th>
+        <th style="width: 30px">{'/label/activation_status'|translate}{*状態*}</th>
+        <th style="width: 30px">{'/label/sort'|translate}{*並び順*}</th>
+        <th style="">{'/label/title'|translate}{*タイトル*}</th>
+        <th style="width: 50px">{'/label/unsupport'|translate}{*未対応*}</th>
+        <th style="width: 50px">{'/modules/inquiry/label/re_inquiry'|translate}{*返信有り*}</th>
+        <th style="width: 50px">{'/label/total'|translate}{*合計*}</th>
+        <th style="width: 80px">{'/label/send_mail'|translate}{*メール送信*}</th>
+      </tr>
+  {foreach  item=row from=$inquiry_list}
+      {assign var=inquiry_id value=$row.inquiry_id}
+      <tr>
+        <td><input type="checkbox" name="inquiry_id[]" value="{$row.inquiry_id}" {if !$rauth->canUpdate("/inquiry/item/$inquiry_id") && !$rauth->canDelete("/inquiry_id/item/$inquiry_id")}disabled="disabled"{/if} />
+        </td>
+        <td>
+          {if $row.status == $smarty.const.INQUIRY_STATUS_RUN}
+            <span style="color:green;">{'/label/activate'|translate}{*運用*}</span>
+          {elseif $row.status == $smarty.const.INQUIRY_STATUS_STOP}
+            <span style="color:red;">{'/label/pause'|translate}{*休止*}</span>
+          {/if}
+        </td>
+        <td>{$row.order_no}</td>
+        <td>
+            {if $rauth->canUpdate("/inquiry/item/$inquiry_id") || $rauth->canDelete("/inquiry/item/$inquiry_id")}
+            <a href="/management/inquiry/inquiry_edit/inquiry_id={$row.inquiry_id}">{$row.inquiry_name|escape}</a>
+            {rcms_include   
+                file="common/admin/language_status.html" 
+                meta=$docmetas[$inquiry_id] 
+                link="/management/inquiry/inquiry_edit/inquiry_id=$inquiry_id"
+            }
+            {else}
+            {$row.inquiry_name|escape}
+            {/if}
+        </td>
+        <td>
+          {if $rauth->canSelect("/inquiry/mail/[@inquiry_id=$inquiry_id]") || $rauth->canSelect("/inquiry/download/[@inquiry_id=$inquiry_id]")}
+          <a href="/management/inquiry/inquiry_bn_list/inquiry_id={$row.inquiry_id}&s_status=0">{$row.mail_cnt}{'/label/item'|translate}{*件*}</a>
+          {/if}
+        </td>
+        <td>
+          {if $rauth->canSelect("/inquiry/mail/[@inquiry_id=$inquiry_id]") || $rauth->canSelect("/inquiry/download/[@inquiry_id=$inquiry_id]")}
+          <a href="/management/inquiry/inquiry_bn_list/inquiry_id={$row.inquiry_id}&s_status=20">{$row.re_mail_cnt}{'/label/item'|translate}{*件*}</a>
+          {/if}
+        </td>
+        <td>
+          {if $rauth->canSelect("/inquiry/mail/[@inquiry_id=$inquiry_id]") || $rauth->canSelect("/inquiry/download/[@inquiry_id=$inquiry_id]")}
+          <a href="/management/inquiry/inquiry_bn_list/inquiry_id={$row.inquiry_id}">{$row.all_mail_cnt}{'/label/item'|translate}{*件*}</a>
+          {/if}
+        </td>
+        <td>
+          {if $rauth->canUpdate("/inquiry/mail/[@inquiry_id=$inquiry_id]")}
+          <a href="/management/inquiry/inquiry_send_mail/inquiry_id={$row.inquiry_id}">{'/label/send_mail'|translate}{*メール送信*}</a>
+          {else}
+          {'/msg/authority_error'|translate}
+          {/if}
+        </td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+        <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+        <button type="submit" onclick="this.form.MODE.value='RUN'">{'/label/activate_btn'|translate}{*運用中にする*}</button>
+        <button type="submit" onclick="this.form.MODE.value='STOP'">{'/label/pause_btn'|translate}{*休止中にする*}</button>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

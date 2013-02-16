@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{$smarty.const.SITE_TITLE|html_convert} {'/label/admin_top_page'|translate}{*管理画面*}</title>
+    
+    <link rel="stylesheet" type="text/css" href="/css/management/v2/less_compiled.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css">
+
+    <script src="//www.google.com/jsapi"></script>
+    {literal}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        var j$ = jQuery; // 移行措置 検証完了後にj$は廃止
+    </script>
+    {/literal}
+
+    {rcms_include file="management/rcms_ui/rcms_ui.html"}
+
+    <script type="text/javascript" src="/js/relationItem.js"></script>{**}
+    <script src="/js/management/v2/common.js"></script>
+
+    
+    {* サンドボックスCSS 確定したコードから適切な場所に移動させる *}
+    <style type="text/css">
+    {literal}
+
+.cke_skin_kama .cke_button a.cke_button_rcmsupload span.cke_label{
+    display:inline;font-weight:bold;
+}
+.cke_skin_kama .cke_button a.cke_button_link span.cke_label{
+    display:inline;font-weight:bold;
+}
+
+
+#globalmenu_side{
+    position: fixed;
+    margin: 0;
+}
+#root{
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+    {/literal}
+    </style>
+    {* サンドボックスCSSここまで *}
+
+    {* サンドボックスJavascript *}
+    <script type="text/javascript">
+{literal}
+
+(function($){
+    $(function(){
+        // 上メニューのドロップダウン
+        $("#top_dropdown_menu02").rcmsDropdown();
+        $("#top_dropdown_menu03").rcmsDropdown();
+        $("#top_dropdown_menu04").rcmsDropdown();
+        // 左メニューのドロップダウン
+        $("#left_dropdown_menu02").rcmsDropdown();
+        $("#left_dropdown_menu03").rcmsDropdown();
+        $("#left_dropdown_menu04").rcmsDropdown();
+        $("#left_dropdown_menu05").rcmsDropdown();
+        $("#left_dropdown_menu06").rcmsDropdown();
+
+        initGlobalmenu();
+
+    });
+    
+    // 左メニューのリサイズ
+    function toggleGlobalmenu(){
+        var w = $("#root_cell_globalmenu_side").width();
+        //$("#globalmenu_area").width(w);
+        $("#top_fixed").css({left:w+"px"});
+        $("#bottom_fixed").css({left:w+"px"});
+        $("#root_globalmenu_top").css({left:w+"px"});
+    }
+    
+    // 左メニューの初期化
+    function initGlobalmenu(){
+        var w = $.cookie("globalmenuWidth");
+        // 左メニューのリサイズ
+        $("#root").rcmsResizableCells({
+            cell1         : "#root_cell_globalmenu_side",
+            cell2         : "#root_cell_contents",
+            handle        : "#root_cell_handle",
+            direction     : "horizon",
+            position      : "absolute",
+            cell1MinWidth : 45,
+            cell1MaxWidth : 150,
+            initPosition  : w,
+            onMoving      : toggleGlobalmenu,
+            mouseUp       : afterToggleGlobalmenu,
+            switchBtn     : "#globalmenu_expand_btn"
+        });
+        afterToggleGlobalmenu();
+
+    }
+    
+    // 左メニューのリサイズ後の処理
+    function afterToggleGlobalmenu(){
+        // 幅をcookieに保存
+        var w = $("#root_cell_globalmenu_side").width();
+        $.cookie("globalmenuWidth",w,{path:"/",expires: 365});
+        // 拡幅ボタンのクラスを切り替え
+        if( w < 150 ){
+            $("#root_cell_globalmenu_side").removeClass("wide");
+            $("#globalmenu_expand_btn").addClass("to_expand");
+            $("#globalmenu_expand_btn").removeClass("to_shrink");
+        }else{
+            $("#root_cell_globalmenu_side").addClass("wide");
+            $("#globalmenu_expand_btn").addClass("to_shrink");
+            $("#globalmenu_expand_btn").removeClass("to_expand");
+        }
+    }
+}(jQuery));
+
+{/literal}
+    </script>
+    
+</head>
+<body id="ct_{$TAB}" class="modify_mode{if $smarty.const.PAGE_MODIFY_MODE eq 0}0{else}1{/if}{if $MNG_TYPE > 0 &&  $smarty.const.PAGE_MODIFY_MODE eq 0} task{/if}">
+
+<div id="root" class="{$ct}">
+    
+    {if $smarty.const.PAGE_MODIFY_MODE == 0 && $smarty.request.iframe_mode != 1 && $smarty.request.popup_mode != 1}{* 直接編集モード, iframeモード, popupモード でない場合 *}
+
+    <!--上グローバルメニュー-->
+    <div id="root_globalmenu_top">
+        <div class="header_group">
+            <h1>{$SITE_TITLE} {'/label/admin_top_page'|translate}{*管理画面*}</h1>  
+            <h2>{$smarty.const.SITE_TITLE|html_convert|strip_tags}</h2>   
+        </div><!--.header_group-->
+        <div id="account">
+            <ul class="dropdownMenu">   
+                <li id="menu01">
+                    <a href="{$smarty.const.ROOT_URL}/" target="_blank">{'/msg/display_site_top_page'|translate}{*サイトを表示*}</a>
+                </li>
+                <li id="menu02" class="header_dropdown_menu">
+                    <span class="dropdown_contents">{$Login_disp_nm}さん</span>
+                    <span class="dropdown_triangle"></span>
+                    <div id="top_dropdown_menu02" class="dropdown_btn_area"></div>
+                    <ul class="dropdownSubMenu submenu_account">
+                        <li class="dropdownSubMenuList">
+                            <a href="/management/member/member_edit/member_id={$smarty.session.member_id}">メンバー情報</a>
+                        </li>
+                        {if $smarty.session.super_flg eq '1'}
+                        <li class="dropdownSubMenuList">
+                            <a href="/management/menu/rcms/">{'/modules/menu/label/site_registration'|translate}{*契約情報*}</a>
+                        </li>
+                        {/if}
+                        <li class="dropdownSubMenuList">
+                            <a href="{$smarty.const.ROOT_URL}/direct/login/logout/">{'/label/logout'|translate}</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="menu03" class="header_dropdown_menu">
+                    <span class="dropdown_contents">通常管理画面</span>
+                    <span class="dropdown_triangle"></span>
+                    <div id="top_dropdown_menu03" class="dropdown_btn_area"></div>
+                    <ul class="dropdownSubMenu submenu_management">
+                        <li class="dropdownSubMenuList">
+                            <a href="/management/menu/menu/?mng_type_mode=0">現在の管理画面</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="menu04" class="header_dropdown_menu">
+                    <span class="dropdown_contents">{$switchLanguages[$mylang]}</span>
+                    <span class="dropdown_triangle"></span>
+                    <div id="top_dropdown_menu04" class="dropdown_btn_area"></div>
+                    <ul class="dropdownSubMenu_last submenu_language">
+                        {foreach from=$switchLanguages item=lang key=key}
+                        <li class="dropdownSubMenuList">
+                            <a href="{$smarty.server.PHP_SELF|rcms_replace:'/[?&]+_lang=[A-z]+/i':''|cat:'&_lang='}{$key}">{$lang}</a>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </li>
+            </ul>
+        </div><!--#account-->
+    </div><!-- #root_globalmenu_top -->
+
+    <!--左グローバルメニュー-->
+    <div id="root_cell_globalmenu_side">
+        <div id="globalmenu_side">
+            <ul class="globalmenu">
+                <li id="g_menu01">
+                    <a href="/management/menu/menu/"><div id="left_dropdown_menu01"><span class="icon_24_home"></span><h1>{'/label/top_page'|translate}</h1></div></a>
+                </li>
+                {if $MNG_TYPE eq 0 || $FOR_MENU.menu_list.contents|@count > 0}
+                <li id="g_menu02">
+                    <div id="left_dropdown_menu02"><span class="icon_24_contents"></span><h1>{'/label/menus/contents'|translate}</h1></div>
+                    <div class="g_contents_header">
+                        <a class="menu_label" href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+                        <ul class="globalmenu_sub">
+                            {foreach from=$FOR_MENU.menu_list.contents item=module name=ul_sub_contents}
+                                {if $smarty.foreach.ul_sub_contents.iteration <= 17*5}
+                                    <li class="globalmenu_sublist">
+                                        <a href="{$FOR_MENU.management_menus[$module].link}">
+                                            {$module|translate_modules|default:$FOR_MENU.contName[$module]}
+                                        </a>
+                                    </li>
+                                {/if}
+                            {/foreach}
+                        </ul>
+                    </div>
+                </li>
+                {/if}
+                {if $MNG_TYPE eq 0 || $FOR_MENU.menu_list.communication|@count > 0}
+                <li id="g_menu03">
+                    <div id="left_dropdown_menu03"><span class="icon_24_communication"></span><h1>{'/label/menus/communication'|translate}</h1></div>
+                    <div class="g_communication_header">
+                        <a class="menu_label" href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+                        <ul class="globalmenu_sub">
+                            {foreach from=$FOR_MENU.menu_list.communication item=module}
+                                <li class="globalmenu_sublist">
+                                    <a href="{$FOR_MENU.management_menus[$module].link}">
+                                        {$module|translate_modules|default:$FOR_MENU.contName[$module]}
+                                    </a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </li>
+                {/if}
+                {if $MNG_TYPE eq 0 || $FOR_MENU.menu_list.design|@count > 0}
+                <li id="g_menu04">
+                    <div id="left_dropdown_menu04"><span class="icon_24_design"></span><h1>{'/label/menus/design'|translate}</h1></div>
+                    <div class="g_site_header">
+                        <a class="menu_label" href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+                        <ul class="globalmenu_sub">
+                            {foreach from=$FOR_MENU.menu_list.design item=module}
+                                <li class="globalmenu_sublist">
+                                    <a href="{$FOR_MENU.management_menus[$module].link}">
+                                        {$module|translate_modules|default:$FOR_MENU.contName[$module]}
+                                    </a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </li>
+                {/if}
+                {if $MNG_TYPE eq 0 || $FOR_MENU.menu_list.setup|@count > 0}
+                <li id="g_menu05">
+                    <div id="left_dropdown_menu05"><span class="icon_24_setup"></span><h1>{'/label/menus/setup'|translate}</h1></div>
+                    <div class="g_member_header">
+                        <a class="menu_label" href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+                        <ul class="globalmenu_sub">
+                            {foreach from=$FOR_MENU.menu_list.setup item=module}
+                                <li class="globalmenu_sublist">
+                                    <a href="{$FOR_MENU.management_menus[$module].link}">
+                                        {$module|translate_modules|default:$FOR_MENU.contName[$module]}
+                                    </a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </li>
+                {/if}
+                {if $MNG_TYPE eq 0 || $FOR_MENU.menu_list.member|@count > 0}
+                <li id="g_menu06">
+                    <div id="left_dropdown_menu06"><span class="icon_24_member"></span><h1>{'/label/menus/member'|translate}</h1></div>
+                    <div class="g_setting_header">
+                        <a class="menu_label" href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+                        <ul class="globalmenu_sub">
+                            {foreach from=$FOR_MENU.menu_list.member item=module}
+                                <li class="globalmenu_sublist">
+                                    <a href="{$FOR_MENU.management_menus[$module].link}">
+                                        {$module|translate_modules|default:$FOR_MENU.contName[$module]}
+                                    </a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </li>
+                {/if}
+                <li id="g_menu07">
+                    
+                    <a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;">
+                        <div id="left_dropdown_menu07"><span class="icon_24_filemanager"></span><h1>{'/modules/design/label/file_manager'|translate}</h1></div>
+                    </a>
+                </li>
+            </ul>
+            <button id="globalmenu_expand_btn"></button>
+        </div>
+    </div><!--#root_cell_globalmenu_side-->
+
+    <div id="root_cell_handle"></div>
+    <div id="root_cell_contents" class="">
+
+{elseif $smarty.request.iframe_mode}
+
+    <div id="root_cell_contents" class="iframe_mode">
+
+{elseif $smarty.request.popup_mode}
+
+    <div id="root_cell_contents" class="popup_mode">
+
+{/if}
+

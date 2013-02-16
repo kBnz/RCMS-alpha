@@ -1,0 +1,27 @@
+{if $navi_menu_list|@count>0}
+<ul>
+{foreach item="navi_menu" from=$navi_menu_list name="navi_menu_list"}
+<li>
+    {if $navi_menu.contents_type <= '4' && $navi_menu.url}
+    <a href="{$navi_menu.url}">
+    {/if}
+    {if $navi_menu.contents_type eq '0'}
+        {$navi_menu.contents_text1}
+    {elseif $navi_menu.contents_type eq '1'}
+        {$navi_menu.contents_text1}<br/>
+        {$navi_menu.contents_text2}
+    {elseif $navi_menu.contents_type eq '2'}
+        <img src="{$navi_menu.navigation_file_name_1}" alt="{$navi_menu.alt_text}" />
+    {elseif $navi_menu.contents_type eq '3'}
+        <img src="{$navi_menu.navigation_file_name_1}" alt="{$navi_menu.alt_text}" />
+    {elseif $navi_menu.contents_type eq '4'}
+        {* 表示なし *}
+    {/if}
+    {if $navi_menu.contents_type <= '4' && $navi_menu.url}
+    </a>
+    {/if}
+</li>
+{/foreach}
+</ul>
+<hr/>
+{/if}

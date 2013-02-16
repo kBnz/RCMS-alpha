@@ -1,0 +1,44 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+{if $catalog_id}
+    {if $rauth->canInsert('/catalog/group/')}
+    <li class="add"><a href="/management/catalog/catalog_edit/catalog_group_id={$catalog_group_id}"><span>{'/modules/catalog/label/group_nm_create_new'|translate:$catalog_group_nm}{* [グループ名]追加 *}</span></a></li>
+  {/if}
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/catalog_detail/id={$catalog_id}" target="_blank"><span>{'/label/view_page'|translate}</span>
+</a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog/label/catalog_group_list'|translate}</a>
+
+{if $catalog_id}
+<a href="/management/catalog/catalog_list/catalog_group_id={$catalog_group_id}">{'/modules/catalog/label/catalog_list'|translate}{* カタログ一覧 *}</a>
+<a href="/management/catalog/catalog_edit/catalog_id={$catalog_id}">{'/modules/catalog/label/catalog_edit'|translate}{* カタログ編集 *}</a>
+{'/label/update_history_list'|translate}
+{else}
+<a href="/management/catalog/catalog_group_edit/catalog_group_id={$catalog_group_id}">{'/modules/catalog/label/catalog_group_edit'|translate}{* グループ設定 *}</a>
+{'/label/update_history_list'|translate}
+{/if}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カタログ >> グループ一覧 >> カタログ一覧 >> カタログ編集 >> 更新履歴一覧 *}
+{* 【ぱんくず】コンテンツ更新 >> カタログ >> グループ一覧 >> グループ設定 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $catalog_id}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/catalog/catalog_edit/catalog_id=$catalog_id" page_links=$page_links}
+{else}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/catalog/catalog_group_edit/catalog_group_id=$catalog_group_id" page_links=$page_links}
+{/if}
+
+</div>
+{rcms_include file="management/footer.html"}

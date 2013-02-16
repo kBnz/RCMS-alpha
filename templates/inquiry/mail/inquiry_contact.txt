@@ -1,0 +1,25 @@
+{if $file_flg}
+このファイルは{$smarty.const.SITE_TITLE}のフォームから送信された内容です。
+{else}
+このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+{/if}
+
+
+「{$inquiryHeader.inquiry_name}」への問い合わせがありました。
+ログインして確認してください。
+{$smarty.const.ROOT_SSL_URL}/management/inquiry/inquiry_reply_edit/inquiry_id={$inquiry_id}&inquiry_bn_id={$parent_inquiry_bn_id}#{$inquiry_bn_id}
+
+{if $inquiryHeader.contact_flg == $smarty.const.INQUIRY_CONTACT_ALL}
+■問い合わせ内容
+
+{foreach from=$items item=item}
+・{$item.key|strip_tags}
+{$item.value|strip_tags}
+
+{/foreach}
+{/if}
+
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/
+■管理画面
+{$smarty.const.ROOT_SSL_URL}/management/

@@ -1,0 +1,15 @@
+<h2>{'/modules/member/label/member_list'|translate}{*メンバー一覧*}</h2>
+{if $memberList|@count > 0}
+  {section name=mydata loop=$memberList}
+    <a href="/member_detail/id={$memberList[mydata].member_id}">{$memberList[mydata].disp_name}</a><br/>
+  {/section}
+
+{$page_links}
+
+{else}
+  {* 0件の場合 *}
+  {'/modules/member/msg/no_member_found'|translate}{*該当するメンバーが見つかりませんでした。*}
+{/if}
+<hr/>
+
+

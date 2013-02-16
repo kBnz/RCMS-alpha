@@ -1,0 +1,258 @@
+{if !$multi_print7}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<link href="http://www.itto.int/css/front/default.css" rel="stylesheet" type="text/css" media="screen,print">
+
+<title>{'/modules/invoice/label/invoice_header'|translate}</title>
+
+<style type="text/css">
+{literal}
+/*  共通  */
+#container {
+    font-family:'ＭＳ 明朝','ＭＳ ゴシック',monospace;
+    width: 750px;
+    margin: 10px auto;
+    font-size: 12px;
+    text-align: left;
+}
+
+/* 請求書タイトル */
+#invoice_header_title{
+    width: 700px;
+}
+#invoice_header_title table{
+    width: 100%;
+    margin-top: 20px;
+}
+#invoice_header_title table th{
+    font-size: 18pt;
+    font-weight:bold;
+    text-align:center;
+}
+
+/* 請求先（左上） */
+#invoice_header_client table{
+    width: 500px;
+    margin-top: 5px;
+    margin-left:20px;
+    float:left;
+}
+#invoice_header_client table td{
+    width: 500px;
+    font-size: 12pt;
+    text-align:left;
+}
+#invoice_header_client p{
+    font-size:12px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+/* 請求日付(右上) */
+#invoice_header_date table{
+    width: 200px;
+    margin-top: 5px;
+    margin-right: 30px;
+    float: right;
+}
+#invoice_header_date table td{
+    width: 200px;
+    font-size: 10pt;
+    text-align:right;
+}
+
+/* 請求件名(左中) */
+#invoice_header_subject{
+    width: 400px;
+}
+#invoice_header_subject table{
+    width: 400px;
+    margin-top: 20px;
+    margin-left:20px;
+    float:left;
+}
+#invoice_header_subject table th{
+    width: 100px;
+    vertical-align:top;
+    text-align:left;
+    font-size: 10pt;
+}
+#invoice_header_subject table td{
+    width: 320px;
+    font-size: 10pt;
+    text-align:left;
+}
+
+#invoice_header_subject p{
+    font-size:10px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+/* 請求元(右中) */
+#invoice_header_base table{
+    width: 240px;
+    margin-top: 5px;
+    margin-right: 30px;
+    float: right;
+}
+#invoice_header_base table td{
+    width: 240px;
+    font-size: 10pt;
+    text-align:right;
+}
+
+/* 合計金額(左下) */
+#invoice_header_summary{
+    width: 400px;
+}
+#invoice_header_summary table{
+    width: 400px;
+    margin-top: 20px;
+    margin-left:20px;
+    float:left;
+    border-collapse: collapse;
+    border: 1px #000 solid;
+}
+#invoice_header_summary table th{
+    width: 100px;
+    vertical-align:top;
+    text-align:center;
+    font-size: 12pt;
+    border: 2px #000 solid;
+    background-color: #00BFFF;
+}
+#invoice_header_summary table td{
+    width: 320px;
+    font-size:16px;
+    font-weight:bold;
+    text-align:center;
+    border: 1px #000 solid;
+}
+
+/* 明細 */
+#invoice_detail{
+    width: 750px;
+}
+
+#invoice_detail table{
+    width: 700px;
+    margin-top: 30px;
+    margin-left:20px;
+    margin-right:30px;
+    border-collapse: collapse;
+    border: 1px #000 solid;
+}
+#invoice_detail table th{
+    vertical-align:top;
+    text-align:center;
+    font-size: 12pt;
+    border: 2px #000 solid;
+    table-layout:fixed;
+    background-color: #00BFFF;
+}
+#invoice_detail table tr.line1{
+    background-color: #FFFFFF;
+}
+#invoice_detail table tr.line2{
+    background-color: #ADD8E6;
+}
+#invoice_detail table td{
+    font-size: 10pt;
+    border: 1px #000 solid;
+}
+.item_cd,
+.item_title{
+    text-align:left;
+}
+.quantity,
+.price{
+    text-align:right;
+}
+
+/* 請求合計(右下) */
+#invoice_header_total table{
+    width: 300px;
+    margin-top: 30px;
+    margin-right: 30px;
+    float: right;
+    border-collapse: collapse;
+    border: 1px #000 solid;
+}
+#invoice_header_total table th{
+    width: 200px;
+    vertical-align:top;
+    text-align:center;
+    font-size: 10pt;
+    border: 2px #000 solid;
+}
+#invoice_header_total table td{
+    width: 100px;
+    font-size: 10pt;
+    text-align:right;
+    border: 1px #000 solid;
+}
+
+/* 請求書備考 */
+#invoice_header_remarks table{
+    width: 700px;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-collapse: collapse;
+    border: 1px #000 solid;
+}
+#invoice_header_remarks table th{
+    font-size: 12pt;
+    font-weight:bold;
+    text-align:left;
+}
+#invoice_header_remarks table td{
+    vertical-align:top;
+    font-size: 10pt;
+    text-align:left;
+    height: 100px;
+}
+
+{/literal}
+</style>
+
+</head>
+{else}
+{*一括出力の２ページ目以降は改ページ*}
+<div class="changePage"></div>
+{/if}
+
+<body>
+<div id="container">
+
+    {assign var=print_yyyy value=$formData.print_date|pg_dateformat:"%Y"}
+    {assign var=print_mm value=$formData.print_date|pg_dateformat:"%m"}
+    {assign var=print_dd value=$formData.print_date|pg_dateformat:"%d"}
+
+
+    {rcms_include file="invoice/direct/invoice_top.html" formData=$formData}
+
+    {if $formData.display_detail}
+        {foreach from=$formData.display_detail item=data name="invoice_detail"}
+
+            {if $smarty.foreach.invoice_detail.first}{*１ページ目*}
+                {assign var="max_detail" value=$formData.max_detail1}
+            {else}
+                {assign var="max_detail" value=$formData.max_detail2}
+            {/if}
+
+            {rcms_include file="invoice/direct/invoice_detail.html" specific=$data formData=$formData max_count=$max_detail first=$smarty.foreach.invoice_detail.first}
+
+            {if !$smarty.foreach.invoice_detail.last}
+            <div class="changePage"></div>{*改ページ*}
+            {/if}
+
+        {/foreach}
+    {/if}
+
+</div>
+</body>
+</html>

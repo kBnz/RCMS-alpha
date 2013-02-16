@@ -1,0 +1,67 @@
+<a id="top"></a>
+{*
+<div style="background-color:#EFF2F5;">
+{if !$smarty.request.social_on_tab}
+<div id="app_header">
+	{if !$rcms_fb_profile.isLogin}
+		<div><a href="{$rcms_fb_profile.login_url}" target="_top">アプリを登録して、最新の情報を受け取ろう！</a></div>
+	{/if}
+
+<div style="float:left;width:400px;"><fb:like show_faces="false" width="400"></fb:like></div>
+<div style="float:right;width:200px;"><span style="vertical-align:middle;font-family:arial,sans-serif;font-size:11px;">powered by <img src="http://www.google.com/uds/css/small-logo.png" style="padding-left:1px;vertical-align:middle;"></span></div>
+<div style="clear:both;"></div>
+</div>
+
+{/if}
+</div>
+
+
+<div>
+<fb:dialog id="fb_test">
+<fb:dialog-title>This is a test</fb:dialog-title>
+<fb:dialog-content>Content</fb:dialog-content>
+<fb:dialog-button type="button" value="Okay" close_dialog="1" />
+</fb:dialog>
+<a href="" clicktoshowdialog="fb_test">show fb:dialog</a>
+
+<a href="#"	clicktoshowdialog="inviteFriends">招待
+</a>
+<fb:google-analytics uacct="UA-12345-xx" />
+<fb:dialog id="dialog" cancel_button=1>
+<fb:dialog-title>About Us</fb:dialog-title>
+<fb:dialog-content>Digital Inspiration is a technology blog.
+           Would you like to learn more?</fb:dialog-content>
+<fb:dialog-button type="button" value="Yes" href="http://labnol.org" />
+</fb:dialog>
+<a href="#" clicktoshowdialog="dialog">Click here</a> to learn more.
+<fb:dialog id="inviteFriends" cancel_button="true">
+	<fb:dialog-content>
+		<div style="margin-left:-5px;">
+			<fb:request-form type="My application" invite="true" method="POST"
+				action="http://apps.facebook.com/rcms-on-social-dev/" content="[inviteContent]">
+
+				<fb:multi-friend-selector
+				actiontext="You have been invited to [NAME] application"
+				showborder="false" rows="3" cols="3" />
+
+			</fb:request-form>
+		</div>
+	</fb:dialog-content>
+	<fb:dialog-title>Invite your friends to my application</fb:dialog-title>
+</fb:dialog>
+
+<fb:serverfbml width="615">
+  <script type="text/fbml">
+    <fb:request-form action="http://apps.facebook.com/rcms-on-social-dev/"
+                     method="POST"
+                     invite="true"
+                     type="RCMS"
+                     content="Echo Content. <fb:req-choice url='http://fbrell.com/echo?choice=echo' label='Echo Label' />">
+      <fb:multi-friend-selector showborder="false"
+                                bypass="cancel"
+                                cols=4
+                                actiontext="友達に招待状を送りましょう！"/>
+    </fb:request-form>
+  </script>
+</fb:serverfbml>
+*}

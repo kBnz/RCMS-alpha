@@ -1,0 +1,31 @@
+<h2>[emoji:068]{'/label/image_info'|translate}{*画像情報*}</h2>
+
+■{'/label/filming_date'|translate}{*撮影日*}： {$photoInfo.ymd_str}<br/>
+{if $photoInfo.offerer_flg}{'/label/image_supplier'|translate}{*画像の提供者*}:  {$photoInfo.offerer_name}<br/>{/if}
+
+{section name=mydata loop=$gamerugbyList}
+  {if $smarty.section.mydata.first}
+■{'/label/game'|translate}{*試合*}<br/>
+  {/if}
+{$gamerugbyList[mydata].game_type} <a href="/gamerugby_detail/id={$gamerugbyList[mydata].game_id}">{'/label/detail'|translate}{*詳細*}</a>
+<a href="/photo_list/type=gamerugby&search_id={$gamerugbyList[mydata].game_id}">{'/label/image'|translate}{*写真*}</a><br/>{$gamerugbyList[mydata].score_detail_arr.Self_Total} -{$gamerugbyList[mydata].score_detail_arr.Opp_Total} {$gamerugbyList[mydata].team_nm}{$gamerugbyList[mydata].opponent_grade}<br>{$gamerugbyList[mydata].place}<br>
+{/section}
+
+{section name=mydata loop=$memberList}
+  {if $smarty.section.mydata.first}
+■{'/label/member'|translate}{*メンバー*}<br/>
+  {/if}
+{$memberList[mydata].disp_name} {if $memberList[mydata].grade}({$memberList[mydata].grade}){/if}
+<a href="/member_detail/id={$memberList[mydata].member_id}">{'/label/detail'|translate}{*詳細*}</a>
+<a href="/photo_list/type=member&search_id={$memberList[mydata].member_id}">{'/label/image'|translate}{*写真*}</a><br/>
+{/section}
+
+{section name=mydata loop=$topicsList}
+  {if $smarty.section.mydata.first}
+■{'/label/report'|translate}{*レポート*}<br/>
+  {/if}
+{$topicsList[mydata].subject}({$topicsList[mydata].ymd_str})<br/>
+<a href="/topics_detail/id={$topicsList[mydata].topics_id}">{'/label/detail'|translate}{*詳細*}</a><br/>
+{/section}
+<hr/>
+

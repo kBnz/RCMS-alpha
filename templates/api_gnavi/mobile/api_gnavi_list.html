@@ -1,0 +1,14 @@
+<h2>ぐるなび情報一覧</h2>
+このｻｲﾄで紹介しているぐるなび情報の一覧です。<br/>
+
+<ul>
+	{foreach from=$restaurants item=rest}
+	<li><a href="{$rest.detail}">{$rest.restaurant_name}</a></li>
+	{/foreach}
+</ul>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+
+<div style="text-align:center;font-size:small;">
+<a href="http://www.gnavi.co.jp/"><img src="http://apicache.gnavi.co.jp/image/rest/b/api_90_35.gif" alt="ｸﾞﾙﾒ情報検索ｻｲﾄ　ぐるなび"></a>
+</div>
+<hr/>

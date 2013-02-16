@@ -1,0 +1,12 @@
+{if $gameList|@count > 0}
+{module name="game_next_p"}
+<h2 class="module_title">予告先発
+</h2>
+<div class="module_contents">
+{$ymd_str}<br>
+{foreach from=$gameList item=game}
+{if $game.first_pitcher_nm}{$game.first_pitcher_nm}{else}未定{/if}({$game.team_nm}) vs {if $game.second_pitcher_nm}{$game.second_pitcher_nm}{else}未定{/if}({$game.opponent_nm})<br>
+{/foreach}
+</div>
+{/module}
+{/if}

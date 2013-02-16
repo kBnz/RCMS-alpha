@@ -1,0 +1,13 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+{if $rootnode eq ''}
+  <h2>{'/label/first_posting'|translate}{*新規投稿*}</h2>
+{else}
+  <h2>{'/label/reply_posting'|translate}{*返信投稿*}</h2>
+{/if}
+{'/modules/bbs/label/post_is_complete'|translate}{*投稿が完了しました。*}<br/>
+<a href="/{$page_sysnm}/bbs_header_id={$smarty.request.bbs_header_id}">{'/label/back'|translate}{*戻る*}</a><br/>
+{if $canWrite == 2}
+{'/modules/bbs/msg/this_post_will_be_publish_after_admin_permit'|translate}{*この投稿は管理者への申請が通った後に公開されます。*}
+{/if}
+<hr/>

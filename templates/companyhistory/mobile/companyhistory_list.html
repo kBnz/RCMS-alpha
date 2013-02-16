@@ -1,0 +1,23 @@
+<h2>{'/modules/companyhistory/label/company_history'|translate}</h2>{* 会社沿革 *}
+<dl>
+{foreach from=$companyhistoryList item=seasonList key=key}
+<dt>{$key}</dt>
+<dd>
+{foreach from=$seasonList item=row}
+▼
+{if $row.disp_flg == 0}
+  {$row.ymd|pg_dateformat:"%Y/%m/%d"}
+{elseif $row.disp_flg == 1}
+  {$row.ymd|pg_dateformat:"%Y/%m"}
+{else}
+  {$row.companyhistory_date_text}
+{/if}
+<br/>
+{$row.contents|nl2br}
+<br/>
+<br/>
+{/foreach}
+</dd>
+{/foreach}
+</dl>
+<hr/>

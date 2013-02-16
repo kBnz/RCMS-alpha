@@ -1,0 +1,110 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+function confirmDelete(f){
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+</script>
+
+<script type="text/javascript" id="_script">
+<!--
+SpawEngine.setSpawDir("/wysiwyg/spaw2/");
+SpawEngine.setPlatform("php");
+var _obj = new SpawEditor("");
+SpawEngine.registerEditor(_obj);
+_obj.setTheme(SpawThemespaw2lite);
+_obj.setLang("ja");
+_obj.setOutputCharset("UTF-8");
+_obj.stylesheet = "/wysiwyg/spaw2/wysiwyg.css";
+_obj.scid = "354d8d81cdeb4efbaafc3c250cc9dff3";
+_obj.setConfigValue("rendering_mode", "xhtml");
+_obj.setConfigValue("beautify_xhtml_output", true);
+_obj.setConfigValue("base_href", "");
+_obj.setConfigValue("strip_absolute_urls", true);
+_obj.setConfigValue("resizing_directions", "vertical");
+_obj.setConfigValue("convert_html_entities", false);
+_obj.setConfigValue("spawfm_path_separator", "|");
+_obj.addControlledEditor(_obj);
+_obj.controlled_by = _obj;
+var _page = new SpawEditorPage("","","ltr");
+_obj.addPage(_page);
+_obj.getTab("").template = "";
+_obj.getTab("").active_template = "";
+_obj.active_page =_page;
+_obj.addToolbarItem(new SpawTbButton("core","image","img_select_popup","isInDesignMode","","imageClick","/wysiwyg/spaw2/plugins/core/lib/theme/spaw2lite/img/tb_image.gif",true),"insert");
+//-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+  <h2>{'/modules/design/label/template_edit'|translate}{*独自テンプレート編集*}</h2>
+  <ul>
+    {if $auth.design.insert}
+    <li class="add"><a href="/management/design/design_edit/"><span>{'/modules/design/label/add_design_btn'|translate}{*デザイン追加*}</span></a></li>
+    {/if}
+    <li class="add">
+    <a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/modules/design/label/file_manager'|translate}{*ファイルマネージャ*}</span></a>
+    </li>
+    {if $design.design_id}
+    <li class="normal"><a href="/management/design/design_history/design_id={$design.design_id}"><span>{'/label/update_history'|translate}{*更新履歴*}</span></a></li>
+    {/if}
+  </ul>
+</div>  <!-- div.list_right_bt -->
+{pankuzu}
+<a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design'|translate}</a>
+<a href="/management/design/design_list/">{'/modules/design/label/design_list'|translate}</a>
+{'/modules/design/label/template_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】デザイン >> デザイン >> デザイン一覧 >> 独自テンプレート編集  *}
+<div class="clear"></div>
+<div class="main_contents">
+  <div class="list_main">
+    {rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+    <form action="/management/design/design_edit/design_id={$design.design_id}" method="post">
+      <input type="hidden" name="MODE" id="mode" value="{$MODE}" />
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <table style="width:100%">
+        <tr>
+          <th>{'/label/design_name'|translate}{*デザイン名*}</th>
+          <td><input type="text" name="design_nm" value="{$design.design_nm}" style="width:98%"{if $design.design_id == 1} readonly="readonly"{/if} />{if $current_design_type eq 'original' && $design.design_id eq $current_design_id} <strong style="color:#F00">({'/label/using_now'|translate}{*適用中です*})</strong>{/if}</td>
+        </tr>
+        <tr>
+          <th>{'/label/css_edit'|translate}{*CSS編集*}</th>
+          <td>
+            {if $design.design_id == 1}<p>{'/modules/design/msg/customized_css'|translate}{*カスタマイズ用のCSSです。<br />このCSSは全てのCSSがインクルードされた後にインクルードされます。<br />デザインに関係なくインクルードされるCSSですので、ご自由にお使いください。*}</p>{/if}
+            <span class="hint">{'/modules/design/msg/please_put_utf8_at_the_first_line'|translate}{*1行目は必ず @charset "UTF-8"; にしてください。*}</span>
+            <p><textarea name="css" rows="30" style="width:98%">{$design.css}</textarea></p>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/label/remarks'|translate}{*備考*}</th><td><textarea name="comment" rows="5" style="width:98%">{$design.comment}</textarea></td>
+        </tr>
+      </table>
+      <div class="hint">{'/modules/design/msg/refer_to_customizing_design'|translate}{*<a href="http://www.r-cms.jp/support/" target="_blank">デザインのカスタマイズ方法</a>も参考にしてみてください。*}</div>
+      {buttonbox}
+        {if $auth.design.update}
+          {if $design.design_id != 1}
+            <button type="submit" onclick="$('mode').value='APPLY'">{'/label/apply'|translate}{*適用する*}</button>
+          {/if}
+          <button type="submit" onclick="$('mode').value='SAVE'">{'/label/update_btn'|translate}{* 更新する *}</button>
+        {/if}
+        {if $auth.design.delete && ($design.design_id != 1) && ($design.design_id != 0)}
+            {if $current_design_type ne 'original' || $design.design_id ne $current_design_id}
+                <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+            {/if}
+        {/if}
+      {/buttonbox}
+
+    </form>
+
+  </div><!-- div.list_main -->
+</div>
+{rcms_include file="management/footer.html"}

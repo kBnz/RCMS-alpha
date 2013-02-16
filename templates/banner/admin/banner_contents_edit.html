@@ -1,0 +1,240 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function showBannerEdit() {
+    if (document.getElementById('bannerArea').style.display == 'none') {
+        document.getElementById('bannerArea').style.display = 'inline';
+    }
+    else {
+        document.getElementById('bannerArea').style.display = 'none';
+    }
+}
+
+function addBanner() {
+    var sel = document.getElementById('bannerList');
+    var id = sel.options[sel.selectedIndex].value;
+    if(!chkBanner(id)) {
+        alert('{/literal}{'/msg/error_double_choice'|translate}{*既に選択されています。*}{literal}');
+        return;
+    }
+
+    var table = document.getElementById('cur_banner_list');
+    var newRow = table.insertRow(-1);
+
+    // 一列目
+    var banner_id = document.createElement('input');
+    banner_id.name = 'selected_banner_id[]';
+    banner_id.id = 'banner_id_' + id;
+    banner_id.type = 'hidden';
+    banner_id.value = id;
+    var cell = newRow.insertCell(-1);
+    cell.appendChild(banner_id);
+    var frame = document.createElement('iframe');
+    frame.frameborder = '0';
+    frame.height = '75';
+    frame.width = '100%';
+    frame.src = '/management/relation_preview.php?selected=banner:'+id;
+    cell.appendChild(frame);
+
+    // 二列目
+    var cell = newRow.insertCell(-1);
+    var str = document.createTextNode("0[0/0]");
+    cell.appendChild(str);
+
+    // 三列目
+    var cell = newRow.insertCell(-1);
+    var grade = document.createElement('input');
+    grade.name = 'grade['+id+']';
+    grade.id = 'grade['+id+']';
+    grade.value = '10';
+    grade.size = '4';
+    cell.appendChild(grade);
+
+    // 四列目
+    var cell = newRow.insertCell(-1);
+    var select = document.createElement('select');
+    select.name = 'banner_open_flg['+id+']';
+    select.options[0] = new Option('{/literal}{$arrOpFlg[0]}{*非公開*}{literal}', '0', false, false);
+    select.options[1] = new Option('{/literal}{$arrOpFlg[1]}{*公開*}{literal}', '1', false, false);
+    select.selectedIndex = 1;
+    cell.appendChild(select);
+
+    // 五列目
+    var cell = newRow.insertCell(-1);
+    var button = document.createElement('input');
+    button.type = 'button';
+    button.value = '{/literal}{'/label/delete_btn'|translate}{*削除*}{literal}';
+    if (navigator.userAgent.indexOf("MSIE") != -1) {
+        // ie
+        button.setAttribute("onclick", new Function("remBanner('" + id + "')"));
+    }
+    else {
+        button.setAttribute("onclick", "remBanner('" + id + "')");
+    }
+    cell.appendChild(button);
+}
+
+function remBanner(id) {
+    // *バナーを削除すると、表示数、クリック数等のデータも削除されてしまいます。\n非表示にしたい場合は非公開にしてください。\n本当に削除しますか？
+    if(confirm('{/literal}{'/modules/banner/msg/alert_before_delete_banner'|translate}{literal}')) {
+        var table = document.getElementById('cur_banner_list');
+        var rowNumber = getRowNumberById(id);
+        var tbody = table.getElementsByTagName("tbody").item(0);
+        var row = tbody.getElementsByTagName("tr").item(rowNumber+1);
+        tbody.removeChild(row);
+    }
+}
+
+function chkBanner(id) {
+    if(getRowNumberById(id) == -1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getRowNumberById(id) {
+    var id_list = document.banner_contents_edit.elements['selected_banner_id[]'];
+    if (!id_list) {
+        return -1;
+    } else if (id_list.length) {
+        for(var i = 0 ; i < id_list.length ; i++) {
+            if(id_list[i].value == id) {
+                return i;
+            }
+        }
+    } else {
+        if(id_list.value == id) {
+            return 0;
+        }
+    }
+    return -1;
+}
+
+function confirm_delete(f) {
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{'/modules/banner/label/banner_contents_edit'|translate}{*広告枠編集*}</h2>
+  <ul>
+    {if $auth.banner.insert}
+   <li class="add"><a href="/management/banner/banner_contents_edit/pageID={$currentPageID}"><span>{'/modules/banner/label/create_new_ad_frame_btn'|translate}{*広告枠追加*}</a></span></li>
+    {/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/banner/banner_contents_list/">{$module_nm}</a>
+<a href="/management/banner/banner_contents_list/">{'/modules/banner/label/banner_contents_list'|translate}</a>
+{'/modules/banner/label/banner_contents_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> バナー広告 >> 広告枠一覧 >> 広告枠編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="banner/admin/minitabs.html" page_type=$ct}
+
+<div class="contents_table">
+  <form action="/management/banner/banner_contents_edit/" method="post" name="banner_contents_edit" id="banner_contents_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="banner_contents_id" type="hidden" value="{$formData.banner_contents_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="wizard" value="{$wizard}" />
+
+{rcms_include file="management/wizard_box.html" wizard_options=$wizard_options wizard_flg=$wizard id= $formData.banner_contents_id}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div class="kiji_hensyu_top">
+    <table width="650" border="0">
+      <tr>
+        <th>{'/modules/banner/label/ad_frame_name'|translate}{*広告枠名*}</th>
+        <td><input size="25" maxlength="50" name="contents_nm" type="text" value="{$formData.contents_nm|escape}" /></td>
+        <td><input type="checkbox" name="pc_flg" value="1" {if $formData.pc_flg}checked="checked"{/if} />
+            {$arrBanner_Pc_Flg[1]}{*PC版で使用*}
+            <input type="checkbox" name="mobile_flg" value="1" {if $formData.mobile_flg}checked="checked"{/if} />
+            {$arrBanner_Mobile_Flg[1]}{*携帯版で使用*}
+        </td>
+      </tr>
+    </table>
+    </div>
+    <div class="list_main">
+    <h3>{'/modules/banner/label/banners_in_ad_frame'|translate}{*広告枠内バナー*}</h3>
+    <table width="100%" border="0" id="cur_banner_list">
+      <tr>
+        <th>{'/label/banner'|translate}{*バナー*}</th>
+        <th width="150">{'/label/click_ratio'|translate}{*クリック率*}<br />[{'/modules/banner/label/click_per_display'|translate}{*クリック数/表示数*}]</th>
+        <th width="80">{'/label/display_weight'|translate}{*表示比重*}</th>
+        <th width="60">{'/label/publish_status'|translate}{*公開*}</th>
+        <th width="60">{'/label/delete'|translate}{*削除*}</th>
+      </tr>
+    {foreach item=banner_item from=$banner_list name=banner_list}
+      <tr>
+        <td>
+        <input type="hidden" name="selected_banner_id[]" id="banner_id_{$banner_item.banner_id}" value="{$banner_item.banner_id}" />
+        <iframe name="contents_{$banner_item.banner_id}" id="contents_{$banner_item.banner_id}" src="/management/relation_preview.php?selected=banner:{$banner_item.banner_id}" height="75" width="100%"></iframe><br>
+        </td>
+        <td>{$banner_item.click_rate}%<br />[{$banner_item.click_cnt}/{$banner_item.impression_cnt}]</td>
+        <td><input type="text" name="grade[{$banner_item.banner_id}]" value="{$banner_item.grade}" size="4" /></td>
+        <td><select name="banner_open_flg[{$banner_item.banner_id}]">{html_options options=$arrOpFlg selected=$banner_item.open_flg}</select></td>
+        <td><input type="button" value="{'/label/delete_btn'|translate}{*削除*}" onclick="remBanner({$banner_item.banner_id})" /></td>
+      </tr>
+    {/foreach}
+    </table>
+    </div>
+
+    <div class="list_main">
+    <h3>{'/modules/banner/label/addable_banners'|translate}{*広告枠内に追加可能なバナー*}</h3>
+    <div class="kiji_hensyu_top">
+    <span class="hint">{'/modules/banner/msg/select_the_banner'|translate}{*以下からこの広告枠に追加したいバナーを選択して[追加]ボタンを押してください*}</span>
+    <table width="650" border="0">
+      <tr>
+        <td>
+          <select name="bannerList" id="bannerList" onchange="document.getElementById('banner_preview').src='/management/relation_preview.php?selected=banner:' + this.options[this.selectedIndex].value;" size="12">
+          {html_options options=$all_banner_list}
+          </select>
+          <input type="button" name="addRel" value="{'/label/add_btn'|translate}{*追加*}" onclick="addBanner()">
+        </td>
+        <td>
+          <iframe name="banner_preview" id="banner_preview" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0"></iframe>
+        </td>
+      </tr>
+    </table>
+    </div>
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="list_main">
+    {rcms_include file="management/open_date_box.html" id=$banner_contents_id data=$formData}
+    </div>
+
+    {buttonbox}
+      {if $auth.banner.update && $banner_contents_id != ""}
+        <button type="submit" onclick="this.form.MODE.value='UPDATE';">{'/label/update_btn'|translate}{*更新する*}</button>
+      {/if}
+      {if $auth.banner.insert && $banner_contents_id == ""}
+        <button type="submit" onclick="this.form.MODE.value='INSERT';">{'/label/add_btn'|translate}{*追加する*}</button>
+      {/if}
+      {if $auth.banner.delete && $banner_contents_id != ""}
+        <button type="button" onclick="confirm_delete(this.form);">{'/label/delete_btn'|translate}{*削除する*}</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,26 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}</h2>
+<ul>
+{if $auth.staticcontents.insert}
+<li class="add"><a href="/management/staticcontents/staticcontents_edit/"><span>{'/modules/staticcontents/label/add_staticcontents'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents'|translate}</a>
+<a href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents/label/staticcontents_list'|translate}</a>
+<a href="/management/staticcontents/staticcontents_edit/static_id={$static_id}">{'/modules/staticcontents/label/staticcontents_edit'|translate}</a>
+{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> Q&A >> Q&A一覧 >> Q&A編集 >> 更新履歴一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/staticcontents/staticcontents_edit/static_id=$static_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,277 @@
+{* プロフィールの入力フォーム *}
+{capture name=profile}
+
+{if ($survey_list.pf_sex.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_age.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_job.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_name1.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_name2.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_namekana1.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_namekana2.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_birth.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_zip.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_tdfk_cd.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_address.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_email.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_tel.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_mtel.available ne $smarty.const.SURVEY_PROFILE_OFF) ||
+    ($survey_list.pf_fax.available ne $smarty.const.SURVEY_PROFILE_OFF) }
+
+
+  <table class="survey_pf">
+    {if $survey_list.pf_name1.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_name1.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/sername'|translate}{*姓*}</td>
+        <td>{$formData.pf_name1|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_namekana1.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_namekana1.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/sername_kana'|translate}{*姓（カナ）*}</td>
+        <td>{$formData.pf_namekana1|escape}</td>
+      </tr>
+    {/if}
+
+    {if $survey_list.pf_name2.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_name2.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/first_name'|translate}{*名*}</td>
+        <td>{$formData.pf_name2|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_namekana2.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_namekana2.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/first_name_kana'|translate}{*名（カナ）*}</td>
+        <td>{$formData.pf_namekana2|escape}</td>
+      </tr>
+    {/if}
+
+    {if $survey_list.pf_sex.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_sex.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td width="140">{'/label/sex'|translate}{*性別*}</td>
+        <td>{assign var=pf_sex value=$formData.pf_sex|escape}{$sex_options[$pf_sex]}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_age.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_age.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/age'|translate}{*年齢*}</td>
+        <td>{assign var=pf_age value=$formData.pf_age|escape}{$age_options[$pf_age]}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_job.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_job.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/job_position'|translate}{*職種*}</td>
+        <td>{assign var=pf_job value=$formData.pf_job|escape}{$job_options[$pf_job]}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_birth.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_birth.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/date_of_birth'|translate}{*生年月日*}</td>
+        <td>{$formData.pf_birth|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_zip.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_zip.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/postcode'|translate}{*郵便番号*}</td>
+        <td>{$formData.pf_zip_main|escape}-{$formData.pf_zip_sub|escape}</td>
+      </tr>
+    {/if}
+
+    {if $survey_list.pf_tdfk_cd.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_tdfk_cd.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/prefecture'|translate}{*都道府県*}</td>
+        <td>{assign var=pf_tdfk_cd value=$formData.pf_tdfk_cd|escape}{$tdfk_options[$pf_tdfk_cd]}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_address.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_address.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/address'|translate}{*住所*}</td>
+        <td>{$formData.pf_address1|escape}<br />{$formData.pf_address2|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_email.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_email.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/mail_address'|translate}{*メールアドレス*}</td>
+        <td>{$formData.pf_email|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_m_email.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_m_email.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/mobile_address'|translate}{*携帯メールアドレス*}</td>
+        <td>{$formData.pf_m_email|escape}{$formData.pf_m_email_domain|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_tel.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_tel.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/telephone_no'|translate}{*電話番号*}</td>
+        <td>{$formData.pf_tel|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_mtel.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_mtel.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/mobile_no'|translate}{*携帯番号*}</td>
+        <td>{$formData.pf_mtel|escape}</td>
+      </tr>
+    {/if}
+    {if $survey_list.pf_fax.available eq $smarty.const.SURVEY_PROFILE_ON || $survey_list.pf_fax.available eq $smarty.const.SURVEY_PROFILE_REQUIRE}
+      <tr>
+        <td>{'/label/fax_no'|translate}{*FAX番号*}</td>
+        <td>{$formData.pf_fax|escape}</td>
+      </tr>
+    {/if}
+  </table>
+{/if}
+{/capture}
+{* //プロフィールの入力フォーム *}
+
+{module name="answer_verify"}
+<a name="comment_form"></a>
+<h2 class="module_title"><span>{'/label/confirm_survey_answer'|translate}{*送信情報確認*}</span></h2>
+<div class="module_contents">
+{*$survey_list|@print_r*}
+<form name="survey_input" action="/{$page_sysnm}/#survey{$contents_id}" method="post">
+
+  <input type="hidden" name="pf_sex" value="{$formData.pf_sex|escape}">
+  <input type="hidden" name="pf_age" value="{$formData.pf_age|escape}">
+  <input type="hidden" name="pf_job" value="{$formData.pf_job|escape}">
+  <input type="hidden" name="pf_name1" value="{$formData.pf_name1|escape}">
+  <input type="hidden" name="pf_name2" value="{$formData.pf_name2|escape}">
+  <input type="hidden" name="pf_namekana1" value="{$formData.pf_namekana1|escape}">
+  <input type="hidden" name="pf_namekana2" value="{$formData.pf_namekana2|escape}">
+  <input type="hidden" name="pf_birth" value="{$formData.pf_birth|escape}">
+  <input type="hidden" name="pf_zip_main" value="{$formData.pf_zip_main|escape}">
+  <input type="hidden" name="pf_zip_sub" value="{$formData.pf_zip_sub|escape}">
+  <input type="hidden" name="pf_tdfk_cd" value="{$formData.pf_tdfk_cd|escape}">
+  <input type="hidden" name="pf_address1" value="{$formData.pf_address1|escape}">
+  <input type="hidden" name="pf_address2" value="{$formData.pf_address2|escape}">
+  <input type="hidden" name="pf_address3" value="{$formData.pf_address3|escape}">
+  <input type="hidden" name="pf_email" value="{$formData.pf_email|escape}">
+  <input type="hidden" name="pf_m_email" value="{$formData.pf_m_email|escape}">
+  <input type="hidden" name="pf_m_email_domain" value="{$formData.pf_m_email_domain|escape}">
+  <input type="hidden" name="pf_tel" value="{$formData.pf_tel|escape}">
+  <input type="hidden" name="pf_tel1" value="{$formData.pf_tel1|escape}">
+  <input type="hidden" name="pf_tel2" value="{$formData.pf_tel2|escape}">
+  <input type="hidden" name="pf_tel3" value="{$formData.pf_tel3|escape}">
+  <input type="hidden" name="pf_mtel" value="{$formData.pf_mtel|escape}">
+  <input type="hidden" name="pf_mtel1" value="{$formData.pf_mtel1|escape}">
+  <input type="hidden" name="pf_mtel2" value="{$formData.pf_mtel2|escape}">
+  <input type="hidden" name="pf_mtel3" value="{$formData.pf_mtel3|escape}">
+  <input type="hidden" name="pf_fax" value="{$formData.pf_fax|escape}">
+  <input type="hidden" name="pf_fax1" value="{$formData.pf_fax1|escape}">
+  <input type="hidden" name="pf_fax2" value="{$formData.pf_fax2|escape}">
+  <input type="hidden" name="pf_fax3" value="{$formData.pf_fax3|escape}">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE|escape}">
+  <input type="hidden" name="from_id" value="{$from_id|escape}" >
+  <input type="hidden" name="from_module" value="{$from_module|escape}" >
+  <input type="hidden" name="from_uri" value="{$from_uri|escape}" >
+  <input type="hidden" name="from_blank_mail" value="{$from_blank_mail|escape}" >
+
+  {* プロフィール(上段) *}
+  {if $survey_list.pf_pos eq '0'}
+    {if $smarty.capture.profile != ""}
+      {$smarty.capture.profile}
+    {/if}
+  {/if}
+  {* // プロフィール(上段) *}
+  {* 質問＆回答の表示 *}
+  <table>
+    {section loop=$q_list name=i}
+      {assign var="formkey" value="ans"|cat:$q_list[i].survey_question_id}
+      <tr>
+        <td>
+          <div class="survey_q">
+            Q{$q_list[i].shownum}.{$q_list[i].question|nl2br}{if $q_list[i].require == 1}<span class="survey_require">{'/label/require_answer'|translate}{*必須回答*}</span>{/if}
+            <div class="survey_a">
+
+              <!-- 長文の場合 -->
+              {if $q_list[i].formtype == 1}
+                <input type="hidden" name="ans{$q_list[i].survey_question_id}" value="{$formData.$formkey|escape}"/>
+                {if $formData.$formkey|escape != ""}
+                  {$formData.$formkey|escape|nl2br}
+                {else}
+                  <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+                {/if}
+
+              <!-- 短文の場合 -->
+              {elseif $q_list[i].formtype == 2}
+                <input type="hidden" name="ans{$q_list[i].survey_question_id}" value="{$formData.$formkey|escape}"/>
+                {if $formData.$formkey|escape != ""}
+                  {$formData.$formkey|escape|nl2br}
+                {else}
+                  <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+                {/if}
+
+              <!-- 単一選択の場合(ラジオボタン) -->
+              {elseif $q_list[i].formtype == 3}
+                <input type="hidden" name="ans{$q_list[i].survey_question_id}" value="{$formData.$formkey|escape}"/>
+                {assign var="key" value=$formData.$formkey|escape}
+                {if $q_list[i].options[$key].text != ""}
+                  ・{$q_list[i].options[$key].text}
+                {else}
+                  <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+                {/if}
+
+              <!-- 複数選択の場合 -->
+              {elseif $q_list[i].formtype == 4}
+                {assign var="answered" value=0}
+                {foreach key=key item=item name=ans_name from=$q_list[i].options}
+                  {if $smarty.foreach.ans_name.first}<ul>{/if}
+                  {if $formData.$formkey[$key]|escape ne ''}
+                    {assign var="answered" value=1}
+                    <input type="hidden" name="ans{$q_list[i].survey_question_id}[{$key}]" value="{$key}"/>
+                    <li>{$item.text|escape}</li>
+                  {/if}
+                  {if $smarty.foreach.ans_name.last}</ul>{/if}
+                {/foreach}
+                {if $answered eq 0}
+                  <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+                {/if}
+
+              <!-- 単一選択の場合(セレクトボックス) -->
+              {elseif $q_list[i].formtype == 5}
+                <input type="hidden" name="ans{$q_list[i].survey_question_id}" value="{$formData.$formkey|escape}"/>
+                {assign var="key" value=$formData.$formkey|escape}
+                {if $q_list[i].options[$key].text|escape != ""}
+                  ・{$q_list[i].options[$key].text|escape}
+                {else}
+                  <span class="survey_unanswered">{'/modules/survey/label/no_answer'|translate}{*未回答*}</span>
+                {/if}
+
+              {/if}
+
+            </div>
+          </div>
+        </td>
+      </tr>
+    {/section}
+  </table>
+  {* // 質問＆回答の表示 *}
+
+  {* プロフィール(下段) *}
+  {if $survey_list.pf_pos eq '1'}
+    {if $smarty.capture.profile != ""}
+      {$smarty.capture.profile}
+    {/if}
+  {/if}
+  {* // プロフィール(下段) *}
+
+  <table width="85%" border="0" cellspacing="0" cellpadding="0">
+{if $smarty.const.SURVEY_USE_CAPTCHA eq '1'}
+    <tr>
+      <td>
+  <img src="{$captcha}" /><br />
+  <input type="text" name="phrase" class="phrase" />{'/msg/use_captcha'|translate}{*画像の英字５文字を入力して下さい *}
+      </td>
+    </tr>
+{/if}
+  </table>
+  <div class="entryform_bt">
+  <input type="button" value="{'/label/modify_btn'|translate}{*修正*}" class="survey_submit" onclick="document.survey_input.mode.value='input';document.survey_input.submit();"/>
+  <input type="submit" value="{'/label/send_btn'|translate}{*送信*}" class="survey_submit">
+  </div>
+  <input type="hidden" name="inputdata" value="{$inputdata|escape}">
+  <input type="hidden" name="id" value="{$smarty.request.id|escape}">
+  <input type="hidden" name="random_key" value="{$smarty.post.random_key|escape}">
+  <input type="hidden" name="mode" value="fin">
+</form>
+</div>
+{/module}

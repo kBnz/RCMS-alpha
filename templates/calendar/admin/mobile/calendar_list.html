@@ -1,0 +1,78 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">管理TOP</a>
+<hr class="for_mng"/>
+
+{if $this_month == 12}
+  {assign var="aft_year" value=$next_year}
+  {assign var="bef_year" value=$this_year}
+{elseif $this_month == 1}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$pre_year}
+{else}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$this_year}
+{/if}
+
+<h2 class="for_mng">{$module_nm}</h2>
+
+{if $auth.calendar.insert}
+<a href="/management/calendar/calendar_edit/">>>予定追加</a><br />
+{/if}
+<a href="/management/calendar/calendar_category_list/">{'/label/categorieslist'|translate}</a><br />
+
+<hr class="for_mng"/>
+
+{$this_year}年[今月:<a href="/management/calendar/calendar_list/">{$curr_year}年{$curr_month}月</a>]<br />
+
+<form name="calendar_list_form" method="POST" action="/management/calendar/calendar_list/">
+  <select name="s_category">{html_options options=$arrCategory selected=$s_category}</select><br />
+  <select name="year" style="width:60px;">{html_options options=$arrYear selected=$year}</select>年<br />
+  <select name="month" style="width:50px;">{html_options options=$arrMonth selected=$month}</select>月へ<br />
+  <input type="submit" name="subflg" value="移動する" />
+</form>
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+<a href="/management/calendar/calendar_list/ym={$bef_year}{$pre_month}">&lt;&lt;</a>
+{$this_year}年{$this_month}月
+<a href="/management/calendar/calendar_list/ym={$aft_year}{$next_month}">&gt;&gt;</a><br />
+
+{* 月間カレンダー本体 *}
+{foreach item=cal_line from=$cal_data.days}
+    {* 週毎の段 *}
+    {foreach key=key item=item from=$cal_line}
+        {* 日毎のデータ *}
+{strip}
+          {$item.day}{if $auth.calendar.insert != 0}<a href="/management/calendar/calendar_edit/date={$item.date}">追加</a>{/if}
+          <br />
+          {* イベントデータ *}
+          {foreach key=event_key item=event_item from=$item.event_data name=event_item_nm}
+            {if $smarty.foreach.event_item_nm.first}{/if}
+            <a class="small" href="/management/calendar/calendar_edit/event_id={$event_item.event_id}">{if $event_item.event_recurrence_id}<img src="/images/modules/calendar/recurrence_icon_bold.gif"/>{/if}{$event_item.event_txt|mbtruncate:17:"..."}
+              {$event_item.cal_from_time}{if !($event_item.cal_from_time == '' && $event_item.cal_to_time == '')}～{/if}
+              {$event_item.cal_to_time}
+            </a><br />
+            {if $smarty.foreach.event_item_nm.last}{/if}
+          {/foreach}
+{/strip}
+    {/foreach}
+{/foreach}
+
+
+<hr class="for_mng"/>
+<h3 class="for_mng">{$this_month}月の予定</h3>
+{* 関連情報 *}
+{if $cal_data.relations}
+  {foreach item=rel_item from=$cal_data.relations}
+    {$rel_item.ymd}<br />
+    {$rel_item.cont_name}<br />
+    {$rel_item.table_titleval}<br /><br />
+  {/foreach}
+{else}
+  この月の予定は登録されていません<br />
+{/if}
+
+{rcms_include file="management/mobile/footer.html"}

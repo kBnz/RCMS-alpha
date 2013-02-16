@@ -1,0 +1,26 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $auth.membermail.insert}
+<li class="add"><a href="/management/membermail/membermail_edit/"><span>メール送信</span></a></li>
+{/if}
+<li class="normal"><a href="/management/page/page_edit/page_page_sysnm=membermail_detail"><span>レイアウト編集</span></a></li>
+<li class="view"><a href="{$smarty.const.ROOT_URL}/membermail_detail/id={$membermail_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/membermail/membermail_list/">{$module_nm}一覧</a>
+<a href="/management/membermail/membermail_edit/membermail_id={$membermail_id}">編集</a>
+更新履歴一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/membermail/membermail_edit/membermail_id=$membermail_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

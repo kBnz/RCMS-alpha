@@ -1,0 +1,16 @@
+{module name="inquiry_detail"}
+<h2 class="module_title"><span>{$inquiry_header.inquiry_name}</span></h2>
+<div class="module_contents">
+<a name="inquiry{$contents_id}"></a>
+  <p class="thanks">
+    {if $inquiry_header.thanks_text != ''}
+      {$inquiry_header.thanks_text|nl2br}
+    {else}
+      {'/modules/inquiry/msg/thank_you_for_inquiry'|translate}{*お問い合わせを受け付けました。どうもありがとうございました。*}
+    {/if}
+    {if $inquiry_header.thanks_tag != ''}
+      {$inquiry_header.thanks_tag}
+    {/if}
+  </p>
+</div>
+{/module}

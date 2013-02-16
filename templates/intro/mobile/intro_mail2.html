@@ -1,0 +1,27 @@
+<h2>紹介メール</h2>
+<form method="post" action="{$smarty.server.PHP_SELF}">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if !$messages}
+このページを紹介するメールを送信する事ができます。<br/>
+  <dl>
+    <dt>あなたの名前：</dt>
+    <dd><input name="from_name" type="text" value="{$from_name}" /></dd>
+    <dt>あなたのメールアドレス：</dt>
+    <dd><input name="from_mail" type="text" value="{$from_mail}"  {istyle type="en"} /></dd>
+    <dt>送信先メールアドレス<br />(複数のアドレスを入力出来ます。改行で区切ってください)：</dt>
+    <dd><textarea name="to_mail" rows="5">{$to_mail}</textarea></dd>
+    <dt>題名：</dt>
+    <dd><input name="subject" type="text" value="{$subject}" /></dd>
+    <dt>紹介文：</dt>
+    <dd><label for="コメント"><textarea name="contents">{$contents}</textarea></label></dd>
+  </dl>
+  <input type="submit" value="紹介文送信" />
+  <input type="hidden" name="id" value="{$id}" />
+  <input type="hidden" name="MODE" value="UPDATE" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+{/if}
+</form>
+<hr/>

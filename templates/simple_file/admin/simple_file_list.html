@@ -1,0 +1,98 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function isCheckedSimpleFile() {
+    // ファイルが選択されているかチェック
+    var cb = document.simple_file_list["simple_file_id[]"];
+    if (cb.length) {
+        for(var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                return true;
+            }
+        }
+    }
+    else {
+        return true;
+    }
+    return false;
+}
+
+function confirmDelete() {
+    if (!isCheckedSimpleFile()) {
+        alert('{/literal}{'/msg/items_not_seleted'|translate}{literal}');// 項目が選択されていません。
+        return;
+    }
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        document.simple_file_list.MODE.value = "DELETE";
+        document.simple_file_list.submit();
+    }
+}
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/simple_file'|translate}</h2>{*簡易更新ファイル*}
+<ul>
+{if $rauth->canInsert("/simple_file/item/")}
+<li class="add"><a href="/management/simple_file/simple_file_edit/"><span>{'/label/create_new'|translate}{*新規作成*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/simple_file/simple_file_list/">{'/modules/simple_file'|translate}</a>
+<a href="/management/simple_file/simple_file_list/">{'/modules/simple_file/label/simple_file_list'|translate}</a>{*簡易更新ファイル一覧*}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div id="simple_file_list" class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}
+
+<h3>{'/modules/simple_file_update'|translate}</h3>{*簡易更新ファイル*}
+  {foreach from=$simple_files item=item name=files_nm}
+    {assign var=simple_file_id value=$item.simple_file_id}
+
+    {if $smarty.foreach.files_nm.first}
+    <form name="simple_file_list" action="/management/simple_file/simple_file_list/" method="post">
+      <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+      <input type="hidden" name="MODE" value="" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'simple_file_id[]')" {if !$rauth->canDelete("/simple_file/item/$simple_file_id")}disabled="disabled"{/if}/></th>
+        <th colspan="2">{'/label/file_name_and_file_type'|translate}</th>{*ファイル名／ファイルタイプ*}
+        <th>{'/label/last_updated_time'|translate}</th>{*ファイル更新日*}
+        <th>{'/label/updated_by'|translate}</th>{*更新者*}
+      </tr>
+    {/if}
+      <tr>
+        <td><input type="checkbox" name="simple_file_id[]" value="{$item.simple_file_id}" {if !$rauth->canDelete("/simple_file/item/$simple_file_id") && !$rauth->canUpdate("/simple_file/item/$simple_file_id")}disabled="disabled"{/if}/></td>
+        <td><span class="title">{$item.title}</span>{$item.file_nm}／{$file_type_options[$item.file_type]}</td>
+        <td style="width: 140px; white-space:nowrap">
+           <a href="/management/simple_file/simple_file_edit/simple_file_id={$item.simple_file_id}">{'/label/detail'|translate}</a>{*詳細*}
+		  {rcms_include file="common/admin/language_status.html" meta=$docmetas[$simple_file_id] link="/management/simple_file/simple_file_edit/simple_file_id=$simple_file_id"}
+
+        </td>
+        <td width="120px" style="white-space:nowrap">{$item.update_ymdhi|pg_dateformat}</td>
+        <td width="60px" style="white-space:nowrap">{$item.admin_nm}</td>
+      </tr>
+    {if $smarty.foreach.files_nm.last}
+    </table>
+    {buttonbox}
+    {'/label/withselected'|translate}<button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+    </form>
+    {/if}
+  {/foreach}
+</div>
+</div>
+<br>
+
+{rcms_include file="management/footer.html"}

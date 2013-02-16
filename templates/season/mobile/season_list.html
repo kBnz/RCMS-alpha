@@ -1,0 +1,12 @@
+<h2>資料室</h2>
+{section name=mydata loop=$seasonList}
+▼{if $seasonList[mydata].soubu}({$seasonList[mydata].soubu}){/if}
+<a href="/season_detail/id={$seasonList[mydata].season}">{$seasonList[mydata].wareki}年度</a>
+<br />
+
+{if $ext_titles.ext_title_01 != ""}{$seasonList[mydata].ext_01}{/if}
+{if $ext_titles.ext_title_01 != "" && $ext_titles.ext_title_02 != ""}/{/if}
+{if $ext_titles.ext_title_02 != ""}{$seasonList[mydata].ext_02}{/if}
+<br />
+{/section}
+<hr />

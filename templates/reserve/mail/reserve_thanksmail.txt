@@ -1,0 +1,13 @@
+申し込みを受け付けました。
+
+■申し込み対象
+{$target_contents}
+
+■申し込み内容
+・名前  ：{$name}
+・メール：{$email}
+{$other_contents}
+
+-------------------------
+{$site_title}
+{$smarty.const.ROOT_URL}/

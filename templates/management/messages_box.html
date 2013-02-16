@@ -1,0 +1,16 @@
+{foreach from=$messages name=msg_nm item=msg}
+{if $smarty.foreach.msg_nm.first}
+<div align="center">
+<table class="msgtable" width="60%">
+  <tr><td align="center">
+       <ul>
+{/if}
+    <li>{$msg|escape}</li>
+{if $smarty.foreach.msg_nm.last}
+      </ul>
+    </td>
+  </tr>
+</table>
+</div>
+{/if}
+{/foreach}

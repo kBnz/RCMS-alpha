@@ -1,0 +1,48 @@
+<h2>{if $source}{$source.name}{else}外部データ一覧{/if}</h2>
+
+  このサイトで紹介している{if $source}{$source.name}{else}外部データ一覧{/if}です。<br/>
+
+  {if $showForm}
+    <form action="/api_general_list/">
+      <fieldset class="search_box">
+        データソース:
+        <select name="data_source">
+          <option value="0">すべて</option>
+          {foreach from=$sources item=src}
+            <option value="{$src.id}"{if $sourceId == $src.id} selected="selected"{/if}>{$src.name}</option>
+          {/foreach}
+        </select>
+        <input type="submit" name="api_general_list_exec" value="表示"/>
+      </fieldset>
+    </form>
+  {/if}
+
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+  <table>
+      <tr>
+          {if $showForm}<th>ソース</th>{/if}<th>タイトル</th><th>コメント</th>{if $showForm}<th>クレジット</th>{/if}
+      </tr>
+      {if $showForm}
+        {foreach from=$items item=item}
+          {assign var="source" value=$sources[$item.data_source]}
+          <tr>
+            <td><a href="/api_general_list/api_general_list_exec&amp;data_source={$item.data_source}">{$source.name}</a></td>
+            <td><a href="/api_general_detail/id={$item.internal_id}">{$item.name|truncate}</a></td>
+            <td>{$item.note|truncate}</td>
+            <td>{$source.credit}</td>
+          </tr>
+        {/foreach}
+      {else}
+        {foreach from=$items item=item}
+          {assign var="source" value=$sources[$item.data_source]}
+          <tr>
+            <td><a href="/api_general_detail/id={$item.internal_id}">{$item.name|truncate}</a></td>
+            <td>{$item.note|truncate}</td>
+          </tr>
+        {/foreach}
+      {/if}
+  </table>
+  {rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+
+  {if !$showForm}<br/>{$source.credit}{/if}
+<hr/>

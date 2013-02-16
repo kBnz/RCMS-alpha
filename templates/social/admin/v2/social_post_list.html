@@ -1,0 +1,743 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<style type="text/css">
+#main_contents.name{
+    padding:5px 10px;
+}
+#main_contents.message{
+    border-bottom:solid 1px #a0a0a0;
+    padding:5px 30px;
+}
+
+#feeds_field{
+    background-color:#e0e0e0;
+    height:500px;
+    width:250px;
+    float:left;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    padding:0px;
+}
+
+#users_field{
+    background-color:#ffffff;
+    height:500px;
+    width:250px;
+    float:left;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    padding:0px;
+}
+#posts_field{
+    background-color:#ffffff;
+    height:500px;
+    width:500px;
+    float:left;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    padding:0px;
+}
+
+.loading{
+    background-image: url("{/literal}{$smarty.const.ROOT_URL}{literal}/images/modules/social/loading_w.gif");
+    background-position: center;
+    background-repeat:no-repeat;
+    height:100px;
+    margin:0;
+    padding:70px 10px 10px 10px;
+}
+
+.user{
+    width:100%;
+    border-bottom: 1px solid #e0e0e0;
+    height:25px;
+    overflow: hidden;
+    padding:10px;
+    margin:0;
+    float:left;
+}
+
+.user .profile_pic,
+.post .profile_pic{
+    width:20px;
+    height:20px;
+    float:left;
+}
+
+.user .user_name{
+    font-size: 13px;
+}
+
+.post{
+    border-bottom: 1px solid #e0e0e0;
+    overflow: hidden;
+    padding:10px 10px 10px 10px;
+    margin:0;
+}
+
+.post .status_undone{
+    background-image: url("{/literal}{$smarty.const.ROOT_URL}{literal}/images/modules/social/badge.png");
+    background-position: center;
+    background-repeat:no-repeat;
+    width:20px;
+    height:20px;
+    margin:0;
+    float:left;
+}
+.post .status_done{
+    border:1px dotted #c0c0c0;
+    width:20px;
+    height:20px;
+    margin:0;
+    float:left;
+}
+
+.bookmark_on{
+    background-image: url("{/literal}{$smarty.const.ROOT_URL}{literal}/images/modules/social/flag.png");
+    background-position: center;
+    background-repeat:no-repeat;
+    width:20px;
+    height:20px;
+    margin:0;
+    float:left;
+}
+.bookmark_off{
+    border:1px dotted #f0f0f0;
+    width:20px;
+    height:20px;
+    margin:0;
+    float:left;
+}
+
+.bookmark_wait,
+.status_wait
+{
+    background-image: url("{/literal}{$smarty.const.ROOT_URL}{literal}/images/modules/social/loading_sw.gif");
+    background-position: center;
+    background-repeat:no-repeat;
+    width:20px;
+    height:20px;
+    margin:0;
+    float:left;
+}
+
+.comments{
+    background-color: #dee4ea;
+}
+.comment{
+    border-bottom:1px solid #c3cdda;
+    padding:5px;
+}
+
+#publish_field{
+    height:100px;
+    width:520px;
+    margin:20px;
+    padding:0px;
+    background-color:#ffffff;
+    border: solid 1px #a0a0a0;
+    clear:both;
+}
+
+#publish_message{
+    width:280px;
+    height:80px;
+    float:left;
+    border:0px;
+    padding:10px;
+    max-width:280px;
+    max-height:80px;
+}
+
+#publish_options{
+    width:200px;
+    height:100%;
+    border-left:1px solid #a0a0a0;
+    float:left;
+}
+
+#publish_lang_selector, #publish_button{
+    clear:both;
+    margin:10px;
+}
+
+table.unopened_posts{
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-spacing: 0;
+    padding:5px;
+    background-color:#ffffff;
+}
+
+.unopened_posts td{
+    padding:8px;
+}
+.unopened_posts thead tr td{
+    border-bottom: solid 1px #CCC;
+}
+.unopened_posts tbody tr td{
+    border-bottom: solid 1px #F0F0F0;
+}
+.unopened_posts tbody tr:last-child td{
+    border-bottom: 0px;
+}
+.unopened_posts tbody tr:hover td{
+    background-color: #f2f2ed;
+}
+
+
+</style>
+{/literal}
+
+
+
+
+<h3>承認申請中・公開待ち投稿</h3>
+
+<table class="unopened_posts">
+    <thead>
+        <tr>
+            <td width="50px"></td><td width="200px">公開予定日時</td><td width="150px">宛先</td><td width="300px">メッセージ</td><td width="150px">更新日時</td><td width="150px">更新者</td>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach from=$unauth_posts item=item}
+        <tr>
+            <td><a href="{$item.link}">編集</a></td><td>承認待ち</td><td>{$item.facebook_page_name}</td><td>{$item.msg}</td><td>{$item.update_ymdhi}</td><td>{$item.admin_nm}</td>
+        </tr>
+        {/foreach}
+        {foreach from=$waiting_posts item=item}
+        <tr>
+            <td><a href="{$item.link}">編集</a></td><td>{if $item.open_ymdhi==''}下書き{else}{$item.open_ymdhi}{/if}</td><td>{$item.facebook_page_name}</td><td>{$item.msg}</td><td>{$item.update_ymdhi}</td><td>{$item.admin_nm}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
+
+<br>
+<a href="/management/social/social_post_edit/">新規投稿</a>
+
+
+{*
+$fb_page_list<br>
+{$fb_page_list|@debug_print_var}
+<hr>
+
+$unauth_posts<br>
+{$unauth_posts|@debug_print_var}
+<hr>
+
+$waiting_posts<br>
+{$waiting_posts|@debug_print_var}
+<hr>
+*}
+
+
+<h3>投稿一覧</h3>
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+<div id="development_view">
+    <table>
+        <tr>
+            <th>Feed</th>
+            <td>
+                <select id="feed_selector">
+                {foreach from=$fb_page_list item=item}
+                <option value='{literal}{{/literal}"id":"{$item.page_id}","access_token":"{$item.access_token}"{literal}}{/literal}'>{$item.page_name}</option>
+                {/foreach}
+                </select>
+                <button id="draft_update_btn">データを更新 Draft</button>
+                <button id="update_btn">データを更新</button>
+            </td>
+        </tr>
+        <tr>
+            <th>CSVダウンロード</th>
+            <td>
+                <button id="get_daily_posts_csv_btn">ユーザー:日別投稿数</button>
+                <button id="get_feed_csv_btn">feed:マスタ</button>
+            </td>
+        </tr>
+        <tr>
+            <th>XLSダウンロード 試験中</th>
+            <td>
+                <button id="get_feed_xls_btn">feed:マスタ</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{*
+<div id="publish_field">
+    <textarea id="publish_message"></textarea>
+    <div id="publish_options">
+        <select id="publish_lang_selector">
+            <option value="">全員に公開</option>
+            <option value="ja">日本語</option>
+            <option value="en">英語</option>
+            <option value="fr">フランス語</option>
+            <option value="de">ドイツ語</option>
+            <option value="es">スペイン語</option>
+            <option value="ko">韓国語</option>
+            <option value="zh">中国語</option>
+            <option value="ru">ロシア語</option>
+            <option value="it">イタリア語</option>
+        </select>
+        <br>
+        <button id="publish_button">投稿</button>
+    </div>
+</div>
+<div style="clear:both;" />
+*}
+
+<div id="feeds_field">
+</div>
+
+<div id="users_field">
+</div>
+<div id="posts_field">
+</div>
+
+
+</div>
+</div>
+
+{literal}
+<!-- テンプレートエンジンの読み込み -->
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+
+
+<!-- テンプレートの定義   user-->
+<script id="loading_template" type="text/x-jquery-tmpl">
+    <div class="loading">
+    </div>
+</script>
+
+<!-- テンプレートの定義   user-->
+<script id="user_template" type="text/x-jquery-tmpl">
+    <div class="user">
+        <input type="hidden" class="user_id" value="${user_id}" />
+        <input type="hidden" class="feed_id" value="${to_id}" />
+        <input type="hidden" class="target" value="user" />
+        <div id="status_${user_id}" class="status_{{if status == 1}}done{{else}}undone{{/if}}"> </div>
+        <div id="bookmark_${user_id}" class="bookmark_{{if bookmark == 1}}on{{else}}off{{/if}}"> </div>
+        <img class="profile_pic" src="http://graph.facebook.com/${user_id}/picture/" />
+        <div class="user_name">${name}</div>
+    </div>
+</script>
+
+<!-- テンプレートの定義   post-->
+<script id="post_template" type="text/x-jquery-tmpl">
+    <div class="post">
+        <input type="hidden" class="user_id" value="${user_id}" />
+        <input type="hidden" class="feed_id" value="${to_id}" />
+        <input type="hidden" class="post_id" value="${post_id}" />
+        <input type="hidden" class="target" value="post" />
+        <div id="status_${post_id}" class="status_{{if status == 1}}done{{else}}undone{{/if}}"> </div>
+        <div id="bookmark_${post_id}" class="bookmark_{{if bookmark == 1}}on{{else}}off{{/if}}"> </div>
+        <img class="profile_pic" src="http://graph.facebook.com/${user_id}/picture/" />
+        <div class="user_name">${user_name}</div>
+        <div class="created_time">${created_time}</div>
+        <div class="content">
+            {{if thumbnail != '' && link != ''}}
+                <a class="link" href="${link}">
+                <img class="thumbnail" src="${thumbnail}">
+                </a>
+            {{else link != ''}}
+                <a class="link" href="${link}">${link}</a>
+            {{/if}}
+            <p class="msg">${message}</p>
+        </div>
+        <div class="post_info">
+            <div class="likes_count">Likes : ${likes_count}</div>
+            <div class="comments_count">Comments : ${comments_count}</div>
+        </div>
+        {{if comments}}
+            <div>コメントを表示</div>
+            <div class="comments">
+            {{each(i, comment) comments}}
+                <div class="comment">
+                    <p class="msg">${comment.message} </p>
+                    <div class="user_name">${comment.user_name}</div>
+                    <div class="created_time">${comment.created_time}</div>
+                </div>
+            {{/each}}
+            </div>
+        {{/if}}
+    </div>
+</script>
+
+
+<script type="text/javascript">
+
+// オブジェクトからオブジェクトのインスタンス（コピー）を作成する関数
+createObject.f = function(){};
+function createObject(o) {
+    var f = createObject.f, i, len, n, prop;
+    f.prototype = o;
+    n = new f;
+    for (i=1, len=arguments.length; i<len; ++i){
+        for (prop in arguments[i]){
+            n[prop] = arguments[i][prop];
+        }
+    }
+    return n;
+}
+
+j$(document).ready(function(){
+    SocialDashboard.init();
+});
+
+var SocialDashboard = {
+    
+    MEMBER_LIST : null,
+    FEED_DATA   : null,
+
+    // 使用するオブジェクトを定義
+    usersField               : j$("#users_field"),
+    postsField               : j$("#posts_field"),
+    draftUpdateBtn           : j$("#draft_update_btn"),
+    updateBtn                : j$("#update_btn"),
+    feedSelector             : j$("#feed_selector"),
+    getFeedCsvBtn            : j$("#get_feed_csv_btn"),
+    getMemberCsvBtn          : j$("#get_member_csv_btn"),
+    getDailyPostsCsvBtn      : j$("#get_daily_posts_csv_btn"),
+    getFeedXlsBtn            : j$("#get_feed_xls_btn"),
+    statusDoneBtn            : j$(".status_done"),
+    statusUndoneBtn          : j$(".status_undone"),
+    bookmarkOnBtn            : j$(".bookmark_on"),
+    bookmarkOffBtn           : j$(".bookmark_off"),
+    postTmpl                 : j$("#post_template"),
+    userTmpl                 : j$("#user_template"),
+    loadingTmpl              : j$("#loading_template"),
+    publishBtn               : j$("#publish_button"),
+    publishMsgTextarea       : j$("#publish_message"),
+    publishLangSelector      : j$("#publish_lang_selector"),
+
+    // 初期化
+    init:function(){
+        
+        console.log("hello");
+        
+        //イベントリスナーを登録
+        var self = this;
+        
+        SocialDashboard.updateBtn.click(SocialDashboard.updateData); //更新ボタン
+        SocialDashboard.draftUpdateBtn.click(SocialDashboard.draftUpdateData);
+
+        SocialDashboard.getDailyPostsCsvBtn.click(SocialDashboard.downloadDailyPostsReportCsv); //DLボタン
+        SocialDashboard.getFeedCsvBtn.click(SocialDashboard.downloadFeedReportCsv);
+        SocialDashboard.getFeedXlsBtn.click(SocialDashboard.downloadFeedReportXls);
+
+        SocialDashboard.statusUndoneBtn.live("click",SocialDashboard.setStatus); //フラグ系ボタン
+        SocialDashboard.statusDoneBtn.live("click",SocialDashboard.setStatus); 
+        SocialDashboard.bookmarkOnBtn.live("click",SocialDashboard.setBookmark); 
+        SocialDashboard.bookmarkOffBtn.live("click",SocialDashboard.setBookmark); 
+        
+        SocialDashboard.publishBtn.click(SocialDashboard.publish); // 投稿ボタン
+                
+        // 各種読み込み
+        SocialDashboard.getUsers();
+        SocialDashboard.getPosts();
+        
+    },
+    
+    
+    //現在選択しているfeedのidとaccess_tokenをオブジェクトで返す
+    getCurrentFeed:function(){
+        var return_val = eval("(" + SocialDashboard.feedSelector.val() + ")");
+        return return_val;
+    },
+    
+// -----Ajax用関数群-----
+    //feedのユーザー一覧を取得する
+    getUsers:function(feed_id){
+
+        if(!feed_id){
+            var feed = SocialDashboard.getCurrentFeed();
+            feed_id = feed.id;
+        }
+
+        // loadingを表示
+        SocialDashboard.usersField.empty()
+        SocialDashboard.usersField.prepend(SocialDashboard.loadingTmpl.tmpl());
+
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/get_data/",
+            data: {"feed_id":feed_id,"target":"users"},
+            success: SocialDashboard.onSuccessGetUsers
+        });
+    
+    },
+    onSuccessGetUsers:function(response){
+//console.log(response);
+        var result = eval("(" + response + ")");
+        SocialDashboard.showUsers(result);
+    },
+
+
+    // feedのpost一覧を取得する
+    getPosts:function(feed_id){
+
+        if(!feed_id){
+            var feed = SocialDashboard.getCurrentFeed();
+            feed_id = feed.id;
+        }
+        
+        // loadingを表示
+        SocialDashboard.postsField.empty()
+        SocialDashboard.postsField.prepend(SocialDashboard.loadingTmpl.tmpl());
+
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/get_data/",
+            data: {"feed_id":feed_id,"target":"posts"},
+            success: SocialDashboard.onSuccessGetPosts
+        });
+    
+    },
+    onSuccessGetPosts:function(response){
+//console.log(response);
+
+        var result = eval("(" + response + ")");
+//console.log(result);
+        
+        SocialDashboard.showPosts(result);
+
+    },
+
+    // statusを変更する
+    setStatus:function(){
+    
+        var val    = (j$(this).attr("class") == "status_undone") ? 1 : 0;
+        var postId = j$(".post_id",j$(this).parent()).val();
+        var userId = j$(".user_id",j$(this).parent()).val();
+        var feedId = j$(".feed_id",j$(this).parent()).val();
+        var target = j$(".target",j$(this).parent()).val();
+        
+        j$(this).removeClass("status_undone");
+        j$(this).removeClass("status_done");
+        j$(this).addClass("status_wait");
+
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/set_ext_data/",
+            data: {"id"     :postId,
+                   "feed_id":feedId,
+                   "target" :target,
+                   "type"   :"status",
+                   "val"    :val
+                   },
+            success: SocialDashboard.onSuccessSetStatus
+        });
+    },
+    
+    onSuccessSetStatus:function(response){
+    
+        var result = eval("(" + response + ")");
+        
+        if(result.result==1){
+            var className = result.val==1 ? "status_done" : "status_undone";
+        }else{
+            var className = result.val==1 ? "status_undone" : "status_done";
+        }
+        var selector = "#" + result.type + "_" + result.id;
+        j$(selector).removeClass("status_wait");
+        j$(selector).addClass(className);
+
+    
+    },
+
+    // bookmarkを変更する
+    setBookmark:function(){
+        
+        var target = j$(".target",j$(this).parent()).val();
+        var feedId = j$(".feed_id",j$(this).parent()).val();
+        var id = (target=="user") ? j$(".user_id",j$(this).parent()).val() : j$(".post_id",j$(this).parent()).val();
+        var val    = (j$(this).attr("class") == "bookmark_off") ? 1 : 0;
+        
+        j$(this).removeClass("bookmark_on");
+        j$(this).removeClass("bookmark_off");
+        j$(this).addClass("bookmark_wait");
+
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/set_ext_data/",
+            data: {"id"     :id,
+                   "feed_id":feedId,
+                   "target" :target,
+                   "type"   :"bookmark",
+                   "val"    :val
+                   },
+            success: SocialDashboard.onSuccessSetBookamrk
+        });
+    },
+    
+    onSuccessSetBookamrk:function(response){
+    
+        var result = eval("(" + response + ")");
+        
+        if(result.result==1){
+            var className = result.val==1 ? "bookmark_on" : "bookmark_off";
+        }else{
+            var className = result.val==1 ? "bookmark_off" : "bookmark_on";
+        }
+        var selector = "#" + result.type + "_" + result.id;
+        j$(selector).removeClass("bookmark_wait");
+        j$(selector).addClass(className);
+
+    
+    },
+
+    // 投稿する
+    publish:function(){
+    
+        var msg       = SocialDashboard.publishMsgTextarea.val();
+        var locale    = SocialDashboard.publishLangSelector.val();
+        var feed      = SocialDashboard.getCurrentFeed();
+        
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/post/",
+            data: {"feed_id"    :feed.id,
+                   "msg"        :msg,
+                   "locales"     :locale,
+                   "comment_to" :""
+                   },
+            success: SocialDashboard.onSuccessPublish
+        });
+
+    
+    },
+    
+    onSuccessPublish:function(response){
+        alert(response);
+    },
+
+// -----Ajax用関数群ここまで-----
+
+// -----表示系関数群ここから-----
+
+    // ポストの表示
+    showPosts:function(posts){
+
+        SocialDashboard.postsField.empty();
+        SocialDashboard.postsField.html(SocialDashboard.postTmpl.tmpl(posts));
+    },
+    
+    // ユーザーの表示
+    showUsers:function(users){
+
+        SocialDashboard.usersField.empty();
+        SocialDashboard.usersField.html(SocialDashboard.userTmpl.tmpl(users));
+    },
+
+
+// -----表示系関数群ここまで-----
+
+// -----ダウンロード用関数群-----
+    // 投稿数デイリーレポートをダウンロード
+    downloadDailyPostsReportCsv:function(){
+        var feed = SocialDashboard.getCurrentFeed();
+        window.location.href = "{/literal}{$smarty.const.ROOT_SSL_URL}{literal}/direct/social/fb_daily_posts_report_csv_downloader/id=" + feed.id;
+        
+    },
+
+    // FeedのCSVをダウンロード
+    downloadFeedReportCsv:function(){
+        var feed = SocialDashboard.getCurrentFeed();
+        window.location.href = "{/literal}{$smarty.const.ROOT_SSL_URL}{literal}/direct/social/fb_feed_report_csv_downloader/id=" + feed.id;
+    },
+    
+    // FeedのXLSをダウンロード
+    downloadFeedReportXls:function(){
+        var feed = SocialDashboard.getCurrentFeed();
+        window.location.href = "{/literal}{$smarty.const.ROOT_SSL_URL}{literal}/direct/social/fb_feed_report_xls_downloader/id=" + feed.id;
+    },
+
+// -----ダウンロード用関数群ここまで-----
+
+
+    // DBの更新
+    updateData:function(){
+
+        // loadingを表示
+        SocialDashboard.usersField.prepend(SocialDashboard.loadingTmpl.tmpl());
+        SocialDashboard.postsField.prepend(SocialDashboard.loadingTmpl.tmpl());
+
+        SocialDashboard.updateBtn.html("更新中 データ量により数分の時間が掛かります。");
+        SocialDashboard.draftUpdateBtn.attr("disabled","disabled");
+        SocialDashboard.updateBtn.attr("disabled","disabled");
+        var feed = SocialDashboard.getCurrentFeed();
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/import_fb_data_to_rcms/",
+            data: {"id":feed.id,"access_token":feed.access_token},
+            success: SocialDashboard.onSuccessUpdateData
+        });
+        
+    },
+    onSuccessUpdateData:function(response){
+        SocialDashboard.updateBtn.html("データを更新");
+        SocialDashboard.draftUpdateBtn.removeAttr("disabled");
+        SocialDashboard.updateBtn.removeAttr("disabled");
+
+        var html = '<div class="loading"></div>';
+        SocialDashboard.postsField.html(html);
+        SocialDashboard.usersField.html(html);
+        SocialDashboard.getUsers();
+        SocialDashboard.getPosts();
+    },
+    
+
+    
+    // DBの更新 (draft)
+    draftUpdateData:function(){
+        // loadingを表示
+        SocialDashboard.usersField.prepend(SocialDashboard.loadingTmpl.tmpl());
+        SocialDashboard.postsField.prepend(SocialDashboard.loadingTmpl.tmpl());
+
+        SocialDashboard.draftUpdateBtn.html("更新中 データ量により数分の時間が掛かります。");
+        SocialDashboard.draftUpdateBtn.attr("disabled","disabled");
+        SocialDashboard.updateBtn.attr("disabled","disabled");
+        var feed = SocialDashboard.getCurrentFeed();
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "/direct/social/import_fb_data_to_rcms/",
+            data: {"id":feed.id,"access_token":feed.access_token,"draft_mode":1},
+            success: SocialDashboard.onSuccessDraftUpdateData
+        });
+        
+    },
+    onSuccessDraftUpdateData:function(response){
+        SocialDashboard.draftUpdateBtn.html("データを更新 Draft");
+        SocialDashboard.draftUpdateBtn.removeAttr("disabled");
+        SocialDashboard.updateBtn.removeAttr("disabled");
+
+        var html = '<div class="loading"></div>';
+        SocialDashboard.postsField.html(html);
+        SocialDashboard.usersField.html(html);
+        SocialDashboard.getUsers();
+        SocialDashboard.getPosts();
+    },
+
+    
+}
+
+</script>
+{/literal}

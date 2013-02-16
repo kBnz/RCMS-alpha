@@ -1,0 +1,49 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>SQLの発行</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_list/">RCMS_DB</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<ul class="tabnavi" style="width:100%;">
+  <li class="regist_000"><a href="/management/develop/develop_struct/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">構造</div></a></li>
+  <li class="regist_000"><a href="/management/develop/develop_edit/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">レコード</div></a></li>
+  <li id="here" class="regist_000"><a href="/management/develop/develop_sql/edit_table_nm={$edit_table_nm}"><div style="color:#666666;font-weight:bold;padding-top:5px;padding-left:28px;">SQL</div></a></li>
+</ul>
+
+<div class="list_main">
+<h3>SQLの発行</h3>
+
+<form method="POST" action="/management/develop/develop_sql/edit_table_nm={$edit_table_nm}">
+  <input type="hidden" name="edit_table_nm" value="{$edit_table_nm}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<h4 align="left">SQLを入力してください</h4>
+<table style="center" border="1">
+<tr>
+<td align="center" width="400" height="100">
+{$comment}
+</td>
+</tr>
+</table>
+<br>
+<table style="center" border="1">
+<tr>
+<td align="center">
+    <textarea name="sql" cols=60 rows=10 wrap="physical" ></textarea>
+</td>
+</tr>
+</table>
+
+  {buttonbox}
+    <button type="submit">送信</button>
+  {/buttonbox}
+
+</form>
+</div><!--//list_main-->
+
+{rcms_include file="management/footer.html"}

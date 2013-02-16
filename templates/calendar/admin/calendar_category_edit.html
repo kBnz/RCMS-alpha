@@ -1,0 +1,104 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function secure_login_on(chk) {
+    var list = document.getElementsByTagName('input');
+    for (var i = 0 ; i < list.length; i++) {
+        if (list[i].id.match(/secure_level_[0-9]+/)) {
+            list[i].disabled = chk;
+        }
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/calendar/label/calendar_category_edit'|translate}{* カテゴリ編集 *}</h2>
+  <ul>
+{if $rauth->canInsert("/calendar/category/")}
+    <li class="add"><a href="/management/calendar/calendar_category_edit/pageID={$pageID}"><span>{'/modules/calendar/label/create_new_category_btn'|translate}{* カテゴリ追加 *}</span></a></li>
+{/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/calendar/calendar_list/">{'/modules/calendar/label/calendar_list'|translate}</a>
+<a href="/management/calendar/calendar_category_list/">{'/modules/calendar/label/calendar_category_list'|translate}</a>
+{'/modules/calendar/label/calendar_category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カレンダー >> カレンダーカテゴリ一覧 >> カレンダーカテゴリ編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+
+  <div class="list_main">
+
+  <form action="/management/calendar/calendar_category_edit/" method="post">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="event_category_id" type="hidden" value="{$formData.event_category_id}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{if $formData.event_category_id}
+    {lang_selector meta=$docmeta link='/management/calendar/calendar_category_edit/event_category_id='|cat:$formData.event_category_id}
+{/if}
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link='/management/calendar/calendar_category_edit/event_category_id='|cat:$formData.event_category_id}
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/modules/calendar/label/category_name'|translate}{* カテゴリ名 *}</th>
+        <td><input size="25" maxlength="50" name="category_nm" type="text" value="{$formData.category_nm|escape}" /></td>
+      </tr>
+
+{if $docmeta.is_primary}{* $docmeta.is_primary from *}
+      <tr>
+        <th>{'/label/display_order'|translate}{* 表示順序 *}</th>
+        <td><input size="10" maxlength="10" name="order_no" type="text" value="{$formData.order_no|escape}" /></td>
+      </tr>
+        <tr id="tr_secure_level_group">
+          <th width="150">{'/label/viewing_limit'|translate}{* 閲覧制限 *}</th>
+          <td>
+            <input type="radio" name="secure_flg" id="secure_flg_off" value="off" onclick="display('secure_group_list', 'none');" {if $formData.secure_flg != 'on'}checked="checked"{/if}/><label for="secure_flg_off">{'/label/unlimited'|translate}{* 制限無し *}</label><input type="radio" name="secure_flg" id="secure_flg_on" value="on" onclick="display('secure_group_list', '');" {if $formData.secure_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="secure_flg_on">{'/label/limited'|translate}{* 制限有り *}</label>
+            <div id="secure_group_list" style="margin: 10px 0 0 10px; {if $formData.secure_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/calendar/msg/select_group_viewing_this_category'|translate}{* 閲覧を許可するグループを選択してください。グループは複数選択できます。 *}</p>
+              <ul class="secure_level_list">
+                <li><input type="checkbox" name="secure_level[]" value="N" id="secure_level_N" {if 'N'|in_array:$formData.secure_level}checked="checked"{/if} /><label for="secure_level_N">{'/modules/calendar/label/all_notlogin_members'|translate}{* 未ログインメンバー *}</label></li>
+                <li><input type="checkbox" name="secure_level[]" value="A" id="secure_level_A" {if 'A'|in_array:$formData.secure_level}checked="checked"{/if} onclick="secure_login_on(this.checked);" /><label for="secure_level_A">{'/modules/calendar/label/all_login_members'|translate}{* 全てのログインメンバー *}</label></li>
+              {foreach from=$arrAdmin key=key item=row name=secure_level_list}
+                {if $smarty.foreach.secure_level_list.first}<ul id="secure_level_groups">{/if}
+                  <li><input type="checkbox" name="secure_level[]" value="{$key}" id="secure_level_{$key}" {if $key|in_array:$formData.secure_level}checked="checked"{/if} {if 'A'|in_array:$formData.secure_level}disabled="disabled"{/if}/><label for="secure_level_{$key}">{$row|escape}</label></li>
+                {if $smarty.foreach.secure_level_list.last}</ul>{/if}
+              {/foreach}
+              </ul>
+            </div>
+          </td>
+        </tr>
+        <tr id="tr_editable_group">
+          <th>{'/label/editing_limit'|translate}{* 編集制限 *}</th>
+          <td>
+            <input type="radio" name="editable_flg" id="editable_flg_off" value="off" onclick="display('editable_group_list', 'none');" {if $formData.editable_flg != 'on'}checked="checked"{/if}/><label for="editable_flg_off">{'/label/unlimited'|translate}{* 制限無し *}</label><input type="radio" name="editable_flg" id="editable_flg_on" value="on" onclick="display('editable_group_list', '');" {if $formData.editable_flg != 'off'}checked="checked"{/if} style="margin-left: 10px;" /><label for="editable_flg_on">{'/label/limited'|translate}{* 制限有り *}</label>
+            <div id="editable_group_list" style="margin: 10px 0 0 10px; {if $formData.editable_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/modules/calendar/msg/select_group_editing_this_category'|translate}{* '更新・削除を許可するグループを選択してください。(複数選択できます) *}</p>
+              <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.editable_group}</select>
+            </div>
+          </td>
+        </tr>
+{/if}{* $docmeta.is_primary to *}
+
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    </div>
+  </form>
+</div>
+
+{rcms_include file="management/footer.html"}

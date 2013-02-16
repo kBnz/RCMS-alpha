@@ -1,0 +1,96 @@
+{module name="memberrugby_detail"}
+
+<h2 class="module_title"><span>プロフィール</span></h2>
+<div class="module_contents">
+<div id="member_detail">
+<div id="member_profile">
+<table>
+{if $memberInfo.nickname != ""}
+  <tr>
+    <th>ニックネーム</th><td>{$memberInfo.disp_name}</td>
+  </tr>
+{else}
+  <tr>
+    <th>氏名</th><td>{$memberInfo.disp_name}</td>
+  </tr>
+{if $memberInfo.namekana1 ne '' || $memberInfo.namekana2 ne ''}
+  <tr>
+    <th>かな</th><td>{$memberInfo.namekana1} {$memberInfo.namekana2}</td>
+  </tr>
+{/if}
+{/if}
+{if $memberInfo.grade ne ''}
+  <tr>
+    <th>学年</th><td>
+      {if $memberInfo.grade != ""}
+        {assign var="grade" value=$memberInfo.grade}
+        {$arrGrade[$grade]}
+      {/if}
+    </td>
+  </tr>
+{/if}
+{if $memberInfo.univ_short_nm ne '' || $memberInfo.univ_name ne ''}
+  <tr>
+    <th>出身大学</th><td>{if $memberInfo.univ_short_nm ne '' }{$memberInfo.univ_short_nm}{else}{$memberInfo.univ_name}{/if}</td>
+  </tr>
+{/if}
+{if $memberInfo.school ne ''}
+  <tr>
+    <th>学部</th><td>{$memberInfo.school}</td>
+  </tr>
+{/if}
+{if $memberInfo.hs_sname ne '' || $memberInfo.hs_name ne ''}
+  <tr>
+    <th>出身高校</th><td>{if $memberInfo.hs_sname ne '' }{$memberInfo.hs_sname}{else}{$memberInfo.hs_name}{/if}</td>
+  </tr>
+{/if}
+{if $memberInfo.jrhigh_school ne ''}
+  <tr>
+    <th>出身中学校</th><td>{$memberInfo.jrhigh_school}</td>
+  </tr>
+{/if}
+{if $memberInfo.elementary_school ne ''}
+  <tr>
+    <th>出身小学校</th><td>{$memberInfo.elementary_school}</td>
+  </tr>
+{/if}
+{if $memberInfo.position ne ''}
+  <tr>
+    <th>ポジション</th><td>{$memberInfo.position}</td>
+  </tr>
+{/if}
+{if $memberInfo.height ne ''}
+  <tr>
+    <th>身長</th><td>{if $memberInfo.height eq '0'}?{else}{$memberInfo.height}cm{/if}</td>
+  </tr>
+{/if}
+{if $memberInfo.height ne ''}
+  <tr>
+    <th>体重</th><td>{if $memberInfo.weight eq '0'}?{else}{$memberInfo.weight}kg{/if}</td>
+  </tr>
+{/if}
+</table>
+</div>
+<div id="member_photo">
+{if $memberInfo.image_s_exist}
+        <img src="{$smarty.const.MEMBER_PHOTO_URL}/{$memberInfo.member_id}.jpg" alt="{$memberList.disp_name}"><br>
+{elseif $exists_noimage}
+        <img src="/files/member/noimage.jpg" alt="noimage"><br>
+{/if}
+</div>
+<br style="clear:both;">
+{if $memberInfo.contact_open_flg == "1" && $memberInfo.email2 ne '' }
+<p class="relation_link"><a href="/member_mail/id={$memberInfo.member_id}">メールを送る</a></p>
+{/if}
+{if $memberInfo.subData|count > 0}
+<h3>コメント</h3>
+<dl class="member_comment">
+{section name=mydata loop=$memberInfo.subData}
+<dt>{$memberInfo.subData[mydata].title}</dt>
+<dd>{$memberInfo.subData[mydata].comment|nl2br}</dd>
+{/section}
+</dl>
+{/if}
+</div>
+</div>
+{/module}

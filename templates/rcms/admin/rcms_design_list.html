@@ -1,0 +1,78 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}</h2>
+  {if $auth.design.insert}
+  <ul>
+    <li class="add"><a href="/management/rcms/rcms_design_edit/"><span>デザイン追加</span></a></li>
+    <li class="add"><a href="/wysiwyg/spaw/dialogs/img_library.php?noselect=1" onclick="window.open('/wysiwyg/spaw/dialogs/img_library.php?noselect=1','Image','width=400,height=420,scrollbars=no,toolbar=no,location=no,status=no,resizable=yes,screenX=120,screenY=100');return false;"><span>画像追加</span></a></li>
+  </ul>
+  {/if}
+</div>  <!-- end of div#list_right_bt -->
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_list/">RCMS</a>
+<a href="/management/rcms/rcms_design_list/">公式デザイン一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+  <h3 class="big">公式テンプレートCSS</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0" class="template_category">
+    <tr>
+      <th>カテゴリ
+          {if $smarty.request.tags[0]}
+            [{$smarty.request.tags[0]}] 選択中
+          {/if}
+      </th>
+    </tr>
+    <tr>
+      <td>
+        <ul>
+          <li><a href="/management/rcms/rcms_design_list/">すべて</a></li>
+          {foreach from=$tagList key=tag item=tmp}
+          <li><a href="/management/rcms/rcms_design_list/tags[]={$tag}">{$tag}</a></li>
+          {/foreach}
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  {pager info=$pageInfo}
+  {assign var="off" value=$formattedOfficial}
+  <table class="design_list">
+    {section name="i" loop=$off}
+    <tr class="row{$smarty.section.i.iteration%2}">
+      {section name="j" loop=$off[i]}
+      <td width="25%">
+        <div class="design_list">
+        {if $off[i][j].design_id != '' || $off[i][j].st_design_id != ''}
+          <p class="design_name">
+          {$off[i][j].design_nm}
+          {if $off[i][j].selected_flg eq '1'}<span>（適用中です）</span>{/if}
+          </p>
+          <p class="design_sample"><a href="/management/rcms/rcms_design_edit/design_id={$off[i][j].design_id}">
+          <img src="/images/css/{$off[i][j].thumbnail}.jpg"></a></p>
+
+          <p class="design_category">{$off[i][j].tag}</p>
+          表示順：{$off[i][j].order_no}
+
+        {else}
+            &nbsp;
+        {/if}
+        </div>
+      </td>
+      {/section}
+    </tr>
+    {/section}
+  </table>
+  {pager info=$pageInfo}
+
+</div>  <!-- end of div#list_main -->
+</div>
+
+{rcms_include file="management/footer.html"}

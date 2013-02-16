@@ -1,0 +1,147 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>広告集計結果ダウンロード</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/banner/banner_contents_list/">{$module_nm}</a>
+広告集計結果ダウンロード
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/banner/banner_contents_list/">広告枠一覧</a></li>
+  <li><a href="/management/banner/banner_list/">バナー一覧</a></li>
+  <li><a href="/management/banner/banner_client_list/">クライアント一覧</a></li>
+  <li><a href="/management/banner/banner_summary/" class="active">集計結果</a></li>
+  {if $auth.banner.insert}
+  <li><a href="/management/banner/banner_client_edit/wizard=1">広告枠簡単作成</a></li>
+  {/if}
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="banner_summary" method="POST" action="/management/banner/banner_summary_download/">
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <td><input type="checkbox" name="all_flg" id="all_flg" value="1" onclick="click_all_flg()" checked="checked" /><label for="all_flg">全ての集計結果をダウンロードする</label></td>
+    </tr>
+    <tr>
+      <td>　<input type="checkbox" name="banner_flg" id="banner_flg" value="1" disabled="true" onclick="click_banner_flg()" checked="checked" /><label for="banner_flg">バナー別の集計結果をダウンロードする</label><br />
+      　ダウンロードする情報を下から選択<span class="hint">(選択の無い場合は全バナーの集計結果をダウンロードします)</span><br />
+      　<select name="banner_id[]" size="6" id="banner_id" disabled="true" multiple="multiple">{html_options options=$banner_list}</select></td>
+    </tr>
+    <tr>
+      <td>　<input type="checkbox" name="banner_contents_flg" id="banner_contents_flg" disabled="true" value="1" onclick="click_contents_flg()" checked="checked" /><label for="banner_contents_flg">広告枠別の集計結果をダウンロード</label>
+<select id="csv_out" name="csv_out" disabled="true">
+{html_options options=$csv_out_options selected=$csv_out}
+</select><br /><br />
+
+
+      　ダウンロードする情報を下から選択<span class="hint">(選択の無い場合は全広告の集計結果をダウンロードします)</span><br />
+      　<select name="banner_contents_id[]" id="banner_contents_id" size="6" disabled="true" multiple="multiple">{html_options options=$banner_contents_list}</select></td>
+    </tr>
+    <tr>
+      <td>　<input type="checkbox" name="banner_client_flg" id="banner_client_flg" disabled="true" value="1" onclick="click_client_flg()" checked="checked" /><label for="banner_client_flg">クライアント別の集計結果をダウンロード</label><br />
+      　ダウンロードする情報を下から選択<span class="hint">(選択の無い場合は全クライアントの集計結果をダウンロードします)</span><br />
+      　<select name="banner_client_id[]" id="banner_client_id" size="6" disabled="true" multiple="multiple">{html_options options=$banner_client_list}</select></td>
+    </tr>
+  </table>
+  {buttonbox}
+    <button type="submit" name="download">ダウンロード</button>
+    <button type="reset" onclick="click_reset()">クリア</button>
+  {/buttonbox}
+</form>
+</div>
+</div>
+ <script type="text/javascript">
+ {literal}
+ <!--
+
+ var all_flg = document.getElementById('all_flg');
+ var banner = document.getElementById('banner_flg');
+ var banner_sel = document.getElementById('banner_id');
+ var contents = document.getElementById('banner_contents_flg');
+ var contents_sel = document.getElementById('banner_contents_id');
+ var client = document.getElementById('banner_client_flg');
+ var client_sel = document.getElementById('banner_client_id');
+
+ var csv_out = document.getElementById('csv_out');
+ var contents_mobile = document.getElementById('banner_contents_mobile_flg');
+
+ function click_all_flg() {
+     if(all_flg.checked) {
+         banner.disabled = "true";
+         banner_sel.disabled = "true";
+         contents.disabled = "true";
+         contents_sel.disabled = "true";
+         csv_out.disabled = "true";
+         client.disabled = "true";
+         client_sel.disabled = "true";
+
+     } else {
+         banner.disabled = "";
+         if(banner.checked) {
+             banner_sel.disabled = "";
+         }
+         contents.disabled = "";
+         if(contents.checked) {
+             contents_sel.disabled = "";
+             csv_out.disabled = "";
+         }
+         client.disabled = "";
+         if(client.checked) {
+             client_sel.disabled = "";
+         }
+     }
+ }
+
+ function click_banner_flg() {
+     if(banner.checked) {
+         banner_sel.disabled = "";
+     } else {
+         banner_sel.disabled = "true";
+     }
+ }
+
+ function click_contents_flg() {
+     if(contents.checked) {
+         contents_sel.disabled = "";
+         csv_out.disabled = "";
+     } else {
+         contents_sel.disabled = "true";
+         csv_out.disabled = "true";
+     }
+ }
+
+ function click_client_flg() {
+     if(client.checked) {
+         client_sel.disabled = "";
+     } else {
+         client_sel.disabled = "true";
+     }
+ }
+
+ function click_reset() {
+     banner.disabled = "true";
+     banner_sel.disabled = "true";
+     contents.disabled = "true";
+     contents_sel.disabled = "true";
+     csv_out.disabled = "true";
+     contents_sel.disabled = "true";
+     client.disabled = "true";
+     client_sel.disabled = "true";
+ }
+
+ -->
+ {/literal}
+ </script>
+
+{rcms_include file="management/footer.html"}

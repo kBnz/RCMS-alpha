@@ -1,0 +1,59 @@
+{module name="rcms_regist"}
+<h2 class="module_title"><span>サイト登録</span></h2>
+<div class="module_contents">
+{if $regist_flg}
+{$message}
+{else}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<form action="/{$page_sysnm}/" method="post" onSubmit="if(confirm('処理が完了するまで少し時間がかかりますので、ブラウザを閉じずにお待ちください。')){ldelim}$('subflg').disabled=true;return true;{rdelim}else{ldelim}return false;{rdelim}">
+
+<input type="hidden" name="MODE" value="{$MODE}">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+<table class="list" cellspacing="0" cellpadding="0">
+	<tbody>
+	<tr>
+		<th>ご希望のURL</th>
+		<td>http:// <input type="text" name="site_url" value="{$data.site_url}" style="width:80px;">{$rcms_base_url}/</td>
+		<td><p>半角英数字のみ有効です。記号は-（ハイフン）のみ使用可能です。</p></td>
+	</tr>
+
+	<tr>
+		<th>サイト名</th>
+		<td><input type="text" name="site_nm" value="{$data.site_nm}" style="width:150px;"></td>
+		<td><p>後からの変更も可能です。</p></td>
+	</tr>
+	<tr>
+		<th>パッケージ</th>
+		<td><input type="button" value="パッケージを選択する" onClick="window.open('/package_list/','package_list','width=900,height=900, menubar=no, toolbar=no, scrollbars=yes');return false;">
+		<input type="hidden" name="package_id" id="package_id" value="{$data.package_id}">
+		<div id="package_nm">{if $data.package_nm}{$data.package_nm}{else}これを選択すると、ある程度、できあがった状態で始めることができます{/if}</div>
+		<img id="package_img" {if $data.package_img}src="{$data.package_img}" width="128px" height="128px"{else}src="/images/common/spacer.gif"{/if}>
+		</td>
+	</tr>
+	<tr>
+		<th>メールアドレス</th>
+		<td><input type="text" name="email" value="{$data.email}" style="width:250px;"></td>
+		<td><p>管理者のログインIDになる他、お知らせ等も配信されます。</p></td>
+	</tr>
+	<tr>
+		<th nowrap>メールアドレス(確認)</th>
+		<td><input type="text" name="email2" value="{$data.email}" style="width:250px;"></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th>パスワード</th>
+		<td><input type="password" name="login_pwd" value="{$data.login_pwd}" style="width:150px;"><input type="checkbox" name="auto_pwd_flg" value="1">自動的に作成する</td>
+		<td><p>4文字以上で入力してください。</p></td>
+	</tr>
+	<tr>
+		<th>お名前</th>
+		<td><input type="text" name="name1" value="{$data.name1}" style="width:100px;"> <input type="text" name="name2" value="{$data.name2}" style="width:100px;"></td>
+		<td></td>
+	</tr>
+</tbody>
+</table>
+<p class="submit"><input type="submit" id="subflg" name="subflg" value="申し込む"></p>
+</form>
+{/if}
+</div>
+{/module}

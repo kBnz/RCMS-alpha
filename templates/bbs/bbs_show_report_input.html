@@ -1,0 +1,42 @@
+{module name="bbs_show_report_input"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+<!-- #main 本文スペース -->
+<h2>{'/modules/bbs/label/violation_report'|translate}{*違反報告*}</h2>
+
+<form method="post" action="/{$page_sysnm}/">
+  <input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}">
+  <input type="hidden" name="bbs_seq" value="{$baseItem.seq}">
+  <input type="hidden" name="MODE" value="report_verify">
+
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <table border="0" class="bbs_report_form">
+    <tr>
+      <th>{'/modules/bbs/label/violation_reason'|translate}{*違反理由*}</th>
+      <td><select name="reason_type">{html_options options=$bbs_reason_options selected=$formData.reason_type|escape}</select><span class="required">{'/label/required'|translate}{*必須*}</span></td>
+    </tr>
+    <tr>
+      <th>{'/modules/bbs/label/url_of_target_post'|translate}{*対象投稿のURL*}</th>
+      <td><a href="{$baseItem.targetUrl|escape}" target="_blank">{$baseItem.targetUrl|escape}</a></td>
+    </tr>
+    <tr>
+      <th>{'/label/content'|translate}{* 内容 *}</th>
+      <td><textarea name="text" style="width:400px;height:100px">{$formData.text|escape}</textarea><p><span class="required">{'/label/required'|translate}{*必須*}</span><span class="hint">{'/msg/less_than_letters'|translate:1000}{*1000文字以内*}</span></p></td>
+    </tr>
+    <tr>
+      <th>{'/label/name'|translate}{*名前*}</th>
+      <td><input type="text" name="name" style="width:150px" value="{$formData.name|escape}"></td>
+    </tr>
+    <tr>
+      <th>{'/label/mail_address'|translate}{*メールアドレス*}</th>
+      <td><input type="text" name="mail" style="width:150px" value="{$formData.mail|escape}"></td>
+    </tr>
+  </table>
+  <input type="submit" value="{'/label/confirm_btn'|translate}{*確認する*}">
+</form>
+</div>
+{/module}

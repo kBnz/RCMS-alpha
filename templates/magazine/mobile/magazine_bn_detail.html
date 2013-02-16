@@ -1,0 +1,14 @@
+<h2>[emoji:170]{'/modules/magazine/label/magazine_bn_detail'|translate}{*メールマガジンバックナンバー詳細*}</h2>
+{if $magazine_bn.err_str}
+    {$magazine_bn.err_str}
+{else}
+■{'/label/sending_time'|translate}{*送信日時*}:{$magazine_bn.send_ymdhi|pg_dateformat}<br/>
+■{'/label/subject'|translate}{*件名*}:{$magazine_bn.subject|escape}<br/>
+<br/>
+{if $magazine_bn.mail_type == "0"}{$magazine_bn.body|nl2br}{else}{$magazine_bn.body}{/if}
+
+<div style="text-align:right;font-size:small;">
+<a href="/magazine_detail/id={$magazine_bn.magazine_id}" class="small_text">{'/modules/magazine/label/detail_and_apply'|translate}</a><br/>{*参加申請*}
+<a href="/magazine_bn_list/id={$magazine_bn.magazine_id}{if $pageID}&pageID={$pageID}{/if}">{'/modules/magazine/label/back_number_list'|translate}{*メールマガジンバックナンバー一覧*}</a></div>
+{/if}
+<hr/>

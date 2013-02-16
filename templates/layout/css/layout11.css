@@ -1,0 +1,46 @@
+/* CSS Document */
+
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+------------------------------------------------------------ */
+body {
+	text-align:[site_align];
+}
+
+.mng_line {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#container {
+	width:[site_width][site_width2];
+	[site_width_option]
+	text-align:left;
+}
+
+#main_contents {
+	width:100%;
+}
+
+#sub_module2,
+#sub_module5 {
+	width:49%;
+	float:left;
+}
+
+#sub_module3,
+#sub_module6 {
+	width:49%;
+	float:right;
+}
+
+#bottom_contents {
+	clear: both;
+}
+
+#footer {
+	clear:both;
+}
+

@@ -1,0 +1,82 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if (confirm("削除してもよろしいですか？")) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm}編集</h2>
+  <ul>
+    {if $auth.$mt.insert}
+    <li class="add"><a href="/management/{$mt}/{$mt}_edit/"><span>チーム追加</span></a></li>
+    {/if}
+    <li class="normal"><a href="/management/{$mt}/{$mt}_history/{$team_id_key}={$team_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/{$mt}/{$mt}_edit/" method="POST">
+    <input type="hidden" name="{$team_id_key}" value="{$team_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+      <table width="100%">
+        <tr>
+          <th>チーム名称</th>
+          <td><input type="text" name="team_nm" size="40" value="{$data.team_nm|escape}" /></td>
+        </tr>
+        <tr>
+          <th>短縮名</th>
+          <td><input type="text" name="team_short_nm" size="40" value="{$data.team_short_nm|escape}" /></td>
+        </tr>
+        <tr>
+          <th>タイプ</th>
+          <td><select name="team_type">{html_options options=$arrTeam_type selected=$data.team_type}</select></td>
+        </tr>
+        <tr>
+          <th>チームURL</th>
+          <td><input type="text" name="team_url" size="80" value="{$data.team_url|escape}" /></td>
+        </tr>
+      </table>
+
+      {rcms_include file="management/relation_edit.html"}
+
+      {buttonbox}
+        {if $team_id == ""}
+          {if $auth.$mt.insert}
+            <button type="submit">更新する</button>
+          {/if}
+        {else}
+          {if $auth.$mt.update}
+            <button type="submit">更新する</button>
+          {/if}
+        {/if}
+        {if $auth.$mt.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+
+      {rcms_include file="management/update_comment.html" comment=$data.update_comment}
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

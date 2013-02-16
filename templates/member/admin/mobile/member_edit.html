@@ -1,0 +1,142 @@
+{rcms_include file="management/mobile/header.html"}
+
+<a href="/management/menu/menu/">{'/modules/admin_top'|translate}{*管理TOP*}</a>
+<hr class="for_mng"/>
+
+<h2 class="for_mng">{'/modules/member/label/member_edit'|translate}{*メンバー編集*}</h2>
+
+<hr class="for_mng"/>
+
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+
+  <form enctype="multipart/form-data" action="/management/member/member_edit/" method="post" name="member_edit" id="member_edit">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input name="MAX_FILE_SIZE" type="hidden" value="31457280" />
+    {if $formData.member_id != ""}
+      <input type="hidden" name="member_id" value="{$formData.member_id}" />
+    {/if}
+
+
+{*} {'/label/id_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*ID情報*}
+<h3 class="for_mng">{'/label/id_info'|translate}{*ID情報*}</h3>
+▼email<br />
+<input type="text" name="email" value="{$formData.email}" maxlength="200" {istyle type="en"} /><br />
+<span class="hint">{'/modules/member/msg/reminder_is_sent_to_this_address'|translate}{*ログインにも使用します。パスワードのリマインダーはこのアドレスに送信されます。*}</span><br />
+
+▼{'/label/login_id'|translate}{*ログインID*}<br />
+<input type="text" name="login_id" value="{$formData.login_id}" size="15" maxlength="200" /><br />
+<span class="hint">{'/modules/member/msg/explaination_for_login_id'|translate}{*emailを基本的にログインに使用しますが、メールアドレス以外をログインに使用したい場合はこちらに入力してください。*}</span><br />
+
+▼{'/label/login_password'|translate}{*ログインパスワード*}<br />
+{if $smarty.const.USE_HASHED_PASSWORD} 
+<input type="checkbox" name="change_password" id="change_password"  /><label for="change_password">{'/label/change_password'|translate}</label><br />
+<input type="text" name="login_pwd" value="" {istyle type="en"} /><br />
+{else}
+<input type="text" name="login_pwd" value="{$formData.login_pwd|escape}" {istyle type="en"} /><br />
+{/if}
+
+
+▼OpenID<br />
+<input type="text" name="openid" value="{$formData.openid}" /><br />
+
+▼{'/label/permission_for_login'|translate}{*ログインの許可*}<br />
+<input type="checkbox" name="login_ok_flg" value="1" {if $formData.login_ok_flg eq '1'}checked="checked"{/if} />{'/label/permit'|translate}{*許可する*}<br />
+<span class="hint">{'/modules/member/label/either_email_or_login_id_or_login_password_is_required'|translate}{*許可をする場合には、emailまたはログインIDとログインパスワードが必須です*}</span><br />
+
+{*} {'/label/profile_info'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*プロフィール情報*}
+<h3 class="for_mng">{'/label/profile_info'|translate}</h3>
+▼{'/label/name'|translate}{*名前*}<span style="color:red;">※</span><br />
+<input size="10" maxlength="50" id="name1" name="name1" type="text" value="{$formData.name1}" />
+<input size="10" maxlength="50" id="name2" name="name2" type="text" value="{$formData.name2}" style="margin-left:5px;" /><br />
+
+▼{'/label/name_kana'|translate}{*名前かな*}<br />
+<input size="10" maxlength="50" id="namekana1" name="namekana1" type="text" value="{$formData.namekana1}" />
+<input size="10" maxlength="50" id="namekana2" name="namekana2" type="text" value="{$formData.namekana2}" style="margin-left:5px;" /><br />
+
+▼{'/label/english_name'|translate}{*英字名*}<br />
+<input size="10" maxlength="100" id="nameroma1" name="nameroma1" type="text" value="{$formData.nameroma1}" />
+<input size="10" maxlength="100" id="nameroma2" name="nameroma2" type="text" value="{$formData.nameroma2}" style="margin-left:5px;" /><br />
+
+▼{'/label/nickname'|translate}{*ニックネーム*}<br />
+<input size="20" maxlength="100" id="nickname" name="nickname" type="text" value="{$formData.nickname}" /><br/>
+<span class="hint">{'/modules/member/msg/can_display_nickname_stead_of_name'|translate}{*ニックネームを入力すると、名前の代わりにニックネームが表示されるようになります。*}</span>
+
+{*
+▼生年月日<br />
+<select name="birth[y]" style="width:60px">{html_options options=$arrYear selected=$formData.birth.y}</select>年
+<select name="birth[m]" style="width:40px">{html_options options=$arrMonth selected=$formData.birth.m}</select>月
+<select name="birth[d]" style="width:40px">{html_options options=$arrDate selected=$formData.birth.d}</select>日<br />
+
+▼身長／体重<br />
+<input size="4" maxlength="3" id="height" name="height" type="text" value="{$formData.height}" onBlur="changeHankaku(this, 'number')" {istyle type="n"} />cm／
+<input size="4" maxlength="3" id="weight" name="weight" type="text" value="{$formData.weight}" onBlur="changeHankaku(this, 'number')" {istyle type="n"} />kg
+<span class="hint2">(半角数字)</span><br />
+
+▼現住所<br />
+▼郵便番号:<span class="hint2">(半角数字)</span><br />
+<input size="3" maxlength="3" id="zip_main" name="zip_main" type="text" value="{$formData.zip_main}" onBlur="changeHankaku(this, 'number')" {istyle type="n"} />&nbsp;-&nbsp;
+<input size="4" maxlength="4" id="zip_sub" name="zip_sub" type="text" value="{$formData.zip_sub}" onBlur="changeHankaku(this, 'number')" {istyle type="n"} /><br />
+
+▼都道府県:<br />
+<select id="tdfk_cd" name="tdfk_cd">{html_options options=$arrTdfk selected=$formData.tdfk_cd}</select> 海外:<input size="10" maxlength="100" id="tdfk_99" name="tdfk_99" type="text" value="{$formData.tdfk_99}" /><br />
+
+▼住所1:<br />
+<input size="40" maxlength="100" id="address1" name="address1" type="text" value="{$formData.address1}" /><br />
+
+▼住所2:(建物名など)<br />
+<input size="40" maxlength="100" id="address2" name="address2" type="text" value="{$formData.address2}" /><br />
+
+
+その他の連絡先<br />
+▼郵便番号:<span class="hint2">(半角数字)</span><br />
+<input size="3" maxlength="3" id="zip_main2" name="zip_main2" type="text" value="{$formData.zip_main2}" onBlur="changeHankaku(this, 'number')" />&nbsp;-&nbsp;
+<input size="4" maxlength="4" id="zip_sub2" name="zip_sub2" type="text" value="{$formData.zip_sub2}" onBlur="changeHankaku(this, 'number')" /><br />
+
+
+▼都道府県:<br />
+<select id="tdfk_cd2" name="tdfk_cd2">{html_options options=$arrTdfk selected=$formData.tdfk_cd2}</select> <br />
+▼海外:<input size="10" maxlength="100" id="tdfk2_99" name="tdfk2_99" type="text" value="{$formData.tdfk2_99}" /><br />
+
+▼住所1:<br />
+<input size="40" maxlength="100" id="address1_2" name="address1_2" type="text" value="{$formData.address1_2}" /><br />
+
+▼住所2:(建物名など)<br />
+<input size="40" maxlength="100" id="address2_2" name="address2_2" type="text" value="{$formData.address2_2}" /><br />
+
+
+▼電話:<span class="hint2">(半角数字ハイフン 000-0000-0000形式)</span><br />
+<input size="20" maxlength="20" id="tel" name="tel" type="text" value="{$formData.tel}" onBlur="changeHankaku(this, 'tel')" {istyle type="n"} /><br />
+
+▼FAX:<span class="hint2">(半角数字ハイフン 000-0000-0000形式)</span><br />
+<input size="20" maxlength="20" id="fax" name="fax" type="text" value="{$formData.fax}" onBlur="changeHankaku(this, 'tel')" {istyle type="n"} /><br />
+
+▼email:<span class="hint2">(半角文字)</span><br />
+ログインに使用するメールアドレスのほかにある場合は入力してください。<br />
+<input size="30" maxlength="200" id="email2" name="email2" type="text" value="{$formData.email2}" {istyle type="en"} /><br />
+
+▼連絡先の公開<br />
+<input name="contact_open_flg" id="contact_open_flg" type="checkbox" value="1" {if $formData.contact_open_flg == "1"}checked="checked"{/if} /><label for="contact_open_flg">公開する</label><br />
+
+*}
+
+{if $formData.member_id == ""}
+  {if $auth.member.insert}
+    <input type="hidden" name="MODE" value="insert" />
+    <input type="submit" value ="{'/label/create_new'|translate}{*新規作成*}" />
+  {/if}
+{else}
+  {if $auth.member.update}
+    <input type="hidden" name="MODE" value="update" />
+    <input type="submit" value ="{'/label/update_btn'|translate}{* 更新する *}" />
+  {/if}
+  {if $auth.member.delete}
+
+  {/if}
+{/if}
+
+  </form>
+
+
+
+{rcms_include file="management/mobile/footer.html"}

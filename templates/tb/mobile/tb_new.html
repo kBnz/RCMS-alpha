@@ -1,0 +1,14 @@
+{if $trackbackList|@count > 0}
+<h2>新着ﾄﾗｯｸﾊﾞｯｸ</h2>
+
+<ul>
+{foreach item=itemList from=$trackbackList name=mydata}
+<li>
+<a rel="nofollow" href="{$itemList.url}">{$itemList.title}</a>
+from {$itemList.blog_name}<br/>
+{$itemList.excerpt|strip_tags:false|mbtruncate:100}
+</li>
+{/foreach}
+</ul>
+<hr/>
+{/if}

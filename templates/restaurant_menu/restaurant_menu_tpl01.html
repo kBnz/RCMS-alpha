@@ -1,0 +1,96 @@
+{if $restaurant_menu_disp_type eq '0'}
+<div class="restaurant_menu02"><!--大カテ左-->
+	{else}
+<div class="restaurant_menu01">
+{/if}
+
+	<div class="sub_navi">
+
+		<ul> 
+{foreach from=$categoryL_list item=categoryL}
+			<li class="navi{$categoryL.no|escape} {if $categoryL.this}this{/if}"><a href="/{$page_sysnm}/category_id={$categoryL.restaurant_menu_category_id|escape}">{$categoryL.category_nm|escape}</a></li> 
+{/foreach}
+		</ul>
+	</div>
+
+	<div class="menu_contents">
+
+		<!--大カテゴリ写真-->
+		<div class="l_category_photo">
+
+		{if $category.img1_url || $category.img2_url}
+			<ul class="large">
+			{if $category.img1_url}
+				<li><p class="photo"><img alt="{$category.img1_text}" src="{$category.img1_url}" /></p><p class="text">{$category.img1_text}</p></li>
+			{/if}
+			{if $category.img2_url}
+				<li><p class="photo"><img alt="{$category.img2_text}" src="{$category.img2_url}" /></p><p class="text">{$category.img2_text}</p></li> 
+			{/if}
+			</ul>
+		{/if}
+
+		{if $category.img3_url || $category.img4_url || $category.img5_url}
+			<ul class="small">
+			{if $category.img3_s_url}
+					<li>{if $category.img3_title}<p class="title">{$category.img3_title}</p>{/if}<p class="photo"><img alt="{$category.img3_title}" src="{$category.img3_s_url}" /></p>{if $category.img3_text}<p class="text">{$category.img3_text}</p>{/if}{if $category.img3_price}<p class="price">{$category.img3_price}</p>{/if}</li> 
+			{/if}
+			{if $category.img4_s_url}
+					<li>{if $category.img4_title}<p class="title">{$category.img4_title}</p>{/if}<p class="photo"><img alt="{$category.img4_title}" src="{$category.img4_s_url}" />{if $category.img4_text}<p class="text">{$category.img4_text}</p>{/if}{if $category.img4_price}<p class="price">{$category.img4_price}</p>{/if}</li> 
+			{/if}
+			{if $category.img5_s_url}
+					<li>{if $category.img5_title}<p class="title">{$category.img5_title}</p>{/if}<p class="photo"><img alt="{$category.img5_title}" src="{$category.img5_s_url}" />{if $category.img5_text}<p class="text">{$category.img5_text}</p>{/if}{if $category.img5_price}<p class="price">{$category.img5_price}</p>{/if}</li> 
+			{/if}
+			</ul>
+		{/if}
+
+		</div><!--//l_category_photo-->
+
+{foreach from=$categoryS_list item=categoryS}
+		<div class="menu_list">
+{if $categoryS.category_nm}
+			<h3>{$categoryS.category_nm|escape}</h3> 
+{/if}
+{if $restaurant_menu_disp_layout eq '0'}
+			<div class="menu_left"> 
+{/if}
+
+		{foreach from=$categoryS.menu_list item=menu}
+		{if $restaurant_menu_disp_layout2 eq '1' && $menu.menu_img_url}
+				<div class="menu_album"><!--アルバム風表示-->
+		{else}
+			{if $menu.menu_img_url}
+					<div class="menu_photo">
+			{else}
+					<div class="menu_normal">
+			{/if}
+		{/if}
+			{if $menu.menu_img_url}
+					<p class="photo"><img alt="{$menu.menu_nm}" src="{$menu.menu_img_s_url}" /></p> 
+			{/if}
+					<div class="menu_detail">
+						{if !$menu.no_disp_flg}<h4>{$menu.menu_nm|escape|nl2br}</h4>{/if}
+						{if $menu.price}<p class="price">{$menu.price|escape|nl2br}</p>{/if}
+						{if $menu.menu_explain}<p class="detail">{$menu.menu_explain|escape|nl2br}</p>{/if}
+					</div>
+					
+				</div><!--menu_album or menu_photo or menu_normal-->
+		{/foreach}
+{if $restaurant_menu_disp_layout eq '0'}
+			</div> <!--//menu_left-->
+{/if}
+<!--小カテゴリ写真-->
+{if $categoryS.photo_list|@count > 0}
+	{if $restaurant_menu_disp_layout eq '0'}
+			<div class="s_category_photo_right"><!--右に表示-->
+	{else}
+			<div class="s_category_photo">
+	{/if}
+	{foreach from=$categoryS.photo_list item=photo}
+					<p><img src="{$photo.img_s_url}" /><br />{$photo.img_text}</p> 
+	{/foreach}
+			</div><!--//s_category_photo_right or _category_photo-->
+{/if}
+		</div><!--//menu_list-->
+{/foreach}
+	</div><!--//menu_contents_right or menu_contents-->
+</div><!--//restaurant_menu menu01-->

@@ -1,0 +1,28 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>更新履歴一覧</h2>
+<ul>
+{if $auth.simple_file.insert}
+<li class="add"><a href="/management/simple_file/simple_file_edit/"><span>新規作成</span></a></li>
+{/if}
+<li class="normal"><a href="/management/simple_file/simple_file_history/simple_file_id={$simple_file_id}"><span>{'/label/update_history'|translate}</span></a></li>
+
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/simple_file/simple_file_list/">{'/modules/simple_file'|translate}</a>
+<a href="/management/simple_file/simple_file_list/">{$module_nm}一覧</a>
+<a href="/management/simple_file/simple_file_edit/simple_file_id={$simple_file_id}">{$module_nm}編集</a>
+更新履歴一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/history_table.html" list=$history_list link="/management/simple_file/simple_file_edit/simple_file_id=$simple_file_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

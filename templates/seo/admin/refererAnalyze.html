@@ -1,0 +1,130 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function reanalyze_request($url) {
+    document.getElementById('reanalyzeURL').value = $url;
+    document.getElementById('MODE').value = 'REANALYZE';
+    document.getElementById('refererAnalyze_form').submit();
+}
+
+function showAtag(number) {
+    if(document.getElementById('result_space'+number).style.visibility == 'hidden') {
+        document.getElementById('result_space'+number).style.visibility = '';
+    }
+    else {
+        document.getElementById('result_space'+number).style.visibility = 'hidden';
+    }
+}
+
+function confirm_delete($url) {
+	// 選択された項目を削除します。\nよろしいですか？
+	if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        document.getElementById('reanalyzeURL').value = $url;
+        document.getElementById('MODE').value = 'DELETE';
+        document.getElementById('refererAnalyze_form').submit();
+    }
+}
+
+function turnback_request($url) {
+    document.getElementById('reanalyzeURL').value = $url;
+    document.getElementById('MODE').value = 'TURN_BACK';
+    document.getElementById('refererAnalyze_form').submit();
+}
+
+//-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2 class="seo">{'/modules/seo/label/referer_analysis'|translate}{*リファラー解析 *}
+{if $MODE=="DELETE_SHOW"} - {'/modules/seo/label/deleted_item'|translate}{*削除済アイテム*}{/if}
+</h2>
+<ul>
+{if $MODE=='DELETE_SHOW'}
+  <li class="normal"><a href="/management/seo/refererAnalyze/"><span>{'/modules/seo/label/referer_analysis'|translate}{*リファラー解析 *}</span></a></li>
+{else}
+  <li class="normal"><a href="/management/seo/refererAnalyze/MODE=DELETE_SHOW"><span>{'/modules/seo/label/deleted_item'|translate}{*削除済アイテム*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/seo/pageInfo/">{'/modules/seo'|translate}</a>
+{'/modules/seo/label/referer_analysis'|translate}
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> SEO >> リファラー解析 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="list_main">
+
+<form name="refererAnalyze_form" id="refererAnalyze_form" method="POST" action="/management/seo/refererAnalyze/">
+  <input type="hidden" name="MODE" id="MODE" value="" />
+  <input type="hidden" name="reanalyzeURL" id="reanalyzeURL" value="" />
+  <input type="hidden" name="pageID" value="{$currentPageID}" />
+
+  <fieldset class="search_box">
+    <input type="checkbox" name="hidden_flg" id="hidden_flg" value="1" {if $hidden_flg}checked="checked"{/if} /><label for="hidden_flg" style="margin-right:20px">{'/msg/hide_failure_analysis_data'|translate}{*解析失敗したデータを隠す*}</label>
+    <input type="submit" name="search" value="{'/label/redisplay'|translate}{*再表示*}" />
+  </fieldset>
+
+</form>
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+{if $MODE!="DELETE_SHOW"}
+      <th>{'/label/reanalysis'|translate}{*再解析*}</th>
+      <th>{'/label/delete'|translate}{*削除*}</th>
+{else}
+      <th>{'/label/initialize_btn'|translate}{*元に戻す*}</th>
+{/if}
+      <th>{'/label/analysis'|translate}{*解析*}</th>
+      <th>{'/label/referer'|translate}{*リファラー*}</th>
+      <th>{'/label/search_result'|translate}{*検索結果*}</th>
+      <th>{'/label/analysis_date'|translate}{*解析日時*}</th>
+    </tr>
+{foreach item=referer from=$refererList name=analyzed_item}
+    <tr>
+{if $MODE!="DELETE_SHOW"}
+      <td><input type="button" name="reanalyze_button" value="{'/label/reanalysis'|translate}{*再解析*}" onclick="reanalyze_request('{$referer.referer}')" /></td>
+      <td><input type="button" name="delete_button" value="{'/label/delete'|translate}{*削除*}" onclick="confirm_delete('{$referer.referer}')" /></td>
+{else}
+      <td><input type="button" name="turnback_button" value="{'/label/initialize_btn'|translate}{*元に戻す*}" onclick="turnback_request('{$referer.referer}')" /></td>
+{/if}
+      <td><img src="/images/management/{if $referer.exist_flg == 1}check.gif{else}batu.gif{/if}"></td>
+      <td><a href="{$referer.referer}">{if $referer.page_title}{$referer.page_title}{else}{$referer.sub_referer}{/if}</a><br />
+			<div id="result_space{$smarty.foreach.analyzed_item.iteration}" style="position:absolute;visibility:hidden;border:1px solid;background-color:white;width:450px;">
+			<table style="width:100%;">
+			<tr><th>{'/label/referer_link'|translate}{*リファラー先リンク*}</th></tr>
+			<tr>
+				<td>
+					{if $referer.exist_flg == 1}{$referer.inner_atag}
+					{elseif  $referer.exist_flg == 0}{'/modules/seo/msg/the_referer_page_was_not_found'|translate}{*リファラー先のページが存在しません。ページが削除されたか、移動した可能性があります。*}
+					{elseif  $referer.exist_flg == -1}{'/modules/seo/msg/no_links_in_the_referer_page'|translate}{*リファラー先のリンクが存在しません。ページが変更され、リンクが無くなった可能性があります。*}
+					{/if}
+				</td>
+			</tr>
+			</table>
+			</div>
+	  </td>
+      <td><a href="javascript:;" onclick="showAtag({$smarty.foreach.analyzed_item.iteration})">{'/label/result'|translate}{*結果*}</a></td>
+      <td>{$referer.analyze_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+    </tr>
+{/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}
+
+

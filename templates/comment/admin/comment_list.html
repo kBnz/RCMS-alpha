@@ -1,0 +1,115 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+<!--
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/comment/label/comment_write_list'|translate}{*コメント一覧*}</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/comment/comment_module_list/">{'/modules/comment'|translate}</a>
+{'/modules/comment/label/comment_write_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> コメント >> モジュール一覧 >> コメント一覧 *}
+
+<div class="clear"></div>
+
+    <div class="main_contents">
+
+    {rcms_include file="$mt/admin/minitabs.html" page_type=$ct comment_header_id=$header.comment_header_id}
+
+    <div class="list_main">
+
+        <form action="/management/comment/comment_list/" method="get" id="comment_list_form_search">
+            <fieldset class="search_box">
+                <span id="comment_list_keyword_search">
+                {'/label/keyword'|translate}：<input type="text" name="keyword" value="{$smarty.request.keyword}" />
+                </span>
+                <span id="comment_list_comment_header_id_search">
+                {'/label/module_name'|translate}：<select name="comment_header_id"><option value=""></option>{html_options options=$moduleList selected=$smarty.request.comment_header_id}</select>
+                </span>
+                <input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" />
+            </fieldset>
+        </form>
+
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+
+        <form method="POST" action="/management/comment/comment_list/" id="comment_list_form">
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" value="" />
+            <input type="hidden" name="module_id" value="{$module_id}" />
+
+            {pager info=$pageInfo}
+            <table width="100%" border="0" cellspacing="2" cellpadding="0" id="comment_list_table">
+            <tr>
+                {if $auth.comment.update || $auth.comment.delete}
+                <th id="comment_list_table_th_1" style="width:5%;"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'comment_id[]');" /></th>
+                {/if}
+                <th id="comment_list_table_th_2" style="width:5%;">{'/label/publish_status'|translate}{*公開*}</th>
+                <th id="comment_list_table_th_3" style="width:10%;">{'/label/post_date'|translate}{*投稿日時*}</th>
+                <th id="comment_list_table_th_4" style="width:40%;">{'/label/comments'|translate}{*コメント*}</th>
+                <th id="comment_list_table_th_5" style="width:10%;">{'/label/person_who_posted'|translate}{*投稿者名*}</th>
+                <th id="comment_list_table_th_6" style="width:10%;">{'/label/evaluation'|translate}{*評価*}</th>
+                <th id="comment_list_table_th_7" style="width:10%;">{'/label/module_name'|translate}{*モジュール名*}</th>
+                <th id="comment_list_table_th_8" style="width:10%;">{'/label/ip_address'|translate}{*IPアドレス*}</th>
+            </tr>
+            {foreach item=row from=$comment_list}
+            <tr>
+        {if $auth.comment.update || $auth.comment.delete}
+                <td id="comment_list_table_td_1"><input type="checkbox" name="comment_id[]" value="{$row.comment_id}" /></td>
+        {/if}
+                <td id="comment_list_table_td_2">
+                    {if $row.open_flg eq '1'}
+                    <img src="/images/management/check.gif" border="0" title="公開中" />
+                    {elseif $row.open_flg eq '0'}
+                    <img src="/images/management/batu.gif" border="0" title="非公開" />
+                    {elseif $row.open_flg eq '2'}
+                    <img src="/images/management/sankaku.gif" border="0" title="申請中" />
+                    {/if}
+                </td>
+                <td id="comment_list_table_td_3">{$row.create_date|pg_dateformat}</td>
+                <td id="comment_list_table_td_4"><a href="/management/comment/comment_edit/comment_id={$row.comment_id}">{$row.note|escape|nl2br|mb_truncate:80}</a></td>
+                <td id="comment_list_table_td_5">{$row.name|escape}</td>
+                <td id="comment_list_table_td_6">{if $row.rating}{$row.rating}{/if}</td>
+                <td id="comment_list_table_td_7">{$moduleList[$row.comment_header_id]}</td>
+                <td id="comment_list_table_td_8">{$row.ip_address|escape}</td>
+            </tr>
+            {/foreach}
+        </table>
+        {pager info=$pageInfo}
+
+        {if $auth.comment.update || $auth.comment.delete}
+            {buttonbox}
+                <p>{'/label/withselected'|translate}</p>{*選択した項目を一括で*}
+                {if $auth.comment.update}
+                <button type="submit" onclick="this.form.MODE.value='OPEN'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+                <button type="submit" onclick="this.form.MODE.value='CLOSE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+                {/if}
+                {if $auth.comment.delete}
+                <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+                {/if}
+            {/buttonbox}
+        {/if}
+
+        </form>
+
+    </div>
+
+</div>
+{rcms_include file="management/footer.html"}

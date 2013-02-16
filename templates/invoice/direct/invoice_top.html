@@ -1,0 +1,120 @@
+        <div id="invoice_header_title">
+        <table>
+            <tr>
+                <th colspan="4">{'/modules/invoice/label/invoice_header'|translate}</th>
+            </tr>
+        </table>
+        </div>
+
+        <div id="invoice_header_client">
+        <table>
+            <tr>
+                <td>
+                    〒{$formData.client_zip_main}-{$formData.client_zip_sub}<br/>
+                    {$formData.client_address1}<br/>
+                    {if $formData.client_address2}{$formData.client_address2}<br/>{/if}
+                    <span class="client_name">{'/label/messrs'|translate:$INVOICE_CLIENT_LIST[$formData.invoice_client_id]}</span>
+                    {if $formData.client_person_name}
+                    {if $formData.client_person_dept}{$formData.client_person_dept}  {/if}{if $formData.client_person_position}{$formData.client_person_position}  {/if}{'/label/mr_ms'|translate:$formData.client_person_name}<br/>
+                    {/if}
+                    <p>{'/modules/invoice/msg/request_as_follows'|translate}</p>
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <div id="invoice_header_date">
+        <table>
+            <tr>
+                <td>
+                {'/label/yyyymmdd'|translate:$print_yyyy:$print_mm:$print_dd}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                {if $formData.invoice_no}
+                {'/label/invoice_number'|translate}:{$formData.invoice_no}
+                {/if}
+                </td>
+            </tr>
+
+            {if $formData.total_page>1}
+            <tr>
+                <td>
+                1/{$formData.total_page}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        </div>
+
+        <div class="clr"></div>
+
+        <div id="invoice_header_subject">
+        <table>
+            <tr>
+                <th>{'/label/subject'|translate}</th>
+                <td>
+                {$formData.header_title}
+                </td>
+            </tr>
+            {if $formData.pay_condition}
+            <tr>
+                <th>{'/label/terms_of_payment'|translate}</th>
+                <td>
+                {$formData.pay_condition}
+                </td>
+            </tr>
+            {/if}
+            <tr>
+                <th>{'/label/transfer_bank'|translate}</th>
+                <td>
+                {$formData.bank_nm|escape}  {$formData.bank_branch_nm|escape}<br />
+                {$INVOICE_BANK_ACCOUNT_TYPE_LIST[$formData.bank_account_type]}  {$formData.bank_account_no|escape}  {$formData.bank_account_nm|escape}<br />
+                ※{'/modules/invoice/msg/about_transfer_commission'|translate}
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <div id="invoice_header_base">
+        <table>
+            <tr>
+                <td>
+                <div style="position:relative;">
+                    {section name=stamp_section loop=$smarty.const.INVOICE_STAMPS_COUNT}
+                    {assign var="stamp_idx" value=$smarty.section.stamp_section.index+1}
+                    {assign var="stamp_image_url" value="stamp"|cat:$stamp_idx|cat:"_image_url"}
+                    {assign var="stamp_image_key" value="stamp"|cat:$stamp_idx|cat:"_image"}
+                    <img src="{$formData.$stamp_image_url}?{$smarty.now}" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$stamp_image_key].height}px" id="{$stamp_image_url}" />
+                    {/section}
+                    <div style="font-weight:normal;font-size:20px;position:absolute;top:10px;right:0px;">
+                    {$INVOICE_BASE_LIST[$formData.invoice_base_id]}
+                    </div>
+                </div>
+                {if $formData.logo_image_url}
+                <p><img src="{$formData.logo_image_url}?{$smarty.now}" width="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].width}px" height="{$INVOICE_HEADER_IMAGE_KEY_LIST[$smarty.const.INVOICE_IMAGE_KEY_LOGO].height}px" id="logo_image_url" /></p>
+                {/if}
+                <p>〒{$formData.base_zip_main}-{$formData.base_zip_sub}</p>
+                <p>{$formData.base_address1}</p>
+                {if $formData.base_address2}<p>{$formData.base_address2}</p>{/if}
+                <p>{'/label/tel'|translate}{$formData.base_tel}</p>
+                {if $formData.base_fax}<p>{'/label/fax_no'|translate}{$formData.base_fax}</p>{/if}
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <div id="invoice_header_summary">
+        <table>
+            <tr>
+                <th>{'/label/total'|translate}</th>
+                <td>
+                \{$formData.total|number_format}({'/label/consumption_tax'|translate}：\{$formData.tax|number_format})
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <div class="clr"></div>

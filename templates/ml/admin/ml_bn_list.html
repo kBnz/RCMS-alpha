@@ -1,0 +1,90 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+<!--
+{literal}
+function confirmDelete(f){
+    if(confirm('選択されたバックナンバーを削除します。')) {
+        f.MODE.value = "DELETE";
+        f.submit();
+    }
+}
+
+{/literal}
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}バックナンバー</h2>
+<ul></ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}一覧</a>
+バックナンバー
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.ml_name}</h3>
+<ul class="minitabs">
+  <li><a href="/management/ml/ml_edit/ml_id={$ml_id}">基本設定</a></li>
+  <li><a href="/management/ml/ml_bn_list/ml_id={$ml_id}" class="active">バックナンバー</a></li>
+  <li><a href="/management/ml/ml_member_list/ml_id={$ml_id}">メンバー</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form method="POST" action="/management/ml/ml_bn_list/">
+    <input type="hidden" name="ml_id" value="{$ml_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="ml_pageID1" value="{$ml_PageID1}" />
+    <input type="hidden" name="ml_pageID2" value="{$ml_PageID2}" />
+
+    {pager info=$pageInfo}
+    <table width="100%">
+      <tr>
+{if $auth.ml.delete}
+        <th width="30"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'ml_bn_id[]')" /></th>
+{/if}
+        <th>送信</th>
+        <th>件名</th>
+        <th>発信者</th>
+        <th>受信日時</th>
+      </tr>
+    {foreach item=ml_bn_data from=$ml_bn name=ml_list}
+      <tr>
+{if $auth.ml.delete}
+      <td width="30"><input type="checkbox" name="ml_bn_id[]" value="{$ml_bn_data.ml_bn_id}" /></td>
+{/if}
+      <td>
+          {if $ml_bn_data.status == $smarty.const.ML_BN_STATUS_SENT}
+          <img src="/images/management/check.gif" />
+          {elseif $ml_bn_data.status == $smarty.const.ML_BN_STATUS_UNSENT}
+          <img src="/images/management/batu.gif" />
+          {else}
+          <img src="/images/management/sankaku.gif" />
+          {/if}
+      </td>
+      <td><a href = "/management/ml/ml_bn_detail/ml_id={$ml_id}&ml_bn_id={$ml_bn_data.ml_bn_id}">{if $ml_bn_data.subject}{$ml_bn_data.subject}{else}(無題){/if}</a></td>
+      <td>{if $ml_bn_data.member_id != ''}{$ml_bn_data.disp_name}{else}{$ml_bn_data.ml_member_id}{/if}</td>
+      <td>{$ml_bn_data.receive_date|pg_dateformat}</td>
+    </tr>
+    {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+  {if $auth.ml.delete && $smarty.foreach.ml_list.total > 0}
+    {buttonbox}
+      <p>選択した記事を一括で</p>
+      <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+    {/buttonbox}
+  {/if}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

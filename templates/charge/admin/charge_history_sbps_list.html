@@ -1,0 +1,67 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+<!--
+-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>SBPS課金履歴一覧</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_sbps_list/">SBPS課金</a>
+<a href="/management/charge/charge_history_sbps_list/charge_sbps_id={$charge_sbps_id}">SBPS課金履歴一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="charge/admin/minitabs.html" page_type='sbps'}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+  <form action="/management/{$mt}/{$ct}/" method="get">
+    メンバーID:<input type="text" name="member_id" value="{$smarty.request.member_id|escape}" size="14">
+    <input type="hidden" value="{$charge_sbps_id}" name="charge_sbps_id">
+    <input type="submit" value="検索" name="subflg">
+  </form>
+
+  <form  action="/management/charge/charge_list/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+  {pager info=$pageInfo}
+  <table style="width: 100%">
+    <tr>
+      <th>購入履歴ID</th>
+      <th>トラッキングID<br/>(SBPS)</th>
+      <th>購入日</th>
+      <th>入金日</th>
+      <th>購入者</th>
+      <th>金額</th>
+    </tr>
+{foreach from=$charge_history_list item=row}
+  <tr>
+    <td><a href="/management/charge/charge_history_sbps_edit/charge_history_sbps_id={$row.charge_history_sbps_id}">{$row.charge_history_sbps_id}</a></td>
+    <td>{$row.res_tracking_id}</td>
+    <td>{$row.purchase_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%)"}</td>
+    <td>{$row.pay_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%)"}</td>
+    <td><a target="_blank" href="/management/member/member_edit/member_id={$row.member_id}">{$row.member_id}:{$row.member_name|escape}</a></td>
+    <td>{$row.amount}</td>
+  </tr>
+
+{/foreach}
+  </table>
+  {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

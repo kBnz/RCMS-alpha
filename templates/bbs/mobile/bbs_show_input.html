@@ -1,0 +1,45 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+
+{if $formData.reply_seq eq ''}
+  <h2>{'/label/first_posting'|translate}{*新規投稿*}</h2>
+{else}
+  <h2>{'/label/reply_posting'|translate}{*返信投稿*}</h2>
+{/if}
+
+<form method="post" action="/{$page_sysnm}/">
+  <input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}" />
+  <input type="hidden" name="reply_seq" value="{$formData.reply_seq}" />
+  <input type="hidden" name="MODE" value="verify" />
+{if $formData.temp_imgfile}
+  <input type="hidden" name="temp_imgfile" value="{$formData.temp_imgfile}" />
+  {if $formData.temp_s_imgfile}
+    <input type="hidden" name="temp_s_imgfile" value="{$formData.temp_s_imgfile}" />
+  {/if}
+{/if}
+
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+
+{'/label/name'|translate}{*名前*}<br/>
+<input type="text" name="name" value="{if $formData.name|escape}{$formData.name|escape}{else}{$smarty.session.disp_name|escape}{/if}"/>※{'/label/required'|translate}{*必須*}{'/msg/less_than_letters'|translate:30}{*30文字以内*}<br/>
+{'/label/title'|translate}{*タイトル*}<br/>
+<input type="text" name="title" value="{$formData.title|escape}"/>※{'/label/required'|translate}{*必須*}{'/msg/less_than_letters'|translate:50}{*50文字以内*}<br/>
+{'/label/mail_address'|translate}{*メールアドレス*}<br/>
+<input type="text" name="mail" value="{if $formData.mail|escape}{$formData.mail|escape}{else}{$smarty.session.email|escape}{/if}" {istyle type="en"} /><br/>
+URL<br/>
+<input type="text" name="url" value="{$formData.url|escape}" {istyle type="en"} /><br/>
+{'/label/content'|translate}{* 内容 *}<br/>
+
+<textarea name="note" class="note" id="note">{$input_text|escape}</textarea>
+※{'/label/required'|translate}{*必須*}{'/msg/less_than_letters'|translate:2000}{*2000文字以内*}<br/>
+
+
+
+{'/label/delete_key'|translate}{*削除キー*}<br/>
+  <input name="delkey" type="password" value="" class="delkey" /><br/>
+
+  <input type="submit" class="submit" value="{'/label/confirm_btn'|translate}{*確認する*}" />
+</form>
+<hr/>

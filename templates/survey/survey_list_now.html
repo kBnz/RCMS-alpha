@@ -1,0 +1,17 @@
+{if $user_survey_list_now|@count > 0}
+{module name="survey_new_list"}
+<h2 class="module_title"><span>{'/modules/survey/label/surveying'|translate}{*実施中アンケート*}</span></h2>
+<div class="module_contents">
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<ul>
+{foreach from=$user_survey_list_now item=item name=survey_list}
+  {if $item.is_target == 1}
+    <li><a href="/survey_answer/id={$item.survey_id}">{$item.title|escape}</a>{if $item.answered} <span>[{'/modules/survey/label/answered'|translate}]{*回答済*}</span>{/if}</li>
+  {/if}
+{/foreach}
+</ul>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+<div class="relation_link"><a href="/survey_list/" class="small_text">{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</a></div>
+</div>
+{/module}
+{/if}

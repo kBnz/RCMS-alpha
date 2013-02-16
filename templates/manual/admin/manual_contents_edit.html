@@ -1,0 +1,157 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{head_include file="common/calendar_scripts.html"}
+<script type="text/javascript">
+<!--
+{literal}
+Event.observe(window, 'load', function() {
+    var use_content_obj =$('use_content');
+    var content_flg = use_content_obj.value;
+    if (content_flg == "common") {
+       $('write_text').style.display = "none";
+       $('write_select').style.display = "block";
+    }else{
+       $('write_text').style.display = "block";
+       $('write_select').style.display = "none";
+    }
+});
+
+function changeflg(flg){
+    var use_content_obj =$('use_content');
+    use_content_obj.value = flg;
+}
+
+{/literal}
+-->
+</script>
+<script src="/js/swfobject.js" type="text/javascript"></script>
+
+<div class="list_right_bt">
+<h2>{if $manual_title}「{$manual_title}」&nbsp{/if}{'/label/contents_edit'|translate}{* コンテンツ編集 *}</h2>
+
+<ul>
+    {if $rauth->canInsert("/manual/item/")}
+    <li class="add"><a href="/management/manual/manual_contents_edit/manual_header_id={$manual_header_id}"><span>{'/modules/manual/label/add_manual_contents_btn'|translate}</span></a></li>
+    {/if}
+    {if $manual_id}
+    <li class="normal"><a href="/management/manual/manual_history/manual_id={$manual_id}"><span>{'/label/update_history'|translate}</span></a></li>
+    <li class="normal"><a href="/management/accesscount/accesscount_list/module_type=manual&id={$manual_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+    <li class="view"><a href="{$smarty.const.ROOT_URL}/manual_detail/id={$manual_header_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+    {/if}
+</ul>
+
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/manual/manual_list/">{'/modules/manual'|translate}</a>
+<a href="/management/manual/manual_list/">{'/modules/manual/label/manual_list'|translate}</a>
+<a href="/management/manual/manual_contents_list/manual_header_id={$manual_header_id}">{if $manual_title}「{$manual_title}」&nbsp{/if}{'/modules/manual/label/manual_contents_list'|translate}</a>
+{'/label/contents_edit'|translate}
+{/pankuzu}
+
+<div style="float:right;">
+<a href="#relation_data">{'/modules/relation'|translate}：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}{'/label/items'|translate}{* 件 *}</a>
+<a href="/management/accesscount/accesscount_list/module_type=manual&id={$manual_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}{'/label/items'|translate}{* 件 *}</a>
+<a href="/management/comment/comment_list/module_type=manual&module_id={$manual_id}">{'/label/comments'|translate}:{if $formData.comment_cnt}{$formData.comment_cnt}{else}0{/if}{'/label/items'|translate}{* 件 *}</a>
+</div>
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/manual/manual_edit/manual_header_id={$manual_header_id}" >{'/modules/manual/label/manual_edit'|translate}</a></li>
+  <li><a href="/management/manual/manual_contents_list/manual_header_id={$manual_header_id}" >{'/modules/manual/label/manual_contents_list'|translate}</a></li>
+  <li><a href="/management/manual/manual_contents_edit/manual_header_id={$manual_header_id}" class="active">{'/label/contents_edit'|translate}</a></li>
+</ul>
+<div class="clear"></div>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/manual/manual_contents_edit/manual_header_id=$manual_header_id&manual_id=$manual_id"}
+
+{if $manual_id}
+    {lang_selector meta=$docmeta link="/management/manual/manual_contents_edit/manual_header_id=$manual_header_id&manual_id=$manual_id"}
+{/if}
+    <form name="manual_contents_edit" id="manual_contents_edit" action="/management/manual/manual_contents_edit/" method="POST" enctype="multipart/form-data">
+        {if $manual_id}
+            <input type="hidden" name="manual_id" value="{$manual_id}" />
+        {/if}
+        <input type="hidden" name="pageID" value="{$pageID}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="manual_header_id" value="{$manual_header_id}" />
+        <input type="hidden" name="use_content" id="use_content" value="{$formData.use_content}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+        <table width="100%">
+            <tr>
+                <th>{'/modules/manual/label/manual_title'|translate}</th>
+                <td>
+                    {$manual_title}
+                </td>
+            </tr>
+            <tr>
+                <th>{'/modules/manual/label/manual_contents_title'|translate}<span class="required">{'/label/required'|translate}</span></th>
+                <td><input type="text" name="contents_title" value="{$formData.contents_title}" size="80"></td>
+            </tr>
+            <tr>
+                <th>{'/label/sort'|translate}</th>
+                <td>
+                {if $docmeta.is_primary}
+                <input type="text" name="order_no" value="{$formData.order_no}" size="2" />
+                {else}
+                {$latestRow.order_no}
+                {/if}
+                </td>
+            </tr>
+        </table>
+
+        {rcms_include file="common/editor_info.html"}
+
+        <div id="write_text">
+            <ul class="topics_tab">
+                <li class="text">{'/label/write_content'|translate}</li>{* 内容をテキストで書く *}
+                <li class="pdf"><a href="javascript:void(0)" onclick="{literal}display('write_text');display('write_select');changeflg('common');return false;{/literal}">{'/modules/manual/label/manual_common_contents'|translate}</a></li>
+            </ul>
+            <div class="kiji_hensyu_center">
+                {$sw_html}
+            </div>
+        </div>
+
+        <div id="write_select" style="display:none">
+            <ul class="topics_tab2">
+                <li class="text">
+                <a href="javascript:void(0)" onclick="{literal}display('write_text');display('write_select');changeflg('text');return false;{/literal}">{'/label/write_content'|translate}</a>
+                </li>
+                <li class="pdf">{'/modules/manual/label/manual_common_contents'|translate}</li>
+            </ul>
+
+            <div class="kiji_hensyu_center">
+            <table width="650" border="0">
+                <tr>
+                    <td><select name="manual_common_id">{html_options options=$arrCommonContentsList selected=$formData.manual_common_id}</select></td>
+                <tr>
+            </table>
+            </div>
+        </div>
+
+
+{if $docmeta.is_primary}
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <!--公開設定-->
+    {rcms_include file="management/open_date_box.html" id=$manual_id data=$formData}
+{/if}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+    </form>
+</div>
+</div>
+
+
+{rcms_include file="management/footer.html"}

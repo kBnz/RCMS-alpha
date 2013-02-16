@@ -1,0 +1,63 @@
+{* プロフィールの入力フォーム *}
+{capture name=profiel}
+    {if $header.name_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.name_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr>
+            <th>{'/label/name'|translate} {*名前*} </th>
+            <td>{$formData.name|escape}</td>
+        </tr>
+    {/if}
+    {if $header.sex_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.sex_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr>
+            <th>{'/label/sex'|translate} {*性別*} </th>
+            <td>{$sex_options[$formData.sex]}</td>
+        </tr>
+    {/if}
+    {if $header.age_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.age_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr>
+            <th> {'/label/age_category'|translate} {*年齢w*}</th>
+            <td>{$age_options[$formData.age]}</td>
+        </tr>
+    {/if}
+    {if $header.area_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.area_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr>
+            <th> {'/label/prefecture'|translate} {*地域*}</th>
+            <td>{$tdfk_options[$formData.area]}</td>
+        </tr>
+    {/if}
+    {if $header.comment_flg == $smarty.const.VOTE_PROFILE_REQUIRE || $header.comment_flg == $smarty.const.VOTE_PROFILE_ON}
+        <tr>
+            <th> {'/label/comments'|translate} {*コメント*}</th>
+            <td>{$formData.comment|escape}</td>
+        </tr>
+    {/if}
+{/capture}
+{* //プロフィールの入力フォーム *}
+
+{module name="answer_verify"}
+<a name="comment_form"></a>
+<h2 class="module_title"><span>{$header.title}</span></h2>
+<div class="module_contents">
+<form name="vote_input" action="/{$page_sysnm}/" method="post">
+  <input type="hidden" name="answer" value="{$formData.answer}">
+  <input type="hidden" name="name" value="{$formData.name}">
+  <input type="hidden" name="sex" value="{$formData.sex}">
+  <input type="hidden" name="age" value="{$formData.age}">
+  <input type="hidden" name="area" value="{$formData.area}">
+  <input type="hidden" name="comment" value="{$formData.comment}">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+  <input type="hidden" name="id" value="{$smarty.request.id}">
+  <input type="hidden" name="mode" value="vote_fin">
+  
+  <p>{$arrQuestionList[$formData.answer]}</p>
+  <table>
+    {* プロフィール *}
+      {$smarty.capture.profiel}
+  </table>
+
+  <div class="entryform_bt">
+  <input type="button" value="{'/label/modify_btn'|translate}{*修正*}" class="vote_submit" onclick="document.vote_input.mode.value='vote_input';document.vote_input.submit();"/>
+  <input type="submit" value="{'/label/send_btn'|translate}{*送信*}" class="vote_submit">
+  </div>
+</form>
+</div>
+{/module}

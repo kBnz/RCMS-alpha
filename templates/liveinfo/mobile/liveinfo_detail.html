@@ -1,0 +1,65 @@
+<h2>{$liveinfoData.title}</h2>
+
+<table>
+  <tr>
+    <th>公演日</th>
+    <td>
+      {$liveinfoData.ymd}
+    </td>
+  </tr>
+  <tr>
+    <th>地域</th>
+    <td>
+      {$liveinfoData.area}
+    </td>
+  </tr>
+  <tr>
+    <th>場所</th>
+    <td>
+      {$liveinfoData.location}
+    </td>
+  </tr>
+  <tr>
+    <th>開演 ～ 閉演</th>
+    <td>
+      {$liveinfoData.from_time|default:"未定"}
+      ～
+      {$liveinfoData.to_time|default:"未定"}
+    </td>
+  </tr>
+  <tr>
+    <th>時間備考</th>
+    <td>
+      {$liveinfoData.time_note|nl2br}
+    </td>
+  </tr>
+  <tr>
+    <th>料金</th>
+    <td>
+      {$liveinfoData.charge|nl2br}
+    </td>
+  </tr>
+    <tr>
+    <th>説明</th>
+    <td>
+      {$liveinfoData.contents|nl2br}
+    </td>
+  </tr>
+</table>
+
+{if $preview}
+
+<form action="/management/liveinfo/liveinfo_edit/" method="POST">
+<input type="submit" value="このまま更新" />
+<input type="submit" value="戻って修正" onClick="this.form.MODE.value='MODIFY';" />
+<input type="hidden" name="MODE" value="UPDATE" />
+{foreach key=key item=item from=$hidden}
+{if $key ne 'MODE'}
+<input type="hidden" name="{$key}" value="{$item|escape:"html"}" />
+{/if}
+{/foreach}
+</form>
+
+{/if}
+<a href="/liveinfo_list/">ｲﾍﾞﾝﾄ一覧へ</a>
+

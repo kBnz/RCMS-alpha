@@ -1,0 +1,147 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    // 削除してよいですか？
+    if(confirm("{/literal}{'/msg/delete_confirmation'|translate}{literal}")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+function disabledChange(id) {
+    if(document.getElementById(id).disabled) {
+        document.getElementById(id).disabled = "";
+    } else {
+        document.getElementById(id).disabled = "true";
+    }
+}
+
+function showDestinationTest() {
+{/literal}
+    var request = '';
+    {foreach item=parameter from=$destination_parameter_list}
+    {if $parameter.type == 'option' || $parameter.type == 'not_option'}
+        field1 = document.getElementById('{$parameter.key_name}');
+        if(document.getElementById('valid_{$parameter.key_name}').checked) {literal} { {/literal}
+            for(ii=0;ii<field1.options.length;ii++) {literal} { {/literal}
+                if(field1.options[ii].selected) {literal} { {/literal}
+                    request = request + '&{$parameter.key_name}[]=' + field1.options[ii].value;
+            {literal} } {/literal}
+            {literal} } {/literal}
+        {literal} } {/literal}
+    {elseif $parameter.type == 'multi_option' || $parameter.type == 'not_multi_option' || $parameter.type == 'checkbox'}
+        field1 = document.getElementById('{$parameter.key_name}');
+        if(document.getElementById('valid_{$parameter.key_name}').checked) {literal} { {/literal}
+            for(ii=0;ii<field1.options.length;ii++) {literal} { {/literal}
+                if(field1.options[ii].selected) {literal} { {/literal}
+                    request = request + '&{$parameter.key_name}[]=' + field1.options[ii].value;
+            {literal} } {/literal}
+            {literal} } {/literal}
+        {literal} } {/literal}
+    {/if}
+    {/foreach}
+
+    document.getElementById('destination_test').src = '/direct/magazine/magazine_destination_result/'+request;
+{literal}
+}
+
+{/literal}
+-->
+</script>
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{'/modules/magazine/label/magazine_destination_edit'|translate}{*簡易メルマガあて先編集*}</h2>
+  <ul>
+    {if $rauth->canInsert("/magazine/item/")}
+    <li class="add"><a href="/management/magazine/magazine_destination_edit/magazine_id={$magazine_id}"><span>{'/label/add_destination_btn'|translate}</span></a></li>
+    {/if}
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine'|translate}</a>
+<a href="/management/magazine/magazine_list/">{'/modules/magazine/label/magazine_list'|translate}</a>
+<a href="/management/magazine/magazine_destination_list/">{'/modules/magazine/label/magazine_destination_list'|translate}</a>
+{'/modules/magazine/label/magazine_destination_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 簡易メルマガ >> 簡易メルマガ一覧 >> 簡易メルマガあて先一覧 >> 簡易メルマガあて先編集 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$header.magazine_name}</h3>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <form action="/management/magazine/magazine_destination_edit/" method="post" name="magazine_destination_edit" id="magazine_destination_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="destination_id" type="hidden" value="{$destination_id}" />
+    <input name="magazine_id" type="hidden" value="{$magazine_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div class="kiji_hensyu_top">
+    <table width="100%">
+      <tr>
+        <th>{'/label/destination_name'|translate}{*あて先名*}</th>
+        <td><input size="25" maxlength="50" name="title" type="text" value="{$formData.title|escape}" /></td>
+      </tr>
+    </table>
+    </div>
+    <div class="list_main">
+    <table width="650" border="0">
+      <tr>
+        <th></th>
+        <th>{'/modules/magazine/label/condition_use'|translate}</th>{*条件使用の有無*}
+        <th>{'/label/condition'|translate}</th>{*条件*}
+      </tr>
+      {foreach item=parameter from=$destination_parameter_list}
+      {assign var="key_name" value=$parameter.key_name}
+      <tr>
+        <th>{$parameter.disp_name}</th>
+        <td><input type="checkbox" name="valid_{$parameter.key_name}" id="valid_{$parameter.key_name}" value="1" {if $formData.$key_name}checked{/if} onchange=disabledChange('{$parameter.key_name}') /><label for="valid_{$parameter.key_name}">{'/msg/enable'|translate}{*有効にする*}</label></td>
+        <td>
+        {if  $parameter.type == 'option' || $parameter.type == 'multi_option' || $parameter.type == 'checkbox' || $parameter.type == 'not_option' || $parameter.type == 'not_multi_option'}
+          <select multiple="multiple" name="{$parameter.key_name}[]" id="{$parameter.key_name}" {if !$formData.$key_name}disabled="true"{/if}>{html_options options=$parameter.options selected=$formData.$key_name}</select>
+        {/if}
+        </td>
+      {/foreach}
+      </tr>
+    </table>
+
+    <table width="650" border="0">
+    <tr><th>
+    <input type="button" value="{'/label/search_btn'|translate}{*検索*}" onclick="showDestinationTest()" /><br />
+    <iframe src="" width="600" height="0" id="destination_test" frameborder="0" style="background: #eee;"></iframe>
+    </th></tr>
+    </table>
+    </div>
+
+    {buttonbox}
+        {if $destination_id != ""}
+            {if $rauth->canUpdate("/magazine/item/$magazine_id", $docmeta.lang)}
+            {* 更新権限がある *}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>{* 更新する *}
+            {/if}
+            {if $rauth->canDelete("/magazine/item/$magazine_id", $docmeta.lang)}
+            {* 削除権限がある *}
+                <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+            {/if}
+        {else}
+            {if $rauth->canInsert("/magazine/item/")}
+                <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>{* 追加する *}
+            {/if}
+        {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

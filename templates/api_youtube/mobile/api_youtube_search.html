@@ -1,0 +1,11 @@
+<h2>{'/modules/api_youtube/label/api_youtube_list'|translate}</h2>
+
+
+      {foreach from=$items item=item}
+<div style="text-align:center;font-size:small;">
+<a href="{$item.mobile_link}"><img src="{$item.thumb}" alt="{$item.title|truncate}" /></a><br/>
+<a href="{$item.mobile_link}">{$item.title|truncate}</a><br/>
+<br/>
+</div>
+      {/foreach}
+<hr/>

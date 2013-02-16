@@ -1,0 +1,10 @@
+{if $templateedit_id}
+    {assign var=file_path value=$smarty.const.SITE_TEMPLATE_PATH|cat:"/v2/"|cat:$templateedit_id|cat:"_"|cat:$conf_template_nm_list_by_column.$mt.$strTemplate|cat:".html"}
+    {if $file_path|rcms_file_exists}
+        {rcms_include file=$file_path}
+    {else}
+        {rcms_include file=$strTemplate}
+    {/if}
+{else}
+    {rcms_include file=$strTemplate}
+{/if}

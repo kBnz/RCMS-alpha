@@ -1,0 +1,30 @@
+{module name="blog_list"}
+<h2 class="module_title"><span>{'/modules/blog/label/blog_list'|translate}{* ブログ一覧 *}</span></h2>
+<div class="module_contents">
+<p class="rss"><a href="{$smarty.const.ROOT_URL}/files/blog/rss/RSS_BLOG_ALL.rdf"><img src="/images/modules/rss/rss.gif" alt="rss" width="36" height="17"></a></p>
+<p class="page_links">
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+</p>
+<ul>
+{foreach item=row from=$blog_list}
+    <li><a href="/blog_my_top/blog_id={$row.blog_id}">{$row.title|escape}</a>
+    {if $row.message != ""}<br><span>{$row.message}</span>{/if}
+    {if $row.new_items}<br>
+    {foreach from=$row.new_items item=article}
+    <a href="/blog_my_top/blog_id={$row.blog_id}">{$article.subject|escape}[{$article.post_ymdhi|pg_dateformat}]</a><br>
+    {/foreach}
+    {/if}
+    </li>
+{/foreach}
+</ul>
+<p class="page_links">
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+</p>
+<p class="relation_link"><a href="/blog_top/" class="small_text">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a></p>
+</div>
+
+
+{/module}
+{headblock}
+<link rel="alternate" type="application/rss+xml" title="{$smarty.const.SITE_TITLE} BLOG" href="{$smarty.const.ROOT_URL}/files/blog/rss/RSS_BLOG_ALL.rdf"></link>
+{/headblock}

@@ -1,0 +1,125 @@
+{module name="location_detail_nolist"}
+<script type="text/javascript">
+<!--
+{literal}
+function onLoad() {
+    Element.observe(window, 'resize', resizeMap, false);
+    resizeMap();
+}
+function resizeMap() {
+    var winHeight = document.all ? document.documentElement.clientHeight : window.innerHeight;  //ウィンドウの高さ
+    var map_height = String(winHeight - 50) + "px";
+    $( "googlemap{/literal}{$contents_id}{literal}" ).height = map_height;
+
+    var moduleWidth = $('contents{/literal}{$contents_id}{literal}').getDimensions().width;  //モジュールの幅
+    var map_width  = String(moduleWidth - 40) + "px";
+    $( "googlemap{/literal}{$contents_id}{literal}" ).width = map_width;
+
+    if (googlemap.document.getElementById( "map" )){
+        googlemap.document.getElementById( "map" ).style.width = map_width;
+        googlemap.document.getElementById( "map" ).style.height = map_height;
+    }
+}
+{/literal}
+//-->
+</script>
+<h2 class="module_title"><span>{$location_list.location_nm}</span></h2>
+<div class="module_contents">
+{if $err_msg}
+<span style="color:red">{$err_msg}</span>
+{/if}
+
+
+{if $location_list.location_category_name || $location_list.url || $location_list.zip_main || $location_list.zip_sub || $location_list.tdfk_cd || $location_list.address1 || $location_list.address2 || $location_list.inquiry || $location_list.comment || $location_list.photo_url || ($loc_ext_list|@count > 0)}
+<table class="list">
+  {if $location_list.location_category_name}
+      <tr>
+        <th>
+          {'/label/category'|translate}{*カテゴリ*}
+        </th>
+        <td>
+          {$location_list.location_category_name}
+        </td>
+      </tr>
+  {/if}
+  {if $location_list.url}
+      <tr>
+        <th>
+          URL
+        </th>
+        <td>
+          <a href="{$location_list.url}" target="_blank">{$location_list.url}</a>
+        </td>
+      </tr>
+  {/if}
+  {if $location_list.zip_main || $location_list.zip_sub }
+      <tr>
+        <th>
+          {'/label/postcode'|translate}{*郵便番号*}
+        </th>
+        <td>
+            {if $location_list.zip_main || $location_list.zip_sub}
+              {$location_list.zip_main} - {$location_list.zip_sub}
+          {/if}
+        </td>
+      </tr>
+  {/if}
+  {if $location_list.tdfk_cd || $location_list.address1 || $location_list.address2 }
+      <tr>
+        <th>
+          {'/label/address'|translate}{* 住所 *}
+        </th>
+        <td>
+          {$arrTdfk[$location_list.tdfk_cd]}{$location_list.address1}{$location_list.address2}
+        </td>
+      </tr>
+  {/if}
+  {if $location_list.inquiry}
+      <tr>
+        <th>
+          {'/modules/inquiry'|translate}{*問い合わせ先*}
+        </th>
+        <td>
+          {$location_list.inquiry|nl2br}
+        </td>
+      </tr>
+  {/if}
+  {* 拡張項目 *}
+  {if $loc_ext_list|@count > 0}
+  {foreach from=$loc_ext_list item=loc_ext}
+      <tr>
+      <th>{$loc_ext.title}</th>
+      <td>{$loc_ext.value|nl2br}</td>
+      </tr>
+  {/foreach}
+  {/if}
+  {if $location_list.comment }
+      <tr>
+        <td colspan="2">
+          {$location_list.comment|nl2br}
+        </td>
+      </tr>
+  {/if}
+
+  {if $location_list.photo_url }
+      <tr>
+        <td align="center" colspan="2">
+          <img src="{$location_list.photo_url}" />
+        </td>
+      </tr>
+  {/if}
+</table>
+{/if}
+
+{if $location_list.gmap_x && $location_list.gmap_y }
+  <iframe id="googlemap{$contents_id}" src="/direct/location/googlemap/id={$location_list.location_id}&show=nolist&_lang={$mylang}&target=googlemap{$contents_id}{if $location_category_id}&location_category_id={$location_category_id}{/if}{if $location_keyword}&location_keyword={$location_keyword}{/if}" name="googlemap" marginheight="0" marginwidth="0" frameborder="0" onload="resizeMap();"></iframe>
+{/if}
+</div>
+{/module}
+{if $location_list.gmap_x && $location_list.gmap_y }
+<script type="text/javascript">
+{literal}
+onLoad();
+{/literal}
+</script>
+{/if}

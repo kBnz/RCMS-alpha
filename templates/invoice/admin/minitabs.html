@@ -1,0 +1,19 @@
+<ul class="minitabs">
+
+    <li>
+        <a href="/management/invoice/invoice_header_list/" {if $page_type == 'invoice_header_list' || $page_type == 'invoice_header_edit'}class="active"{/if}>
+        {'/modules/invoice/label/invoice_header'|translate}</a>
+    </li>
+
+    <li>
+        <a href="/management/invoice/invoice_base_list/" {if $page_type == 'invoice_base_list' || $page_type == 'invoice_base_edit'}class="active"{/if}>
+        {'/modules/invoice/label/invoice_base_master'|translate}</a>
+    </li>
+
+    <li>
+        <a href="/management/invoice/invoice_client_list/" {if $page_type == 'invoice_client_list' || $page_type == 'invoice_client_edit'}class="active"{/if}>
+        {'/modules/invoice/label/invoice_client_master'|translate}</a>
+    </li>
+
+</ul>
+<div class="clear"></div>

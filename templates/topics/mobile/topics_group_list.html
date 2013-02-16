@@ -1,0 +1,10 @@
+<h2>[emoji:158]{'/modules/topics/label/topics_group'|translate}{* 記事グループ *}</h2>
+
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo }
+{section name=mydata loop=$topicsList}
+    ▼<a href="/{$link_page_sysnm}/topics_group_id={$topicsList[mydata].topics_group_id}">{$topicsList[mydata].group_nm}</a>
+    <div style="text-align:right;font-size:small;">{if $topicsList[mydata].description}[{$topicsList[mydata].description}]{/if}</div>
+{/section}
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo}
+
+<hr/>

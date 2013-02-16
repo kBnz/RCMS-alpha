@@ -1,0 +1,113 @@
+{literal}
+<!-- デバイスセレクタを表示するテンプレート -->
+<script id="rcms_ui_device_selector_tmpl" type="text/x-jquery-tmpl">
+<div class="rcms_ui_device_selector_container">
+    <ul>
+        {{each data}}
+            <!-- optionのvalueをdata-opt-valに持って、クラス名を引き継ぎぐ -->
+            <li data-opt-val="${value}"><span class="${className}"></span>${text}</li>
+        {{/each}}
+    </ul>
+</div>
+</script>
+<script type="text/javascript">
+
+(function($) {
+    /**
+    * プルダウンをアイコンに変換するプラグイン
+    * 切り替え時には対象要素のchangeイベントが実行される
+    *
+    * @対象要素  <select>タグ
+    * @param   isMultiple   bool        マルチプルとして使いたい場合はtrue
+    * @使用例
+    *    <select name="test" id="hoge" multiple="multiple">
+    *         <option value="01" class="selector" selected>A</option>
+    *         <option value="02" class="selector">B</option>
+    *        <option value="03" class="selector"selected>C</option>
+    *    </select>
+    *
+    *   selectタグがリストに置き換わる
+    *
+    *       $("#hoge").rcmsDeviceSelector({
+    *           isMultiple: true
+    *       });
+    *
+    */
+
+    $.fn.rcmsDeviceSelector = function(options) {
+
+        // 引数を用意
+        var options = $.extend({
+            isMultiple: false
+        }, options);
+
+
+        // グローバル変数
+        var targetElm,
+            targetOpts,
+            selectorContainer;
+
+        // セレクタを生成
+        function createSelector(){
+            var tmpArray = {data:[]};  // jQuery-tmpの{{each}}{{/each}}で回すための配列
+            $(targetOpts).each(function() {
+                tmpArray.data.push({value: $(this).val(), text: $(this).text(), className: this.className});
+            });
+            var html = $("#rcms_ui_device_selector_tmpl").tmpl(tmpArray);
+            targetElm.after(html);
+            selectorContainer = targetElm.next(".rcms_ui_device_selector_container");
+        }
+
+        // デバイスの切り替え
+        function toggleDevice(){
+            var $this = $(this);
+            // multipuleじゃない時
+            if (!options.isMultiple) {
+                var v = $this.attr("data-opt-val"); // .data()だと、"01"のような文字列が"1"に置き換えられるので、暫定的に.attr()を使用
+                // 選択されている要素のselectクラスを外し、クリックした要素にselectクラスを付けてoptionを選択する
+                $(".rcms_ui_device_selector_container .select").removeClass("select");
+                $this.addClass("select");
+                targetElm.val( v );
+            // multipuleな時
+            } else {
+                if ($this.hasClass("select")) {
+                    $this.removeClass("select");
+                } else {
+                    $this.addClass("select");
+                }
+                var v = [];
+                targetOpts.attr("selected", false); // すべての選択を解除
+                // selectクラスが付いているものに対応するoptionを選択する
+                $(".rcms_ui_device_selector_container .select").each(function() {
+                    v.push($(this).attr("data-opt-val"));
+                });
+                targetElm.val( v );  //multipleはvを配列で渡す
+            }
+            targetElm.trigger("change");
+        }
+
+        // メインシーケンス
+        return this.each(function(){
+            targetElm  = $(this);
+            targetOpts = $("option",this);
+
+            // 対象要素を隠す
+            targetElm.hide();
+
+            // セレクタを生成
+            createSelector();
+
+            // 最初に選択されている要素にselectクラスを追加
+            targetElm.children(":selected").each(function() {
+                var data = $(this).val();
+                $("[data-opt-val=" + data +"]").addClass("select");
+            });
+            // セレクタにイベントを登録
+            $("li",selectorContainer).click(toggleDevice);
+
+        });
+    };
+})(jQuery);
+
+</script>
+{/literal}

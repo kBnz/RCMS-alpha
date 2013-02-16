@@ -1,0 +1,107 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="JavaScript" type="text/JavaScript">
+{literal}
+<!--
+function confirmDelete() {
+    if(confirm('選択されたサポートフォーラムを削除します。')) {
+        document.supportforum_list_form.MODE.value = 'DELETE';
+        document.supportforum_list_form.submit();
+    }
+}
+
+function switchVal(id, mode, val) {
+    document.switch_form.id.value   = id;
+    document.switch_form.MODE.value = mode;
+    document.switch_form.val.value  = val;
+    document.switch_form.submit();
+}
+
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_supportforum_list/">サポート</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+    <form name="supportforum_list_form" method="POST" action="/management/rcms/rcms_supportforum_list/">
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+
+        <fieldset class="search_box">
+            <label for="s_module_type">モジュール</label><select name="s_module_type" id="s_module_type">{html_options options=$moduleList selected=$s_module_type}</select>
+            <label for="s_category_id">カテゴリ</label><select name="s_category_id" id="s_category_id">{html_options options=$supportforum_category selected=$s_category_id}</select>
+            <label for="s_forum_text">タイトル・内容</label><input type="text" id="s_forum_text" name="s_forum_text" size="20" value="{$s_forum_text|escape}" />&nbsp;&nbsp;
+<input type="submit" value="検索する" />
+        </fieldset>
+
+        {pager info=$pageInfo}
+        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+            <tr>
+                <th style="width:80px">{'モジュール'|sort_link:module_nm:$sort_url:$sort:$desc}</th>
+                <th style="width:80px">{'カテゴリ名'|sort_link:supportforum_category_id:$sort_url:$sort:$desc}</th>
+                <th>{'タイトル'|sort_link:title:$sort_url:$sort:$desc}</th>
+                <th>{'投稿者'|sort_link:name:$sort_url:$sort:$desc}</th>
+                <th>{'回答数'|sort_link:supportforum_cnt:$sort_url:$sort:$desc}</th>
+                <th style="width:60px">{'お役立ち度'|sort_link:good_cnt:$sort_url:$sort:$desc}</th>
+                <th>{'閲覧数'|sort_link:view_cnt:$sort_url:$sort:$desc}</th>
+                <th>Q&A</th>
+                <th style="width:130px">{'最終更新日時'|sort_link:thread_update:$sort_url:$sort:$desc}</th>
+            </tr>
+            {foreach item=supportforum_data from=$supportforum_list}
+            <tr>
+                <td>{$supportforum_data.module_nm|escape}</td>
+                <td>{$supportforum_data.category_name|escape}</td>
+                <td><a href="/management/rcms/rcms_supportforum_detail_list/supportforum_id={$supportforum_data.rootnode}&pageID={$pageInfo.pageNo}">{$supportforum_data.title|escape}</a>{if $supportforum_data.new_flg}<img src="/images/management/forum/icon_new.gif" alt="new">{/if}{if $supportforum_data.resolved_flg==1}<img src="/images/management/forum/solved.gif" alt="解決済み">{/if}</td>
+                <td>{$supportforum_data.name|escape}</td>
+                <td>{$supportforum_data.supportforum_cnt}件</td>
+                <td>{$supportforum_data.good_cnt|escape}</td>
+                <td>{$supportforum_data.view_cnt|escape}</td>
+                <td>{if $supportforum_data.qa_flg}○{/if}</td>
+                <td>{$supportforum_data.thread_update|pg_dateformat}</td>
+            </tr>
+            {/foreach}
+        </table>
+        {pager info=$pageInfo}
+
+  {if $auth.rcms.update || $auth.rcms.delete}
+    {buttonbox}
+      <p>選択した投稿を一括で </p>
+      {if $auth.rcms.update}
+        <button type="submit" onclick="this.form.MODE.value='OPEN'">公開にする</button>
+        <button type="submit" onclick="this.form.MODE.value='CLOSE'">非公開にする</button>
+      {/if}
+      {if $auth.rcms.delete}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+  {/if}
+
+  </form>
+
+  {* 公開非公開・表示順のフォーム *}
+  <form action="/management/rcms/rcms_supportforum_list/" method="post" name="switch_form">
+    <input type="hidden" name="pageID" value="{$pageInfo.pageNo}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="id" value="" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="val" value="" />
+    <!--検索条件-->
+    <input type="hidden" name="s_forum_text" value="{$s_forum_text|escape}" />
+  </form>
+
+</div>
+{rcms_include file="management/footer.html"}

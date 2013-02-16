@@ -1,0 +1,28 @@
+<link href="/css/error.css" rel="stylesheet" type="text/css" />
+<div id="site">
+    <div id="list">
+        <div id="list-header"></div>
+        <div id="list-conetnts">
+            <h2>{$plan_title|escape|nl2br}</h2>
+            <p class="des">
+            {if $plan_date}
+            [{'/label/schedule'|translate}{*予定*}]<br>
+            {$plan_date|escape|nl2br}
+            <br>
+            {/if}
+            {if $plan_contents}
+            [{'/modules/page/label/works'|translate}{*作業内容*}]<br>
+            {$plan_contents|nl2br}
+            {/if}
+            </p>
+
+            <p style="margin-top: 10px;">{$message|escape|nl2br}<br></p>
+
+            {if $replacement_link}
+            <p style="margin-top: 10px;font-size:14px;"><a href="{$replacement_link}">{if $replacement_link_title}{$replacement_link_title}{else}{$replacement_link}{/if}</a><br></p>
+            {/if}
+
+        </div>
+        <div id="list-footer"></div>
+    </div>
+</div>

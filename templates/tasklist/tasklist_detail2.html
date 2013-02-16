@@ -1,0 +1,74 @@
+{module name="tasklist_detail2"}
+<h2 class="module_title"><span>{$TasklistData.cate_title}</span></h2>
+<div class="module_contents">
+<p class="add_item"><a href="/tasklist_edit/">{'/modules/tasklist/label/create_new_task_btn'|translate}{* 課題追加 *}</a></p>
+
+<p class="topics_ymd">{'/label/deadline'|translate}{* 期限 *} : {$TasklistData.limit_date|default:'/label/no_input'|translate}{* 入力なし *}</p>
+
+<table class="list tasklist_list">
+  <tr>
+    <th>{'/label/content'|translate}{* 内容 *}</th>
+    <td>{$TasklistData.bug_explanation|escape|nl2br}</td>
+  </tr>
+  <tr>
+    <th>{'/label/representative'|translate}{* 担当者 *}</th>
+    <td>{$TasklistData.member_name|escape}</td>
+  </tr>
+  <tr>
+    <th>{'/modules/tasklist/label/inscribe_date'|translate}{* 記入日時 *}</th>
+    <td>{$TasklistData.inst_ymdhi|pg_dateformat|escape}</td>
+  </tr>
+  <tr>
+    <th>{'/label/inscriber'|translate}{* 記入者 *}</th>
+    <td>{$TasklistData.insert_nm|escape}</td>
+  </tr>
+  <tr>
+    <th>{'/label/category'|translate}{* カテゴリ *}</th>
+    <td>{$TasklistData.category_txt}</td>
+  </tr>
+   <tr>
+    <th>{'/label/attach_files'|translate}{* 添付ファイル *}</th>
+    <td>
+        {foreach from=$task_file item=item key=key}
+          <a href="{$item.link}">{$item.title}.{$item.extension}</a><br>
+        {/foreach}
+    </td>
+  </tr>
+  <tr>
+    <th>{'/label/importance'|translate}{* 重要度 *}</th>
+    <td class="serious{$TasklistData.serious_flg}">{$TasklistData.serious_flg_txt}</td>
+  </tr>
+  <tr>
+    <th>{'/label/priority'|translate}{* 優先度 *}</th>
+    <td class="priority{$TasklistData.priority_flg}">{$TasklistData.priority_flg_txt}</td>
+  </tr>
+  <tr>
+    <th>{'/label/status'|translate}{* 状態 *}</th>
+    <td>{$TasklistData.syori_flg_txt}</td>
+  </tr>
+</table>
+
+<br style="clear:both;">
+
+{if $tasklistChildrenData}
+  <h2>{'/modules/tasklist/label/answer_to_this_task'|translate}{* この記事への返信 *}</h2>
+<table class="list">
+  <tr>
+    <th>{'/label/content'|translate}{* 内容 *}</th>
+    <th>{'/label/inscriber'|translate}{* 記入者 *}</th>
+    <th>{'/modules/tasklist/label/inscribe_date'|translate}{* 記入日時 *}</th>
+  </tr>
+  {section name=mydata loop=$tasklistChildrenData}
+  <tr>
+    <td>{$tasklistChildrenData[mydata].bug_explanation|nl2br}</td>
+    <td>{$tasklistChildrenData[mydata].insert_nm}</td>
+    <td>{$tasklistChildrenData[mydata].inst_ymdhi|pg_dateformat}</td>
+  </tr>
+  {/section}
+</table>
+{/if}
+<!--br style="clear:both;"-->
+
+<div class="relation_link"><a href="/tasklist_list/" class="small_text">{'/modules/tasklist/label/tasklist_list'|translate}{* 課題一覧 *}</a></div>
+</div>
+{/module}

@@ -1,0 +1,61 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link href="/css/blog/blog_management.css" rel="stylesheet" type="text/css" media="screen,print">
+
+
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_set'|translate}{*グループ選択*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist/label/memberregist_edit'|translate}</a>
+<a href="/management/memberregist/memberregist_change/">{'/modules/memberregist/label/memberregist_change'|translate}</a>
+{if $type_new == 3}
+{'/modules/memberregist/label/memberregist_set'|translate}
+{/if}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 新規メンバー登録設定 >> 新規メンバー登録条件 >> グループ選択 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  {if $errors} <!-- 戻ってきたときにエラー表示 -->
+  {rcms_include file="management/errors_box.html" errors=$errors}
+  {/if}
+
+  <h3>{'/label/groupsettings'|translate}{*グループの選択*}</h3>
+
+  <p class="lead">{'/modules/memberregist/msg/select_the_group'|translate}{*次のリストから新規登録者を招待できるグループを選んでください。*}</p>
+
+  <form method="POST" action="/management/memberregist/memberregist_setgroup/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <table width="100%">
+      <tr>
+        <th colspan="2">{'/modules/memberregist/label/inviting_group'|translate}{*招待できるグループ*}</th>
+      </tr>
+    {foreach from=$group_data item="group"}
+      <tr>
+        {if $group.invite == 1}
+          <td><input type="checkbox" name="{$group.group_id}" value="1" checked="checked" /></td>
+        {else}
+          <td><input type="checkbox" name="{$group.group_id}" value="1" /></td>
+        {/if}
+        <td width="100%">{$group.group_nm}</td>
+      </tr>
+    {/foreach}
+    </table>
+
+    {buttonbox}
+      <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+    {/buttonbox}
+  </form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,43 @@
+{if $smarty.const.PAGE_MODIFY_MODE eq 0}
+
+    {* 構築中の警告 *}
+    {if $rcms_build_alert}
+        <div style="color:red;font-size:10px;">
+            「構築中」のまま半年以上経過した場合、サイトデータが削除される場合があります。ある程度、サイトができてきたら「公開中」にしましょう！
+        </div>
+    {/if}
+
+    {* 利用規約の警告 *}
+    {if $sitedata.status eq '80'}
+        <div style="color:red;font-size:10px;">
+            構築されたサイトが利用規約に違反している可能性があります。改善がされない場合は予告なく退会になる場合があります。
+            違反内容が不明な場合には<a href="http://www.diverta.co.jp/inquiry_detail/id=1" traget="_blank">こちら</a>までお問い合わせください。
+        </div>
+        {/if}
+
+    {* 使用料金延滞の警告 *}
+    {if $sitedata.status eq '70'}
+        <div style="color:red;font-size:10px;">
+            ご入金の案内を何度か差し上げておりますが、ご入金が確認できない為、このまま未入金の状態が続きますとサイトの停止を行います。
+            なるべく早めにご入金をいただくか、<a href="mailto:support@diverta.co.jp">support@diverta.co.jp</a>までご連絡をお願いいたします。
+        </div>
+    {/if}
+
+    {* 試用版の表示 *}
+    {if $sitedata.plan eq '20' && !($mt eq 'menu' && $ct eq 'payment')}
+        <div id="probation">
+            現在、試用版です。
+            {if $sitedata.free_limit_ymd}試用終了まであと{$trial_limit_day}日({$sitedata.free_limit_ymd})です。{/if}
+            {if $smarty.session.super_flg}
+                購入希望は
+                <a href="mailto:{$sitedata.oem_email}?body={$smarty.const.ROOT_URL}/">{$sitedata.oem_email}</a>
+                までサイトURLを明記してメール送信してください。折り返し購入方法をご連絡いたします。
+            {else}
+                スーパーユーザーでログインして購入をしてください。
+            {/if}
+        </div>
+    {/if}
+
+{/if}
+
+{rcms_include file="menu/admin/direct_page_menu.html"}

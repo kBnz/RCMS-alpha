@@ -1,0 +1,91 @@
+{if $ans_list|@count > 0}
+{module name="survey_report"}
+<h2 class="module_title"><span>{'/modules/survey/label/survey_reseach_result'|translate}{*アンケート集計結果*}</span></h2>
+<div class="module_contents">
+<h2>{$header.title} </h2>
+<table>
+  {section loop=$ans_list name=i}
+    <tr>
+      <td>
+        <div class="survey_q">
+          Q{$ans_list[i].shownum}.{$ans_list[i].question|nl2br}{if $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_CHECKBOX}　({'/label/multiple_answers'|translate}){*複数回答*}{/if}
+          {if $ans_list[i].require == 1}<span class="survey_require">{'/label/require_answer'|translate}{*必須回答*}</span>{/if}
+
+          <div class="survey_a">
+            {if $ans_list[i].public_total == 0}
+              <!-- 長文の場合 -->
+              {if $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_TEXTAREA}
+                {foreach from=$ans_list[i].answers.text name=f item=item1}
+                  <p style="padding-top:5px;border-top: 1px dashed #888888">{$item1|escape|nl2br}</p>
+                {/foreach}
+              <!-- 短文の場合 -->
+              {elseif $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_TEXT}
+                {foreach from=$ans_list[i].answers.text name=f item=item1}
+                  {if $smarty.foreach.f.first}<ul>{/if}
+                  <li>{$item1|escape}</li>
+                  {if $smarty.foreach.f.last}</ul>{/if}
+                {/foreach}
+              <!-- 単一選択の場合 -->
+              {elseif $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_RADIO || $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_SELECTBOX}
+                <table>
+                  <tr>
+                    <td>
+                    <div id="flash_question{$ans_list[i].survey_question_id}">
+                      <strong>Loadding data.....</strong>
+                    </div>
+                    </td>
+                  </tr>
+                </table>
+              <!-- 複数選択の場合 -->
+              {elseif $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_CHECKBOX}
+                <table>
+                  <tr>
+                    <td>
+                    <div id="flash_question{$ans_list[i].survey_question_id}">
+                      <strong>Loadding data.....</strong>
+                    </div>
+                    </td>
+                  </tr>
+                </table>
+              {/if}
+            {else}
+              <span class="survey_total_private">{'/modules/survey/msg/question_reseach_result_is_unpublish'|translate}{*この質問の集計結果は非公開です。*}</span>
+            {/if}
+          </div>
+        </div>
+      </td>
+    </tr>
+  {/section}
+</table>
+
+<div class="relation_link"><a href="/survey_list/" class="small_text">{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</a></div>
+</div>
+{/module}
+
+<script type="text/javascript" src="/js/amchart_column_swfobject.js"></script>
+<script type="text/javascript">
+{section loop=$ans_list name=i}
+{if $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_RADIO 
+  || $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_CHECKBOX
+  || $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_SELECTBOX
+}
+{assign var=option_cnt value=$ans_list[i].options|@count}
+{assign var=height value=$option_cnt*22}
+
+{literal}
+    var so = new SWFObject("/images/common/amcharts/amcolumn.swf", "column", "520", "{/literal}{$height}{literal}", "8", "#FF00FF");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape('{/literal}/direct/survey/survey_chart_settings/id={$header.survey_id}&qid={$ans_list[i].survey_question_id}&dmy={$smarty.now}{literal}'));
+    so.addVariable("data_file", escape('{/literal}/direct/survey/survey_chart_data/id={$header.survey_id}&qid={$ans_list[i].survey_question_id}&dmy={$smarty.now}{literal}'));
+//      so.addVariable("settings_file", encodeURIComponent("/direct/survey/amcolumn_settings/"));        // you can set two or more different settings files here (separated by commas)
+//      so.addVariable("data_file", encodeURIComponent("/direct/survey/amcolumn_data/"));       
+
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_question{/literal}{$ans_list[i].survey_question_id}{literal}");
+{/literal}
+{/if}
+{/section}
+</script>
+
+{/if}

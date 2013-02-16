@@ -1,0 +1,17 @@
+{if $photoList.0.photo_id ne ''}
+
+<h2>[emoji:068]{'/label/related_image'|translate}{*関連画像*}</h2>
+<div style="text-align:center;font-size:small;">
+{section name=mydata loop=$photoList max=9}
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}&season={$season}">{$photoList[mydata].title}</a><br/>
+{$photoList[mydata].ymd}<br/>
+<a href="/photo_detail/id={$photoList[mydata].photo_id}&type={$type}&search_id={$search_id}&season={$season}"><img src="{$smarty.const.PHOTO_S_SAVE_URL}/{$photoList[mydata].photo_id}.jpg" alt="{$photoList[mydata].title}"></a><br/><br/>
+{/section}
+</div>
+
+<div style="text-align:right;font-size:small;">
+<a href="/photo_list/type={$type}&search_id={$search_id}&season={$season}">{'/label/to_other_images'|translate}{*他の画像を見る*}</a>
+</div>
+
+<hr/>
+{/if}

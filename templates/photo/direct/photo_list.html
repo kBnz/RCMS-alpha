@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title></title>
+<link href="/css/front/default.css" rel="stylesheet" type="text/css" media="screen,print" />
+<link href="/css/front/import.css" rel="stylesheet" type="text/css" media="screen,print" />
+<script language="javascript" type="text/javascript" src="/js/default.js"></script>
+{literal}
+<script type="text/javascript">
+
+function PhotoAlbum(prefix, cnt, per) {
+    this.prefix = prefix;
+    this.per = per;  // 1ページあたりの画像
+    this.cnt = cnt;  // 画像の総件数
+    this.max_page = Math.ceil(cnt/this.per);
+    this.page_no = null;
+}
+PhotoAlbum.prototype.prev = function() {
+    var page_no = null;
+    if (this.page_no == null) {
+        page_no = 1;
+    }
+    else {
+        page_no = Math.max(this.page_no - 1, 1);
+    }
+    this.move(page_no);
+}
+PhotoAlbum.prototype.next = function() {
+    var page_no = null;
+    if (this.page_no == null) {
+        page_no = 1;
+    }
+    else {
+        page_no = Math.min(this.page_no + 1, this.max_page);
+    }
+    this.move(page_no);
+}
+PhotoAlbum.prototype.move = function(page_no) {
+    // 今表示しているページを非表示にする
+    if (this.page_no != null) {
+        for (var i = (this.page_no - 1) * this.per + 1 ; i <= this.page_no * this.per ; i++) {
+            this.show(i, false);
+        }
+    }
+    // 表示する
+    for (var i = (page_no - 1) * this.per + 1 ; i <= page_no * this.per ; i++) {
+        this.show(i, true);
+    }
+    this.page_no = page_no;
+}
+PhotoAlbum.prototype.show = function(photo_id, b) {
+    var o = document.getElementById(this.prefix + "_" + photo_id);
+    if (o) {
+        if (b) {
+            o.style.display = "";
+        }
+        else {
+            o.style.display = "none";
+        }
+    }
+}
+
+</script>
+{/literal}
+
+</head>
+
+<body>
+<h1>{'/label/album'|translate}{*アルバム*}</h1>
+
+<!-- アルバム本体 -->
+<ul id="photo_album">
+{foreach from=$photoList item=row name="photo_list"}
+  <li id="photo_album_{$smarty.foreach.photo_list.iteration}" style="display:none">
+    <h2>{$row.title|escape}</h2>
+    <img src="{$smarty.const.PHOTO_SAVE_URL}/{$row.photo_id}.jpg" title="{$row.photo_id|escape}" />
+    <p>{$row.comment|escape|nl2br}</p>
+  </li>
+{/foreach}
+</ul>
+<!-- ページ操作 -->
+<a href="javascript:void(0)" onclick="album.prev();return false;">{'/label/prev'|translate}{*前へ*}</a>|
+<a href="javascript:void(0)" onclick="album.next();return false;">{'/label/next'|translate}{*次へ*}</a>
+
+<script type="text/javascript">
+var album = new PhotoAlbum("photo_album", {$photoList|@count}, 1);
+album.move({$first_page});  // 初期ページを設定
+</script>
+
+</body>
+</html>

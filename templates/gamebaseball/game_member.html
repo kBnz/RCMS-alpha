@@ -1,0 +1,223 @@
+<table bgcolor="#181818">
+  <tr>
+    <td align="center"><font color="yellow">{'/label/team'|translate}{*チーム*}</font></td>
+{section name=score_bord loop=$gameData.score_detail_arr.first}
+    <td align="right"><font color="yellow">{$smarty.section.score_bord.iteration}</font></td>
+{/section}
+    <td align="center"><font color="yellow">R</font></td>
+    <td align="center"><font color="yellow">H</font></td>
+    <td align="center"><font color="yellow">E</font></td>
+  </tr>
+  <tr>
+    <td align="center"><font color="yellow">{$gameData.first_team_nm}</font></td>
+{section name=first_score loop=$gameData.score_detail_arr.first}
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.first[first_score.index_next]}</font></td>
+{/section}
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.first_Total}</font></td>
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.first_hit}</font></td>
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.first_error}</font></td>
+  </tr>
+  <tr>
+    <td align="center"><font color="yellow">{$gameData.second_team_nm}</font></td>
+{section name=second_score loop=$gameData.score_detail_arr.first}
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.second[second_score.index_next]}</font></td>
+{/section}
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.second_Total}</font></td>
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.second_hit}</font></td>
+    <td align="right"><font color="yellow">{$gameData.score_detail_arr.second_error}</font></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td colspan="5">{'/label/starting_member'|translate}{*先発メンバー*}</td>
+  </tr>
+  <tr bgcolor="#009900">
+    <td>
+      {if $gameMembers.pos[7].member_id ne ''}
+        {if $gameMembers.pos[7].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[7].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[7].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[7].member_id}.jpg" alt="{$gameMembers.pos[7].member_order}.{$gameMembers.pos[7].disp_name}" title="{$gameMembers.pos[7].member_order}.{$gameMembers.pos[7].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[7].disp_name}({$gameMembers.pos[7].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[7].disp_name}({$gameMembers.pos[7].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[7].bat_count}-{$gameMembers.pos[7].hit_count}
+      {/if}
+    </td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[8].member_id ne ''}
+        {if $gameMembers.pos[8].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[8].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[8].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[8].member_id}.jpg" alt="{$gameMembers.pos[8].member_order}.{$gameMembers.pos[8].disp_name}" title="{$gameMembers.pos[8].member_order}.{$gameMembers.pos[8].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[8].disp_name}({$gameMembers.pos[8].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[8].disp_name}({$gameMembers.pos[8].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[8].bat_count}-{$gameMembers.pos[8].hit_count}
+      {/if}
+    </td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[9].member_id ne ''}
+        {if $gameMembers.pos[9].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[9].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[9].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[9].member_id}.jpg" alt="{$gameMembers.pos[9].member_order}.{$gameMembers.pos[9].disp_name}" title="{$gameMembers.pos[9].member_order}.{$gameMembers.pos[9].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[9].disp_name}({$gameMembers.pos[9].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[9].disp_name}({$gameMembers.pos[9].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[9].bat_count}-{$gameMembers.pos[9].hit_count}
+      {/if}
+    </td>
+  </tr>
+  <tr bgcolor="#2bac00">
+    <td></td>
+    <td>
+      {if $gameMembers.pos[6].member_id ne ''}
+        {if $gameMembers.pos[6].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[6].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[6].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[6].member_id}.jpg" alt="{$gameMembers.pos[6].member_order}.{$gameMembers.pos[6].disp_name}" title="{$gameMembers.pos[6].member_order}.{$gameMembers.pos[6].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[6].disp_name}({$gameMembers.pos[6].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[6].disp_name}({$gameMembers.pos[6].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[6].bat_count}-{$gameMembers.pos[6].hit_count}
+      {/if}
+    </td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[4].member_id ne ''}
+        {if $gameMembers.pos[4].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[4].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[4].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[4].member_id}.jpg" alt="{$gameMembers.pos[4].member_order}.{$gameMembers.pos[4].disp_name}" title="{$gameMembers.pos[4].member_order}.{$gameMembers.pos[4].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[4].disp_name}({$gameMembers.pos[4].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[4].disp_name}({$gameMembers.pos[4].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[4].bat_count}-{$gameMembers.pos[4].hit_count}
+      {/if}
+    </td>
+    <td></td>
+  </tr>
+  <tr bgcolor="#009900">
+    <td>
+      {if $gameMembers.pos[5].member_id ne ''}
+        {if $gameMembers.pos[5].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[5].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[5].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[5].member_id}.jpg" alt="{$gameMembers.pos[5].member_order}.{$gameMembers.pos[5].disp_name}" title="{$gameMembers.pos[5].member_order}.{$gameMembers.pos[5].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[5].disp_name}({$gameMembers.pos[5].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[5].disp_name}({$gameMembers.pos[5].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[5].bat_count}-{$gameMembers.pos[5].hit_count}
+      {/if}
+    </td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[1].member_id ne ''}
+        {if $gameMembers.pos[1].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[1].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[1].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[1].member_id}.jpg" alt="{$gameMembers.pos[1].member_order}.{$gameMembers.pos[1].disp_name}" title="{$gameMembers.pos[1].member_order}.{$gameMembers.pos[1].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[1].disp_name}({$gameMembers.pos[1].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[1].disp_name}({$gameMembers.pos[1].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[1].bat_count}-{$gameMembers.pos[1].hit_count}
+      {/if}
+    </td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[3].member_id ne ''}
+        {if $gameMembers.pos[3].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[3].member_id}" class="font13pxwhite"><br>
+        {if $gameMembers.pos[3].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[3].member_id}.jpg" alt="{$gameMembers.pos[3].member_order}.{$gameMembers.pos[3].disp_name}" title="{$gameMembers.pos[3].member_order}.{$gameMembers.pos[3].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[3].disp_name}({$gameMembers.pos[3].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[3].disp_name}({$gameMembers.pos[3].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[3].bat_count}-{$gameMembers.pos[3].hit_count}
+      {/if}
+    </td>
+  </tr>
+  <tr bgcolor="#2bac00">
+    <td></td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[2].member_id ne ''}
+        {if $gameMembers.pos[2].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[2].member_id}" class="font12pxwhite"><br>
+        {if $gameMembers.pos[2].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[2].member_id}.jpg" alt="{$gameMembers.pos[2].member_order}.{$gameMembers.pos[2].disp_name}" title="{$gameMembers.pos[2].member_order}.{$gameMembers.pos[2].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[2].disp_name}({$gameMembers.pos[2].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[2].disp_name}({$gameMembers.pos[2].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[2].bat_count}-{$gameMembers.pos[2].hit_count}
+      {/if}
+    </td>
+    <td></td>
+    <td>
+      {if $gameMembers.pos[10].member_id ne ''}
+        {if $gameMembers.pos[10].member_id != '-1'}
+        <a href="/member_detail/id={$gameMembers.pos[10].member_id}" class="font110pxwhite"><br>
+        {if $gameMembers.pos[10].image_s_exist}
+        <img src="/files/member/member_photo/s/{$gameMembers.pos[10].member_id}.jpg" alt="{$gameMembers.pos[10].member_order}.{$gameMembers.pos[10].disp_name}" title="{$gameMembers.pos[10].member_order}.{$gameMembers.pos[10].disp_name}" width="50" height="60" border="0"><br>
+        {else}
+        <br><br><br>
+        {/if}
+        {$gameMembers.pos[10].disp_name}({$gameMembers.pos[10].member_grade})</a><br>
+        {else}
+        <br><br><br><br>
+        {$gameMembers.pos[10].disp_name}({$gameMembers.pos[10].member_grade})<br>
+        {/if}
+        {$gameMembers.pos[10].bat_count}-{$gameMembers.pos[10].hit_count}
+      {/if}
+    </td>
+  </tr>
+</table>

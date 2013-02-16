@@ -1,0 +1,22 @@
+{if $opponentRelationList ne NULL}
+{module name="game_opponent_relation"}
+<h2 class="module_title"><span>{'/modules/game/label/opponent_information'|translate}{*対戦相手情報*}</span></h2>
+<div class="module_contents">
+<h3>{$opponent_nm}</h3>
+<table width="100%">
+{if $opponentRelationList.location ne NULL}
+  <tr><td>{'/label/map_information'|translate}{*地図*}</td></tr>
+{foreach from=$opponentRelationList.location item=item}
+  <tr><td><a href="/location_detail/id={$item.id}">{$item.location_nm}</a></td></tr>
+{/foreach}
+{/if}
+{if $opponentRelationList.link ne NULL}
+  <tr><td>{'/label/link_information'|translate}{*リンク*}</td></tr>
+{foreach from=$opponentRelationList.link item=item}
+  <tr><td><a href="{$item.link_url}">{$item.link_string}</a></td></tr>
+{/foreach}
+{/if}
+</table>
+</div>
+{/module}
+{/if}

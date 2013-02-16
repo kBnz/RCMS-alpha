@@ -1,0 +1,461 @@
+{* 変数の設定 *}
+{assign var=response_count value=$az->getResponseCount()}
+{assign var=users value=$az->getUserAnalysisList()}
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript" src="/js/amchart_column_swfobject.js"></script>
+<script type="text/javascript">
+<!--
+{literal}
+function form_clear(form) {
+  var elms = document.forms[form];
+  for (var i = 0 ; i < elms.length; i++) {
+      if (elms[i].type == 'checkbox') {
+          elms[i].checked = false;
+      }
+  }
+}
+function confirmDeleteAnswerData(f) {
+    //var msg = '回答済みのデータを削除します。\nよろしいですか？';
+    //if (confirm(msg)) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.submit();
+    }
+}
+{/literal}
+
+{if $header.pf_sex.available != $smarty.const.SURVEY_PROFILE_OFF}
+{assign var=option_cnt value=$prof_list.pf_sex.options|@count}
+{assign var=top_margin value=35}
+{assign var=height value=$option_cnt*26+$top_margin}
+
+{literal}
+Event.observe(window, 'load', function() {
+    var host = location.protocol + "//" + location.hostname;
+    var so = new SWFObject("/images/common/amcharts/ampie.swf", "ampie", "350", "{/literal}{$height}{literal}", "8", "#000000");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape(host +'{/literal}/direct/survey/survey_chart_settings/id={$header.survey_id}&pf=pf_sex&top_margin={$top_margin}&lable_flg=1&dmy={$smarty.now}{literal}'));
+    so.addVariable("data_file", escape(host +'{/literal}/direct/survey/survey_chart_data/id={$header.survey_id}&pf=pf_sex&dmy={$smarty.now}{literal}'));
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_pf_sex");
+});
+{/literal}
+{/if}
+
+{if $header.pf_age.available != $smarty.const.SURVEY_PROFILE_OFF}
+{assign var=option_cnt value=$prof_list.pf_age.options|@count}
+{assign var=top_margin value=35}
+{assign var=height value=$option_cnt*26+$top_margin}
+{literal}
+Event.observe(window, 'load', function() {
+    var host = location.protocol + "//" + location.hostname;
+    var so = new SWFObject("/images/common/amcharts/amcolumn.swf", "column", "350", "{/literal}{$height}{literal}", "8", "#000000");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape(host + "{/literal}/direct/survey/survey_chart_settings/id={$header.survey_id}&pf=pf_age&top_margin={$top_margin}&lable_flg=1&dmy={$smarty.now}{literal}"));
+    so.addVariable("data_file", escape(host + "{/literal}/direct/survey/survey_chart_data/id={$header.survey_id}&pf=pf_age&dmy={$smarty.now}{literal}"));
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_pf_age");
+});
+{/literal}
+{/if}
+
+{if $header.pf_job.available != $smarty.const.SURVEY_PROFILE_OFF}
+{assign var=option_cnt value=$prof_list.pf_job.options|@count}
+{assign var=top_margin value=35}
+{assign var=height value=$option_cnt*26+$top_margin}
+{literal}
+Event.observe(window, 'load', function() {
+    var host = location.protocol + "//" + location.hostname;
+    var so = new SWFObject("/images/common/amcharts/amcolumn.swf", "column", "350", "{/literal}{$height}{literal}", "8", "#000000");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape(host +'{/literal}/direct/survey/survey_chart_settings/id={$header.survey_id}&pf=pf_job&top_margin={$top_margin}&lable_flg=1&dmy={$smarty.now}{literal}'));
+    so.addVariable("data_file", escape(host +'{/literal}/direct/survey/survey_chart_data/id={$header.survey_id}&pf=pf_job&dmy={$smarty.now}{literal}'));
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_pf_job");
+});
+{/literal}
+{/if}
+
+{if $header.pf_tdfk_cd.available != $smarty.const.SURVEY_PROFILE_OFF}
+{assign var=option_cnt value=$prof_list.pf_tdfk_cd.options|@count}
+{assign var=top_margin value=35}
+{assign var=height value=$option_cnt*26+$top_margin}
+
+{literal}
+Event.observe(window, 'load', function() {
+    var host = location.protocol + "//" + location.hostname;
+    var so = new SWFObject("/images/common/amcharts/amcolumn.swf", "column", "350", "{/literal}{$height}{literal}", "8", "#000000");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape(host +'{/literal}/direct/survey/survey_chart_settings/id={$header.survey_id}&pf=pf_tdfk_cd&top_margin={$top_margin}&lable_flg=1&dmy={$smarty.now}{literal}'));
+    so.addVariable("data_file", escape(host +'{/literal}/direct/survey/survey_chart_data/id={$header.survey_id}&pf=pf_tdfk_cd&dmy={$smarty.now}{literal}'));
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_pf_tdfk_cd");
+});
+{/literal}
+{/if}
+
+{*回答結果用SWF*}
+{section loop=$ans_list name=i}
+{if $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_RADIO 
+  || $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_CHECKBOX
+  || $ans_list[i].formtype == $smarty.const.SURVEY_FORM_TYPE_SELECTBOX
+}
+{assign var=option_cnt value=$ans_list[i].options|@count}
+{assign var=top_margin value=35}
+{assign var=height value=$option_cnt*25+$top_margin}
+
+{literal}
+Event.observe(window, 'load', function() {
+    var host = location.protocol + "//" + location.hostname;
+    var so = new SWFObject("/images/common/amcharts/amcolumn.swf", "column", "350", "{/literal}{$height}{literal}", "8", "#000000");
+    so.addVariable("path", "/images/common/amcharts/");
+    so.addVariable("settings_file", escape(host +'{/literal}/direct/survey/survey_chart_settings/id={$header.survey_id}&qid={$ans_list[i].survey_question_id}&top_margin={$top_margin}&lable_flg=1&dmy={$smarty.now}{literal}'));
+    so.addVariable("data_file", escape(host +'{/literal}/direct/survey/survey_chart_data/id={$header.survey_id}&qid={$ans_list[i].survey_question_id}&dmy={$smarty.now}{literal}'));
+    so.addVariable("preloader_color", "#000000");
+    so.addParam("wmode", "transparent");
+    so.write("flash_question{/literal}{$ans_list[i].survey_question_id}{literal}");
+});
+{/literal}
+{/if}
+{/section}
+
+-->
+</script>
+<link href="/css/survey/survey.css" rel="stylesheet" type="text/css" media="screen,print">
+
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</h2>
+<ul>
+{if $rauth->canSelect('/survey/item/') && $canDL}
+<li class="normal"><a href="/management/survey/survey_download/survey_id={$header.survey_id}"><span>{'/label/download'|translate}{*ダウンロード*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey/label/survey_list'|translate}</a>
+{'/modules/survey/label/survey_result'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> アンケート一覧 >> アンケート結果*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.title|escape}</h3>
+<ul class="minitabs">
+{if $canSETTING}
+  <li><a href="/management/survey/survey_edit/survey_id={$header.survey_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/survey/survey_question_list/survey_id={$header.survey_id}">{'/label/question_list'|translate}{*質問一覧*}</a></li>
+{/if}
+  <li><a href="/management/survey/survey_report/survey_id={$header.survey_id}" class="active">{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</a></li>
+</ul>
+
+<div class="list_main" style="margin-top:10px">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+  <tr>
+    <th style="width:140px">{'/label/period'|translate}{*実施期間*}</th>
+    <td>
+      {'/label/start'|translate}{*開始*}：{if $header.sta_valid_date != ""}{$header.sta_valid_date}{else}{'/label/not_appoint'|translate}{*指定なし*}{/if}<br />
+      {'/label/end'|translate}{*終了*}：{if $header.end_valid_date != ""}{$header.end_valid_date}{else}{'/label/not_appoint'|translate}{*指定なし*}{/if}
+    </td>
+  </tr>
+  <tr>
+    <th>{'/label/answers_count'|translate}{*回答数*}</th>
+    <td>{$response_count}</td>
+  </tr>
+</table>
+
+{if $rauth->canDelete("/survey/item/$survey_id")}
+<form action="/management/survey/survey_report/" method="POST">
+  <input type="hidden" name="survey_id" value="{$header.survey_id}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="DELETE" />
+  {buttonbox}
+    <button type="button" onclick="confirmDeleteAnswerData(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+  {/buttonbox}
+</form>
+{/if}
+</div>
+<div style="margin-top:10px">
+  {*} {'/modules/survey/label/user_attribute'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*回答ユーザの属性*}
+  <div id="blk_userprofile" style="position:relative; display:block;">
+    <h3 class="list_main_tit">{'/modules/survey/label/user_attribute'|translate}{*回答ユーザの属性*}</h3>
+    {if $header.pf_sex.available != $smarty.const.SURVEY_PROFILE_OFF}
+      <div class="survey_az_question">
+        <h4>
+          {'/label/sex'|translate}{*性別*}{if $header.pf_sex.available == $smarty.const.SURVEY_PROFILE_REQUIRE}<span class="required">{'/label/require_answer'|translate}{* 必須回答 *}</span>{/if}
+          <a href="javascript:void(0);" onclick="display('ans_pf_sex');">{'/label/open_and_close'|translate}{*開閉*}</a>
+        </h4>
+        <table width="90%" id="ans_pf_sex" style="display:none;">
+          <tr valign="top">
+            <td width="50%">
+              <div class="list_main">
+              <table>
+                <tr><th width="150">{'/label/options'|translate}{*選択項目*}</th><th width="50">{'/label/vote_count'|translate}{*投票数*}</th><th width="50">{'/label/ratio'|translate}{*割合*}(%)</th></tr>
+                {foreach from=$users.pf_sex.options key=key item=item}
+                  <tr>
+                    <td>{$item}</td>
+                    <td>{$users.pf_sex.cnt.$key}</td>
+                    <td>{if $response_count > 0}{$users.pf_sex.cnt.$key*100/$response_count|string_format:"%01.2f"}{else}0{/if}%</td>
+                  </tr>
+                {/foreach}
+              </table>
+              </div>
+            </td>
+            <!-- graph -->
+            <td width="50%"  class="graph" id="flash_pf_sex"></td>
+          </tr>
+        </table>
+      </div>
+    {/if}
+    {if $header.pf_age.available != $smarty.const.SURVEY_PROFILE_OFF}
+      <div class="survey_az_question">
+        <h4>
+          {'/label/age'|translate}{*年齢*}{if $header.pf_age.available == $smarty.const.SURVEY_PROFILE_REQUIRE}<span class="required">{'/label/require_answer'|translate}{* 必須回答 *}</span>{/if}
+          <a href="javascript:void(0);" onclick="display('ans_pf_age');">{'/label/open_and_close'|translate}{*開閉*}</a>
+        </h4>
+        <table width="90%" id="ans_pf_age" style="display:none;">
+          <tr valign="top">
+            <td width="50%">
+              <div class="list_main">
+              <table>
+                <tr><th width="150">{'/label/options'|translate}{*選択項目*}</th><th width="50">{'/label/vote_count'|translate}{*投票数*}</th><th width="50">{'/label/ratio'|translate}{*割合*}(%)</th></tr>
+                {foreach from=$users.pf_age.options key=key item=item}
+                  <tr>
+                    <td>{$item}</td>
+                    <td>{$users.pf_age.cnt.$key}</td>
+                    <td>{if $response_count > 0}{$users.pf_age.cnt.$key*100/$response_count|string_format:"%01.2f"}{else}0{/if}%</td>
+                  </tr>
+                {/foreach}
+              </table>
+              </div>
+            </td>
+            <td width="50%" class="graph" id="flash_pf_age"></td>
+          </tr>
+        </table>
+      </div>
+    {/if}
+    {if $header.pf_job.available != $smarty.const.SURVEY_PROFILE_OFF}
+      <div class="survey_az_question">
+        <h4>
+          {'/label/job'|translate}{*職業*}{if $header.pf_job.available == $smarty.const.SURVEY_PROFILE_REQUIRE}<span class="required">{'/label/require_answer'|translate}{* 必須回答 *}</span>{/if}
+          <a href="javascript:void(0);" onclick="display('ans_pf_job');">{'/label/open_and_close'|translate}{*開閉*}</a>
+        </h4>
+        <table width="90%" id="ans_pf_job" style="display:none;">
+          <tr valign="top">
+            <td width="50%">
+              <div class="list_main">
+              <table>
+                <tr><th width="150">{'/label/options'|translate}{*選択項目*}</th><th width="50">{'/label/vote_count'|translate}{*投票数*}</th><th width="50">{'/label/ratio'|translate}{*割合*}(%)</th></tr>
+                {foreach from=$users.pf_job.options key=key item=item}
+                  <tr>
+                    <td>{$item}</td>
+                    <td>{$users.pf_job.cnt.$key}</td>
+                    <td>{if $response_count > 0}{$users.pf_job.cnt.$key*100/$response_count|string_format:"%01.2f"}{else}0{/if}%</td>
+                  </tr>
+                {/foreach}
+              </table>
+              </div>
+            </td>
+            <!-- graph -->
+            <td width="50%" class="graph" id="flash_pf_job"></td>
+          </tr>
+        </table>
+      </div>
+    {/if}
+    {if $header.pf_tdfk_cd.available != $smarty.const.SURVEY_PROFILE_OFF}
+      <div class="survey_az_question">
+        <h4>
+          {'/label/address'|translate}{*住所*}：{'/label/prefecture'|translate}{*都道府県*}{if $header.pf_tdfk_cd.available == $smarty.const.SURVEY_PROFILE_REQUIRE}<span class="required">{'/label/require_answer'|translate}{* 必須回答 *}</span>{/if}
+          <a href="javascript:void(0);" onclick="display('ans_pf_tdfk_cd');">{'/label/open_and_close'|translate}{*開閉*}</a>
+        </h4>
+        <table width="90%" id="ans_pf_tdfk_cd" style="display:none;">
+          <tr valign="top">
+            <td width="50%">
+              <div class="list_main">
+              <table>
+                <tr><th width="150">{'/label/options'|translate}{*選択項目*}</th><th width="50">{'/label/vote_count'|translate}{*投票数*}</th><th width="50">{'/label/ratio'|translate}{*割合*}(%)</th></tr>
+                {foreach from=$users.pf_tdfk_cd.options key=key item=item}
+                  <tr>
+                    <td>{$item}</td>
+                    <td>{$users.pf_tdfk_cd.cnt.$key}</td>
+                    <td>{if $response_count > 0}{$users.pf_tdfk_cd.cnt.$key*100/$response_count|string_format:"%01.2f"}{else}0{/if}%</td>
+                  </tr>
+                {/foreach}
+              </table>
+              </div>
+            </td>
+            <!-- graph -->
+            <td width="50%" class="graph" id="flash_pf_tdfk_cd"></td>
+          </tr>
+        </table>
+      </div>
+    {/if}
+  </div>
+</div>
+<!-- 回答ユーザ情報 -->
+<div style="margin-top:10px">
+  {*}{'/label/answer_result'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*回答結果*}
+  <div id="blk_answer" style="position:relative; display:block;">
+    <h3 class="list_main_tit">{'/label/answer_result'|translate}{*回答結果*}</h3>
+      <a href="javascript:void(0);" onclick="display('survey_az_search');">{'/label/select_search_condtion'|translate}{*検索条件を指定する*}</a>
+      <div id="survey_az_search" class="list_main" style="display:none;">
+      <form name="form_search" action="/management/survey/survey_report/">
+        <input type="hidden" name="survey_id" value="{$header.survey_id}"/>
+        <table>
+        {if $header.pf_sex.available != $smarty.const.SURVEY_PROFILE_OFF}
+          <tr>
+            <th style="white-space:nowrap">{'/label/sex'|translate}{*性別*}</th>
+            <td>
+              {foreach from=$users.pf_sex.options key=key item=item}
+                <label for="pf_sex_{$key}" style="white-space:nowrap">
+                  {if $key|in_array:$search.pf_sex}
+                    <input type="checkbox" id="pf_sex_{$key}" name="pf_sex[{$key}]" checked value="1"/><span class="checked">{$item}</span>
+                  {else}
+                    <input type="checkbox" id="pf_sex_{$key}" name="pf_sex[{$key}]" value="1"/>{$item}
+                  {/if}
+                </label><br />
+              {/foreach}
+            </td>
+          </tr>
+        {/if}
+        {if $header.pf_age.available != $smarty.const.SURVEY_PROFILE_OFF}
+          <tr>
+            <th style="white-space:nowrap">{'/label/age'|translate}{*年齢*}</th>
+            <td>
+              {foreach from=$users.pf_age.options key=key item=item}
+                <label for="pf_age_{$key}" style="white-space:nowrap">
+                {if $key|in_array:$search.pf_age}
+                  <input type="checkbox" id="pf_age_{$key}" name="pf_age[{$key}]" checked value="1"/><span class="checked">{$item}</span>
+                {else}
+                  <input type="checkbox" id="pf_age_{$key}" name="pf_age[{$key}]" value="1"/>{$item}
+                {/if}
+                </label><br />
+              {/foreach}
+            </td>
+          </tr>
+        {/if}
+        {if $header.pf_job.available != $smarty.const.SURVEY_PROFILE_OFF}
+          <tr>
+            <th style="white-space:nowrap">{'/label/job'|translate}{*職業*}</th>
+            <td>
+              {foreach from=$users.pf_job.options key=key item=item}
+                <label for="pf_job_{$key}" style="white-space:nowrap">
+                {if $key|in_array:$search.pf_job}
+                  <input type="checkbox" id="pf_job_{$key}" name="pf_job[{$key}]" checked value="1"/><span class="checked">{$item}</span>
+                {else}
+                  <input type="checkbox" id="pf_job_{$key}" name="pf_job[{$key}]" value="1"/>{$item}
+                {/if}
+                </label><br />
+              {/foreach}
+            </td>
+          </tr>
+        {/if}
+        {if $header.pf_tdfk_cd.available != $smarty.const.SURVEY_PROFILE_OFF}
+          <tr>
+            <th style="white-space:nowrap">{'/label/prefecture'|translate}{*都道府県*}</th>
+            <td>
+              {foreach from=$users.pf_tdfk_cd.options key=key item=item name=s_pf_tdfk_cd}
+                <label for="pf_tdfk_cd_{$key}" style="white-space:nowrap">
+                {if $key|in_array:$search.pf_tdfk_cd}
+                  <input type="checkbox" id="pf_tdfk_cd_{$key}" name="pf_tdfk_cd[{$key}]" checked value="1"/><span class="checked">{$item}</span>
+                {else}
+                  <input type="checkbox" id="pf_tdfk_cd_{$key}" name="pf_tdfk_cd[{$key}]" value="1"/>{$item}
+                {/if}
+                </label>
+              {/foreach}
+            </td>
+          </tr>
+        {/if}
+        </table>
+        <input type="submit" value="{'/label/search'|translate}{*検索*}"/>　　<input type="button" onclick="form_clear('form_search');" value="{'/label/clear'|translate}{*クリア*}"/>
+      </form>
+      </div>
+
+
+    {section loop=$ans_list name=i}
+      <div class="survey_az_question">
+        <h4>
+          Q{$ans_list[i].shownum}.{$ans_list[i].question|nl2br}{if $ans_list[i].formtype == 4}　({'/label/multiple_answers'|translate}{*複数回答*}){/if}
+          {if $ans_list[i].require == 1}<span class="required">{'/label/require_answer'|translate}{* 必須回答 *}</span>{/if}
+          <a href="javascript:void(0);" onclick="display('q_ans_{$ans_list[i].shownum}');">{'/label/open_and_close'|translate}{*開閉*}</a>
+        </h4>
+        <div id="q_ans_{$ans_list[i].shownum}" style="display:none;">
+          <!-- 長文の場合 -->
+          {if $ans_list[i].formtype == 1}
+            {foreach from=$ans_list[i].answers.text name=f item=item1}
+              <p style="margin-left:15px; padding-left:10px;padding-top:5px;border-top: 1px dashed #888888">{$item1|escape|nl2br}</p>
+            {/foreach}
+          <!-- 短文の場合 -->
+          {elseif $ans_list[i].formtype == 2}
+            {foreach from=$ans_list[i].answers.text name=f item=item1}
+              {if $smarty.foreach.f.first}<ul style="margin-left:15px;">{/if}
+              <li>{$item1}</li>
+              {if $smarty.foreach.f.last}</ul>{/if}
+            {/foreach}
+          <!-- 単一選択の場合 -->
+          {elseif $ans_list[i].formtype == 3 || $ans_list[i].formtype == 5}
+            <table width="100%">
+              <tr valign="top">
+                <td width="50%">
+                  <div class="list_main">
+                  <table>
+                    <tr><th width="150">{'/label/options'|translate}{*選択項目*}</th><th width="50">{'/label/vote_count'|translate}{*投票数*}</th><th width="50">{'/label/ratio'|translate}{*割合*}(%)</th></tr>
+                    {foreach from=$ans_list[i].answers.summary_order item=ignore key=okey}
+                      {assign var=item1 value=$ans_list[i].options[$okey]}
+                      <tr>
+                        <td>{$item1.text}</td>
+                        <td>{$item1.cnt}</td>
+                        <td>{if $response_count > 0}{$item1.cnt*100/$response_count|string_format:"%01.2f"}{else}0{/if}%</td>
+                      </tr>
+                    {/foreach}
+                  </table>
+                  </div>
+                </td>
+                <td width="50%" id="flash_question{$ans_list[i].survey_question_id}"></td>
+              </tr>
+            </table>
+          <!-- 複数選択の場合 -->
+          {elseif $ans_list[i].formtype == 4}
+            <table width="100%">
+              <tr valign="top">
+                <td width="50%">
+                  <div class="list_main">
+                  <table>
+                    <tr><th width="150">{'/label/options'|translate}{*選択項目*}</th><th width="50">{'/label/vote_count'|translate}{*投票数*}</th><th width="50">{'/label/ratio'|translate}{*割合*}(%)</th></tr>
+                    {foreach from=$ans_list[i].answers.summary_order item=ignore key=okey}
+                      {assign var=item1 value=$ans_list[i].options[$okey]}
+                      <tr>
+                        <td>{$item1.text}</td>
+                        <td>{$item1.cnt}</td>
+                        <td>{if $response_count > 0}{$item1.cnt*100/$response_count|string_format:"%01.2f"}{else}0%{/if}</td>
+                      </tr>
+                    {/foreach}
+                  </table>
+                  </div>
+                </td>
+                <td width="50%" id="flash_question{$ans_list[i].survey_question_id}"></td>
+              </tr>
+            </table>
+          {/if}
+        </div>
+      </div>
+    {/section}
+  </div>
+</div>
+<!--// 回答結果 -->
+
+</div>
+{rcms_include file="management/footer.html"}

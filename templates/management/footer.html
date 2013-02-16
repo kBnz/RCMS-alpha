@@ -1,0 +1,188 @@
+ <iframe id="myFrame" frameborder="0" marginwidth="0" marginheight="0" src="/js/empty.html" width="1" height="1" scrolling="no" style="margin: 0; padding: 0;overflow:hidden"></iframe>
+        </div><!-- content -->
+        <div class="clearFloat"><br></div>
+    </div><!--wrap_content-->
+
+    {if $smarty.const.PAGE_MODIFY_MODE eq 0 && $MNG_TYPE > 0}{* 簡易版用 *}
+    </div><!--easy_wrap-->
+    {/if}
+
+    <div id="footer">
+        <address>{$smarty.const.MANAGEMENT_FOOTER}</address>
+    </div>
+
+</div><!-- layout -->
+
+{if $module_installed.simplebox}
+<script type="text/javascript" src="/js/modules/simplebox/main.js"></script>
+{/if}
+
+{if $mt ne 'login'}
+
+
+{if !$smarty.const.NOUSE_SUPPORT && $smarty.const.PAGE_MODIFY_MODE eq 0}
+
+<div id="sideBar2">
+    <a href="javascript:void(0);" id="sideBarTab2"><img src="{'/images/management/tab_support.gif'|lang_img_path}" onMouseOver="this.src='{'/images/management/tab_support_on.gif'|lang_img_path}'" onMouseOut="this.src='{'/images/management/tab_support.gif'|lang_img_path}'" id="sideBarImg2" /></a>
+    
+    <div id="sideBarContents2" style="display:none;">
+    <a href="javascript:void(0);" id="sideBar_btn_close2"><img src="{'/images/management/btn_close.gif'|lang_img_path}" onMouseOver="this.src='{'/images/management/btn_close_on.gif'|lang_img_path}'" onMouseOut="this.src='{'/images/management/btn_close.gif'|lang_img_path}'" /></a><br>
+
+{if $smarty.session.super_flg eq '1'}
+    <div class="qa_link">
+        <p><a href="javascript:void(0);" onClick="window.open('/management/menu/supportforum_input/?module_type={$mt}', 'supportforum_input', 'width=500, height=600, menubar=no, toolbar=no, scrollbars=yes');"><img src="{'/images/management/forum/btn_ask.gif'|lang_img_path}"></a></p>
+        <p><a href="/management/menu/supportforum_mylist/" onclick="rcmsLightWindow.activateWindow({ldelim}href: href + 'page_modify_mode=1', title: '{'/modules/supportforum'|translate}{*サポートフォーラム*}', width: 820{rdelim}); return false">{'/modules/menu/label/my_question'|translate}{*自分の質問*}</a>｜<a href="/management/menu/supportforum_list/" onclick="rcmsLightWindow.activateWindow({ldelim}href: href + 'page_modify_mode=1', title: '{'/modules/supportforum'|translate}{*サポートフォーラム*}', width: 820{rdelim}); return false">{'/label/question_list'|translate}{*質問一覧*}</a></p>
+    </div>
+{/if}
+
+<div class="support_qa">
+    <h3>Q&amp;A</h3>
+{if $forum_qalist|@count>0}
+
+{foreach from=$forum_qalist item=item}
+    <dl class="qa_list">
+        <dt class="question">Q．</dt>
+        <dd>{$item.question}</dd>
+        <dt class="answer">A．</dt>
+        <dd class="answer">{$item.answer|strip_tags:false|mbtruncate:200}</dd>
+    </dl>
+    <dl class="qa_count">
+        <dt>［{'/modules/menu/label/views_number'|translate}{*閲覧数*}］</dt>
+        <dd>{$item.view_cnt}</dd>
+        <dt>［{'/modules/menu/label/suggested'|translate}{*お役立ち度*}］</dt>
+        <dd>{$item.good_cnt}</dd>
+    </dl>
+{/foreach}
+
+{else}
+<p class="nothing">{'/modules/menu/q_and_a_about_this_module_has_not_created'|translate}{*このモジュールに関するQ&amp;Aはまだ作成されていません。*}</p>
+{/if}
+</div>
+
+{if $smarty.session.super_flg eq '1'}
+<div class="forum_contentsBox new_entry_list">
+    <div class="forum_contentsBox2">
+    <h3>{'/label/newly_arrived_list'|translate}{*新着一覧*}</h3>
+{if $forum_newlist|@count>0}
+    <ul>
+{foreach from=$forum_newlist item=item}
+        <li>
+    <p class="question"><img src="{'/images/management/forum/icon_next.gif'|lang_img_path}" class="q_icon">［{$item.category_nm}］<a href="/management/menu/supportforum_detail_list/supportforum_id={$item.rootnode}" onclick="rcmsLightWindow.activateWindow({ldelim}href: href + '&page_modify_mode=1', title: 'サポートフォーラム', width: 820{rdelim}); return false">{$item.title}</a>{if $item.new_flg}<img src="/images/management/forum/icon_new.gif" alt="new" class="new_icon">{/if}{if $item.resolved_flg==1}<img src="{'/images/management/forum/solved.gif'|lang_img_path}" alt="解決済み" class="new_icon">{/if}</p>
+            <p class="question_detail">{$item.note|strip_tags:false|mbtruncate:200}</p>
+            <p class="date">{$item.thread_update|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</p>
+            <dl>
+                <dt>［{'/modules/menu/label/suggested'|translate}{*お役立ち度*}］</dt>
+                <dd>{$item.good_cnt}</dd>
+                <dt>［{'/label/answers_count'|translate}{*回答数*}］</dt>
+                <dd>{$item.supportforum_cnt}</dd>
+                <dt>［{'/modules/menu/label/views_number'|translate}{*閲覧数*}］</dt>
+                <dd>{$item.view_cnt}</dd>
+            </dl>
+            <div class="clearFloat"><br></div>
+        </li>
+{/foreach}
+    </ul>
+{else}
+<p class="nothing">{'/modules/menu/msg/no_questions_about_this_module'|translate}{*このモジュールに関する質問はありません。*}</p>
+{/if}
+    </div>
+</div>
+{/if}
+
+<script type="text/javascript" src="/js/lightwindow/lightwindow.js"></script>
+<script type="text/javascript">
+<!--
+{literal}
+var rcmsLightWindow = null;
+j$(document).ready(function(){rcmsLightWindow = new lightwindow({resizeSpeed : 9});}, false);
+
+var isExtended1 = 0;
+var isExtended2 = 0;
+
+;
+
+function slideSideBar1(e){
+
+    new Effect.toggle('sideBarContents1', 'blind', {scaleX: 'true', scaleY: 'true;', scaleContent: false,duration :0.4});
+    
+    if(isExtended1==0){
+        j$('#sideBarTab1').mouseover(function(){j$('sideBarImg1').attr('src','{/literal}{'/images/management/tab_favorite2_on.gif'|lang_img_path}{literal}');});
+        j$('#sideBarTab1').mouseout(function(){j$('sideBarImg1').attr('src','{/literal}{'/images/management/tab_favorite2.gif'|lang_img_path}{literal}');});
+        j$('#sideBarImg1').attr('src','{/literal}{'/images/management/tab_favorite2.gif'|lang_img_path}{literal}');
+        isExtended1++;
+    }
+    else{
+        isExtended1=0;
+        j$('#sideBarTab1').mouseover(function(){j$('#sideBarImg1').attr('src','{/literal}{'/images/management/tab_favorite_on.gif'|lang_img_path}{literal}');});
+        j$('#sideBarTab1').mouseout(function(){j$('#sideBarImg1').attr('src','{/literal}{'/images/management/tab_favorite.gif'|lang_img_path}{literal}');});
+        j$('#sideBarImg1').attr('src','{/literal}{'/images/management/tab_favorite.gif'|lang_img_path}{literal}');
+    }
+}
+function slideSideBar2(e){
+
+    new Effect.toggle('sideBarContents2', 'blind', {scaleX: 'true', scaleY: 'true;', scaleContent: false,duration :0.6});
+    
+    if(isExtended2==0){
+        j$('#sideBarTab2').mouseover(function(){j$('#sideBarImg2').attr('src','{/literal}{'/images/management/tab_support2_on.gif'|lang_img_path}{literal}');});
+        j$('#sideBarTab2').mouseout(function(){j$('#sideBarImg2').attr('src','{/literal}{'/images/management/tab_support2.gif'|lang_img_path}{literal}');});
+        j$('#sideBarImg2').attr('src','{/literal}{'/images/management/tab_support2.gif'|lang_img_path}{literal}');
+        isExtended2++;
+    }
+    else{
+        j$('#sideBarTab2').mouseover(function(){j$('#sideBarImg2').attr('src','{/literal}{'/images/management/tab_support_on.gif'|lang_img_path}{literal}');});
+        j$('#sideBarTab2').mouseout(function(){j$('#sideBarImg2').attr('src','{/literal}{'/images/management/tab_support.gif'|lang_img_path}{literal}');});
+        j$('#sideBarImg2').attr('src','{/literal}{'/images/management/tab_support.gif'|lang_img_path}{literal}');
+        isExtended2=0;
+    }
+    
+}
+
+
+//初期動作
+j$('#sideBarTab2').click(slideSideBar2);
+j$('#sideBar_btn_close2').click(slideSideBar2);
+new Element.setOpacity('sideBar2', 0.9);
+//-->
+{/literal}
+</script>
+{/if}
+
+<script type="text/javascript">
+<!--
+{literal}
+function switchMenu(mode) {
+        j$('#favoriteMenuBtn').toggle();
+        j$('#recentMenuBtn').toggle();
+        j$('li.ManagementMenu').toggle();
+        if (mode == 'recent') {
+                j$('often_use_h3').innerHTML('{/literal}{'/modules/menu/label/module_used_recently'|translate}{*最近使ったもの*}{literal}');
+        }
+        else {
+                j$('often_use_h3').innerHTML('{/literal}{'/modules/menu/label/modules_using_often'|translate}{*よく使う機能*}{literal}');
+        }
+        Cookie.set("favoriteMenuMode", mode, (new Date()).getTime() + 1000 * 60 * 60 * 24 * 30, "/management/");
+}
+
+if(j$('#favoriteMenuBtn')){
+        j$('#favoriteMenuBtn').click(function() {
+                switchMenu("favorite");
+        });
+}
+
+if(j$('#favoriteMenuBtn')){
+        j$('#recentMenuBtn').click(function() {
+                switchMenu("recent");
+        });
+}
+
+{/literal}
+//-->
+</script>
+
+    </div>
+</div>
+
+{/if}
+
+</body>
+</html>

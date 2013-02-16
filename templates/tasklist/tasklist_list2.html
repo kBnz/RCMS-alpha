@@ -1,0 +1,48 @@
+{module name="tasklist_list2"}
+<h2 class="module_title"><span>{'/modules/tasklist/label/tasklist_list'|translate}{* 課題一覧 *}</span></h2>
+<div class="module_contents">
+
+  <form action="/{$page_sysnm}/" method="post">
+    {'/label/representative'|translate}{* 担当者 *}:<input type="text" name="member_name" size="20" value="{$member_name|escape}">
+    {'/label/title'|translate}{* タイトル *}:<input type="text" name="cate_title" size="20" value="{$cate_title|escape}">
+    <select name="category">{html_options options=$arrCategory selected=$category}</select>
+    <select name="serious_flg">{html_options options=$arrSeriousFlg selected=$serious_flg}</select>
+    <select name="priority_flg">{html_options options=$arrPriorityFlg selected=$priority_flg}</select>
+    <select name="syori_flg">{html_options options=$arrSyoriFlg selected=$syori_flg}</select>
+    <input type="submit" value="{'/label/search_btn'|translate}{* 検索する *}" />
+    <input type="hidden" name="search_flg" value="1" />
+  </form>
+  <p class="page_links">{$page_links}</p>
+  <table class="list tasklist_list">
+    <tr>
+      <th width="200">{'/label/title'|translate|sort_link:cate_title:$sort_url:$sort:$desc}{* タイトル *}</th>
+      <th width="60">{'/label/representative'|translate|sort_link:member_name:$sort_url:$sort:$desc}{* 担当者 *}</th>
+      <th width="60">{'/label/inscriber'|translate|sort_link:insert_nm:$sort_url:$sort:$desc}{* 記入者 *}</th>
+      <th width="50">{'/label/category'|translate|sort_link:category:$sort_url:$sort:$desc}{* カテゴリ *}</th>
+      <th width="30">{'/modules/tasklist/label/replys'|translate|sort_link:cnt:$sort_url:$sort:$desc}{* 返信 *}</th>
+      <th width="30">{'/label/last_reply'|translate|sort_link:latest_reply:$sort_url:$sort:$desc}{* 最終返信 *}</th>
+      <th width="10">{'/label/deadline'|translate|sort_link:limit_date:$sort_url:$sort:$desc}{* 期限 *}</th>
+      <th width="40">{'/label/importance'|translate|sort_link:serious_flg:$sort_url:$sort:$desc}{* 重要度 *}</th>
+      <th width="40">{'/label/priority'|translate|sort_link:priority_flg:$sort_url:$sort:$desc}{* 優先度 *}</th>
+      <th width="35">{'/label/status'|translate|sort_link:syori_flg:$sort_url:$sort:$desc}{* 状況 *}</th>
+      <th width="70">{'/modules/tasklist/label/inscribe_date'|translate|sort_link:inst_ymdhi:$sort_url:$sort:$desc}{* 記入日時 *}</th>
+    </tr>
+{section name=mydata loop=$tasklistList}
+    <tr>
+      <td><a href="/tasklist_detail/id={$tasklistList[mydata].tasklist_id}">{$tasklistList[mydata].cate_title|escape}</a></td>
+      <td>{$tasklistList[mydata].member_name|escape}</td>
+      <td>{$tasklistList[mydata].insert_nm|escape}</td>
+      <td>{$tasklistList[mydata].category_txt|escape}</td>
+      <td>{$tasklistList[mydata].cnt}{'/label/items'|translate}{* 件 *}</td>
+      <td>{if $tasklistList[mydata].latest_reply != ""}{$tasklistList[mydata].margin_d}{/if}</td>
+      <td {if $tasklistList[mydata].deadline}class="deadline"{/if}>{$tasklistList[mydata].limit_date}</td>
+      <td class="serious{$tasklistList[mydata].serious_flg}">{$tasklistList[mydata].serious_flg_txt}</td>
+      <td class="priority{$tasklistList[mydata].priority_flg}">{$tasklistList[mydata].priority_flg_txt}</td>
+      <td>{$tasklistList[mydata].syori_flg_txt}</td>
+      <td>{$tasklistList[mydata].inst_ymdhi|pg_dateformat}</td>
+    </tr>
+{/section}
+  </table>
+  <p class="page_links">{$page_links}</p>
+</div>
+{/module}

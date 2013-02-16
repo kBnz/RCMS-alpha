@@ -1,0 +1,19 @@
+<h2>[emoji:085]{'/modules/survey'|translate}{*アンケート*}</h2>
+{if $target_user_error == "1"}
+     {'/modules/survey/msg/please_login_to_answer_this_survey'|translate}{*このアンケートに回答するにはログインを行ってください。*}<br/>
+    <a href="/direct/login/login/">{'/label/to_login'|translate}{*ログインへ*}</a><br/>
+{elseif $target_user_error == "2"}
+       {'/modules/survey/msg/you_might_not_be_able_to_answer_this_survey'|translate}
+        {*このアンケートに回答するにはログインを行ってください。<br /><br />
+      （注意）このアンケートには、回答を受付けるグループが指定されているため、<br />
+       ログイン後も回答することができない可能性があります。<br />*}
+      <a href="/direct/login/login/">{'/label/to_login'|translate}{*ログインへ*}</a><br/>
+{elseif $target_user_error == "3"}
+      {'/modules/survey/msg/only_target_group_can_answer'|translate}{*回答対象のグループのメンバーでないため回答することができません。*}<br/>
+{elseif $target_user_error == "4"}
+      {'/modules/survey/msg/unable_to_answer_twice'|translate}{*二重回答できません。*}<br/>
+{/if}
+<div style="text-align:right;font-size:small;">
+<a href="/survey_list/" >{'/modules/survey/label/survey_list'|translate}{* アンケート一覧 *}</a>
+</div>
+<hr/>

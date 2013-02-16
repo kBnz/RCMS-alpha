@@ -1,0 +1,11 @@
+{module name="portal_list"}
+<h2 class="module_title"><span>最近の更新{$module_nm}一覧</span></h2>
+<div class="module_contents">
+<p class="page_links">{$page_links}</p>
+<dl>
+{foreach item=row from=$portal_list}
+    <dt><a href="{$row.atom_link}" target="_blank">■{$row.atom_title}</a>【最終更新日】{$row.atom_updated}</dt>
+{/foreach}
+</dl>
+</div>
+{/module}

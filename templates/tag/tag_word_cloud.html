@@ -1,0 +1,33 @@
+{module name="tag_word_cloud"}
+<h2 class="module_title"><span>{'/modules/tag/label/tag_word_cloud'|translate}</span></h2>
+<div class="module_contents">
+
+
+<ul>
+	{foreach from=$tagWordCloudList item=word_cloud_list}
+	<li class="{$word_cloud_list.tag_size} {$word_cloud_list.tag_color} {if $word_cloud_list.this}selected_tag{/if}">
+			<a href="/{$page_sysnm}/?tag_id[]={$word_cloud_list.tag_id}{$this_tag_query}">{$word_cloud_list.tag_nm}</a>
+	</li>
+	{/foreach}
+</ul>
+
+{if count($tagResultList)>0}
+{'/'|@implode:$SelecetdTagNames} {'/label/list'|translate}
+<table class="list">
+		<tr>
+				<th>{'/label/contents'|translate}</th>
+				<th>{'/label/title'|translate}</th>
+		</tr>
+		{foreach from=$tagResultList item=TagResult}
+		<tr>
+		{assign var=tag_module_nm value=$TagResult.table_prefix}
+				<td>{"/modules/$tag_module_nm"|translate}</td>
+				<td><a href="{$TagResult.link}">{$TagResult.table_titleval}</td>
+		</tr>
+		{/foreach}
+</table>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo}
+{/if}
+
+</div>
+{/module}

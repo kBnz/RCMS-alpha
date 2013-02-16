@@ -1,0 +1,46 @@
+<h2>[emoji:176]ｶﾚﾝﾀﾞｰ詳細</h2>
+[ｲﾍﾞﾝﾄ]<br/>
+{$data.event_txt|nl2br}<br/>
+[開始日時]<br/>
+{$data.from_date} {$data.from_time}<br/>
+[終了日時]<br/>
+{$data.to_date} {$data.to_time}<br/>
+<br/>
+
+ｲﾍﾞﾝﾄの詳細<br/>
+{if $calendar_wysiwyg_use_flg}{$data.event_detail}{else}{$data.event_detail|nl2br}{/if}
+<hr/>
+{if $data.attend_flg == 1 && ($data.AttShowChk || $data.AttPostChk)}{* attend_flg==1で出席を取る *}
+<h2>[emoji:176]出欠席</h2>
+    {if count($attend)  > 0 && $data.attend_flg == 1 && $data.AttShowChk}{* 配列に値が入っていれば出欠情報があるとみなせる *}
+    <ul>
+    {foreach from=$attend key="key" item="att"}
+        <li>
+        <span style="{if $att.attend_type eq 1}color:#00cc00;">出席{elseif $att.attend_type eq 0}color:#ff0000;">欠席{elseif $att.attend_type eq 2}color:#777777;">保留{/if}</span>:
+        {$att.attend_nm}:
+        <span style="font-size:small;color:#666666;">{$att.comment}
+        {if $att.canDelFlg}<a href="/{$page_sysnm}/id={$data.event_id}&event_id={$data.event_id}&mode=del_attend&DelNo={$att.event_attend_id}">[削除]</a>{/if} ({$att.date})
+        </span>
+        </li>
+    {/foreach}
+    </ul>
+    {/if}
+<br/>
+    {if $data.AttPostChk}
+    ■入力フォーム<br/>
+    <form action="/{$page_sysnm}/{if $data.event_id}id={$data.event_id}{/if}" method="POST">
+    <input type="hidden" name="event_id" value="{$data.event_id}" />
+    <input type="hidden" name="mode" value="set_attend" />
+    ▼名前<br/>
+    <input type="text" name="attend_nm" maxlength="20" value="{$smarty.session.disp_name}" /><br/>
+    ▼出欠席<br/>
+    <input type="radio" value="1" name="attend_type" checked="checked" />：出席
+    <input type="radio" value="0" name="attend_type" />：欠席
+    <input type="radio" value="2" name="attend_type" />：保留<br/>
+    ▼一言コメント<br/>
+    <input name="comment" type="text" value="" /><br/>
+    <input type="submit" value="送信" />
+    </form>
+    {/if}
+<hr/>
+{/if}

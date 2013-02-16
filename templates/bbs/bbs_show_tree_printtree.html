@@ -1,0 +1,16 @@
+<li>
+{if $itemList[$node.seq].dflg == 1}<span class="delmsg">
+  {if $itemList[$node.seq].deltype eq ''}{'/msg/deleted_by_user'|translate}{else}{'/msg/deleted_by_admin'|translate}{/if}{*ユーザーにより or 管理者により削除されました。*}</span>
+{else}
+  {if $bbs_id == $itemList[$node.seq].seq}<span class="new">>>></span>{/if}
+  <a href="/bbs_show/MODE=view&id={$itemList[$node.seq].seq}&bbs_header_id={$bbs_header_id}">{$itemList[$node.seq].title|escape}</a><span class="name">{$itemList[$node.seq].name|escape}</span><span class="date">[{$itemList[$node.seq].create_date|pg_dateformat:" %Y/%m/%d %H:%M:%S"}]</span>
+  {if $itemList[$node.seq].new}<span class="new">new!!</span>{/if}
+{/if}
+{if $node.child}
+<ul>
+{foreach from=$node.child item=ch}
+  {rcms_include file="bbs/bbs_show_tree_printtree.html" node=$ch}
+{/foreach}
+</ul>
+{/if}
+</li>

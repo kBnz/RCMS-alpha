@@ -1,0 +1,280 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript" src="/js/swfobject.js"></script>
+<script type="text/javascript">
+<!--
+{literal}
+function subject_type_change(){
+    if($('subject_type1').checked){
+        $('subject_img').style.display = 'block';
+        $('subject_text').style.display = 'none';
+    }else{
+        $('subject_img').style.display = 'none';
+        $('subject_text').style.display = 'block';
+    }
+
+}
+{/literal}
+//-->
+</script>
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{'/modules/catalog/label/catalog_edit'|translate}{* カタログ編集 *}　{if $formData.version_no}{'/modules/catalog/label/catalog_version_no'|translate:$formData.version_no}{* 第n版 *}{if $formData.latest_flg eq '1'}({'/label/latest'|translate}{* 最新 *}){/if}{/if}</h2>
+<ul>
+    {if $rauth->canInsert('/catalog/group')}
+        <li class="add"><a href="/management/catalog/catalog_edit/{if $catalog_group_id}catalog_group_id={$catalog_group_id}{/if}"><span>{'/modules/catalog/label/create_new_catalog'|translate:$catalog_group_nm}{* [グループ名]追加 *}</span></a></li>
+    {/if}
+    {if $catalog_id}
+    <li class="normal"><a href="/management/catalog/catalog_history/catalog_id={$catalog_id}"><span>{'/label/update_history'|translate}</span></a></li>
+    <li class="normal"><a href="/management/accesscount/accesscount_list/module_type=catalog&id={$catalog_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+    <li class="view"><a href="{$smarty.const.ROOT_URL}/catalog_detail{if $catalog_group_id}{$catalog_group_id}{/if}/id={$catalog_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+    {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog/label/catalog_group_list'|translate}</a>
+<a href="/management/catalog/catalog_list/catalog_group_id={$catalog_group_id}">{'/modules/catalog/label/group_nm_list'|translate:$catalog_group_nm}</a>
+{'/modules/catalog/label/group_nm_edit'|translate:$catalog_group_nm}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カタログ >> グループ一覧 >> [グループ名]一覧 >> [グループ名]編集 *}
+
+<div style="float:right;">
+<a href="#relation_data">{'/label/related_info'|translate}{* 関連情報 *}：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}{'/label/items'|translate}{* 件 *}</a>
+</div>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{if $catalog_id}
+    {lang_selector meta=$docmeta link="/management/catalog/catalog_edit/catalog_id=$catalog_id"}
+{/if}   
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/catalog/catalog_edit/catalog_id=$catalog_id"}
+
+    <form name="catalog_edit" id="catalog_edit" action="/management/catalog/catalog_edit/" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="pageID" value="{$pageID}" />
+        {if $catalog_id}
+            <input type="hidden" name="catalog_id" value="{$catalog_id}" />
+        {/if}
+        {if !$docmeta.is_primary}
+            <input type="hidden" name="contents_type" value="{$formData.contents_type}" />
+        {/if}
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="subflg" value="" />
+        <input type="hidden" name="catalog_group_id" value="{$catalog_group_id}" />
+        <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+        {if $formData.image_name}
+        <input type="hidden" name="image_name" value="{$formData.image_name}" />
+        {/if}
+        {if $formData.subject_img}
+        <input type="hidden" name="subject_img" value="{$formData.subject_img}" />
+        {/if}
+        {if $formData.subject_img2}
+        <input type="hidden" name="subject_img2" value="{$formData.subject_img2}" />
+        {/if}
+        <h3><span class="link_button">{'/modules/catalog/label/group_nm_information'|translate:$catalog_group_nm}{* [グループ名]情報 *}</span></h3>
+        <table width="100%" border="0">
+            <tr>
+                <th>{'/label/category'|translate}{* カテゴリ *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+                <td>
+                    {if $docmeta.is_primary}
+                    <select name="contents_type" onChange = "this.form.MODE.value='MODIFY';this.form.submit();">{html_options options=$arrContents_type selected=$formData.contents_type}</select>
+                    {else}
+                        {$arrContents_type[$latestRow.contents_type]}
+                    {/if}
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/title'|translate}{* タイトル *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+                <td>
+                    {if $docmeta.is_primary}
+                    <input type="radio" id="subject_type0" name="subject_type" value="0" {if $formData.subject_type ne '1'}checked{/if} onChange="subject_type_change();">{'/label/text'|translate}{* テキスト *}
+                    <input type="radio" id="subject_type1" name="subject_type" value="1" {if $formData.subject_type eq '1'}checked{/if} onChange="subject_type_change();">{'/label/image'|translate}{* 画像 *}/Flash<br>
+                    {/if}
+
+                    <div id="subject_text" {if $formData.subject_type eq '1'}style="display:none;"{/if}>
+                    <input type="text" name="subject" value="{$formData.subject|escape}" size="80" />
+                    </div>
+                    <div id="subject_img" {if $formData.subject_type ne '1'}style="display:none;"{/if}>
+                      {if $formData.subject1_ext eq 'swf'}
+                      <div id="subject_flash"></div>
+                      <script type="text/javascript">
+                      <!--
+                          var so = new SWFObject("{$formData.subject_img_url}", "subject_flash", "{$formData.subject_width}", "{$formData.subject_height}", "8", "#000000");
+                          so.write("subject_flash");
+                      //-->
+                      </script>
+                      <input type="hidden" name="subject_img_exists" value="1">
+                      {else}
+                        {if $formData.subject_img_url}
+                        <img src="{$formData.subject_img_url}" 
+                        {if $formData.subject_img2_url}
+                          onMouseOver="this.src='{$formData.subject_img2_url}'" 
+                          onMouseOut="this.src='{$formData.subject_img_url}'" 
+                        {/if}
+                        >
+                        <input type="hidden" name="subject_img_exists" value="1">
+                        {/if}
+                      {/if}
+                        <br>
+                        {if $docmeta.is_primary}
+                        {'/label/title_image'|translate}{* タイトル画像 *}/Flash：<input type="file" name="subject_img" /><input type="checkbox" name="del_catalog_photo[subject_img]" value="1">{'/label/delete'|translate}{* 削除 *}<br>
+                        {'/label/title_image'|translate}{* タイトル画像 *}（{'/lable/rollover'|translate}{* ロールオーバー *}）：<input type="file" name="subject_img2" /><input type="checkbox" name="del_catalog_photo[subject_img2]" value="1">{'/label/delete'|translate}{* 削除 *}<br>
+                        {'/label/width'|translate}{* 横幅 *}:<input type="text" name="subject_width" value="{$formData.subject_width|escape}" size="5" />px 
+                        {'/label/height'|translate}{* 縦幅 *}:<input type="text" name="subject_height" value="{$formData.subject_height|escape}" size="5" />px<br>
+                        <span class="hint">{'/modules/catalog/msg/about_rollover_image_explain'|translate}{* ロールオーバの画像を入力するとロールオーバします。swfファイルのアップも可能です。 *}</span>
+                        {/if}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/modules/catalog/label/detail_page'|translate}{* 詳細ページ *}</th>
+                <td>
+                    {if $docmeta.is_primary}
+                        {html_radios name="detail_flg" options=$arrCatalogDetail_Flg selected=$formData.detail_flg}
+                    {else}
+                        {$arrCatalogDetail_Flg[$latestRow.detail_flg]}
+                    {/if}
+                </td>
+            </tr>
+{if $catalog_disp_type eq 1}
+            <tr>
+                <th>{'/modules/catalog/label/width_of_list_page'|translate}{* 一覧ページの幅 *}</th>
+                <td>
+                    {if $docmeta.is_primary}
+                        <input type="text" name="col_num" value="{$formData.col_num|escape}" size="3">{'/label/multi_column_unit'|translate}{* 段 *}（{'/modules/catalog/label/one_column_is_normal_setting'|translate}{* 通常は1段 *}）
+                    {else}
+                        {$latestRow.col_num|escape}
+                    {/if}
+                </td>
+            </tr>
+{else}
+<input type="hidden" name="col_num" value="{$formData.col_num|escape}">
+{/if}
+        </table>
+
+  <h3><span class="link_button">{'/modules/catalog/label/group_nm_content'|translate:$catalog_group_nm}{* [グループ名]内容 *}</span></h3>
+  <p class="hint">{'/modules/catalog/msg/about_category_setting_explain'|translate}{* 入力する項目はカテゴリ毎に設定できます。設定は「カテゴリ設定」から行ってください。 *}</p>
+  <table style="width:100%">
+{foreach from=$extensionSettings key=key item=item}
+  {if $item.enable}
+    {section loop=$item.ext_group_loop name=ext_loop}
+      {assign var=i value=$smarty.section.ext_loop.iteration-1}
+      <tr>
+        <th>{$item.ext_title|escape}</th>
+        <td>
+          {if $key == 'image'}
+            <img style="display:block" src="{$formData.photo_url}" />
+            <input type="file" name="image" id="image" /><br />
+            <div>
+              {'/label/width'|translate}:<input type="text" name="catalog_photo_width"  value="200" size="3" />
+              {'/label/height'|translate}:<input type="text" name="catalog_photo_height"  value="200" size="3" />
+            </div>
+            <div>
+              {'/label/thumbnail_width'|translate}:<input type="text" name="catalog_photo_thumbnail_width" value="100" size="3"/>
+              {'/label/thumbnail_height'|translate}:<input type="text" name="catalog_photo_thumbnail_height" value="100" size="3"/>
+            </div>
+            <input type="checkbox" name="del_catalog_photo[image]" id="del_catalog_photo" value="1" /><label for="del_catalog_photo">{'/label/delete_image'|translate}</label>
+          {elseif $key == 'contents'}
+            {if $item.use_wysiwyg}
+              {$item.value|wysiwyg:$key}
+            {else}
+              <textarea name="{$key}" style="width:90%;height:150px" />{$item.value|escape}</textarea>
+            {/if}
+          {elseif $key == 'url'}
+            <input type="text" name="{$key}" style="width:400px" value="{$formData.$key|escape}" /><br />
+            <input type="checkbox" name="link_flg" id="link_flg" value="1" {if $formData.link_flg}checked="checked"{/if} />
+            <label for="link_flg">{'/modules/catalog/msg/display_link_page_other_window'|translate}</label>
+          {elseif $item.ext_type eq '0'}
+            <input type="text" name="{$key}[{$i}]" value="{$item.value.$i|escape}" size="60" />
+          {elseif $item.ext_type eq '1'}
+            <textarea name="{$key}[{$i}]" rows="4" cols="60">{$item.value.$i|escape}</textarea>
+          {elseif $item.ext_type eq '2'}
+            <select name="{$key}[{$i}]"><option value="">{'/label/no_select'|translate}</option>
+            {html_options options=$item.options selected=$item.value.$i}</select>
+          {elseif $item.ext_type eq '3'}
+            <input type="text" name="{$key}[{$i}]" value="{$item.value.$i|escape}" size="60" />
+          {elseif $item.ext_type eq '4'}
+            <p>file:<input type="file" name="ext_file[{$key}][{$i}]" />
+            <label for="delete_{$key}_{$i}">{'/label/delete'|translate}:</label><input type="checkbox" name="ext_file_delete[{$key}][{$i}]" id="delete_{$key}_{$i}" {if $item.delete.$i}checked="checked"{/if} />
+            </p>
+            {if $item.file_url.$i}
+              <p><a href="{$item.file_url.$i}" target="_blank"><img src="{$item.file_url.$i}" style="max-width:500px"/></a></p>
+            {/if}
+            {if $item.tmpfile.$i}
+              <input type="hidden" name="ext_tmpfile[{$key}][{$i}]" value="{$item.tmpfile.$i}" />
+            {/if}
+            <p>{'/label/caption'|translate}:<textarea name="{$key}[{$i}]" rows="1" cols="60">{$item.value.$i|escape}</textarea></p>
+          {/if}
+        </td>
+      </tr>
+    {/section}
+  {/if}
+{/foreach}
+  </table>
+      
+
+{if $docmeta.is_primary}
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    <div id="detail_setting" class="edit_close">
+        <h3>{'/label/other_settings'|translate}{* その他の設定 *}</h3>
+        <p><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+    </div>
+
+    <div id="detail_setting2" style="display:none;">
+        <div class="edit_open">
+            <h3><span class="link_button">{'/label/other_settings'|translate}{* その他の設定 *}</span></h3>
+            <p class="close"><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+        </div>
+        <div class="edit_contents">
+            <table width="650">
+                <tr class="light_gray">
+                    <th valign="top">{'/label/access_limit'|translate}{* アクセス制限 *}:</th>
+                    <td colspan="3"><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select></td>
+                </tr>
+            </table>
+        </div>
+    </div><!--//detail_setting2-->
+    {rcms_include file="management/open_date_box.html" id=$catalog_id data=$formData}
+{/if}
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/catalog/item/$catalog_id", $docmeta.lang) docmeta=$docmeta link="/management/catalog/catalog_edit/catalog_id=$catalog_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+    </form>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{if $formData.pdf_url ne '' || $formData.link_url ne ''}
+    {literal}
+    setTimeout("display('write_text');",1000);
+    setTimeout("display('write_link');",1000);
+    {/literal}
+{/if}
+
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,103 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+<!--
+
+{literal}
+
+function tdfk_conv(order_no) {
+    var tdfk_kana = new Array("ﾎｯｶｲﾄﾞｳ","ｱｵﾓﾘｹﾝ","ｲﾜﾃｹﾝ","ｱｷﾀｹﾝ","ﾐﾔｷﾞｹﾝ","ﾔﾏｶﾞﾀｹﾝ","ﾌｸｼﾏｹﾝ","ﾆｲｶﾞﾀｹﾝ","ｲﾊﾞﾗｷｹﾝ","ﾄﾁｷﾞｹﾝ","ｸﾞﾝﾏｹﾝ","ｻｲﾀﾏｹﾝ","ﾁﾊﾞｹﾝ","ﾄｳｷｮｳﾄ","ｶﾅｶﾞﾜｹﾝ","ﾔﾏﾅｼｹﾝ","ｼｽﾞｵｶｹﾝ","ﾅｶﾞﾉｹﾝ","ｱｲﾁｹﾝ","ｷﾞﾌｹﾝ","ﾄﾔﾏｹﾝ","ｲｼｶﾜｹﾝ","ﾌｸｲｹﾝ",
+                              "ｼｶﾞｹﾝ","ﾐｴｹﾝ","ｷｮｳﾄﾌ","ｵｵｻｶﾌ","ﾅﾗｹﾝ","ﾜｶﾔﾏｹﾝ","ﾋｮｳｺﾞｹﾝ","ｵｶﾔﾏｹﾝ","ﾋﾛｼﾏｹﾝ","ﾄｯﾄﾘｹﾝ","ｼﾏﾈｹﾝ","ﾔﾏｸﾞﾁｹﾝ","ｴﾋﾒｹﾝ","ｶｶﾞﾜｹﾝ","ﾄｸｼﾏｹﾝ","ｺｳﾁｹﾝ","ﾌｸｵｶｹﾝ","ﾅｶﾞｻｷｹﾝ","ｻｶﾞｹﾝ","ｸﾏﾓﾄｹﾝ","ｶｺﾞｼﾏｹﾝ","ﾐﾔｻﾞｷｹﾝ","ｵｵｲﾀｹﾝ","ｵｷﾅﾜｹﾝ");
+    var i = document.ms_list.elements['tdfk_cd[' + order_no + ']'].selectedIndex ;
+    document.ms_list.elements['tdfk_knm[' + order_no + ']'].value = tdfk_kana[i];
+
+    return true;
+}
+
+{/literal}
+
+//-->
+
+</script>
+
+<div class="list_right_bt">
+<h2>郵便番号マスタを編集</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/master/masterMenu/">{$module_nm}管理</a>
+郵便番号マスタを編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <form action="/management/master/ken_all_master_list/" method="post" name="ms_list">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+      <p>
+        都道府県<select name="s_tdfk_cd">{html_options options=$tdfk_list selected=$s_tdfk_cd}</select>&nbsp;&nbsp;
+        <input type="submit" name="search" value="検索する">
+      </p>
+      {pager info=$pageInfo}
+      <table width="100%" border="0" cellspacing="2" cellpadding="0">
+        <tr>
+          <th scope="col" width="58" rowspan="2">修正</th>
+          <th scope="col" rowspan="2">郵便番号(7ｹﾀ)</th>
+          <th scope="col">郵便番号(旧)</th>
+          <th scope="col">ﾌﾘｶﾞﾅ</th>
+          <th scope="col">ﾌﾘｶﾞﾅ</th>
+          <th scope="col">ﾌﾘｶﾞﾅ</th>
+          <th scope="col" width="58" rowspan="2">削除</th>
+        </tr>
+        <tr>
+          <th scope="col">JISコード(5ｹﾀ)</th>
+          <th scope="col">都道府県</th>
+          <th scope="col">住所1</th>
+          <th scope="col">住所2</th>
+        </tr>
+
+{foreach name=ziploop item=ziprow from=$zip_list}
+  {assign var="i" value=$smarty.foreach.ziploop.index}
+        <tr>
+          <td width="58" rowspan="2">
+            {if $auth.master.insert && $ziprow.isNew}
+              <input type="submit" name="insert[{$i}]" value="新規追加"/>
+            {elseif $auth.master.update && !$ziprow.isNew}
+              <input type="submit" name="update[{$i}]" value="更新"/>
+            {/if}
+          </td>
+          <td rowspan="2">
+            {if $auth.master.insert && $ziprow.isNew}
+              <input type="text" size="7" name="zip_cd[{$i}]" value="{$ziprow.zip_cd}"/>
+            {elseif $auth.master.update && !$ziprow.isNew}
+              <input type="hidden" name="zip_cd[{$i}]" value="{$ziprow.zip_cd}"/>{$ziprow.zip_cd}
+            {/if}
+          </td>
+          <td><input type="text" name="old_zip_cd[{$i}]" size="8" value="{$ziprow.old_zip_cd}"/></td>
+          <td><input type="text" size="10" name="tdfk_knm[{$i}]" value="{$ziprow.tdfk_knm}"/></td>
+          <td><input type="text" name="city_knm[{$i}]" value="{$ziprow.city_knm}"/></td>
+          <td><input type="text" name="town_knm[{$i}]" value="{$ziprow.town_knm}"/></td>
+          <td width="58" rowspan="2">
+            {if $auth.master.delete && !$ziprow.isNew}
+              <input type="submit" name="delete[{$i}]" onclick="if (!confirm('削除してよろしいですか')) return false ;" value="削除">
+            {/if}
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" name="jis_cd[{$i}]" size="6" value="{$ziprow.jis_cd}"/></td>
+          <td><select onchange="tdfk_conv({$i})" name="tdfk_cd[{$i}]">{html_options options=$tdfk_list selected=$ziprow.tdfk_cd}</select></td>
+          <td><input type="text" name="city_nm[{$i}]" value="{$ziprow.city_nm}"/></td>
+          <td><input type="text" name="town_nm[{$i}]" value="{$ziprow.town_nm}"/></td>
+        </tr>
+{/foreach}
+      </table>
+      {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

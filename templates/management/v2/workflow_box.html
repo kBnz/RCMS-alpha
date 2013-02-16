@@ -1,0 +1,161 @@
+{if $approvalFlow|@count>0}
+{* 該当モジュール用の承認フローが存在する*}
+
+{literal}
+<script type="text/javascript">
+(function($){
+
+    $(document).ready(function() {
+        
+        initEditField();
+        setStatusMsg();
+
+        // イベント登録
+        $("#workflow_settings").on("click",showEditField);
+
+    });
+    
+    /**
+    * 編集画面の初期化
+    */
+    function initEditField(){
+        // 編集画面の設定
+        $("#workflow_settings_edit_field").dialog({
+            title     : "{/literal}{'/label/workflow_setting'|translate}{*フロー設定*}{literal}",
+            autoOpen  : false,
+            resizable : true,
+            height    : 300,
+            width     : 500,
+            modal     : true,
+            buttons:
+            {
+                "OK" : function() {
+                    setFormValues();
+                    setStatusMsg();
+                    $( this ).dialog( "close" );
+                },
+            }
+        });
+    }
+    
+    /**
+    * 編集画面の表示
+    */
+    function showEditField(){
+        $("#workflow_settings_edit_field").dialog("open");
+    }
+    
+    /**
+    * ステータスメッセージをセット
+    */
+    function setStatusMsg(){
+        var msg = "";
+
+        if( $("#workflow_settings_edit_field input[name='approvalflow_id']").size() > 0 ){
+            // 申請中
+            msg = "{/literal}{'/label/approval_waiting'|translate}{*申請中*}{literal}";
+        }else{
+            // 申請前
+            msg = $("#workflow_settings_edit_field select[name='approvalflow_id'] option:selected").text();
+        }
+        $("#workflow_settings .status_msg").html(msg);
+        
+    }
+    
+    /**
+    * フォームの値をセット
+    */
+    function setFormValues(){
+        var approvalflow_id = $("#workflow_settings_edit_field [name='approvalflow_id']").val();
+        $("#workflow_settings_form_field [name='approvalflow_id']").val(approvalflow_id);
+    }
+}(jQuery));
+</script>
+
+{/literal}
+
+<div id="workflow_settings" class="metasettings">
+    <h1 class="title">{'/label/workflow_setting'|translate}{*フロー設定*}</h1>
+    <p class="status_msg">status message here.</p>
+
+    {* 送信用データ *}
+    <div id="workflow_settings_form_field" style="display:none;">
+         <input type="hidden" name="approvalflow_id" value="{$selected_apploval_id}">
+    </div>
+    
+    {* 編集画面 *}
+    <div id="workflow_settings_edit_field">
+        <div id="workflow_box">
+        <table width="100%">
+          <tr>
+            <th width="25%">{'/label/workflow_name'|translate}{*ワークフロー名*}</th>
+            <td width="75%">
+            {if $current_apploval_status|@count>0 || $docmeta.is_waiting}
+            {*申請中である場合、承認フロー設定の変更は不可*}
+                {if !$selected_apploval_id}設定なし{else}{$approvalFlow[$selected_apploval_id]}{/if}
+                <input type="hidden" name="approvalflow_id" value="{$selected_apploval_id}">
+            {else}
+                {if $isUnlimited}{*承認が不要なユーザである*}
+                <select name="approvalflow_id">{html_options options=$approvalFlow selected=$selected_apploval_id}</select>
+                {else}
+                <select name="approvalflow_id">
+                {foreach from=$approvalFlow item=item key=key}
+                {if $key != ""}
+                <option label="{$item}" value="{$key}">{$item}</option>
+                {/if}
+                {/foreach}
+                </select>
+                {/if}
+            {/if}
+            </td>
+          </tr>
+        </table>
+        
+        {if $current_apploval_status|@count>0}
+        {* 現在、承認待ちの場合、ステータスを表示 *}
+            <div style="text-align: left;"><img src="{'/images/management/flow_publish_s.gif'|lang_img_path}" border="0"></div>
+            <table width="100%">
+              <th style="text-align: left; background-color: white;"><img src="{'/images/management/flow_arrow_s2.gif'|lang_img_path}" border="0"></th>
+              <th>{'/modules/approvalflow/label/approval_group_name'|translate}{*承認グループ名*}</th>
+              <th>{'/label/status'|translate}{*ステータス*}</th>
+              <th>{'/modules/approvalflow/label/apply_approve_date'|translate}{*申請/承認日*}</th>
+              <th>{'/modules/approvalflow/label/applyer_approver'|translate}{*申請/承認者*}</th>
+              <th>{'/label/update_comment'|translate}{*コメント*}</th>
+            {foreach from=$current_apploval_status item=item name=current_apploval_status}
+            <tr>
+            {if $item.approval_level}
+                {if $item.approve_status==$smarty.const.APPROVALFLOW_APPROVAL_STATUS_1}{* 待機中の行は背景色を変える *}
+                {assign var=col_style value='style="color: #aaa;"'}
+                {assign var=col_style2 value='style="color: #aaa;"'}
+                {assign var=flow_arrow_s_path value='/images/management/flow_arrow_s2.gif'}
+                {elseif $item.approve_status==$smarty.const.APPROVALFLOW_APPROVAL_STATUS_2}{* 承認待ちの行は背景色を変える *}
+                {assign var=col_style value='style="background-color: #ff6633;"'}
+                {assign var=col_style2 value='style="color:#fff;background-color: #ff6633;"'}
+                {assign var=flow_arrow_s_path value='/images/management/flow_arrow_s.gif'}
+                {else}
+                {assign var=col_style value=''}
+                {assign var=col_style2 value=''}
+                {assign var=flow_arrow_s_path value='/images/management/flow_arrow_s.gif'}
+                {/if}
+                <td style="text-align: left; background-color: white;"><img src="{$flow_arrow_s_path}" border="0"></td>
+                <td align="left" {$col_style2}>{$item.approvalflow_member_group_nm}</td>
+                <td align="left" {$col_style2}>{$item.approval_status_nm}</td>
+                <td align="left" {$col_style}>{$item.apply_approve_date|pg_dateformat}</td>
+                <td align="left" {$col_style}>{$item.apply_approve_member_nm}</td>
+                <td align="left" {$col_style}>{$item.update_comment|nl2br}</td>
+            {else}
+                <td style="text-align: left; background-color: white;"><img src="{'/images/management/flow_arrow_s.gif'|lang_img_path}" border="0"></td>
+                <td align="left"></td>
+                <td align="left">{'/modules/approvalflow/label/applied_status'|translate}{*申請*}</td>
+                <td align="left">{$item.apply_approve_date|pg_dateformat}</td>
+                <td align="left">{$item.apply_approve_member_nm}</td>
+                <td align="left">{$item.update_comment|nl2br}</td>
+            {/if}
+            </tr>
+            {/foreach}
+            </table>
+        {/if}
+        </div>
+        {/if}
+    </div>
+</div>

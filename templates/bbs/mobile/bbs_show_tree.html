@@ -1,0 +1,18 @@
+<h2>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</h2>
+
+{rcms_include file="bbs/mobile/bbs_show_menu.html"}
+
+<h2>{'/modules/bbs/label/post_list'|translate}{*投稿記事一覧*}</h2>
+{if $pageInfo.totalCnt > 0}
+{foreach from=$treeList item=node}
+  {rcms_include file="bbs/mobile/bbs_show_tree_printtree.html" node=$node}
+{/foreach}
+
+<div style="text-align:center;font-size:small;">
+{'/label/pagination/summary'|translate:$pageInfo.totalCnt:$pageInfo.firstIndex:$pageInfo.lastIndex}{*a件中 b-c件目*}
+[{ if $pageInfo.pageNo > 1 }<a href="/bbs_show/page={$pageInfo.pageNo-1}&vm=tree&bbs_header_id={$bbs_header_id}">{'/label/prev'|translate}{*前へ*}</a>{else}{'/label/prev'|translate}{*前へ*}{/if}|{ if $pageInfo.pageNo < $pageInfo.totalPageCnt }<a href="/bbs_show/page={$pageInfo.pageNo+1}&vm=tree&bbs_header_id={$bbs_header_id}">{'/label/next'|translate}{*次へ*}</a>{else}{'/label/next'|translate}{*次へ*}{/if}]
+</div>
+{else}
+{'/modules/bbs/msg/no_post_yet'|translate}{*まだ書き込みがありません*}
+{/if}
+<hr/>

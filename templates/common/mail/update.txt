@@ -1,0 +1,47 @@
+コンテンツが更新されました。
+
+タイトル:
+{$meta.link.title}
+
+言語:
+{$meta.disp_lang}
+
+ステータス:
+{if $meta.status == 0}
+未作成
+{elseif $meta.status == 1}
+作成済み
+{else}
+承認待ち
+{/if}
+
+更新者:
+{$meta.admin_nm}
+
+更新日時:
+{$meta.update_ymdhi|pg_dateformat:"%Y/%m/%d %H:%M:%S"}
+
+編集画面:
+{$smarty.const.ROOT_SSL_URL}{$meta.link.link}
+
+{* 他の言語も表示するなら *}
+{*
+{foreach from=$metas item=row}
+# 言語:{$row.disp_lang}
+- 状態:({if $row.status == 0}未作成{elseif $row.status == 1}作成済み{else}承認待ち{/if})
+{if $row.status > 0}
+- 更新者:{$row.admin_nm}
+{$smarty.const.ROOT_SSL_URL}{$row.link.link}
+{/if}
+
+{/foreach}
+*}
+
+---------------
+{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/
+{$smarty.const.ROOT_SSL_URL}/management/
+
+メールの受信設定
+{$smarty.const.ROOT_SSL_URL}/management/menu/subscription_edit/
+

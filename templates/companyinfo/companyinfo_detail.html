@@ -1,0 +1,205 @@
+{module name="companyinfo_detail"}
+<script type="text/javascript">
+<!--
+{literal}
+function onLoad() {
+    Element.observe(window, 'resize', resizeMap, false);
+    resizeMap();
+}
+function resizeMap() {
+    var winHeight = document.all ? document.documentElement.clientHeight : window.innerHeight;  //ウィンドウの高さ
+    var map_height = String(winHeight - 50) + "px";
+    $( "googlemap{/literal}{$contents_id}{literal}" ).height = map_height;
+
+    var moduleWidth = $('contents{/literal}{$contents_id}{literal}').getDimensions().width;  //モジュールの幅
+
+{/literal}{if $location_frame_flg}{literal}
+    var map_width  = String(moduleWidth - 150) + "px";
+    $( "locations{/literal}{$contents_id}{literal}" ).height = map_height;
+
+{/literal}{else}{literal}
+    var map_width  = String(moduleWidth - 40) + "px";
+
+{/literal}{/if}{literal}
+
+    $( "googlemap{/literal}{$contents_id}{literal}" ).width = map_width;
+
+    if (googlemap.document.getElementById( "map" )){
+        googlemap.document.getElementById( "map" ).style.width = map_width;
+        googlemap.document.getElementById( "map" ).style.height = map_height;
+    }
+}
+{/literal}
+//-->
+</script>
+
+<h2 class="module_title"><span>{'/modules/companyinfo/label/company_summary'|translate}{*会社概要*}</span></h2>
+
+<div class="module_contents">
+<table class="list">
+{foreach from=$companyinfoData.order_list item=key name=list_data}
+  {if $key == "addres"}
+      {if $companyinfoData.comp_zip_main || $companyinfoData.comp_zip_sub || $companyinfoData.comp_tdfk_nm || $companyinfoData.comp_add}
+      <tr>
+        <th nowrap>{'/modules/companyinfo/label/ｈeadquarters'|translate}{*本社所在地*}</th>
+          <td>
+          {if $companyinfoData.comp_zip_main || $companyinfoData.comp_zip_sub}
+            <p>{$companyinfoData.comp_zip_main}&nbsp;-&nbsp;{$companyinfoData.comp_zip_sub}</p>
+          {/if}
+            <p>{$companyinfoData.comp_tdfk_nm}{$companyinfoData.comp_add|nl2br}{$companyinfoData.comp_add2|nl2br}</p>
+
+          {if $location_linkurl|@count == 1}
+            <p>
+              [ <a href="{$location_linkurl.0.url}" >MAP</a> ]
+            </p>
+          {elseif  $location_linkurl|@count > 1}
+            <p>
+              {section name=location_url loop=$location_linkurl}
+                  [ <a href="{$location_linkurl[location_url].url}" >{$location_linkurl[location_url].location_nm}</a> ]
+              {/section}
+            </p>
+          {/if}
+
+          </td>
+      </tr>
+      {/if}
+  {elseif $key == "gmap_type"}
+  {*}小さくなってしまうので、地図はテーブルに表示しない。{*}
+  {elseif $key == "company_image_url"}
+      {if $companyinfoData.company_image_url && $companyinfoData.company_image_url|rcms_file_exists}
+      <tr>
+          <th nowrap>{$companyinfo_items_options[$key].name}</th>
+          <td><img src="{$companyinfoData.company_image_url}" /></td>
+      </tr>
+      {/if}
+  {elseif $key == "ext_title_01"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_01}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_01|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_01|nl2br}</td>
+          </tr>
+      {/if}
+   {elseif $key == "ext_title_02"}
+     {if $companyinfoData[$key] && $companyinfoData.ext_txt_02}
+         <tr>
+             <th nowrap>{$companyinfoData.ext_title_02|nl2br}</th>
+             <td>{$companyinfoData.ext_txt_02|nl2br}</td>
+         </tr>
+     {/if}
+  {elseif $key == "ext_title_03"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_03}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_03|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_03|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_04"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_04}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_04|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_04|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_05"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_05}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_05|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_05|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_06"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_06}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_06|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_06|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_07"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_07}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_07|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_07|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_08"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_08}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_08|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_08|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_09"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_09}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_09|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_09|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_10"}
+      {if $companyinfoData[$key] && $companyinfoData.ext_txt_10}
+          <tr>
+              <th nowrap>{$companyinfoData.ext_title_10|nl2br}</th>
+              <td>{$companyinfoData.ext_txt_10|nl2br}</td>
+          </tr>
+      {/if}
+ {elseif $key == "ext_title_11"}
+     {if $companyinfoData[$key] && $companyinfoData.ext_txt_11}
+         <tr>
+             <th nowrap>{$companyinfoData.ext_title_11|nl2br}</th>
+             <td>{$companyinfoData.ext_txt_11|nl2br}</td>
+         </tr>
+     {/if}
+ {elseif $key == "ext_title_12"}
+       {if $companyinfoData[$key] && $companyinfoData.ext_txt_12}
+         <tr>
+             <th nowrap>{$companyinfoData.ext_title_12|nl2br}</th>
+             <td>{$companyinfoData.ext_txt_12|nl2br}</td>
+         </tr>
+     {/if}
+ {elseif $key == "ext_title_13"}
+       {if $companyinfoData[$key] && $companyinfoData.ext_txt_13}
+         <tr>
+             <th nowrap>{$companyinfoData.ext_title_13|nl2br}</th>
+             <td>{$companyinfoData.ext_txt_13|nl2br}</td>
+         </tr>
+     {/if}
+ {elseif $key == "ext_title_14"}
+       {if $companyinfoData[$key] && $companyinfoData.ext_txt_14}
+         <tr>
+             <th nowrap>{$companyinfoData.ext_title_14|nl2br}</th>
+             <td>{$companyinfoData.ext_txt_14|nl2br}</td>
+         </tr>
+     {/if}
+ {elseif $key == "ext_title_15"}
+       {if $companyinfoData[$key] && $companyinfoData.ext_txt_15}
+         <tr>
+             <th nowrap>{$companyinfoData.ext_title_15|nl2br}</th>
+             <td>{$companyinfoData.ext_txt_15|nl2br}</td>
+         </tr>
+     {/if}
+ {else}
+      {if $companyinfoData[$key]}
+      <tr>
+          <th nowrap>{$companyinfo_items_options[$key].name}</th>
+          <td>{$companyinfoData[$key]|nl2br}</td>
+      </tr>
+      {/if}
+  {/if}
+{/foreach}
+</table>
+
+{*地図情報*}
+{if $companyinfoData.gmap_x && $companyinfoData.gmap_y }
+<iframe id="googlemap{$contents_id}" src="/direct/location/googlemap2/gmap_x={$companyinfoData.gmap_x}&gmap_y={$companyinfoData.gmap_y}&gmap_zoom={$companyinfoData.gmap_zoom}&gmap_type={$companyinfoData.gmap_type}" name="googlemap" marginheight="0" marginwidth="0" frameborder="0"  onload="resizeMap();"></iframe>
+{/if}
+
+</div>
+
+{/module}
+{if $companyinfoData.gmap_x && $companyinfoData.gmap_y }
+<script type="text/javascript">
+{literal}
+onLoad();
+{/literal}
+</script>
+{/if}

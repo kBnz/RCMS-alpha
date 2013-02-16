@@ -1,0 +1,17 @@
+<h2>{'/label/site_map'|translate}{*サイトマップ*}</h2>
+<a href="/">{'/label/top_page'|translate}{*Topﾍﾟｰｼﾞ*}</a><br/>
+{foreach item="page_data" from=$page_list name="row"}
+▼<a href="{$page_data.link}">{$page_data.page_nm}</a><br/>
+{if $page_data.description}<span style="font-size:small;">{$page_data.description}</span><br/>{/if}
+{if $page_data.child1}
+    {foreach item="page_data1" from=$page_data.child1 name="row1"}
+    ┗<a href="{$page_data1.link}">{$page_data1.page_nm}</a><br>
+    {if $page_data1.description} <span style="font-size:small;">{$page_data1.description}</span><br/>{/if}
+      {foreach item="page_data2" from=$page_data1.child2 name="row2"}
+    ┗━<a href="{$page_data2.link}">{$page_data2.page_nm}</a><br>
+    {if $page_data2.description}　　<span style="font-size:small;">{$page_data2.description}</span><br/>{/if}
+      {/foreach }
+    {/foreach}
+{/if}
+{/foreach}
+<hr/>

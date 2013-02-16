@@ -1,0 +1,53 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2 class="moduleedit">{$module_nm}</h2>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/moduleedit/moduleedit_list/">{'/modules/moduleedit'|translate}</a>
+{$module_nm}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+<p>使用可能なモジュールの一覧です。ここから使用するモジュールを選択してください。</p>
+<p><span style="color:red;">追加はいつでもできますので、必要なモジュールのみをチェックしてください。</span></p>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<br/>
+<p class="hint">モジュール設定を確認した後は、<a href="/management/group/group_list/">権限設定</a>の確認も忘れずに！</p>
+<form method="POST" action="/management/moduleedit/moduleedit_list/">
+<input type="hidden" name="MODE" value="UPDATE" />
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+<table>
+  <tr><th>使用</th><th>モジュール名</th><th>コメント</th></tr>
+    {foreach key=key item=category from=$dispModuleList}
+      <tr>
+        <th colspan="3" class="category_nm">{$category.name}</th>
+      </tr>
+{foreach item=mod from=$moduleList}
+{if $mod.category eq $key}
+  <tr>
+    <td>
+    {if $mod.required eq '1' }
+    必須
+    {else}
+        <input type="checkbox" name="use_module[{$mod.module_nm}]" value="1" {if $mod.module_used eq '1'}checked="checked"{/if} />
+    {/if}
+    </td>
+    <td>{$mod.module_disp_nm}</td>
+    <td>{$mod.comment}</td>
+  </tr>
+{/if}
+{/foreach}
+    {/foreach}
+</table>
+{buttonbox}
+  <button type="submit">更新</button>
+{/buttonbox}
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

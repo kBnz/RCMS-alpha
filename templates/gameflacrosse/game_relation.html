@@ -1,0 +1,34 @@
+{if $gameList.0.game_id ne''}
+{module name="game_relation"}
+<h2 class="module_title"><span>関連試合</span></h2>
+<div class="module_contents">
+{section name=mydata loop=$gameList}
+<p class="subitem_list">
+{$gameList[mydata].ymd} {$gameList[mydata].team_nm}
+<a href="/gameflacrosse_detail/id={$gameList[mydata].game_id}">
+{if $gameList[mydata].game_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].game_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{/if}
+</a>
+{$gameList[mydata].opponent_nm}
+</p>
+{/section}
+</div>
+{/module}
+{/if}

@@ -1,0 +1,91 @@
+{module name="shopping_list"}
+
+<h2 class="module_title">商品一覧</h2>
+<div class="module_contents">
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="management/messages_box.html" messages=$messages}
+
+<form action="/{$page_sysnm}/" method="post" name="shopping_list_form">
+    <input type="hidden" name="MODE" value="ADD_CART" />
+    <input type="hidden" name="pageID" value="{$pageID}">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+    <input type="hidden" name="shopping_id" value="" />
+    <input type="hidden" name="amount" value="" />
+
+{foreach from=$shoppingList key=p_key item=row name=shopping_item}
+    <div class="shoppingItem">
+
+    {* 詳細ページがある場合はリンクを貼る *}
+    {if $row.detail_flg}
+            <h3><a href="/shopping_detail/id={$row.shopping_id}">{$row.subject}</a></h3>
+    {else}
+            <h3>{$row.subject}</h3>
+    {/if}
+
+    <p class="category">［カテゴリ］{$row.contents_type_nm}</p>
+    {if $row.group_nm != ""}<p class="group">［グループ］{$row.group_nm}</p>{/if}
+    <div class="item clearFix">
+    {* 自由項目の表示 *}
+
+    {foreach from=$user_profile_list[$row.contents_type].profile item=item key=key name=shopping_item}
+        {if $row.$key && $item.in_list eq 1}
+            {counter assign="count"}
+            {if $count eq 1}
+                <p class="firstItem_{$user_profile_list[$row.contents_type].layout}">
+                    {if $key == 'image'}
+                        {if $row.detail_flg}{*詳細あり*}
+                        <a href="{$smarty.const.ROOT_URL}/shopping_detail/id={$row.shopping_id}"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+                        {else}{*詳細なし*}
+                        <a href="{$row.image_src_s}" target="_blank"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+                        {/if}
+                    {else}
+                    {$item.name}：{$row.$key}
+                    {/if}
+                    {if $key == 'price'}円{/if}
+                </p>
+                <div class="item_{$user_profile_list[$row.contents_type].layout}">
+            {/if}
+            {if $count > 1}
+                 <p>
+                {if $key == 'image'}
+                    {if $row.detail_flg}{*詳細あり*}
+                    <a href="{$smarty.const.ROOT_URL}/shopping_detail/id={$row.shopping_id}"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+                    {else}{*詳細なし*}
+                    <a href="{$row.image_src_s}" target="_blank"><img src="{$row.image_src_s}" class="Item_image" alt="{$row.subject}"></a>
+                    {/if}
+                {else}
+                {$item.name}：{$row.$key}
+                {/if}
+                {if $key == 'price'}円{/if}</p>
+            {/if}
+        {/if}
+        {if $smarty.foreach.shopping_item.last}
+                </div>
+
+          {counter start=0}
+        {/if}
+    {/foreach}
+    </div>
+
+    <p class="select">数量：<select id="amount_{$row.shopping_id}">{html_options options=$row.amount_option}</select>
+            <input type="button" value="カートに追加する" onclick="add2cart({$row.shopping_id});" />
+ </p>
+</div>
+{/foreach}
+
+</form>
+
+{if !$using_season}
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+{/if}
+</div>
+<script type="text/javascript">
+{literal}
+function add2cart (shopping_id) {
+        document.shopping_list_form.amount.value      = document.getElementById('amount_' + shopping_id).value;
+        document.shopping_list_form.shopping_id.value = shopping_id;
+        document.shopping_list_form.submit();
+}
+{/literal}
+</script>
+{/module}

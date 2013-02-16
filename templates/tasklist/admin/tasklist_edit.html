@@ -1,0 +1,280 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+{/literal}{if $docmeta.is_primary}{if $data.response_flg != 1}{literal}
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'limit_date', btnId: 'limit_date-btn', boxId: 'limit_date-pop', tableId: 'limit_date-table'});
+});
+{/literal}{/if}{/if}{literal}
+var tmp_member_name;
+var tmp_member_id;
+
+function inputMemberInfo(order_no) {
+    tmp_member_name = document.getElementById('member_name').value;
+    tmp_member_id = document.getElementById('member_id').value;
+    var element = document.getElementById('member_name');
+    document.getElementById('inputFrame').src = '/js/infoInput.php?type=gamemember';
+    document.getElementById('inputArea').style.visibility = "visible";
+    document.getElementById('inputArea').style.display = "";
+}
+
+function chkMemId(order_no) {
+    if(tmp_member_name != document.getElementById('member_name').value
+    && tmp_member_id == document.getElementById('member_id').value
+    && document.getElementById('member_name').value != "") {
+    // 名前が変わっているがidが変わっていない場合は手で入力したとみなす
+        document.getElementById('member_id').value = "";
+        document.getElementById('subInfo').style.display = "inline";
+    }
+    else if(document.getElementById('member_name').value == "") {
+        document.getElementById('subInfo').style.display = "none";
+    }
+}
+
+function writeWithKeybourd(order_no) {
+    document.getElementById('member_id').value = "";
+    document.getElementById('inputArea').style.visibility = "hidden";
+    if(document.getElementById('member_name').value != "") {
+        document.getElementById('subInfo').style.display = "inline";
+    }
+    else {
+        document.getElementById('subInfo').style.display = "none";
+    }
+}
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/tasklist/label/task_edit'|translate}{* 課題編集 *}</h2>
+<ul>
+{if $rauth->canInsert('/tasklist/item/')}
+  <li class="add"><a href="/management/tasklist/tasklist_edit/"><span>{'/modules/tasklist/label/create_new_task_btn'|translate}{* 課題追加 *}</span></a></li>
+{if $tasklist_id && $data.response_flg != 1}
+  <li class="normal"><a href="/management/tasklist/tasklist_edit/parent_id={$tasklist_id}"><span>{'/label/send_answer_btn'|translate}{* 返信する *}</span></a></li>
+{/if}
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/tasklist_detail/id={$tasklist_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/tasklist/tasklist_list/pageID={$pageID}">{'/modules/tasklist'|translate}</a>
+<a href="/management/tasklist/tasklist_list/pageID={$pageID}">{'/modules/tasklist/label/tasklist_list'|translate}</a>
+{'/modules/tasklist/label/task_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> 課題管理 >> 課題管理一覧 >> 課題編集 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{if $data.response_flg == 1}
+  <a href="/management/tasklist/tasklist_edit/tasklist_id={$data.parent_id}">{'/modules/tasklist/label/link_to_parent_task'|translate}{*親記事へ移動*}</a>
+{/if}
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/tasklist/tasklist_edit/tasklist_id=$tasklist_id"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{if $tasklist_id}   
+    {lang_selector meta=$docmeta link="/management/tasklist/tasklist_edit/tasklist_id=$tasklist_id"}
+{/if}
+  <form name="tasklist_edit" id="tasklist_edit" action="/management/tasklist/tasklist_edit/" method="POST" enctype="multipart/form-data" >
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="member_id" id="member_id" value="{$data.member_id}" />
+    <input type="hidden" name="member_grade" id="member_grade" value="" />
+    <input type="hidden" name="tasklist_id" value="{$tasklist_id}" />
+    <input type="hidden" name="parent_id" value="{$data.parent_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    <h3>{'/modules/tasklist/label/task_detail'|translate}{* 課題詳細 *}</h3>
+    <table width="100%">
+      <tr>
+        <th style="width:150px">{'/modules/tasklist/label/task_id'|translate}{* 課題ID *} </th>
+        <td>{$data.tasklist_id}</td>
+      </tr>
+      <tr>
+        <th>{'/label/title'|translate}{* タイトル *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+        <td>
+          {if $data.response_flg != 1}
+            <input type="text" name="cate_title" size="40" value="{$data.cate_title}">
+          {else}
+            {'/modules/tasklist/label/answer_to_the_task_title'|translate:$data.parent_cate_title}{* ●●●への返信 *}<input type="hidden" name="cate_title" value="{'/modules/tasklist/label/answer_to_the_task_title'|translate:$data.parent_cate_title}{* ●●●への返信 *}">
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/content'|translate}{* 内容 *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+        <td>
+          <textarea name="bug_explanation" style="height: 200px;width: 95%">{$data.bug_explanation}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/deadline'|translate}{* 期限 *}</th>
+        <td>
+        {if $docmeta.is_primary}
+          {if $data.response_flg != 1}
+            <input type="text" name="limit_date" id="limit_date" value="{$data.limit_date|escape}" autocomplete="off" />
+            <button type="button" id="limit_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="limit_date-pop"></div>
+          {else}
+            <input type="hidden" name="limit_date" value="{$data.limit_date}" />{$data.limit_date}
+          {/if}
+        {else}
+            <input type="hidden" name="limit_date" value="{$latestRow.limit_date}" />{$latestRow.limit_date}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/representative'|translate}{* 担当者 *}</th>
+        <td>
+        {if $docmeta.is_primary}
+          <input type="text" name="member_name" id="member_name" value="{$data.member_name}" size="30" onblur="chkMemId(0)" onkeyup="writeWithKeybourd(0)" />
+          <input type="button" value="..." onclick="inputMemberInfo(0);" />
+          <span id="subInfo" style="display:none">({'/label/not_registered_data'|translate}{* 登録外 *})</span>
+          <div id="inputArea" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;z-index:1;">
+            <iframe name="inputFrame" id="inputFrame" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+          </div>
+        {else}
+            {$latestRow.member_name}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/category'|translate}{* カテゴリ *}</th>
+        <td>
+        {if $docmeta.is_primary}
+          {if $data.response_flg != 1}
+            <select name="category" id="category">{html_options options=$arrcategory selected=$data.category}</select>
+          {elseif $data.category ne ''}
+            <input type="hidden" name="category" value="{$data.category}">{$arrcategory[$data.category]}
+          {/if}
+        {else}
+            <input type="hidden" name="category" value="{$latestRow.category}">{$arrcategory[$latestRow.category]}
+        {/if}
+        </td>
+      </tr>
+
+      <tr>
+        <th>{'/label/attach_files'|translate}</p>{* 添付ファイル *}</th>
+        <td align="left" id="task_file">
+          {section name=files loop=$task_file }
+          {assign var="loop_cnt" value=$smarty.section.files.iteration}
+            {if $docmeta.is_primary}
+              {'/label/title'|translate}{* タイトル *}{$loop_cnt}
+               <input type="text" name="file{$loop_cnt}_title" value="{$task_file[$loop_cnt].title}" size="15" />
+               <input type="hidden" name="file{$loop_cnt}_extension" value="{$task_file[$loop_cnt].extension}" size="15" />
+               <input type="file" name="task_file{$loop_cnt}" size="40"/>   
+               {if ($task_file[$loop_cnt].title ) != "" } 
+                 <a href="{$task_file[$loop_cnt].link}">{$task_file[$loop_cnt].title}.{$task_file[$loop_cnt].extension}</a> &nbsp;
+                 <input type="checkbox" name="file{$loop_cnt}_del" id="file{$loop_cnt}_del" {if $task_file[$loop_cnt].del} checked="checked" {/if} /> 
+                 <label for="file{$loop_cnt}_del">{'/label/delete'|translate}</label>{* PDF削除 *}
+               {/if}
+               <br>
+            {else}
+               {if ($task_file[$loop_cnt].title ) != "" } 
+                 <a href="{$task_file[$loop_cnt].link}">{$task_file[$loop_cnt].title}.{$task_file[$loop_cnt].extension}</a>
+                 <br>
+               {/if}
+            {/if}
+          {/section}
+        </td>
+      </tr>
+
+      <tr>
+        <th>{'/label/importance'|translate}{* 重要度 *}</th>
+        <td>
+        {if $docmeta.is_primary}
+          {if $data.response_flg != 1}
+            <select name="serious_flg">{html_options options=$arrserious_flg selected=$data.serious_flg}</select>
+          {elseif $data.serious_flg ne ''}
+            <input type="hidden" name="serious_flg" value="{$data.serious_flg}" />{$arrserious_flg[$data.serious_flg]}
+          {/if}
+        {else}
+            <input type="hidden" name="serious_flg" value="{$latestRow.serious_flg}" />{$arrserious_flg[$latestRow.serious_flg]}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/priority'|translate}{* 優先度 *}</th>
+        <td>
+        {if $docmeta.is_primary}
+          {if $data.response_flg != 1}
+            <select name="priority_flg">{html_options options=$arrpriority_flg selected=$data.priority_flg}</select>
+          {elseif $data.priority_flg ne ''}
+            <input type="hidden" name="priority_flg" value="{$data.priority_flg}" />{$arrpriority_flg[$data.priority_flg]}
+          {/if}
+        {else}
+            <input type="hidden" name="priority_flg" value="{$latestRow.priority_flg}" />{$arrpriority_flg[$latestRow.priority_flg]}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/status'|translate}{* 状態 *}</th>
+        <td>
+        {if $docmeta.is_primary}
+            <select name="syori_flg">{html_options options=$arrsyori_flg selected=$data.syori_flg}</select>
+        {else}
+            <input type="hidden" name="syori_flg" value="{$latestRow.syori_flg}" />{$arrsyori_flg[$latestRow.syori_flg]}
+        {/if}
+        </td>
+      </tr>
+{if $docmeta.is_primary}
+    {if $tasklist_id != ""}
+      <tr>
+        <th>{'/modules/tasklist/label/assign_parent_task_id'|translate}{* 課題振り分け *}</th>
+        <td>
+          <input type="checkbox" value="1" name="parent_tasklist_id_updateflg" {if $data.parent_tasklist_id_updateflg}checked="checked"{/if} />
+          {'/modules/tasklist/label/task_id'|translate}{* 課題ID *}<input type="text" maxlength="10" size="4" name="parent_tasklist_id" value="{$data.parent_tasklist_id}" />{'/modules/tasklist/msg/assign_task_id'|translate}{* に振り分ける *}
+        </td>
+      </tr>
+    {/if}
+{/if}
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div>
+
+
+{if $children_list}
+  <div class="list_main">
+    <h3>{'/modules/tasklist/label/answer_to_this_task'|translate}{* この記事への返信 *}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="10"></th>
+        <th width="300">{'/label/content'|translate}{* 内容 *}</th>
+        <th width="60">{'/label/inscriber'|translate}{* 記入者 *}</th>
+        <th width="60">{'/modules/tasklist/label/inscribe_date'|translate}{* 記入日時 *}</th>
+      </tr>
+      {section name="i" loop=$children_list}
+      <tr>
+        <td><a href="/management/tasklist/tasklist_edit/tasklist_id={$children_list[i].tasklist_id}&parent_id={$tasklist_id}">{$smarty.section.i.index+1}</a></td>
+        <td>{$children_list[i].bug_explanation|nl2br}</td>
+        <td>{$children_list[i].insert_nm}</td>
+        <td>{$children_list[i].update_ymdhi|pg_dateformat}</td>
+      </tr>
+      {/section}
+    </table>
+    <form action="/management/tasklist/tasklist_edit/parent_id={$tasklist_id}">
+      {buttonbox}
+        {if $rauth->canInsert("/tasklist/item/")}
+        <button type="submit">{'/label/send_answer_btn'|translate}{* 返信する *}</button>
+        {/if}
+      {/buttonbox}
+    </form>
+  </div>
+{/if}
+
+</div>
+
+{rcms_include file="management/footer.html"}

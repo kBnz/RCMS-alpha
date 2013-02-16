@@ -1,0 +1,9 @@
+<h2>{'/modules/location/label/location_list_for_user'|translate}{*ロケーション一覧*}</h2>
+<ul data-role="listview">
+  {foreach item=itemList from=$location_list roop=roopb}
+  <li><a href="/location_detail/id={$itemList.location_id}">{$itemList.location_nm}</a></li>
+  {/foreach}
+</ul>
+{rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo}
+<hr/>
+

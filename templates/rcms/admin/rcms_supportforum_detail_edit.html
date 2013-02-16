@@ -1,0 +1,84 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  if (confirm("削除してもよろしいですか？")) {
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}投稿記事詳細</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+<a href="/management/rcms/rcms_supportforum_list/">サポート</a>
+<a href="/management/rcms/rcms_supportforum_detail_list/supportforum_root_id={$supportforum_root_id}">投稿記事一覧</a>
+<a href="/management/rcms/rcms_supportforum_detail_edit/supportforum_root_id={$supportforum_root_id}&supportforum_id={$supportforum_id}">投稿記事詳細</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<h2 class="title">{$header.forum_title|escape}</h2>
+{rcms_include file="rcms/admin/minitabs.html"}
+
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="supportforum_detail_edit" id="supportforum_detail_edit" action="/management/rcms/rcms_supportforum_detail_edit/" method="POST">
+    <input type="hidden" name="supportforum_root_id" value="{$supportforum_root_id}" />
+    <input type="hidden" name="supportforum_id" value="{$supportforum_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table width="70%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="100px">投稿者</th>
+        <td>{$supportforumData.name|escape}</td>
+      </tr>
+      <tr>
+        <th>タイトル</th>
+        <td>{$supportforumData.title|escape}</td>
+      </tr>
+      <tr>
+        <th>内容</th>
+        <td>{$supportforumData.note|escape|nl2br}
+            {if $supportforumData.thumb_uploadimg ne ''}
+            <a href="{$smarty.const.supportforum_UPLOAD_RERATIVE}{$supportforumData.uploadimg}" target="_blank"><img src="{$smarty.const.supportforum_UPLOAD_RERATIVE_S}{$supportforumData.thumb_uploadimg}"></a>
+            {elseif $supportforumData.uploadimg ne ''}
+            <img src="{$smarty.const.supportforum_UPLOAD_RERATIVE}{$supportforumData.uploadimg}" />
+            {/if}<br>
+        </td>
+      </tr>
+      <tr>
+        <th>メールアドレス</th>
+        <td>{$supportforumData.mail|escape}</td>
+      </tr>
+{if $auth.supportforum.update}
+      <tr>
+        <th>公開・非公開</th>
+        <td>{html_radios name="open_flg" options=$arrSupportforumOpenFlg selected=$formData.open_flg}</td>
+      </tr>
+{/if}
+    </table>
+
+    {buttonbox}
+      {if $auth.supportforum.update}
+        <button type="submit">更新する</button>
+      {/if}
+      {if $auth.supportforum.delete}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+  </form>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,36 @@
+{module name="blog_subscription_register"}
+
+{if $canDisplay}
+
+<h2 class="module_title"><span>{'/modules/blog/label/subscription_register'|translate}</span></h2>
+<div class="module_contents" id="module{$contents_id}">
+    {if $subscribe_finish}
+    {'/msg/accepted_subscription_request'|translate}
+    {elseif $unsubscribe_finish}
+    {'/msg/have_been_unsubscribed'|translate}
+    {else}
+    <form name="blog_subscription_register_form" action="/{$page_sysnm}/#module{$contents_id}" method="POST">
+
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="REGIST" />
+
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+
+        <dl>
+            <dt>{'/label/mail'|translate}</dt>
+            <dd><input name="email1" type="text" value="{$formData.email1}" /></dd>
+            <dt>{'/label/mail'|translate}({'/label/for_confirmation'|translate}{*確認用*})</dt>
+            <dd><input name="email2" type="text" value="{$formData.email2}" /></dd>
+        </dl>
+        <p>
+           <input type="submit" value="{'/label/subscribe'|translate}{*購読*}" />
+           <input type="button" onclick="document.blog_subscription_register_form.MODE.value='DELETE';document.blog_subscription_register_form.submit();" value="{'/label/unsubscribe'|translate}{*購読解除*}" />
+        </p>
+ 
+    </form>
+    {/if}
+</div>
+
+{/if}
+{/module}

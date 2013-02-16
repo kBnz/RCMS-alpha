@@ -1,0 +1,59 @@
+<h2>
+{$gameData.game_type} {$gameData.game_type2}　
+{if $gameData.game_status eq '0' ||  $gameData.game_status eq '1'}
+試合予定
+{elseif $gameData.game_status eq '2'}
+途中経過
+{elseif $gameData.game_status eq '3'}
+試合結果
+{/if}</h2><br/>
+[ｽｺｱ]<br/>
+{if $gameData.game_status eq '2' ||  $gameData.game_status eq '3'}
+{$gameData.team1} vs {$gameData.team2}<br/>
+{$gameData.score_detail_arr.Self_Total}{if $gameData.game_result eq 'win'}○{elseif $gameData.game_result eq 'lose'}×{elseif $gameData.game_result eq 'draw'}△{/if}
+-
+{if $gameData.game_result eq 'win'}×{elseif $gameData.game_result eq 'lose'}○{elseif $gameData.game_result eq 'draw'}△{/if}{$gameData.score_detail_arr.Opp_Total}
+{/if}
+<br/>
+[日時]
+{$gameData.ymd_str}<br/>
+{if $gameData.ko_time}
+[Kick off]
+{$gameData.ko_time}<br/>
+{/if}
+{if $gameData.place}
+[試合会場]
+{$gameData.place}<br/>
+{/if}
+<br/>
+
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+
+
+<div style="text-align:right;font-size:small;">
+<a href="/gamesimple_list/">試合一覧へ</a>
+</div>
+
+{if $gameTopicsList|@count > 0}
+<hr/>
+{/if}
+
+{section name=game_topics loop=$gameTopicsList}
+<h2>{$gameTopicsList[game_topics].subject}</h2>
+<div style="text-align:right;font-size:small;">
+{$gameTopicsList[game_topics].ymd_str}
+</div>
+{$gameTopicsList[game_topics].contents}
+{/section}
+{if $gameTopicsList|@count > 0}
+<div style="text-align:right;font-size:small;">
+<a href="/gamesimple_list/">試合一覧へ</a>
+</div>
+{/if}
+<hr/>

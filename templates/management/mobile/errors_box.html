@@ -1,0 +1,7 @@
+{foreach from=$errors item=item name=errlist}
+{if $smarty.foreach.errlist.first}
+<span style="color:red;">ｴﾗｰが発生しました。<br/>
+{/if}
+{$item}<br/>
+{if $smarty.foreach.errlist.last}</span>{/if}
+{/foreach}

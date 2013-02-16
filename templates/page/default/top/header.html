@@ -1,0 +1,15 @@
+{if $SmartPhonePCView}
+<div style="text-align:center;font-size:10pt;background-color:#ffffff;" id="switch_SmartPhonePCView">[emoji:075]<a href="/?SmartPhonePCView=0"><span style="color:#1111cc">モバイル版に切り替える</span></a></div>
+{/if}
+{if $global_menu_head_sub_list|@count > 0}
+<ul id="snavi">
+{foreach from=$global_menu_head_sub_list item=menu}
+<li><a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}">{$menu.page_nm}</a></li>
+{/foreach}
+</ul>
+{/if}
+
+<h1{if $smarty.const.HEADER_IMAGE_URL!=""} class="siteName"{/if}><a href="/"><!--%site_nm%--></a></h1>
+{if $smarty.const.HEADER_IMAGE_URL!=""}
+<p class="mainPhoto"><img src="<!--%header_image_url%-->" alt="<!--%site_nm%-->"></p>
+{/if}

@@ -1,0 +1,53 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+</script>
+<style type="text/css">
+.type_list li {
+  display: inline; 
+}
+</style>
+{/literal}
+
+<div class="list_right_bt">
+<h2>admin_name, admin_nm</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_make_refactoring/">リファクタイング</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="refactoring" auth=$auth}
+
+<div class="list_main">
+
+<ul class="type_list">
+  <li><a href="/management/{$mt}/{$ct}/type=admin_nm">admin_nm列</a></li>
+  <li><a href="/management/{$mt}/{$ct}/type=module_nm">module_nm列</a></li>
+  <li><a href="/management/{$mt}/{$ct}/type=classes">classes</a></li>
+  <li><a href="/management/{$mt}/{$ct}/type=functions">functions</a></li>
+</ul>
+
+<table>
+{foreach from=$list item=row name=row}
+  {if $smarty.foreach.row.first}
+    <tr>
+    {foreach from=$row key=key item=col}
+      <th>{$key}</th>
+    {/foreach}
+    </tr>
+  {/if} 
+  <tr>
+  {foreach from=$row item=col}
+    <td>{$col}</td>
+  {/foreach}
+  </tr>
+{/foreach}
+</table>
+
+</div>
+{rcms_include file="management/footer.html"}
+

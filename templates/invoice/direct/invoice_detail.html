@@ -1,0 +1,104 @@
+        {if !$first}{*１ページ目ではない場合*}
+        <div id="invoice_header_title">
+        <table>
+            <tr>
+                <th colspan="4" style="text-align:center;"><span style="font-size: 18pt;font-weight:bold;">{'/modules/invoice/label/invoice_detail'|translate}</span></th>
+            </tr>
+        </table>
+        </div>
+
+        <div id="invoice_header_date">
+        <table>
+            <tr>
+                <td>
+                {'/label/yyyymmdd'|translate:$print_yyyy:$print_mm:$print_dd}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                {if $formData.invoice_no}
+                {'/label/invoice_number'|translate}:{$formData.invoice_no}
+                {/if}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {$specific.page_num}/{$formData.total_page}
+                </td>
+            </tr>
+        </table>
+        </div>
+        {/if}
+
+        <div id="invoice_detail">
+        <table>
+            <tr>
+                <th width="15%">{'/label/article_code'|translate}</th>
+                <th width="40%">{'/label/title'|translate}</th>
+                <th width="15%">{'/label/ammount'|translate}</th>
+                <th width="15%">{'/label/unit_price'|translate}</th>
+                <th width="15%">{'/label/amount_of_money'|translate}</th>
+            </tr>
+            
+            {section name=cnt start=0 loop=$max_count}
+            {assign var=color_idx value=$smarty.section.cnt.index}
+
+            <tr {if $color_idx is div by 2}class="line1"{else}class="line2"{/if}>
+                {if $specific.data[$smarty.section.cnt.index].item_cd || $specific.data[$smarty.section.cnt.index].item_title || $specific.data[$smarty.section.cnt.index].quantity || $specific.data[$smarty.section.cnt.index].price}
+                    <td class="item_cd">{$specific.data[$smarty.section.cnt.index].item_cd}</td>
+                    <td class="item_title">{$specific.data[$smarty.section.cnt.index].item_title}</td>
+                    <td class="quantity">{$specific.data[$smarty.section.cnt.index].quantity}</td>
+                    <td class="price">\{$specific.data[$smarty.section.cnt.index].price|number_format}</td>
+                    <td class="price">\{$specific.data[$smarty.section.cnt.index].subprice|number_format}</td>
+                {else}
+                    <td><br /></td>
+                    <td><br /></td>
+                    <td><br /></td>
+                    <td><br /></td>
+                    <td><br /></td>
+                {/if}
+            </tr>
+            {/section}
+        </table>
+        </div>
+
+        {if $specific.page_num == $formData.total_page}
+        <div id="invoice_header_total">
+        <table>
+            <tr>
+                <th>{'/label/subtotal'|translate}</th>
+                <td>\{$formData.subtotal|number_format}</td>
+            </tr>
+            <tr>
+                <th>{'/modules/invoice/label/discount'|translate}</th>
+                <td>\{$formData.discount|number_format}</td>
+            </tr>
+            <tr>
+                <th>{'/modules/invoice/label/reverce'|translate}</th>
+                <td>\{$formData.reverce|number_format}</td>
+            </tr>
+            <tr>
+                <th>{'/label/consumption_tax'|translate}</th>
+                <td>\{$formData.tax|number_format}</td>
+            </tr>
+            <tr>
+                <th>{'/label/total'|translate}</th>
+                <td>\{$formData.total|number_format}</td>
+            </tr>
+        </table>
+        </div>
+        {/if}
+
+        <div class="clr"></div>
+
+        <div id="invoice_header_remarks">
+        <table>
+            <tr>
+                <th>{'/label/remarks'|translate}</th>
+            </tr>
+            <tr>
+                <td>{$formData.remarks|nl2br}</td>
+            </tr>
+        </table>
+        </div>

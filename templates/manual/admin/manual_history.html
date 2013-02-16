@@ -1,0 +1,36 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}</h2>{* 更新履歴一覧 *}
+<ul>
+    {if $rauth->canInsert("/manual/item/[@manual_header_id=$manual_header_id]")}
+    <li class="add"><a href="/management/manual/manual_contents_edit/manual_header_id={$manual_header_id}"><span>{'/modules/manual/label/add_manual_contents_btn'|translate}</span></a></li>
+    {/if}
+    {if $manual_id}
+    <li class="normal"><a href="/management/manual/manual_history/manual_id={$manual_id}"><span>{'/label/update_history'|translate}</span></a></li>
+    <li class="normal"><a href="/management/accesscount/accesscount_list/module_type=manual&id={$manual_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+    <li class="view"><a href="{$smarty.const.ROOT_URL}/manual_detail/id={$manual_header_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+    {/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/manual/manual_list/">{'/modules/manual'|translate}</a>
+<a href="/management/manual/manual_list/">{'/modules/manual/label/manual_list'|translate}</a>
+<a href="/management/manual/manual_contents_list/manual_header_id={$manual_header_id}">{if $manual_title}「{$manual_title}」&nbsp{/if}{'/modules/manual/label/manual_list'|translate}</a>
+<a href="/management/manual/manual_contents_edit/manual_id={$manual_id}">{'/label/contents_edit'|translate}</a>
+{'/label/update_history'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $manual_id}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/manual/manual_contents_edit/manual_id=$manual_id" pageInfo=$pageInfo}
+{else}
+  {rcms_include file="management/history_table.html" list=$history_list link="/management/manual/manual_edit/manual_header_id=$manual_header_id" pageInfo=$pageInfo}
+{/if}
+
+</div>
+{rcms_include file="management/footer.html"}

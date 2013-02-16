@@ -1,0 +1,16 @@
+<ul class="minitabs">
+
+  <li>
+    <a href="/management/menu/subscription_edit/" {if $page_type eq 'subscription_edit' }class="active"{/if}>
+     {'/modules/menu/label/my_setting'|translate}{*自分*}</a>
+  </li>
+
+  {if $rauth->isSuper()}
+  <li>
+    <a href="/management/menu/subscription_module_list/" {if $page_type eq 'subscription_module_list' || $page_type eq 'subscription_module_edit' }class="active"{/if}>
+     {'/modules/menu/label/module_setting'|translate}{*自分以外*}</a>
+  </li>
+  {/if}
+
+</ul>
+<div class="clear"></div>

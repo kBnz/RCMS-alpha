@@ -1,0 +1,63 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2 class="page">ページコピー</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/lpo/lpo_page_list/">{'/modules/page'|translate}</a>
+ページコピー
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/lpo/lpo_page_copy/" method="post">
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="lpo_header_id" value="{$lpo_header_id}" />
+
+{if !$errors && $smarty.server.REQUEST_METHOD == 'POST'}
+  <div style="margin:20px 0; text-align:center">
+    <input type="button" value="新しいページを編集する" onclick="window.location='/management/lpo/lpo_page_edit/lpo_page_id={$formData.lpo_page_id}'" />
+  </div>
+{/if}
+
+
+<div class="list_main">
+  <table width="100%">
+    <tr>
+      <th>コピー元ページ</th>
+      <td><select name="from_page_id">{html_options options=$pageOptions selected=$formData.from_page_id}</select></td>
+    </tr>
+    <tr>
+      <th>ランディングページ名</th>
+      <td>
+        <input name="to_page_nm" type="text" value="{$formData.to_page_nm|escape}" style="width: 300px"/>
+      </td>
+    </tr>
+    <th>
+    {$arrLpo_type[$lpo_type]}の設定
+    </th>
+    <td>
+    {if $lpo_type eq '0' || $lpo_type eq '2'}
+        <input type="text" name="lpo_weight" value="{$formData.lpo_weight}">
+    {elseif $lpo_type eq '1'}
+        <input type="text" name="lpo_keyword" value="{$formData.lpo_keyword}">
+    {/if}
+    </td>
+  </table>
+{rcms_auth target="insert:/lpo/page/"}
+    {buttonbox}
+        <button type="submit">コピー</button>
+    {/buttonbox}
+{/rcms_auth}
+</div>
+
+</form>
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,67 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{literal}
+<script type="text/javascript">
+<!--
+-->
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>ダウンロード課金履歴一覧</h2>
+<ul>
+</ul>
+</div>
+
+{pankuzu}
+{rcms_include file="charge/admin/pankuzu.html"}
+<a href="/management/charge/charge_download_list/">ダウンロード課金</a>
+<a href="/management/charge/charge_download_history_list/charge_download_id={$charge_download_id}">ダウンロード課金履歴一覧</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="charge/admin/minitabs.html" page_type='download'}
+
+<div class="list_main">
+  {rcms_include file="management/messages_box.html" messages=$messages}
+  {rcms_include file="management/errors_box.html" errors=$errors}
+  <form  action="/management/charge/charge_download_history_list/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+  {pager info=$pageInfo}
+  <table style="width: 100%">
+    <tr>
+      <th>履歴ID</th>
+      <th>購入日</th>
+      <th>購入品目</th>
+      <th>キャリア</th>
+      <th>端末識別子</th>
+    </tr>
+{foreach from=$charge_history_list item=row}
+  <tr>
+    <td>{$row.charge_download_history_id}</td>
+    <td>{$row.purchase_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%)"}</td>
+    <td><a href="/management/charge/charge_download_edit/charge_download_id={$row.charge_download_id}">{$row.name|escape}</a></td>
+  {if $row.docomo_uid}
+    <td>Docomo</td>
+    <td>{$row.docomo_uid}</td>
+  {elseif $row.au_ezno}
+    <td>au</td>
+    <td>{$row.au_ezno}</td>
+  {elseif $row.sb_uid}</td>
+    <td>Softbank</td>
+    <td>{$row.sb_uid}</td>
+  {/if}
+  </tr>
+
+{/foreach}
+  </table>
+  {pager info=$pageInfo}
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

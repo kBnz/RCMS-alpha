@@ -1,0 +1,376 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function control_option_form(id,value) {
+    if(value == "" || value == "{/literal}{$smarty.const.INQUIRY_TEXT_FORMAT}{literal}"|| value == "{/literal}{$smarty.const.INQUIRY_TEXT_AREA_FORMAT}{literal}"){
+        $(id).style.display = "none";
+    }else{
+        $(id).style.display = "block";
+    }
+}
+
+function display_ext(obj){
+    var elms = document.getElementsByClassName(obj);
+    for( var j=0; j<elms.length; j++ ) {
+        if (elms[j].style.display == "none") {
+            elms[j].style.display = "";
+        }
+        else {
+            elms[j].style.display = "none";
+        }
+    }
+}
+
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+    <h2>{'/modules/inquiry/label/inquiry_edit'|translate}{*問い合わせ基本設定*}</h2>
+    <ul>
+        {if $rauth->canInsert("/inquiry/item/")}
+        <li class="add"><a href="/management/inquiry/inquiry_edit/"><span>{'/modules/inquiry/label/create_new_inquiry_btn'|translate}{*問い合わせ追加*}</span></a></li>
+        {/if}
+    </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry'|translate}</a>
+<a href="/management/inquiry/inquiry_list/">{'/modules/inquiry/label/inquiry_list'|translate}</a>
+{'/modules/inquiry/label/inquiry_edit'|translate}
+{/pankuzu}{* 【ぱんくず】コミュニケーション >> 問い合わせ >> 問い合わせ一覧 >> 問い合わせ基本設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+    <h3 class="title">{if $header.inquiry_name}{$header.inquiry_name}{else}<span style="">{'/modules/inquiry/label/inquiry_edit_title'|translate}{*新規問い合わせ作成*}</span>{/if}</h3>
+
+    <div class="list_main">
+        {rcms_include file="inquiry/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+        {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/inquiry/inquiry_edit/inquiry_id=$inquiry_id"}
+        {if $inquiry_id}{lang_selector meta=$docmeta link="/management/inquiry/inquiry_edit/inquiry_id=$inquiry_id"}{/if}
+
+        <form name="inquiry_edit_form" id="inquiry_edit_form" action="/management/inquiry/inquiry_edit/" method="POST">
+            <input type="hidden" name="iq_pageID" value="{$iq_pageID}" />
+            <input type="hidden" name="inquiry_id" value="{$inquiry_id}" />
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" value="" />
+            <input type="hidden" name="categoryCnt" value="{$categoryCnt}" />
+            <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+            <table width="100%">
+                <tr>
+                    <th style="width:150px">{'/label/title'|translate}{*タイトル*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+                    <td><input type="text" name="inquiry_name" size="75" value="{$data.inquiry_name|escape}" /></td>
+                </tr>
+                {if $docmeta.is_primary}
+                <tr>
+                    <th>{'/label/sort'|translate}{*並び順*}</th>
+                    <td>
+                        <input type="text" size="3" maxlength="3" name="inquiry_order_no" value="{$data.inquiry_order_no|escape}" />
+                        <span class="hint">{'/msg/data_order'|translate}{*並び順は数字の大きい順に並びます。*}</span>
+                    </td>
+                </tr>
+                {/if}
+                <tr>
+                    <th>{'/label/explanation'|translate}{*説明*}</th>
+                    <td><textarea name="inquiry_info" cols="60" rows="5">{$data.inquiry_info|escape}</textarea>
+                        <br />
+                        <span class="hint">{'/modules/inquiry/msg/about_explanation'|translate}{*お問い合わせ一覧で説明として表示されます。*}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/label/header_words'|translate}{*header文言*}</th>
+                    <td><textarea name="header_text" cols="60" rows="5">{$data.header_text|escape}</textarea>
+                        <br />
+                        <span class="hint">{'/modules/inquiry/msg/about_header_words'|translate}{*お問い合わせ画面で入力欄の上部に表示されます。*}</span>
+                    </td>
+                <tr>
+                <th>{'/label/footer_words'|translate}{*footer文言*}</th>
+                    <td><textarea name="footer_text" cols="60" rows="5">{$data.footer_text|escape}</textarea>
+                        <br />
+                        <span class="hint">{'/modules/inquiry/msg/about_footer_words'|translate}{*お問い合わせ画面で入力欄の下部に表示されます。*}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/label/thanks_words'|translate}{*thanks文言*}</th>
+                    <td><textarea name="thanks_text" cols="60" rows="5">{$data.thanks_text|escape}</textarea>
+                        <br />
+                        <span class="hint">{'/modules/inquiry/msg/about_thanks_words'|translate}{*お問い合わせ完了後に表示されます。*}</span>
+                    </td>
+                </tr>
+                {if $docmeta.is_primary}
+                <tr>
+                    <th>{'/modules/inquiry/label/tag_for_complete_inquiry'|translate}{*問い合わせ完了タグ*}</th>
+                    <td><textarea name="thanks_tag" cols="60" rows="5">{$data.thanks_tag|escape}</textarea>
+                        <br />
+                        <span class="hint">{'/modules/inquiry/msg/about_tag_for_complete_inquiry'|translate}{*お問い合わせ完了後に表示されます。効果測定タグなどはこちらに設定してください。*}</span>
+                    </td>
+                </tr>
+                {/if}
+
+                <tr>
+                    <th>{'/label/thanks_mail'|translate}{*お礼メール送信*}</th>
+                    <td>
+                        <table>
+                            {if $docmeta.is_primary}{* is_primary2 FROM *}
+                            <tr>
+                                <td>
+                                    {html_radios name=send_thanks_mail_flg options=$inquiry_send_thanks_mailOptions selected=$data.send_thanks_mail_flg onclick="Disp_thanks_mail_form(this);"}
+                                    <span class="hint">{'/modules/inquiry/msg/hint_thanks_mail'|translate}{*問い合わせがあった場合に質問者へ送信するお礼メールです。*}</span>
+                                    {if $smarty.const.SITE_EMAIL eq ''}<p><span style="color:red;">{'/msg/set_admin_mail'|translate}{*サイト管理で管理者メールの設定を行ってください。*}</span></p>{/if}
+                                </td>
+                            </tr>
+                            {/if}{* is_primary2 FROM *}
+                            <tr>
+                                <td>
+                                    <table class="not_list_main tokuten" id="thanks_mail_box" style="display:{if $data.thanks_mail_subject || $data.thanks_mail_body}block;{else}none;{/if}">
+                                        <tr>
+                                            <th>{'/label/title'|translate}{*タイトル*}</th>
+                                            <td><input type="text" name="thanks_mail_subject" value="{$data.thanks_mail_subject|escape}" size="50" /></td>
+                                        </tr>
+                                        <tr>
+                                            <th>{'/label/content'|translate}{*内容*}</td>
+                                            <td><textarea name="thanks_mail_body" cols="55" rows="6">{$data.thanks_mail_body|escape}</textarea></td>
+                                        </tr>
+                                    </table> 
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/label/delivering_mail_address'|translate}{*配送先メールアドレス*}</th>
+                    <td>
+                    {if $docmeta.is_primary}{* $docmeta.is_primar from *}
+                        <textarea name="contact_address" cols="60" rows="6">{$data.contact_address|escape}</textarea>
+                        {if $smarty.const.SITE_EMAIL eq ''}
+                            <p><span style="color:red;">{'/msg/please_set_admin_mail'|translate}{*サイト管理で管理者メールの設定を行ってください。*}</span></p>
+                        {/if}
+                        {if $smarty.const.SITE_EMAIL}
+                            <p class="hint">{'/modules/inquiry/msg/about_notify_mail_from_site_mail'|translate:$smarty.const.SITE_EMAIL}{*お問い合わせがあった場合、{$smarty.const.SITE_EMAIL}(<a href="/management/site/site_edit/">編集</a>)からこのアドレスに通知されます*}</p>
+                        {else}
+                            <p class="hint">{'/modules/inquiry/msg/about_notify_mail'|translate}{*お問い合わせがあった場合、このアドレスに通知されます*}</p>
+                        {/if}
+                        {html_radios name=contact_flg options=$arrInquiry_contact_flg selected=$data.contact_flg onclick="Disp_zip_pwd(this);"}
+
+                        <div id="zip_pwd" {if $data.contact_flg ne '20'}style="display:none;"{/if}>管理者送信メールのZIPパスワード：
+                             <input type="text" name="zip_pwd" value="{$data.zip_pwd|escape}" size="10" />
+                            <p class="hint">{'/modules/survey/msg/hint_zip_pwd'|translate}{*パスワードが設定されると、通知内容が圧縮されてzipファイルで送信されます。*}</p>
+                        </div>
+                  {/if}
+                        <br>{'/label/title'|translate}{*タイトル*}:<input type="text" name="contact_subject" value="{$data.contact_subject|escape}" size="50" />
+
+                    </td>
+                </tr>
+                {if $docmeta.is_primary}{* $docmeta.is_primar from *}
+                <tr>
+                    <th>{'/label/confirm_page_setting'|translate}{*確認画面の有無*}</th>
+                    <td>
+                        {html_radios name=confirm_flg options=$confirmOptions selected=$data.confirm_flg}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/label/facebook_auto_input_setting'|translate}{*Facebook自動入力を使う*}</th>
+                    <td>
+                        {html_radios name=use_facebook options=$inquiry_profile_use_options selected=$data.use_facebook onclick="Disp_facebook_matching(this);"}
+                        
+                        <div id="facebook_matching_box" {if $data.use_facebook eq $smarty.const.INQUIRY_PROFILE_OFF}style="display:none;"{/if}>facebookの項目と紐付け
+                            <textarea name="facebook_matching" cols="55" rows="7">{$data.facebook_matching|escape}</textarea>
+                            <p class="hint">{'/modules/survey/msg/hint_facebook_matching'|translate}{*例：XXX*}</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/label/status_katakana'|translate}{*ステータス*}</th>
+                    <td>{html_radios name=status options=$arrInquiry_status selected=$data.status}</td>
+                </tr>
+                {/if}
+
+            </table>
+
+            {if $docmeta.is_primary}
+            <h3>{'/label/access_limit_for_adminpage'|translate}{*管理画面のアクセス制限*}</h3>
+            <table width="100%">
+                <tr>
+                    <th>{'/modules/inquiry/label/access_limit_for_basic_setting'|translate}{*基本設定のアクセス制限*}</th>
+                    <td>
+                        <input type="radio" name="can_access_basic_setting_flg" id="can_access_basic_setting_flg_off" value="0" onclick="display('editable_group_list1', 'none');" {if $data.can_access_basic_setting_flg != '1'}checked="checked"{/if}/><label for="can_access_basic_setting_flg_off">{'/label/unlimited'|translate}{*制限無し*}</label>
+                        <input type="radio" name="can_access_basic_setting_flg" id="can_access_basic_setting_flg_on" value="1" onclick="display('editable_group_list1', '');" {if $data.can_access_basic_setting_flg == '1'}checked="checked"{/if} style="margin-left: 10px;" /><label for="can_access_basic_setting_flg_on">{'/label/limited'|translate}{*制限有り*}</label>
+                        <div id="editable_group_list1" style="margin: 10px 0 0 10px; {if $data.can_access_basic_setting_flg != '1'}display:none;{/if}">
+                            <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+                            <select name="can_access_basic_setting[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$data.can_access_basic_setting}</select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/modules/inquiry/label/access_limit_for_item_setting'|translate}{*項目設定のアクセス制限*}</th>
+                    <td>
+                        <input type="radio" name="can_access_item_setting_flg" id="can_access_item_setting_flg_off" value="0" onclick="display('editable_group_list2', 'none');" {if $data.can_access_item_setting_flg != '1'}checked="checked"{/if}/><label for="can_access_item_setting_flg_off">{'/label/unlimited'|translate}{*制限無し*}</label>
+                        <input type="radio" name="can_access_item_setting_flg" id="can_access_item_setting_flg_on" value="1" onclick="display('editable_group_list2', '');" {if $data.can_access_item_setting_flg == '1'}checked="checked"{/if} style="margin-left: 10px;" /><label for="can_access_item_setting_flg_on">{'/label/limited'|translate}{*制限有り*}</label>
+                        <div id="editable_group_list2" style="margin: 10px 0 0 10px; {if $data.can_access_item_setting_flg != '1'}display:none;{/if}">
+                            <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+                            <select name="can_access_item_setting[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$data.can_access_item_setting}</select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/modules/inquiry/label/access_limit_for_inquiry_mail'|translate}</th>
+                    <td>
+                        <input type="radio" name="can_access_mail_setting_kbn" id="can_access_mail_setting_kbn_0" value="0" onclick="display('editable_group_list3', 'none');" {if $data.can_access_mail_setting_kbn == $smarty.const.INQUIRY_OPERATE_LIMIT_TYPE_NONE}checked="checked"{/if} style="margin-left:  0px;" /><label for="can_access_mail_setting_kbn_0">{'/modules/inquiry/label/operate_limit_type_none'|translate}{*制限無し*}</label>
+                        <input type="radio" name="can_access_mail_setting_kbn" id="can_access_mail_setting_kbn_1" value="1" onclick="display('editable_group_list3', '');"     {if $data.can_access_mail_setting_kbn == $smarty.const.INQUIRY_OPERATE_LIMIT_TYPE_GROUP}checked="checked"{/if} style="margin-left: 10px;" /><label for="can_access_mail_setting_kbn_1">{'/modules/inquiry/label/operate_limit_type_group'|translate}{*制限有り*}</label>
+                        <input type="radio" name="can_access_mail_setting_kbn" id="can_access_mail_setting_kbn_2" value="2" onclick="display('editable_group_list3', 'none');" {if $data.can_access_mail_setting_kbn == $smarty.const.INQUIRY_OPERATE_LIMIT_TYPE_OWNCONTENTS}checked="checked"{/if} style="margin-left: 10px;" /><label for="can_access_mail_setting_kbn_2">{'/modules/inquiry/label/operate_limit_type_owncontents'|translate}{*自分のコンテンツのみ*}</label>
+                        <div id="editable_group_list3" style="margin: 10px 0 0 10px; {if $data.can_access_mail_setting_kbn != '1'}display:none;{/if}">
+                            <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+                            <select name="can_access_mail_setting[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$data.can_access_mail_setting}</select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{'/label/access_limit_for_download'|translate}{*ダウンロードのアクセス制限*}</th>
+                    <td>
+                        <input type="radio" name="can_access_download_setting_kbn" id="can_access_download_setting_kbn_0" value="0" onclick="display('editable_group_list4', 'none');" {if $data.can_access_download_setting_kbn == $smarty.const.INQUIRY_OPERATE_LIMIT_TYPE_NONE}checked="checked"{/if} style="margin-left:  0px;" /><label for="can_access_download_setting_kbn_0">{'/modules/inquiry/label/operate_limit_type_none'|translate}{*制限無し*}</label>
+                        <input type="radio" name="can_access_download_setting_kbn" id="can_access_download_setting_kbn_1" value="1" onclick="display('editable_group_list4', '');"     {if $data.can_access_download_setting_kbn == $smarty.const.INQUIRY_OPERATE_LIMIT_TYPE_GROUP}checked="checked"{/if} style="margin-left: 10px;" /><label for="can_access_download_setting_kbn_1">{'/modules/inquiry/label/operate_limit_type_group'|translate}{*制限有り*}</label>
+                        <input type="radio" name="can_access_download_setting_kbn" id="can_access_download_setting_kbn_2" value="2" onclick="display('editable_group_list4', 'none');" {if $data.can_access_download_setting_kbn == $smarty.const.INQUIRY_OPERATE_LIMIT_TYPE_OWNCONTENTS}checked="checked"{/if} style="margin-left: 10px;" /><label for="can_access_download_setting_kbn_2">{'/modules/inquiry/label/operate_limit_type_owncontents'|translate}{*自分のコンテンツのみ*}</label>
+                        <div id="editable_group_list4" style="margin: 10px 0 0 10px; {if $data.can_access_download_setting_kbn != '1'}display:none;{/if}">
+                            <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+                            <select name="can_access_download_setting[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$data.can_access_download_setting}</select>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 class="hensyu_02">
+                <span class="link_button">{'/label/mail_setting'|translate}{*メール設定*}</span>
+            </h3>
+            <div id="mail_setting" >
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th width="200">{'/label/mail_address'|translate}{*メールアドレス*}</th>
+                            <td><input type="text" name="mail" size="50" value="{$data.mail|escape}" />
+                                <input type="checkbox" name="mail_only_flg" id="rejectsReply" value="1" {if $data.mailserver == ""}checked="checked"{/if} onclick="CBReply.control.call(CBReply)" /><label for="rejectsReply">{'/msg/refuse_reply'|translate}{*返信を受け付けない*}</label>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody id="popSettings">
+                        <tr>
+                            <th width="200">{'/modules/inquiry/label/limit_error_cnt'|translate}{*受信エラー数*}</th>
+                            <td>{$data.receive_error_cnt|escape}/{$inquiry_limit_error_cnt}
+                            {if $data.receive_error_cnt > $inquiry_limit_error_cnt}
+                            {'/modules/inquiry/msg/limit_error_cnt_alert'|translate}{*受信エラー数が上限を超えています。設定を確認して、更新してください。*}
+                            {/if}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">{'/label/pop3_mail_server'|translate}{*受信用メールサーバー(POP3)*}</th>
+                            <td><input type="text" name="mailserver" size="50" value="{$data.mailserver|escape}" /></td>
+                        </tr>
+                        <tr>
+                            <th width="200">{'/label/userid_for_mail_server'|translate}{*受信用メールサーバーのユーザーID*}</th>
+                            <td><input type="text" name="mail_user_name" size="50" value="{$data.mail_user_name|escape}" /></td>
+                        </tr>
+                        <tr>
+                            <th width="200">{'/label/password_for_mail_server'|translate}{*受信用メールサーバーのパスワード*}</th>
+                            <td><input type="text" name="mail_password" size="50" value="{$data.mail_password|escape}" /></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th width="200">{'/label/signature'|translate}{*署名*}</th>
+                            <td><textarea name="inquiry_signature" cols="60" rows="5">{$data.inquiry_signature|escape}</textarea></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            {/if}
+
+            {editActionBox docmeta=$docmeta}{/editActionBox}
+
+        </form>
+    </div>
+</div>
+
+{if $docmeta.is_primary}
+<script type="text/javascript">
+{literal}
+//<![CDATA[
+/**
+ * 「返信を受け付けない」のチェックボックスに合わせた処理をカプセル化
+ */
+var CBReply = {
+    f:   document.getElementById('inquiry_edit_form'),
+    cb: document.getElementById('rejectsReply'),
+    pop: document.getElementById('popSettings'),
+    server:  '',
+    username: '',
+    password: '',
+    accept: function() {
+        this.f.mailserver.value      = this.server;
+        this.f.mail_user_name.value = this.username;
+        this.f.mail_password.value  = this.password;
+        try {
+            this.pop.style.display = 'table-row-group'; //For Firefox, Opera
+        } catch (e) {
+            this.pop.style.display = 'block'; //For IE
+        }
+    },
+    reject: function() {
+        //一時的に記録(いきなりフォームクリアするのも酷なので)
+        this.server  = this.f.mailserver.value;
+        this.username = this.f.mail_user_name.value;
+        this.password = this.f.mail_password.value;
+        //PHPとの兼ね合いからフォームクリア
+        this.f.mailserver.value      = '';
+        this.f.mail_user_name.value = '';
+        this.f.mail_password.value  = '';
+        this.pop.style.display = 'none';
+    },
+    control: function() {
+        if (this.cb.checked) {
+            this.reject();
+        } else {
+            this.accept();
+        }
+    }
+}
+CBReply.reject(); //フォーム入力値を記録
+CBReply.control();
+
+function Disp_zip_pwd(obj){
+
+    if(obj.value == 20){
+        document.getElementById("zip_pwd").style.display ="block";
+    }else{
+        document.getElementById("zip_pwd").style.display ="none";
+    }
+}
+
+function Disp_thanks_mail_form(obj){
+    if(obj.value == 1){
+        document.getElementById("thanks_mail_box").style.display ="block";
+    }else{
+        document.getElementById("thanks_mail_box").style.display ="none";
+    }
+}
+
+function Disp_facebook_matching(obj){
+    if(obj.value == 1 || obj.value == 2){
+        document.getElementById("facebook_matching_box").style.display ="block";
+    }else{
+        document.getElementById("facebook_matching_box").style.display ="none";
+    }
+}
+
+//]]>
+{/literal}
+</script>
+{/if}
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,10 @@
+<ul class="minitabs">
+  <li><a href="/management/accesscount/accesscount_list/" {if $ct eq 'accesscount_list'}class="active"{/if}>{'/modules/accesscount/label/access_statistic'|translate}</a></li>{* アクセス統計 *}
+  <li><a href="/management/accesscount/referer_list/" {if $ct eq 'referer_list'}class="active"{/if}>{'/modules/accesscount/label/visitor_data'|translate}</a></li>{* 訪問者情報 *}
+  <li><a href="/management/accesscount/domain_rank/" {if $ct eq 'domain_rank'}class="active"{/if}>{'/modules/accesscount/label/referrer_rank'|translate}</a></li>{* リファラーランク *}
+  <li><a href="/management/accesscount/searchword_rank/" {if $ct eq 'searchword_rank'}class="active"{/if}>{'/modules/accesscount/label/word_search_rank'|translate}</a></li>{* 検索語ランク *}
+  <li><a href="/management/accesscount/searchRob_list/" {if $ct eq 'searchRob_list'}class="active"{/if}>{'/modules/accesscount/label/searching_robot'|translate}</a></li>{* 検索ロボット *}
+{if $smarty.const.USE_ClickHeat eq 1}
+  <li><a href="/tools/clickheat/" target="_blank">クリックヒート</a></li>
+{/if}
+</ul>

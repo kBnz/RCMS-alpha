@@ -1,0 +1,52 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/modules/seo/label/sitemap_xml_customise'|translate}{*sitemap.xmlカスタマイズ *}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/seo/pageInfo/">{'/modules/seo'|translate}</a>
+{'/modules/seo/label/sitemap_xml_customise'|translate}
+
+{/pankuzu}
+{* 【ぱんくず】サイト基本設定 >> SEO >> sitemap.xmlカスタマイズ *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+
+  <form action="/management/seo/sitemap_csv_upload/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE"    value="" />
+
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+    <table width="100%">
+      <tr>
+        <th>{'/modules/seo/label/sitemap_xml_customise'|translate}{*sitemap.xmlカスタマイズ*}</th>
+        <td>
+          <input type="file" name="sitemap_csv"/>
+          <div class="hint">{'/msg/maximum_file_size'|translate:30}{*アップロードできる最大サイズは30Mバイトまでです。*}</div>
+          <div class="hint">{'/modules/seo/msg/csv_example'|translate}</div>
+        </td>
+      </tr>
+    </table>
+
+{buttonbox}
+      {* 更新処理 *}
+
+      {if $auth.$mt.update}
+      {* 更新権限がある *}
+          <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+      {/if}
+
+{/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

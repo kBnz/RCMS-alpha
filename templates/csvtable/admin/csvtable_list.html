@@ -1,0 +1,91 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/csvtable/label/csvtable_list'|translate}{*CSV表一覧*}</h2>
+<ul>
+{if $rauth->canInsert("/csvtable/item/")}
+    <li class="add"><a href="/management/csvtable/csvtable_edit/"><span>{'/modules/csvtable/label/create_new_csvtable_btn'|translate}{*CSV表追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/csvtable_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/csvtable/csvtable_list/">{'/modules/csvtable'|translate}</a>
+{'/modules/csvtable/label/csvtable_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> CSV表 >> CSV表一覧 *}
+
+
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">{'/label/list_view'|translate}{* 一覧へのアクセス数 *}：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form action="/management/csvtable/csvtable_list/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE"/>
+
+    {pager info=$pageInfo}
+    <table width="100%" cellspacing="2">
+      <tr>
+        <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'csvtable_id[]');" /></th>
+        <th width="26">{'/label/publish'|translate}</th>{* 公開 *}
+        <th>{'/label/title'|translate}</th>{* タイトル *}
+        <th width="54">{'/label/format'|translate|sort_link:contents_type:$sort_url:$sort:$desc}</th>{* 形式 *}
+        <th width="60">{'/label/view'|translate}</th>{* アクセス数 *}
+        <th style="width:150px">{'/label/updatetime'|translate|sort_link:update_ymdhi:$sort_url:$sort:$desc}</th>{* 最終更新日 *}
+      </tr>
+  {foreach from=$csvtable_list item=row}
+    {assign var=csvtable_id value=$row.csvtable_id}
+      <tr>
+        <td><input type="checkbox" name="csvtable_id[]" value="{$row.csvtable_id}" {rcms_auth not=true target="update:/csvtable/item/$csvtable_id || delete:/csvtable/item/$csvtable_id"}disabled="disabled"{/rcms_auth} /></td>
+        <td>{$row.open_flg|rcms_publicimg}</td>
+        <td>
+          <a href="/management/csvtable/csvtable_edit/csvtable_id={$row.csvtable_id}">{$row.csvtable_nm}</a>
+          {rcms_include file="common/admin/language_status.html" meta=$docmetas[$row.csvtable_id] link="/management/csvtable/csvtable_edit/csvtable_id=$csvtable_id"}
+        </td>
+        <td>{$row.col_num}x{$row.row_num}</td>
+        <td>{$row.access_cnt}pv</td>
+        <td>{$row.update_ymdhi|pg_dateformat}</td>
+      </tr>
+  {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+        <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+  </form>
+
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

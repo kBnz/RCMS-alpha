@@ -1,0 +1,12 @@
+{if $rank_data.today|@count > 0}
+{module name="access_rank module"}
+<h2 class="module_title"><span>{$module_nm} {'/modules/accesscount/label/access_ranking_of_n_days'|translate:$span}</span></h2>
+<div class="module_contents">
+<ul>
+{foreach from=$rank_data.today item=loopname name=comment_ranking}
+<li class="module-list-item">{$smarty.foreach.comment_ranking.iteration}:<a href="{$loopname.module_link}">{$loopname.title|escape}({$loopname.cnt}pv)</a></li>
+{/foreach}
+</ul>
+</div>
+{/module}
+{/if}

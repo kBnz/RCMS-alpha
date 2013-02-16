@@ -1,0 +1,442 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{headblock}
+{literal}
+
+
+<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css">
+
+<link rel="stylesheet" href="/css/management/modules/templateedit.css"/>
+<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css">
+<script src="/js/codemirror/lib/codemirror.js"></script>
+<script src="/js/codemirror/lib/overlay.js"></script>
+<script src="/js/codemirror/mode/xml/xml.js"></script>
+<script src="/js/codemirror/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror/mode/css/css.js"></script>
+<link rel="stylesheet" href="/js/codemirror/theme/default.css">
+<link rel="stylesheet" href="/js/codemirror/theme/night.css">
+<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+
+<link rel="stylesheet" href="/css/management/v2/temp_edit.css">
+<script src="/js/management/v2/template_edit.js"></script>
+
+<link rel="stylesheet/less" type="text/css" href="/css/management/v2/headerfooter/headerfooter_edit.less">
+{/literal}
+{/headblock}
+
+{*
+{assign var=templateedit_id value=$formData.templateedit_id}
+<a href="/management/templateedit/templateedit_history/templateedit_id={$formData.templateedit_id}"><span>{'/label/update_history'|translate}</span></a>
+*}
+
+<div class="main_contents">
+
+    {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/templateedit/templateedit_edit/templateedit_id=$templateedit_id"}
+
+    <div class="list_main">
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+
+            {if $templateedit_id}
+            {lang_selector meta=$docmeta link='/management/templateedit/templateedit_edit/templateedit_id='|cat:$templateedit_id}
+            {/if}
+
+        <div style="display:none;">
+            {if $templateedit_id}
+                {lang_selector meta=$docmeta link='/management/templateedit/templateedit_edit/templateedit_id='|cat:$templateedit_id}
+            {/if}
+            {rcms_include file="management/messages_box.html" messages=$messages}
+            {rcms_include file="management/errors_box.html" errors=$errors}
+        </div>
+
+        <table width="100%" style="display:none;">
+            <tr>
+                <th>{'/modules/templateedit/label/kind_of_template'|translate}{* テンプレートの種類 *}</th>
+                <td colspan="3">
+                    {'/label/module'|translate}{* モジュール *}:{$st_data.module_title}
+                    {'/label/contents'|translate}{* コンテンツ *}:{$st_data.module_php_nm}
+                    {'/modules/templateedit/label/template'|translate}{* テンプレート *}:{$st_data.module_tpl_nm}
+                </td>
+            </tr>
+            <tr>
+                <th>{'/modules/templateedit/label/coverage'|translate}{* 適用範囲 *}</th>
+                <td width="30%">{$target_nm|escape}<br>
+                    {if $use_page_list|@count > 0}
+                    <span class="usepage">
+                        {foreach from=$use_page_list item=page}
+                            <a href="
+                                {if $page.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $page.page_sysnm ne 'top'}{$page.page_sysnm}/{/if}
+                            " target="_blank">
+                                {$page.page_nm|escape}
+                            </a>
+                        {/foreach}
+                    </span>
+                    {/if}
+                </td>
+            <th>{'/label/device'|translate}{* デバイス *}</th>
+                <td width="30%">
+                    {if $formData.mobile_flg eq 1 || $smarty.request.mobile_flg eq 1}
+                        {'/modules/templateedit/label/for_mobile'|translate}{* モバイル用 *}
+                    {elseif $formData.mobile_flg eq 2 || $smarty.request.mobile_flg eq 2}
+                        {'/modules/templateedit/label/for_smartphone'|translate}{* スマートフォン用 *}
+                    {elseif $formData.mobile_flg eq 3 || $smarty.request.mobile_flg eq 3}
+                        {'/modules/templateedit/label/for_facebook'|translate}{* Facebook用 *}
+                    {else}
+                        {'/modules/templateedit/label/for_PC'|translate}{* PC用 *}
+                    {/if}
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/update_time'|translate}{* 更新日時 *}</th>
+                <td>{$formData.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}(
+                        {if $formData.templateedit_id eq ''}
+                            {'/label/add_new'|translate}{* 新規追加 *}
+                        {elseif $formData.default_flg eq '1'}
+                            {'/label/default'|translate}{* デフォルト *}
+                        {else}
+                            {'/modules/templateedit/label/customized'|translate}{* カスタマイズ済 *}
+                        {/if}
+                    )
+                </td>
+                <th>{'/label/updated_by'|translate}{* 更新者 *}</th>
+                <td>{$formData.admin_nm}</td>
+            </tr>
+        </table>
+
+        <div id="tool_bar" class="rcms_ui_toolbar">
+            <ul>
+                <li>
+                    <select name="device_selector" id="device_selector">
+                        <option class="devices dev-icon-pc" value="pc"></option>
+                        <option class="devices dev-icon-mob" value="mobile"></option>
+                        <option class="devices dev-icon-sp" value="smartphone"></option>
+                        <option class="devices dev-icon-fb" value="facebook"></option>
+                        <option class="devices dev-icon-app" value="application"></option>
+                    </select>
+                </li>
+                <li class="menu_right_list">
+                    <button id="editstatus_selector" class="rcms_ui_select"><span class="icon-file"></span>入力画面</button>
+                    <ul>
+                        {foreach from=$child_template_list item=edit_page}
+                            <li>{$edit_page}</li>
+                        {/foreach}
+                    </ul>
+                </li>
+                <li class="menu_right_list">
+                    <button id="history_selector" class="rcms_ui_select"><span class="icon-time"></span>第10版</button>
+                    <ul>
+                        {foreach from=$history_list item=history}
+                            <li>{$history}</li>
+                        {/foreach}
+                    </ul>
+                </li>
+                <li class="menu_right_list">
+                    <button id="lang_selector" class="rcms_ui_select"><span class="icon-lang"></span>日本語</button>
+                    <ul>
+                        <li>日本語</li>
+                        <li>英語</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div id="template_table_edit_wrapper">
+            <div id="template_handle"></div>
+            <div id="template_name_table">
+                <table>
+                    <tr>
+                        <td class="template_item">更新コメント</td>
+                        <td><textarea id="update_comment">変更履歴にコメントをのこせます。</textarea></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="editarea_wrapper">
+                <div class="table_knob up-icon"></div>
+                <div id="support_tool">
+                    <input type="text" id="query" placeholder="検索文字列">
+                    <input type="text" id="replace" placeholder="置換文字列">
+                    <button type="button" id="replace_btn" onclick="CodeMirrorReplace()">置換</button>
+                    <button id="setup_dropdown_btn" class="rcms_ui_dropdown"><span class="icon-cog"></span></button>
+                    <ul>
+                        <li id="reverse_color_btn"><span class="icon-adjust"></span>文字色を反転</li>
+                        <li id="highlight_syntax_btn"><span class="icon-bookmark"></span>シンタックスをハイライト</li>
+                    </ul>
+                </div>
+        
+                <!-- 以前のフォーマット。-->
+                {*
+                <input type="checkbox" name="" value="1" onclick="switchTheme(this.checked);">色を反転させる
+                <input type="checkbox" name="" value="1" onclick="switchCodeMirror(this.checked);">ハイライトしない
+                <button type="button" onclick="j$('div.CodeMirror').focus();j$('div.CodeMirror').select();">全て選択</button>
+                *}
+
+                <form name="templateedit_edit_form" id="templateedit_edit_form" method="POST" action="/management/templateedit/templateedit_edit/">
+                    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+                    <input type="hidden" name="MODE" value="UPDATE" />
+                    <input type="hidden" name="templateedit_id" value="{$formData.templateedit_id}" />
+                    <input type="hidden" name="module_tpl_id" value="{$smarty.request.module_tpl_id}" />
+                    <input type="hidden" name="page_id" value="{$page_id}" />
+                    <input type="hidden" name="target_type" value="{$target_type}" />
+                    <input type="hidden" name="mobile_flg" value="{$smarty.request.mobile_flg}" />
+                    <input type="hidden" name="module_id" value="{$module_id}" />
+                    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+        
+                    <textarea name="template_text" id="template_text">{$formData.contents|escape}</textarea><br>
+                    {if $auth.headerfooter.update}
+                        {buttonbox}
+                            <button type="submit">{'/label/update_btn'|translate}</button>{*更新する*}
+                        {/buttonbox}
+                    {/if}
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{literal}
+
+
+<!-- サンドボックス -->
+<script type="text/javascript">
+$(document).ready(function(){
+
+    // エディターの初期値を登録
+    $.data($("#editarea_wrapper").get(0), "edit", setAndGetCodeMirror());
+
+    // ドロップダウンメニューを作成
+    $("#setup_dropdown_btn").rcmsDropdown();
+    $("#history_selector").rcmsDropdown({isSelectbox:true});
+    $("#lang_selector").rcmsDropdown({isSelectbox:true});
+    $("#editstatus_selector").rcmsDropdown({isSelectbox:true});
+    
+    // デバイスセレクターを作成
+    $("#device_selector").rcmsDeviceSelector();
+
+    // エディターのシンタックハイライトと文字色を反転するクリックイベント
+    $("#highlight_syntax_btn").click(switchCodeMirror);
+    $("#reverse_color_btn").click(switchTheme);
+    
+    // 検索したときの動作
+    $("#query").on("focusout",CodeMirrorSearch);
+
+    // 検索のテキストボックス内でエンターを押したときの動作
+    $("#query").on("keypress", function (e) {
+        var code = null;
+        code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {
+            // エンターを押したらフォーカスアウトする
+            $(this).focusout();
+            return false;
+        }
+    });
+
+    // ラッパークラスの高さを初期化
+    editAreaSizeChange();
+
+    // ウィンドウサイズが変わったとき
+    $(window).on("load resize", function() {
+        editAreaSizeChange();
+    });
+
+    // 包含するdiv要素の大きさの変化に合わせてエディターの大きさを変更
+    function editAreaSizeChange() {
+        var windowPadding = 130;
+        var editorPadding = 150;
+        var knob = $("#editarea_wrapper div.table_knob");
+        $("#template_table_edit_wrapper").css("height", $(window).height() - windowPadding);
+        $(".CodeMirror-scroll").css("height", $("#editarea_wrapper").height() - editorPadding);
+        $(".CodeMirror-gutter").css("height", $("#editarea_wrapper").height() - editorPadding);
+        if ($("#editarea_wrapper").position().top > 49) {
+            knob.removeClass("down-icon").addClass("up-icon");
+        } else {
+            knob.removeClass("up-icon").addClass("down-icon");
+        }
+    }
+
+    // rcmsResizableCells
+    $("#template_table_edit_wrapper").rcmsResizableCells({
+        cell1         : "#template_name_table",
+        cell2         : "#editarea_wrapper",
+        handle        : "#template_handle",
+        direction     : "vertical",
+        position      : "relative",
+        cell1MinHeight: 0,
+        cell1MaxHeight: 50,
+        onMoving      : editAreaSizeChange,
+        switchBtn     : ".table_knob"
+    });
+
+    // inputタグ内の編集の有無
+    var isChanged = false;
+
+    // 最新のエディターのDOM要素と比較して変更があればアラートで確認
+    $(window).on("beforeunload", function() {
+        var inited = $.data($("#editarea_wrapper").get(0), "edit");
+        var edited;
+        if ($("#smarty_flg").val() == 0) {
+            edited = setAndGetCKEditor();
+        } else {
+            edited = setAndGetCodeMirror();
+        }
+        if (inited != edited || isChanged) {
+            isChanged = true;
+            return "編集内容が破棄されます。ページを移動しますか？";
+        }
+    });
+});
+
+</script>
+
+
+<script type="text/javascript">
+function resetConfirm(f) {
+    var msg = "{/literal}{'/modules/templateedit/msg/reset_confirm'|translate}{* これまで編集した内容を破棄して、\nRCMSの初期テンプレートを読み込みます。\nよろしいですか？ *}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "RESET";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+
+function deleteConfirm(f) {
+    var msg = "{/literal}{'/modules/templateedit/msg/delete_confirm'|translate}{* 選択されたカスタマイズテンプレートを削除してもよろしいですか？ *}{literal}";
+    if (confirm(msg)) {
+        f.MODE.value = "DELETE";
+        f.submit();
+        f.MODE.value = "";
+    }
+}
+
+CodeMirror.defineMode("smarty", function(config, parserConfig) {
+    var smartyOverlay = {
+        token: function(stream, state) {
+        if (stream.match("{*")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "*" && stream.next() == "}") break;
+            return "smarty-cmt";
+        }else if (stream.match("{$")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty-val";
+        }else if (stream.match("{if")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty-if";
+        }else if (stream.match("{/if")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty-if";
+        }else if (stream.match("{else")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty-if";
+        }else if (stream.match("{foreach")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty-foreach";
+        }else if (stream.match("{/foreach")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty-foreach";
+        }else if (stream.match("{")) {
+            while ((ch = stream.next()) != null)
+                if (ch == "}") break;
+            return "smarty";
+        }
+        while (stream.next() != null && !stream.match("{", false) && !stream.match("{*", false)) {}
+        return null;
+        }
+    };
+    return CodeMirror.overlayParser(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), smartyOverlay);
+});
+
+// CodeMirrorのエディターオブジェクトを生成
+var editor = CodeMirror.fromTextArea(
+                 document.getElementById("template_text"),
+                 {
+                     mode: "smarty",
+                     indentUnit: 4,
+                     indentWithTabs: false,
+                     tabMode: "shift",
+                     enterMode: "keep",
+                     electricChars: false,
+                     lineNumbers: true,
+                     firstLineNumber: 1,
+                     gutter: false,
+                     fixedGutter:false,
+                     matchBrackets: true
+                  });
+
+
+var lastPos   = null;       // 検索対象と一致した最後のワードの開始位置
+var lastQuery = null;       // 検索対象の文字列
+var marked    = [];         // 検索対象と一致した文字列に印をつける"markText()"で返ってくるオブジェクト群
+
+// エディターに値をセットして値を返す *引数が文字列でない場合は値のみを返す
+function setAndGetCodeMirror(str) {
+    if (typeof str == "string") {
+        editor.setValue(str);
+    }
+    return editor.getValue();
+}
+
+// markTextメソッドが返すオブジェクトのメソッド"clear()"で選択解除
+function markedClear() {
+    for (var i = 0; i < marked.length; i++)
+    marked[i].clear();
+}
+
+// 文字列を検索
+function CodeMirrorSearch() {
+    markedClear();
+    var text = $("#query").val();
+    if (!text) return;
+    // getSerchCursorで検索文字列の位置を取得し、markTextで見つかった文字列のオブジェクトに"searched"クラスを付ける
+    for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+    marked.push(editor.markText(cursor.from(), cursor.to(), "searched"));
+    if (lastQuery != text) lastPos = null;
+    var cursor = editor.getSearchCursor(text, lastPos || editor.getCursor());
+    if (!cursor.findNext()) {
+        cursor = editor.getSearchCursor(text);
+        if (!cursor.findNext()) return;
+    }
+    // 検索ヒット文字列で洗濯中の文字列に色を付ける
+    editor.setSelection(cursor.from(), cursor.to());
+    lastQuery   = text;
+    lastPos   = cursor.to();
+}
+
+// 検索ヒット文字列を全て置換
+function CodeMirrorReplace() {
+    markedClear();
+    var text = document.getElementById("query").value,
+        replace = document.getElementById("replace").value;
+    if (!text) return;
+    for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+        cursor.replace(replace);
+}
+
+// シンタックスハイライト
+function switchCodeMirror(){
+    if(editor.getOption("mode")){
+        editor.setOption("mode", false);
+    }else{
+        editor.setOption("mode", "smarty");
+    }
+}
+
+// 文字色を反転
+function switchTheme(){
+    if(editor.getOption("theme")=="default"){
+        editor.setOption("theme", 'night');
+    }else{
+        editor.setOption("theme", 'default');
+    }
+}
+
+</script>
+{/literal}
+
+{rcms_include file="management/rcms_ui/rcms_ui.html"}

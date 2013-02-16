@@ -1,0 +1,11 @@
+{module name="keyword_category"}
+<div class="module_contents">
+<h2 class="module_title"><span>{$arrKeywordCategory.category_name}</span></h2>
+<ul>
+{foreach item=keyword_item from=$arrKeyword name=keyword_item}
+    <li><a href="/keyword_detail/id={$keyword_item.keyword_id}">{$keyword_item.keyword}</a></li>
+{/foreach}
+</ul>
+{rcms_include file="common/pageLinks.html" pageInfo=$pageInfo page_num=10}
+</div>
+{/module}

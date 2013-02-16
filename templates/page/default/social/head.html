@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<title><!--%title%--></title>
+<meta name="Keywords" content="<!--%keywords%-->"/>
+<meta name="Description" content="<!--%description%-->"/>
+
+<meta name="robots" content="INDEX,FOLLOW">
+<meta name="robots" content="NOODP">
+<meta name="robots" content="NOYDIR">
+<meta name="author" content="<!--%author%-->">
+<meta property="fb:app_id" content="{$smarty.const.FB_APPID}"/>
+<link href="/css/front/default.v2.css" rel="stylesheet" type="text/css">
+<link href="/files/css/front/layout<!--%template_id%-->.css" rel="stylesheet" type="text/css">
+<link href="/css/front/import.css" rel="stylesheet" type="text/css" media="screen,print">
+<link rel="icon" href="/favicon.ico">
+<link rel="SHORTCUT ICON" href="/favicon.ico">
+<script src="http{if $https_flg}s{/if}://www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load("prototype", "1.7");
+google.load("scriptaculous", "1.8");
+</script>
+<script type="text/javascript" src="/js/default.v2.js"></script>
+{if $smarty.const.DEFAULT_FONT_SIZE}
+<script type="text/javascript">
+<!--
+default_font_size = "{$smarty.const.DEFAULT_FONT_SIZE}";
+//-->
+</script>
+{/if}
+<script type="text/javascript"> 
+google.load("jquery", "1.7");
+</script> 
+<script type="text/javascript"> 
+var j$ = jQuery.noConflict();
+</script>
+<style type="text/css">
+{if $smarty.request.social_on_tab}{literal}
+body,#header,#footer,#container,#contents,.mng_line {width:520px;}
+#navi,#footpath{display:none;}
+{/literal}{else}{literal}
+body,#header,#footer,#container,.mng_line {width:720px;}
+#navi{
+float:left;
+width:200px;
+}
+#contents{
+width:520px;
+float:left;
+}
+#footer{
+clear:both;
+}
+{/literal}{/if}{literal}
+{/literal}
+</style>
+</head>

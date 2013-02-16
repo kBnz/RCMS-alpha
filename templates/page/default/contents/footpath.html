@@ -1,0 +1,12 @@
+{if $footpath}
+<ul class="footpath">
+{foreach item="footpath_item" from=$footpath}
+  {if $footpath_item.this}
+    <li class="footpath"><strong>{$footpath_item.page_nm}</strong></li>
+  {else}
+    <li class="footpath"><a href="/{if $footpath_item.page_sysnm ne 'top'}{$footpath_item.page_sysnm}/{/if}">{$footpath_item.page_nm}</a></li>
+  {/if}
+{/foreach}
+</ul>
+<div class="clr"></div>
+{/if}

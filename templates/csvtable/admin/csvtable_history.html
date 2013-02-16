@@ -1,0 +1,28 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{'/label/update_history_list'|translate}{*更新履歴一覧*}</h2>
+<ul>
+{if $rauth->canInsert("/csvtable/item/")}
+<li class="add"><a href="/management/csvtable/csvtable_edit/"><span>{'/modules/csvtable/label/create_new_csvtable_btn'|translate}{*CSV表追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/csvtable_detail/id={$csvtable_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/csvtable/csvtable_list/">{'/modules/csvtable'|translate}</a>
+<a href="/management/csvtable/csvtable_list/">{'/modules/csvtable/label/csvtable_list'|translate}</a>
+<a href="/management/csvtable/csvtable_edit/csvtable_id={$csvtable_id}">{'/modules/csvtable/label/csvtable_edit'|translate}</a>
+{'/label/update_history_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> CSV表 >> CSV表一覧 >> CSV表編集 >> 更新履歴 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="management/history_table.html" list=$history_list link="/management/csvtable/csvtable_edit/csvtable_id=$csvtable_id" pageInfo=$pageInfo}
+
+</div>
+{rcms_include file="management/footer.html"}

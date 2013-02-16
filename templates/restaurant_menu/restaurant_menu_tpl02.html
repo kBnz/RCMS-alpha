@@ -1,0 +1,85 @@
+<div class="restaurant_menu menu02"> 
+	<div class="sub_navi"> 
+		<ul> 
+{foreach from=$category_list item=category}
+			<li class="navi{$category.no} {if $category.this}this{/if}"><a href="/{$page_sysnm}/category_id={$category.restaurant_menu_category_id}">{$category.category_nm}</a></li> 
+{/foreach}
+		</ul> 
+	</div> 
+	<div class="menu_contents"> 
+
+		<div class="l_category_photo">
+			<ul>
+			{if $menu.img1_s_url}
+				<li><img alt="" src="{$menu.img1_s_url}" /></li>
+			{/if}
+			{if $menu.img2_s_url}
+				<li><img alt="" src="{$menu.img2_s_url}" /></li> 
+			{/if}
+			</ul>
+			<ul>
+			{if $menu.img3_s_url}
+					<li><img alt="" src="{$menu.img3_s_url}" /></li> 
+			{/if}
+			{if $menu.img4_s_url}
+					<li><img alt="" src="{$menu.img4_s_url}" /></li> 
+			{/if}
+			{if $menu.img5_s_url}
+					<li><img alt="" src="{$menu.img5_s_url}" /></li> 
+			{/if}
+			</ul>
+		</div>
+
+{foreach from=$categoryS_list item=categoryS}
+		<div class="menu_list">
+
+			<h3>{$categoryS.category_nm}</h3> 
+			<div class="menu_left">
+
+		{foreach from=$categoryS.enu_list item=menu}
+
+		{if $categoryS.photo_list|@count > 0}
+		<div class="menu_left"> 
+		{/if}
+
+			{if $menu.menu_img_url}
+				<div class="menu_photo">
+			{else}
+				<div class="menu_normal">
+			{/if}
+
+			<!--↓アルバム風表示だったらこっち
+				<div class="menu2">
+			-->
+
+			{if $menu.menu_img_url}
+					<p class="photo"><img alt="" src="{$menu.menu_img_s_url}" /></p> 
+			{/if}
+
+					<div class="menu_detail">
+						<h4>{$menu.menu_nm|escape}</h4>
+						{if $menu.price}<p class="price">{$menu.price|escape}</p>{/if}
+						{if $menu.menu_explain}<p class="detail">{$menu.menu_explain}</p>{/if}
+					</div>
+				</div>
+
+		{if $categoryS.photo_list|@count > 0}
+			</div>
+		{/if}
+
+		{/foreach}
+
+			</div> 
+
+
+{if $categoryS.photo_list|@count > 0}
+			<div class="category_photo"> 
+		{foreach from=$categoryS.photo_list item=photo}
+				<p><img src="/files/user/img/2.jpg" /><br /><span>ああああああああああああ</span></p> 
+		{/foreach}
+			</div>
+{/if}
+{/foreach}
+
+	</div> 
+</div>

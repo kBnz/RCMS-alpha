@@ -1,0 +1,110 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+Event.observe(window, 'load', function() {
+    // 送信時に並び順を設定する
+    Event.observe($('help_order_edit_post'), 'submit', function() {
+        var rows = $('item_list_content').rows;
+        var buf = [];
+        for (var i = 0 ; i < rows.length ; i++) {
+            buf.push(rows[i].id.substring('order'.length));
+        }
+        $('order_string').value = buf.join(",");
+    });
+});
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+  <h2>{'/label/sort_setting'|translate}</h2>{*表示順設定*}
+  {if $rauth->canInsert('/help/category')}
+  <ul>
+    <li class="add"><a href="/management/{$mt}/help_category_edit/"><span>{'/label/create_new_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+  </ul>
+  {/if}
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/help_item_list/">{'/modules/help'|translate}</a>
+{'/label/sort_setting'|translate}{*表示順設定*}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> Q&A >> 表示順設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="help/admin/minitabs.html" page_type=$ct auth=$auth }
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/{$mt}/{$ct}/" id="help_order_edit_get">
+    <input type="hidden" name="category_id" value="{$category_id}" id="category_id" />
+    <select name="post_order_type">{html_options options=$arrOrderType selected=$post_order_type}</select>
+    <input type="submit" value="{'/label/display_btn'|translate}{*表示*}" />
+  </form>
+
+  <form method="post" action="/management/{$mt}/{$ct}/" id="help_order_edit_post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" id="MODE" value="update" />
+    <input type="hidden" name="post_order_type" value="{$post_order_type}" />
+    <input type="hidden" name="category_id" value="{$category_id}" />
+    <input type="hidden" name="order_string" id="order_string" />
+
+{foreach from=$orderList item=help_data name=help_list}
+  {if $smarty.foreach.help_list.first}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <thead>
+        <tr>
+          <th width="30">{'/label/publish'|translate}</th>{*公開*}
+          <th>{'/label/title'|translate}</th>{*タイトル*}
+          {if $post_order_type == 'category'}
+          <th>{'/modules/help/label/subcategories'|translate}{*子カテゴリ*}</th>
+          {/if}
+          <th>{'/label/sort'|translate}</th>{*表示順*}
+        </tr>
+      </thead>
+      <tbody id="item_list_content">
+  {/if}
+        {if $help_data.help_item_id}
+          {assign var=id value=$help_data.help_item_id}
+        {else}
+          {assign var=id value=$help_data.help_category_id}
+        {/if}
+        <tr id="order{$id}">
+          <td>
+            {if $help_data.open_flg eq $smarty.const.HELP_OPEN}
+              <img src="/images/management/check.gif" border="0" />
+            {elseif $help_data.open_flg eq $smarty.const.HELP_CLOSE}
+              <img src="/images/management/batu.gif" border="0" />
+            {/if}
+          </td>
+          <td>{if $help_data.title}{$help_data.title}{else}{$help_data.category_name}{if $help_data.n_children > 1}&nbsp;<a href="/management/{$mt}/{$ct}/post_order_type=sub_category&amp;category_id={$help_data.help_category_id}">[{'/modules/help/label/child_category_setting'|translate}]{*子カテゴリ順の設定*}</a>{/if}{/if}</td>
+          {if $post_order_type == 'category'}
+          <td>{$help_data.n_children|default:'0'} {'/label/item'|translate}{*件*}</td>
+          {/if}
+          <td>
+            <a href="javascript:;" onclick="swapSibling(-1, 'order{$id}')"><img src="/images/management/up.gif" border="0" title="ひとつ上へ" /></a>
+            <a href="javascript:;" onclick="swapSibling(1, 'order{$id}')"><img src="/images/management/down.gif" border="0" title="ひとつ下へ" /></a>
+          </td>
+        </tr>
+  {if $smarty.foreach.help_list.last}
+      </tbody>
+    </table>
+  {/if}
+{/foreach}
+
+{if $auth.help.update}
+  {buttonbox}
+    <button type="submit">{'/label/update_btn'|translate}</button>{* 更新する *}
+  {/buttonbox}
+{/if}
+</form>
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

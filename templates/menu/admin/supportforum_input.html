@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title>{'/modules/menu/label/supportforum_input'|translate}{*質問する*}</title>
+<link href="/css/management/default.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<div class="supportforum_input">
+
+    <div class="forum_header">
+        <h2>{'/modules/menu/label/support'|translate}{*サポート*}</h2>
+    </div>
+
+    <div id="forum_h2">
+        <h2>{if $supportforum_root_id}「{$RootNode.title}」への返信{else}{'/modules/menu/label/supportforum_input'|translate}{*質問する*}{/if}</h2>
+    </div> <!-- //タイトル -->
+
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{if $complete_flg}
+    ※{'/modules/menu/msg/update_the_page'|translate}{*質問を確認するには、ページを更新しなおす必要があります。*}
+    <p class="forum_inputButton"><input type="button" value="{'/label/close'|translate}{*閉じる*}" onClick="window.close();"></p>
+
+{else}
+    <form name="rcms_supportforum_input" id="rcms_supportforum_input" action="/management/menu/supportforum_input/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="supportforum_root_id" value="{$supportforum_root_id}" />
+    <input type="hidden" name="MODE" value="INSERT" />
+    <span class="hint">{'/msg/all_item_required'|translate}{*入力は全て必須です*}</span>
+    <div class="forum_iuputArea">
+        <table class="supportforum_input_form" border="0" cellspacing="3">
+{if $supportforum_root_id eq ''}
+            <tr>
+                <th>{'/label/module'|translate}{*モジュール*}</th>
+                <td><select name="module_type">{html_options options=$moduleList selected=$supportforumData.module_type}</select><br>
+                <span class="hint">{'/modules/menu/msg/select_the_common'|translate}{*どのモジュールかわからない場合は「共通」にしてください。*}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/category'|translate}{*カテゴリ*}</th>
+                <td><select name="category_id">{html_options options=$supportforum_category selected=$supportforumData.category_id}</select></td>
+            </tr>
+{/if}
+            <tr>
+                <th>{'/label/person_who_posted'|translate}{*投稿者*}</th>
+                <td><input type="text" name="name" value="{$supportforumData.name|escape}" size="50"></td>
+            </tr>
+{if $supportforum_root_id eq ''}
+            <tr>
+                <th>{'/label/title'|translate}{*タイトル*}</th>
+                <td><input type="text" name="title" value="{$supportforumData.title|escape}" size="50"></td>
+            </tr>
+            <tr>
+                <th>{'/label/url'|translate}{*URL*}</th>
+                <td><input type="text" name="url" value="{$supportforumData.url|escape}" size="50"><br>
+                <span class="hint">{'/modules/menu/msg/about_url'|translate}{* 不具合の発生しているURLを記入してください。 *}</span></td>
+            </tr>
+{/if}
+            <tr>
+                <th>{'/label/content'|translate}{*内容*}</th>
+                <td><span class="hint">{'/modules/menu/msg/notes_before_post_a_quetion'|translate}{*不具合のご報告の際は、なるべく詳しく状況を記述してください。「動かない」ではなく「更新ボタンを押しても反応がない」等の方が対応がスムーズにいきます。*}</span><br><textarea name="note" style="width:350px;height:200px;">{$supportforumData.note|escape}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/notification'|translate}{*通知*}</th>
+                <td><input type="checkbox" name="mail_send_flg" value="1" {if $supportforumData.mail_send_flg}checked{/if}>{'/modules/menu/msg/when_answer_came'|translate}{*この質問に回答が付いたらメールでお知らせを受け取る*}<br>
+                email:<input type="text" name="mail_send_email" value="{$supportforumData.mail_send_email|escape}" size="50">
+                </td>
+            </tr>
+        </table>
+    </div>
+
+{if $supportforum_root_id eq ''}
+    <p class="forum_inputButton"><input type="submit" value="{'/modules/menu/label/post_a_question_btn'|translate}{*質問する*}">　<input type="button" value="{'/label/close'|translate}{*閉じる*}" onClick="window.close();"></p>
+{else}
+    <p class="forum_inputButton"><input type="submit" value="{'/modules/menu/label/reply_to_a_question_btn'|translate}{*返信する*}">　<input type="button" value="{'/label/close'|translate}{*閉じる*}" onClick="window.close();"></p>
+{/if}
+    </form>
+{/if}
+
+</div>
+</body>
+</html>

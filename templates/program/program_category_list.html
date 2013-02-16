@@ -1,0 +1,94 @@
+{module name="calendar_list"}
+<h2 class="module_title"><span>クラスの案内</span></h2>
+<div class="module_contents">
+
+
+{if $category_data}
+  {foreach from=$category_data item = category key = category_id}
+  {*カテゴリー名と概要を表示するテーブル*}
+  <div class="CategorySumary">
+    <p class="name">{$category.category_data.category_nm}
+                    {if $category.category_data.category_subnm}({$category.category_data.category_subnm}){/if}</p>
+    <p class="summary">{$category.category_data.category_summary}</p>
+  {*カテゴリのクラスを表示するテーブル*}
+  <p><table border="1" width="80%" class="program_list">
+  {if $programList.$category_id}
+  <tr>
+    <th width="20%">クラス名</th>
+    <th width="15%">時間</th>
+    <th width="35%">内容</th>
+    <th width="15%">強度</th>
+    <th width="15%">難易度</th>
+  </tr>
+    {foreach from=$programList.$category_id item = row}
+  <tr>
+    <td><a href="/program_schedule_list/id={$row.program_id}">
+        {$row.program_nm}{if $row.program_subnm}<span>({$row.program_subnm})</span>{/if}
+        </a>
+     {if $row.recommend_flg == 1}
+       <span class="recommend">おすすめ!</span>
+       {if $row.recommend_comment}<div class="recommend">{$row.recommend_comment}</div>{/if}
+     {/if}
+    </td>
+    <td>{$row.minutes}</td>
+    <td>{$row.content|nl2br}</td>
+    <td>{$row.strength}</td>
+    <td>{$row.target}</td>
+  </tr>
+    {/foreach}
+  {elseif !$category.class}
+  <tr><th>準備中</th></tr>
+  {/if}
+  </table></p>
+  <br>
+  {*区分のテーブルを作成*}
+  {if $category.class}
+{strip}
+    {foreach from = $category.class key = class_id item =class_data}
+    {*区分の名前と概要をテーブルで表示*}
+    <div class="SubCategorySummary">
+      <p class="name"><span>【{$category.category_data.category_nm}】</span>
+                     {$class_data.class_nm}{if $class_data.class_subnm}({$class_data.class_subnm}){/if}</p>
+      <p class="summary">{if $class_data.class_summary}{$class_data.class_summary}{else}下記のクラスがあります。{/if}</p>
+    {*区分に登録されているクラスをテーブルで表示*}
+    <p><table border="1" width="80%" class="program_list">
+    {if $programList.$class_id}
+      <tr>
+        <th width="20%">クラス名</th>
+        <th width="15%">時間</th>
+        <th width="35%">内容</th>
+        <th width="15%">強度</th>
+        <th width="15%">難易度</th>
+      </tr>
+      {foreach from = $programList.$class_id item = row}
+      <tr>
+        <td><a href="/program_schedule_list/id={$row.program_id}">
+              {$row.program_nm}{if $row.program_subnm}<span>({$row.program_subnm})</span>{/if}
+            </a>
+            {if $row.recommend_flg == 1}
+            <span class="recommend">おすすめ!</span>
+            {if $row.recommend_comment}<div class="recommend">{$row.recommend_comment}</div>{/if}
+            {/if}
+        </td>
+        <td>{$row.minutes}</td>
+        <td>{$row.content|nl2br}</td>
+        <td>{$row.strength}</td>
+        <td>{$row.target}</td>
+      </tr>
+      {/foreach}
+    {else}
+      <tr><th>準備中</th></tr>
+    {/if}
+    </table></p>
+    </div>
+    <br>
+    {/foreach}
+{/strip}
+  {/if}
+  </div>
+  {/foreach}
+{else}
+まだコンテンツが登録されていません。
+{/if}
+</div>
+{/module}

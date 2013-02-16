@@ -1,0 +1,4 @@
+<ul class="minitabs">
+  <li><a href="/management/seminar/seminar_list/" {if $page_type eq 'seminar_list' || $page_type eq 'seminar_edit'}class="active"{/if}>{'/modules/seminar/label/seminar_list'|translate}</a></li>{*セミナー一覧*}
+  <li><a href="/management/seminar/seminar_category_list/" {if $page_type eq 'seminar_category_list' || $page_type eq 'seminar_category_edit'}class="active"{/if}>{'/label/categories_list'|translate}</a></li>{*カテゴリ設定*}
+</ul>

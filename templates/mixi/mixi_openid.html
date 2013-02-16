@@ -1,0 +1,45 @@
+{if !$Login_member_id}
+{module name="login_openid"}
+<h2 class="module_title"><span>ミクシィでログイン</span></h2>
+<div class="module_contents">
+{if $limited_type eq 'friends'}
+マイミク限定でログインできます。
+{elseif $limited_type eq 'community'}
+「<a href="http://mixi.jp/view_community.pl?id={$limited_community_id}">{$smarty.const.MIXI_LIMITED_COMMUNITY_NM}</a>」コミュニティに参加されているユーザー限定でログインできます。<br>
+{/if}
+  <form method="post" action="/{$page_sysnm}/">
+    <p>
+      <input type="hidden" name="openid_identity" value="mixi.jp"/>
+      <input type="hidden" name="openid_client" value="/{if $page_sysnm ne 'top'}{$page_sysnm}/{/if}"/>
+      <input type="hidden" name="openid_action"  value="mixiでログイン" />
+      <input type="image" src="/images/modules/login/mixi_a_150.gif" /><br>
+      <a href="javascript: void Effect.toggle('openid_help{$contents_id}', 'blind', {ldelim}duration: 0.2{rdelim})">Help</a>
+    </p>
+  </form>
+  <div id="openid_help{$contents_id}" style="display:none">
+    <p>ミクシィのアカウントでログインができます。<br>
+    このサイトで新たにアカウントを作成したり、ログインするために別々のIDやパスワードを入力する必要がなくなります。
+    OpenIDという技術を利用しています。mixiでの説明は<a href="http://mixi.jp/openid.pl" target="_blank">こちら</a>
+    </p>
+  </div>
+</div>
+{/module}
+{elseif $mixi_id}
+{module name="login_openid"}
+<h2 class="module_title"><span>ミクシィIDでログイン中です</span></h2>
+<div class="module_contents">
+{$Login_disp_nm}さん、こんにちは！<br>
+
+{if $auth.menu.select}
+<a href="/management/">マイページでサイト編集</a><br>
+{/if}
+
+{if $limited_type eq 'community'}
+<a href="http://mixi.jp/view_community.pl?id={$limited_community_id}">コミュニティ({$smarty.const.MIXI_LIMITED_COMMUNITY_NM})に戻る</a><br>
+{/if}
+<a href="http://mixi.jp/">ミクシィに戻る</a><br>
+<a href="/direct/login/logout/">ログアウト</a><br>
+
+</div>
+{/module}
+{/if}

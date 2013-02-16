@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/label/category_edit'|translate}{*カテゴリ編集*}</h2>
+  <ul>
+{if $auth.link.insert}
+    <li class="add"><a href="/management/link/link_category_edit/pageID={$currentPageID}"><span>{'/label/create_new_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/link/link_list/">{'/modules/link'|translate}</a>
+<a href="/management/link/link_category_list/">{'/label/categorieslist'|translate}</a>
+{'/label/category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> リンク >> カテゴリ設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="link/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="/management/link/link_category_edit/" method="post">
+  <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+  <input name="link_category_id" type="hidden" value="{$formData.link_category_id}" />
+  <input name="pageID" type="hidden" value="{$pageID}" />
+  <input type="hidden" name="MODE" value="" />
+
+  <table width="100%" border="0">
+    <tr>
+      <th>{'/label/category'|translate}{*カテゴリー*}</th>
+      <td><input size="50" maxlength="50" name="link_category_name" type="text" value="{$formData.link_category_name|escape}" /></td>
+    </tr>
+    <tr>
+      <th>Keyword</th>
+      <td><input size="50" name="keywords" type="text" value="{$formData.keywords|escape}" /></td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td><input size="50" name="description" type="text" value="{$formData.description|escape}" /></td>
+    </tr>
+  </table>
+
+  {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

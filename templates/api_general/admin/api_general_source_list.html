@@ -1,0 +1,74 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>外部データソース一覧</h2>
+  <ul>
+    {if $auth.api_general.insert}
+      <li class="add"><a href="/management/api_general/api_general_source_edit/"><span>ソース追加</span></a></li>
+    {/if}
+  </ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_general/api_general_source_list/">{$module_nm}</a>
+外部データソース一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+  <ul class="minitabs">
+    <li><a href="/management/{$mt}/{$mt}_source_list/" class="active">データソース一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_search/">外部データ検索</a></li>
+    <li><a href="/management/{$mt}/{$mt}_list/">外部データ一覧</a></li>
+    <li><a href="/management/{$mt}/{$mt}_edit/">外部データ編集</a></li>
+  </ul>
+
+<form action="/management/api_general/api_general_source_list/">
+    <fieldset class="search_box">
+     <label for="s_provider">提供元</label>
+     <div id="s_provider">
+     {foreach from=$source_list item=source}
+         <span style="padding:5px;line-height:150%;"><a href="/management/api_general/api_general_source_list/?s_provider={$source|urlencode}">{$source}</a></span>
+     {/foreach}
+     </div>
+    </fieldset>
+  </form>
+
+  <div class="list_main">
+
+
+    {pager info=$pageInfo}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>ID</th><th>提供元</th><th>タイプ</th><th colspan="2">データソース名</th><th>クレジット</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach from=$sources item=src}
+        <tr>
+          <td>{$src.id}</td>
+          <td>{$src.provider}</td>
+          <td>{if $src.official_flg eq 1}公式{else}ユーザー{/if}</td>
+          <td>{$src.name}</td>
+          <td>
+{if $src.find_template ne ''}
+            <a href="/management/api_general/api_general_list/data_source={$src.id}">データ一覧</a>
+            | 
+{/if}
+            <a href="/management/api_general/api_general_source_edit/data_source={$src.id}">編集</a>
+          </td>
+          <td>{$src.credit}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {pager info=$pageInfo}
+    <br>
+    <span class="hint">IDはページ設定で使用します</span>
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

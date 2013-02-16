@@ -1,0 +1,22 @@
+<h2>ﾒﾝﾊﾞｰ一覧</h2>
+
+{foreach item=member from=$memberList}
+  {if $member.nickname != ""}
+  {capture assign=member_name}{$member.nickname}{/capture}
+  {else}
+  {capture assign=member_name}{$member.name1}　{$member.name2}{/capture}
+  {/if}
+
+  <a href="{$smarty.const.ROOT_URL}/member_detail/id={$member.member_id}">{$member_name}</a>
+(
+{if $member.grade != "" && $member.student_flg}
+  {assign var="grade" value=$member.grade}
+  {$arrGrade[$grade]}
+{/if}
+{if $member.position ne ''}{$member.position} {/if}
+{if $member.height eq '0'}?cm{elseif $member.height ne ''}{$member.height}cm {/if}
+{if $member.weight eq '0'}?kg{elseif $member.weight ne ''}{$member.weight}kg {/if}
+)<br/>
+{/foreach}
+{$page_links}
+<hr/>

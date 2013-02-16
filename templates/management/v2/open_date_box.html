@@ -1,0 +1,218 @@
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+(function($){
+
+    $(document).ready(function() {
+        
+        initEditField();
+        setStatusMsg();
+
+        // イベント登録
+        $("#publish_settings").on("click",showEditField);
+
+    });
+    
+    /**
+    * 編集画面の初期化
+    */
+    function initEditField(){
+
+        // datepickerの設定
+        $("#publish_settings #open_sta_date").datepicker(
+            {
+                showOn: "both",
+                buttonImage: "{/literal}{'/images/management/calendar_week.png'|lang_img_path}{literal}",
+                dateFormat: "yy-mm-dd"
+            }
+        );
+        $("#publish_settings #open_end_date").datepicker(
+            {
+                showOn: "both",
+                buttonImage: "{/literal}{'/images/management/calendar_week.png'|lang_img_path}{literal}",
+                dateFormat: "yy-mm-dd"
+            }
+        );
+
+        // 編集画面の設定
+        $("#publish_settings_edit_field").dialog({
+            title     : "{/literal}{'/label/publish_settings'|translate}{*公開設定*}{literal}",
+            autoOpen  : false,
+            resizable : true,
+            height    : 300,
+            width     : 400,
+            modal     : true,
+            buttons: {
+                "OK" : function() {
+                    setFormValues();
+                    setStatusMsg();
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+    }
+    
+    /**
+    * 編集画面の表示
+    */
+    function showEditField(){
+        $("#publish_settings_edit_field").dialog("open");
+    }
+    
+    /**
+    * ステータスメッセージのセット
+    */
+    function setStatusMsg(){
+        var needle = $("#publish_settings_edit_field input[name='open_type']:checked").val();
+        var msg = "";
+        switch(needle){
+            case "open":
+                msg = "{/literal}{'/label/do_publish'|translate}{literal}";
+                break;
+            case "close":
+                msg = "{/literal}{'/label/do_unpublish'|translate}{literal}";
+                break;
+            case "sitei":
+                msg = "{/literal}{'/label/publish_time'|translate}{literal}";
+                break;
+        }
+
+        $("#publish_settings .status_msg").html(msg);
+    }
+
+    /**
+    * フォームの値をセット
+    */
+    function setFormValues(){
+        var open_type = $("#publish_settings_edit_field [name='open_type']:checked").val();
+        $("#publish_settings_form_field [name='open_type']").val(open_type);
+
+        var open_sta_date = $("#publish_settings_edit_field [name='open_sta_date']").val();
+        $("#publish_settings_form_field [name='open_sta_date']").val(open_sta_date);
+
+        var open_end_date = $("#publish_settings_edit_field [name='open_end_date']").val();
+        $("#publish_settings_form_field [name='open_end_date']").val(open_end_date);
+
+        var open_sta_time = $("#publish_settings_edit_field [name='open_sta_time']").val();
+        $("#publish_settings_form_field [name='open_sta_time']").val(open_sta_time);
+
+        var open_end_time = $("#publish_settings_edit_field [name='open_end_time']").val();
+        $("#publish_settings_form_field [name='open_end_time']").val(open_end_time);
+    }
+}(jQuery));
+</script>
+
+<style type="text/less">
+#publish_settings{
+    .edit_field{
+        .status{
+            margin:10px;
+        }
+    }
+}
+</style>
+{/literal}
+
+<div id="publish_settings" class="metasettings">
+    <h1 class="title">{'/label/publish_settings'|translate}{*公開設定*}</h1>
+    <p class="status_msg">status message here.</p>
+    
+    {* 送信用データ *}
+    <div id="publish_settings_form_field" style="display:none;">
+        {if $data.open_type == 'open' || $data.open_type == 'close' || $data.open_type == 'sitei'}
+                {assign var=open_type value=$data.open_type}
+        {else}
+                {assign var=open_type value='open'}
+        {/if}
+         <input type="hidden" name="open_type" value="{$open_type}">
+         <input type="hidden" name="open_flg" value="{$data.open_flg}" />
+         <input type="hidden" name="open_sta_date" value="{$data.open_sta_date}">
+         <input type="hidden" name="open_end_date" value="{$data.open_end_date}">
+         <input type="hidden" name="open_sta_time" value="{$data.open_sta_time}">
+         <input type="hidden" name="open_end_time" value="{$data.open_end_time}">
+    </div>
+
+    {* 編集画面 *}
+    <div id="publish_settings_edit_field">
+    
+        <p class="status">
+    
+        {* 既存のコンテンツの場合に「公開」「非公開」のメッセージを出す。新規の場合は「...を行ってください。」メッセージ *}
+    
+            {if $id != ""}
+                {if $data.open_flg == "1"}
+                    {if $docmeta.is_waiting}
+                        {assign var='varPublishStatus_1' value='/label/publish'|translate}
+                        {'/msg/status_will_be_0_when_approved'|translate:$varPublishStatus_1}{*承認後、公開状態になります。*}
+                    {else}
+                        {'/msg/this_content_is_publish_now'|translate}{* この内容は、現在公開中です。 *}
+                    {/if}
+                {else}
+                    {if $docmeta.is_waiting}
+                        {assign var='varPublishStatus_2' value='/label/unpublish'|translate}
+                        {'/msg/status_will_be_0_when_approved'|translate:$varPublishStatus_2}{*承認後、非公開状態になります。*}
+                    {else}
+                        {'/msg/this_content_is_unpublish_now'|translate}{* この内容は、現在非公開です。 *}
+                    {/if}
+                {/if}
+            {else}
+                {if $docmeta.is_waiting}
+                        {assign var='varPublishStatus_3' value='/label/publish_time'|translate}
+                        {'/msg/0_will_be_effective_when_approved'|translate:$varPublishStatus_3}{* 承認後、日付設定が有効になります。 *}
+                {else}
+                    <span class="hint">{'/msg/choose_publish_setting'|translate}</span>
+                {/if}
+            {/if}
+    
+        </p>
+    
+    {* デフォルトで公開を選択する *}
+        {if $data.open_type == 'open' || $data.open_type == 'close' || $data.open_type == 'sitei'}
+                {assign var=open_type value=$data.open_type}
+        {else}
+                {assign var=open_type value='open'}
+        {/if}
+    
+        <input type="hidden" name="open_flg" value="{$data.open_flg}" />
+        <ul class="open_selector">
+            <li>
+                <input type="radio" name="open_type" id="open_type1" value="open" {if $open_type == 'open'}checked="checked"{/if} />
+                <label for="open_type1">{'/label/do_publish'|translate}</label>
+            </li>
+            <li>
+                <input type="radio" name="open_type" id="open_type2" value="close" {if $open_type == 'close'}checked="checked"{/if} />
+                <label for="open_type2">{'/label/do_unpublish'|translate}</label>
+            </li>
+            <li>
+                <input type="radio" name="open_type" id="open_type3" value="sitei" {if $open_type == 'sitei'}checked="checked"{/if} />
+                <label for="open_type3">{'/label/publish_time'|translate}</label>
+                <table>
+                    <tr>
+                        <td>
+                            {'/label/start_date'|translate}{*開始日付*}
+                        </td>
+                        <td>
+                            <input id="open_sta_date" name="open_sta_date" type="text" value="{$data.open_sta_date}" size="16" autocomplete="off" />
+                        </td>
+                        <td>
+                            {rcms_opentimeOptions selected=$data.open_sta_time name='open_sta_time'}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {'/label/end_date'|translate}{*終了日付*}
+                        </td>
+                        <td>
+                            <input id="open_end_date" name="open_end_date" type="text" value="{$data.open_end_date}" size="16" autocomplete="off" />
+                        </td>
+                        <td>
+                            {rcms_opentimeOptions selected=$data.open_end_time name='open_end_time'}
+                        </td>
+                    </tr>
+                </table>
+            </li>
+        </ul>
+    
+    </div>{*/#publish_settings_edit_field*}
+</div>{*publish_settings*}

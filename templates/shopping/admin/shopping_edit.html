@@ -1,0 +1,246 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}編集　{if $formData.version_no}第{$formData.version_no}版{if $formData.latest_flg eq '1'}(最新){/if}{/if}</h2>
+<ul>
+    {if $auth.shopping.insert}
+    <li class="add"><a href="/management/shopping/shopping_edit/{if $shopping_group_id}shopping_group_id={$shopping_group_id}{/if}"><span>商品追加</span></a></li>
+    {/if}
+    {if $shopping_id}
+    <li class="normal"><a href="/management/shopping/shopping_history/shopping_id={$shopping_id}"><span>{'/label/update_history'|translate}</span></a></li>
+    <li class="normal"><a href="/management/accesscount/accesscount_list/module_type=shopping&id={$shopping_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+    <li class="view"><a href="{$smarty.const.ROOT_URL}/shopping_detail{if $shopping_group_id}{$shopping_group_id}{/if}/id={$shopping_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+    {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/shopping/shopping_group_list/">{$module_nm}</a>
+<a href="/management/shopping/shopping_group_list/">グループ一覧</a>
+<a href="/management/shopping/shopping_list/shopping_group_id={$shopping_group_id}">「{$arrGroupList[$shopping_group_id]}」の{$module_nm}一覧</a>
+{$module_nm}編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}件</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+    <li><a href="/management/shopping/shopping_group_edit/shopping_group_id={$shopping_group_id}">グループ設定</a></li>
+    <li><a href="/management/shopping/shopping_list/shopping_group_id={$shopping_group_id}">商品一覧</a></li>
+    <li><a href="/management/shopping/shopping_edit/shopping_group_id={$shopping_group_id}" class="active">商品編集</a></li>
+    <li><a href="/management/shopping/shopping_lump/shopping_group_id={$shopping_group_id}">一括処理</a></li>
+    <li><a href="/management/shopping/shopping_category_list/{if $shopping_group_id}shopping_group_id={$shopping_group_id}{/if}" >カテゴリ設定</a></li>
+</ul>
+<div class="clear"></div>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <form name="shopping_edit" id="shopping_edit" action="/management/shopping/shopping_edit/" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="pageID" value="{$pageID}" />
+        <input type="hidden" name="shopping_id" value="{$shopping_id}" />
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" value="" />
+        <input type="hidden" name="subflg" value="" />
+        <input type="hidden" name="shopping_group_id" value="{$shopping_group_id}" />
+
+        <h3><span class="link_button">商品情報</span></h3>
+        <table style="width:100%">
+            <tr>
+                <th width="200">商品グループ名</th>
+                <td>
+                    {$arrGroupList[$shopping_group_id]}
+                </td>
+            </tr>
+            <tr>
+                <th>カテゴリ<span class="required">必須</span></th>
+                <td>
+                    <select name="contents_type" onChange = "onCategoryChange(this);">{html_options options=$arrContents_type selected=$formData.contents_type}</select>
+                </td>
+            </tr>
+            <tr>
+                <th>タイトル<span class="required">必須</span></th>
+                <td>
+                    <input type="text" name="subject" value="{$formData.subject|escape}" size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th>詳細ページ</th>
+                <td>
+                    <input type="radio" name="detail_flg" value="1" {if $formData.detail_flg eq 1}checked{/if}/><span>詳細ページあり</span>
+                    <input type="radio" name="detail_flg" value="0" {if !$formData.detail_flg}checked{/if}/><span>詳細ページなし</span>
+                </td>
+            </tr>
+            <tr>
+                <th>在庫<span class="required">必須</span></th>
+                <td>
+                    <input type="text" name="stock" value="{$formData.stock}" size="5" />個
+                </td>
+            </tr>
+            <tr>
+                <th>買い物１回あたりの購入限度数<span class="required">必須</span></th>
+                <td>
+                    <input type="text" name="threshold" value="{$formData.threshold}" id="threshold" size="5" />個
+                </td>
+            </tr>
+        </table>
+
+        <script type="text/javascript">
+        <!--
+        {literal}
+                function onCategoryChange (select_option) {
+                        loadInputItems (select_option);
+                        updateThreshold(select_option);
+                }
+                function loadInputItems (select_option) {
+                        var item = new Array();
+                        item["image"] = document.getElementById("image").value;
+                        item["photo_url"] = document.getElementById("photo_url").value;
+                        if (document.getElementById("del_shopping_photo") && document.getElementById("del_shopping_photo").checked){
+                                item["del_shopping_photo"] = "checked";
+                        }else{
+                                item["del_shopping_photo"] = "";
+                        }
+                        item["contents"] = document.getElementById("contents").value;
+                        item["url"] = document.getElementById("url").value;
+                        if (document.getElementById("link_flg") && document.getElementById("link_flg").checked){
+                                item["link_flg"] = "checked";
+                        }else{
+                                item["link_flg"] = "";
+                        }
+                        item["ext_01"] = (document.getElementById("ext_01"))?document.getElementById("ext_01").value : '';
+                        item["ext_02"] = (document.getElementById("ext_02"))?document.getElementById("ext_02").value : '';
+                        item["ext_03"] = (document.getElementById("ext_03"))?document.getElementById("ext_03").value : '';
+                        item["ext_04"] = (document.getElementById("ext_04"))?document.getElementById("ext_04").value : '';
+                        item["ext_05"] = (document.getElementById("ext_05"))?document.getElementById("ext_05").value : '';
+                        item["ext_06"] = (document.getElementById("ext_06"))?document.getElementById("ext_06").value : '';
+                        item["ext_07"] = (document.getElementById("ext_07"))?document.getElementById("ext_07").value : '';
+                        item["ext_08"] = (document.getElementById("ext_08"))?document.getElementById("ext_08").value : '';
+                        item["ext_09"] = (document.getElementById("ext_09"))?document.getElementById("ext_09").value : '';
+                        item["ext_10"] = (document.getElementById("ext_10"))?document.getElementById("ext_10").value : '';
+                        item["ext_11"] = (document.getElementById("ext_11"))?document.getElementById("ext_11").value : '';
+                        item["ext_12"] = (document.getElementById("ext_12"))?document.getElementById("ext_12").value : '';
+                        item["ext_13"] = (document.getElementById("ext_13"))?document.getElementById("ext_13").value : '';
+                        item["ext_14"] = (document.getElementById("ext_14"))?document.getElementById("ext_14").value : '';
+                        item["ext_15"] = (document.getElementById("ext_15"))?document.getElementById("ext_15").value : '';
+                        var category_id;
+                        category_id = select_option[select_option.selectedIndex].value;
+                        new Ajax.Updater(
+                                        'input_table',
+                                        '/direct/shopping/input_items/shopping_category_id='+category_id,
+                                        {encoding: 'UTF-8',
+                                         method: 'post',
+                                         parameters:{ image:item["image"], contents:item["contents"], url:item["url"], link_flg:item["link_flg"],
+                                                                    photo_url:item["photo_url"],
+                                                                    del_shopping_photo:item["del_shopping_photo"],
+                                                                    ext_01:item["ext_01"],
+                                                                    ext_02:item["ext_02"],
+                                                                    ext_03:item["ext_03"],
+                                                                    ext_04:item["ext_04"],
+                                                                    ext_05:item["ext_05"],
+                                                                    ext_06:item["ext_06"],
+                                                                    ext_07:item["ext_07"],
+                                                                    ext_08:item["ext_08"],
+                                                                    ext_09:item["ext_09"],
+                                                                    ext_10:item["ext_10"],
+                                                                    ext_11:item["ext_11"],
+                                                                    ext_12:item["ext_12"],
+                                                                    ext_13:item["ext_13"],
+                                                                    ext_14:item["ext_14"],
+                                                                    ext_15:item["ext_15"]
+                                                                 }
+                                        }
+                                );
+                }
+                function updateThreshold (select_option) {
+                        var category_id = select_option[select_option.selectedIndex].value;
+                        var ajax = new Ajax.Request('/direct/shopping/threshold/shopping_category_id='+category_id,
+                                                                                { method:'post',
+                                                                                    encoding: 'UTF-8',
+                                                                                    onComplete: function (o) {
+                                                                                            $('threshold').value = o.responseText;
+                                                                                    }});
+                }
+
+        {/literal}
+        //-->
+        </script>
+            <h3><span class="link_button">商品内容</span></h3>
+
+            <div id="input_table">{$input_table}</div>
+
+    {rcms_include file="management/open_date_box.html" id=$shopping_id data=$formData}
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    <div id="detail_setting" class="edit_close">
+        <h3>その他の設定</h3>
+        <p><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;" ><img src="{'/images/management/btn_set.gif'|lang_img_path}" alt="設定する"></a></p>
+    </div>
+
+    <div id="detail_setting2" style="display:none;">
+        <div class="edit_open">
+            <h3><span class="link_button">その他の設定</span></h3>
+            <p class="close"><a href="javascript:void(0)" onclick="display('detail_setting');display('detail_setting2');return false;"><img src="{'/images/management/btn_setClose.gif'|lang_img_path}" alt="閉じる"></a></p>
+        </div>
+        <div class="edit_contents">
+            <table width="650">
+                <tr class="light_gray">
+                    <th valign="top">アクセス制限:</th>
+                    <td colspan="3"><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select></td>
+                </tr>
+            </table>
+        </div>
+    </div><!--//detail_setting2-->
+
+
+    {buttonbox}
+        {if $auth.shopping.update && $shopping_id != ""}
+            <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+        {/if}
+        {if $auth.shopping.insert && $shopping_id == ""}
+            <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+        {/if}
+        {if $auth.shopping.delete && $shopping_id != ""}
+            <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+    {/buttonbox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+    </form>
+
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f){
+        if(confirm("削除してもよろしいですか？")){
+                f.MODE.value='DELETE';
+                f.submit();
+        }
+}
+
+{/literal}
+
+{if $formData.pdf_url ne '' || $formData.link_url ne ''}
+    {literal}
+    setTimeout("display('write_text');",1000);
+    setTimeout("display('write_link');",1000);
+    {/literal}
+{/if}
+
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

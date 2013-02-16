@@ -1,0 +1,139 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"From:", textId: 'from_dt', btnId: 'from_dt-btn', boxId: 'from_dt-pop', tableId: 'from_dt-table'});
+    DUI.calendar.PopupWindow({title:"To:", textId: 'to_dt', btnId: 'to_dt-btn', boxId: 'to_dt-pop', tableId: 'to_dt-table'});
+});
+
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{$module_nm}</h2>
+<ul>
+{if $rauth->canInsert("/photo/item/")}
+    <li class="add"><a href="/management/photo/photo_edit/"><span>{'/label/add_image_btn'|translate}{*画像追加*}</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/photo_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/photo/photo_list/">{$module_nm}</a>
+<a href="/management/photo/photo_list/">{'/modules/photo/label/photo_list'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >>  画像 >> 画像一覧 *}
+
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">{'/label/view'|translate}{*アクセス数*}：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<!-- 承認待ちブログ一覧 -->
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form action="/management/photo/photo_list/" method="get">
+    <fieldset class="search_box">
+      <table>
+        <tr>
+          <td>
+            {'/label/title'|translate}{*タイトル*}<br /><input type="text" name="title" value="{$title|escape}" />
+          </td>
+          <td>
+            {'/label/filming_date'|translate}{*撮影日付*}<br />
+            <input type="text" name="from_dt" id="from_dt" value="{$from_dt|escape}" autocomplete="off" size="11" />
+            <button type="button" id="from_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="from_dt-pop"></div>
+            ～
+            <input type="text" name="to_dt" id="to_dt" value="{$to_dt|escape}" autocomplete="off" size="11" />
+            <button type="button" id="to_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="to_dt-pop"></div>
+          </td>
+          <td>
+            {'/label/season'|translate}{*シーズン*}<br />
+            {rcms_seasonOptions name="season" selected=$season firstOption="true"}
+          </td>
+          <td>
+            {'/label/category'|translate}{*カテゴリ*}<br />
+            <select name="category_id">{html_options options=$categoryList selected=$category_id}</select>
+          </td>
+          <td>
+            <input type="submit" value="{'/label/search'|translate}{*カテゴリ*}{*検索する*}" />
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+  </form>
+
+  <form action="/management/photo/photo_list/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE"/>
+    <input type="hidden" name="title" value="{$title|escape}" />
+    <input type="hidden" name="from_dt" value="{$from_dt|escape}" />
+    <input type="hidden" name="to_dt" value="{$to_dt|escape}" />
+    <input type="hidden" name="season" value="{$season|escape}" />
+    <input type="hidden" name="category_id" value="{$category_id|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%">
+        <tr>
+        <th colspan="4">
+        <input type="checkbox" onclick="AllChecked(this.checked, this.form, 'photo_id[]')" />{'/label/check_all_items'|translate}{*全て選択*}
+        </th>
+        </tr>
+        {section name="i" loop=$photo_list}
+        <tr>
+        {foreach from=$photo_list[i] item=row}
+            {assign var=photo_id value=$row.photo_id}
+            <td width="58" valign="top">
+                {if $row.photo_id != ''}
+                    <a href="/management/photo/photo_edit/photo_id={$row.photo_id}"><img src="/files/photo/s/{$row.image}" width="150"></a><br />
+                    <input type="checkbox" name="photo_id[]" value="{$row.photo_id}" {if !$rauth->canUpdate("/photo/item/$photo_id") && !$rauth->canDelete("/photo/item/$photo_id")}disabled="disabled"{/if} />
+                    {$row.open_flg|rcms_publicimg}
+                    {$row.access_cnt}pv<br />
+                    {$row.ymd_str} <a href="/management/photo/photo_edit/photo_id={$row.photo_id}">{$row.title}</a><br />
+                    {'/label/category'|translate}{*カテゴリ*}: {$row.category_nm|escape}<br />
+                    {rcms_include file="common/admin/language_status.html" meta=$docmetas[$photo_id] link="/management/photo/photo_edit/photo_id=$photo_id"}
+                {else}
+                    &nbsp;
+                {/if}
+            </td>
+        {/foreach}
+        </tr>
+        {/section}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+        <p>{'/label/withselected'|translate}{*選択した項目を一括で*}</p>
+        <button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{* 公開にする *}</button>
+        <button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{* 非公開にする *}</button>
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{* 削除する *}</button>
+    {/buttonbox}
+  </form>
+
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

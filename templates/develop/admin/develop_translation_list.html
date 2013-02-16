@@ -1,0 +1,67 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+  <li class="normal"><a href="/management/develop/develop_language_list/"><span>言語設定</span></a></li>
+  <li class="add"><a href="/management/develop/develop_translation_edit/"><span>テキスト追加</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/develop/develop_translation_list/">i18n</a>
+{/pankuzu}
+<div class="clear"></div>
+
+{rcms_include file="$mt/admin/minitabs.html" page_type="translation" auth=$auth}
+
+<div class="list_main">
+<fieldset class="search_box">
+  <form action="/management/{$mt}/{$ct}/">
+<table width="100%">
+    <tr>
+      <th>キー（部分一致）</th><td><input type="text" name="key" value="{$formData.key|escape}" /></td>
+      <th>モジュール</th><td><select name="module">{html_options options=$arrModule selected=$formData.module}</select></td>
+    </tr>
+
+    <tr>
+      <th>言語</th><td><select name="select_language">{html_options options=$language_options selected=$formData.select_language}</select></td>
+      <th>サイト毎の<br>カスタマイズ</th><td><input type="checkbox" name="overwrite_flg" value="1" {if $formData.overwrite_flg}checked="checked"{/if} />許可する</td>
+    </tr>
+
+    <tr>
+      <th>テキスト（部分一致）</th><td><input type="text" name="text" value="{$formData.text|escape}" /></td>
+      <th>日本語テキスト（部分一致）</th><td><input type="text" name="jp_text" value="{$formData.jp_text|escape}" /></td>
+    </tr>
+
+</table>
+    <input type="submit" value="検索" />
+  </form>
+</fieldset>
+
+{pager info=$pageInfo}
+<table width="100%">
+  <thead>
+    <tr>
+      <th>キー</th>
+      <th>言語</th>
+      <th>テキスト</th>
+      <th>日本語テキスト</th>
+    </tr>
+  </thead>
+  <tbody>
+  {foreach from=$tr_list item=row}
+    <tr>
+      <td><a href="/management/develop/develop_translation_edit/?key={$row.key|escape:url}">{$row.key}</a></td>
+      <td>{$language_options[$row.language]}</td>
+      <td>{$row.text|nl2br}</td>
+      <td>{$row.jp_text|nl2br}</td>
+    </tr>
+  {/foreach}
+  </tbody>
+</table>
+{pager info=$pageInfo}
+</div><!--//list_main-->
+{rcms_include file="management/footer.html"}
+

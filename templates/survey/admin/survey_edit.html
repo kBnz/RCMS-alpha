@@ -1,0 +1,524 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{if $docmeta.is_primary}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'txtStaValid', btnId: 'txtStaValid-btn', boxId: 'txtStaValid-pop', tableId: 'txtStaValid-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'txtEndValid', btnId: 'txtEndValid-btn', boxId: 'txtEndValid-pop', tableId: 'txtEndValid-table'});
+});
+</script>
+{/literal}
+{/if}
+
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/survey_edit'|translate}{*アンケート基本設定*}</h2>
+<ul>
+  {if $header.survey_id && $rauth->canInsert('/survey/insert/')}
+  <li class="normal"><a href="/management/survey/survey_copy/survey_id={$header.survey_id}"><span>{'/label/copy'|translate}{*コピー*}</span></a></li>
+  {/if}
+  {if $rauth->canInsert('/survey/question/[@survey_id=$survey_id]')}
+    <li class="add"><a href="/management/survey/survey_question_edit/survey_id={$header.survey_id}"><span>{'/label/add_question'|translate}{*質問追加*}</span></a></li>
+  {/if}
+  {if $header.survey_id}
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/survey_answer/id={$header.survey_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+  {/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey/label/survey_list'|translate}</a>
+{'/modules/survey/label/survey_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> >> アンケート一覧 >>アンケート基本設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{if $header.title}{$header.title|escape}{else}新規作成{/if}</h3>
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/survey/survey_edit/survey_id=$survey_id"}
+
+<ul class="minitabs">
+  {if $header.survey_id}
+    <li><a href="/management/survey/survey_edit/survey_id={$header.survey_id}" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/survey/survey_question_list/survey_id={$header.survey_id}">{'/label/question_list'|translate}{*質問一覧*}</a></li>
+    {if $canRESULT}
+        <li><a href="/management/survey/survey_report/survey_id={$header.survey_id}">{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</a></li>
+    {elseif $canDL}
+        <li><a href="/management/survey/survey_download/survey_id={$header.survey_id}">{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</a></li>
+    {/if}
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><a href="/management/survey/survey_edit/" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><span>{'/label/question_list'|translate}{*質問一覧*}</span></li>
+    <li><span>{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</span></li>
+  {/if}
+
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{if $survey_id} 
+    {lang_selector meta=$docmeta link="/management/survey/survey_edit/survey_id=$survey_id"}
+{/if}
+
+<form action="/management/survey/survey_edit/" id="survey_edit" name="survey_edit" method="POST">
+  <input type="hidden" name="survey_id" value="{$header.survey_id}" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" value="{if $header.survey_id}UPDATE{else}INSERT{/if}" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+  {*} {'/label/basic_settings'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*基本設定*}
+  <div id="blk_kihon" style="position:relative; display:block;">
+    <h3>{'/label/basic_settings'|translate}{*基本設定*}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>{'/label/id'|translate}{*ID*}</th>
+        <td>{$header.survey_id}</td>
+      </tr>
+      <tr>
+        <th width="150">{'/modules/survey/label/survey_name'|translate}{*アンケート名*}</th>
+        <td><input name="title" type="text" size="70" value="{$formData.title|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/overview'|translate}{*概要*}</th>
+        <td><textarea name="description" style="width:450px;height:80px;">{$formData.description|escape}</textarea></td>
+      </tr>
+{if $docmeta.is_primary}{* is_primary1 FROM *}
+      <tr>
+        <th>{'/label/start_date'|translate}{*開始日付*}</th>
+        <td>
+          {html_radios name=rdoStaValid options=$arrTimeOptions selected=$formData.rdoStaValid}
+          <input type="text" name="txtStaValid" id="txtStaValid" value="{if $formData.sta_valid_date ne ''}{$formData.sta_valid_date}{else}{$smarty.post.txtStaValid}{/if}" autocomplete="off" />
+          <button type="button" id="txtStaValid-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="txtStaValid-pop"></div>
+          <select name="sta_valid_date_h" style="min-width:40px">{html_options options=$arrHours selected=$formData.sta_valid_date_h}</select>{'/label/hour'|translate}{*時*}
+          <select name="sta_valid_date_m" style="min-width:40px">{html_options options=$arrMinutes selected=$formData.sta_valid_date_m}</select>{'/label/minute'|translate}{*分*}
+          <div id="sta_cal"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/end_date'|translate}{*終了日付*}</th>
+        <td>
+          {html_radios name=rdoEndValid options=$arrTimeOptions selected=$formData.rdoEndValid}
+          <input type="text" name="txtEndValid" id="txtEndValid" value="{if $formData.end_valid_date ne ''}{$formData.end_valid_date}{else}{$smarty.post.txtEndValid}{/if}" autocomplete="off" />
+          <button type="button" id="txtEndValid-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+          <div class="pop_calendar" id="txtEndValid-pop"></div>
+          <select name="end_valid_date_h" style="min-width:40px">{html_options options=$arrHours selected=$formData.end_valid_date_h}</select>{'/label/hour'|translate}{*時*}
+          <select name="end_valid_date_m" style="min-width:40px">{html_options options=$arrMinutes selected=$formData.end_valid_date_m}</select>{'/label/minute'|translate}{*分*}
+          <div id="end_cal"></div>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/publish_settings'|translate}{*公開設定*}</th>
+        <td>
+          {html_radios name=public options=$publicOptions selected=$formData.public}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/reseach_result_publish_setting'|translate}{*集計結果の公開設定*}</th>
+        <td>
+          {html_radios name=public_total options=$publicOptions selected=$formData.public_total}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/confirm_page_setting'|translate}{*確認画面の有無*}</th>
+        <td>
+          {html_radios name=confirmation_screen options=$confirmationScreenOptions selected=$formData.confirmation_screen}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/access_limit_for_adminpage'|translate}{*管理画面のアクセス制限*}</th>
+        <td>
+            <table>
+                <tr>
+                    <th>{'/label/access_limit_for_basic_and_question_setting'|translate}{*基本設定・質問設定のアクセス制限*}</th>
+                </tr>
+                <tr>
+                    <td>
+            <input type="radio" name="setting_security_flg" id="setting_security_flg_off" value="off" onclick="display('editable_group_list1', 'none');" {if $formData.setting_security_flg != 'on'}checked="checked"{/if}/><label for="setting_security_flg_off">{'/label/unlimited'|translate}{*制限無し*}</label><input type="radio" name="setting_security_flg" id="setting_security_flg_on" value="on" onclick="display('editable_group_list1', '');" {if $formData.setting_security_flg == 'on'}checked="checked"{/if} style="margin-left: 10px;" /><label for="setting_security_flg_on">{'/label/limited'|translate}{*制限有り*}</label>
+            <div id="editable_group_list1" style="margin: 10px 0 0 10px; {if $formData.setting_security_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+              <select name="setting_security[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$formData.setting_security}</select>
+            </div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table>
+                <tr>
+                    <th>{'/label/access_limit_for_research_result'|translate}{*集計結果のアクセス制限*}</th>
+                </tr>
+                <tr>
+                    <td>
+            <input type="radio" name="result_security_flg" id="result_security_flg_off" value="off" onclick="display('editable_group_list2', 'none');" {if $formData.result_security_flg != 'on'}checked="checked"{/if}/><label for="result_security_flg_off">{'/label/unlimited'|translate}{*制限無し*}</label><input type="radio" name="result_security_flg" id="result_security_flg_on" value="on" onclick="display('editable_group_list2', '');" {if $formData.result_security_flg == 'on'}checked="checked"{/if} style="margin-left: 10px;" /><label for="result_security_flg_on">{'/label/limited'|translate}{*制限有り*}</label>
+            <div id="editable_group_list2" style="margin: 10px 0 0 10px; {if $formData.result_security_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+              <select name="result_security[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$formData.result_security}</select>
+            </div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table>
+                <tr>
+                    <th>{'/label/access_limit_for_download'|translate}{*ダウンロードのアクセス制限*}</th>
+                </tr>
+                <tr>
+                    <td>
+            <input type="radio" name="dl_security_flg" id="dl_security_flg_off" value="off" onclick="display('editable_group_list3', 'none');" {if $formData.dl_security_flg != 'on'}checked="checked"{/if}/><label for="dl_security_flg_off">{'/label/unlimited'|translate}{*制限無し*}</label><input type="radio" name="dl_security_flg" id="dl_security_flg_on" value="on" onclick="display('editable_group_list3', '');" {if $formData.dl_security_flg == 'on'}checked="checked"{/if} style="margin-left: 10px;" /><label for="dl_security_flg_on">{'/label/limited'|translate}{*制限有り*}</label>
+            <div id="editable_group_list3" style="margin: 10px 0 0 10px; {if $formData.dl_security_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/msg/select_permitted_group'|translate}{*許可するグループを選択してください。複数選択できます*}</p>
+              <select name="dl_security[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$groupAr selected=$formData.dl_security}</select>
+            </div>
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+      </tr>
+{/if}{* is_primary1 TO *}
+      <tr>
+        <th>{'/label/thanks_mail'|translate}{*お礼メール送信*}</th>
+        <td>
+             <table>
+{if $docmeta.is_primary}{* is_primary2 FROM *}
+                 <tr>
+                     <td>
+                     {html_radios name=send_thanks_mail_flg options=$send_thanks_mailOptions selected=$formData.send_thanks_mail_flg onclick="Disp_thanks_mail_form(this);"}
+                     <span class="hint">{'/modules/survey/msg/hint_thanks_mail'|translate}{*アンケートの項目にメールアドレスがあり、入力をされている場合に送信します*}</span>
+                     {if $smarty.const.SITE_EMAIL eq ''}<p><span style="color:red;">{'/msg/set_admin_mail'|translate}{*サイト管理で管理者メールの設定を行ってください。*}</span></p>{/if}
+                     </td>
+                  </tr>
+{/if}{* is_primary2 FROM *}
+                  <tr>
+                     <td>
+                        <table class="not_list_main tokuten" id="thanks_mail_box" style="display:{if $formData.thanks_mail_subject || $formData.thanks_mail_body}block;{else}none;{/if}">
+                            <tr>
+                                <th>{'/label/title'|translate}{*タイトル*}</th>
+                                <td><input type="text" name="thanks_mail_subject" value="{$formData.thanks_mail_subject|escape}" size="50" /></td>
+                            </tr>
+                            <tr>
+                                <th>{'/label/content'|translate}{*内容*}</td>
+                                <td><textarea name="thanks_mail_body" cols="55" rows="6">{$formData.thanks_mail_body|escape}</textarea></td>
+                            </tr>
+                        </table> 
+                     </td>
+                 </tr>
+             </table>
+        </td>
+      </tr>
+{if $docmeta.is_primary}{* is_primary3 FROM *}
+      <tr>
+          <th>{'/label/delivering_mail_address'|translate}{*配信先メールアドレス*}</th>
+          <td>
+             <table>
+{if $docmeta.is_primary}{* is_primary2 FROM *}
+                 <tr>
+                     <td>
+                     {html_radios name=send_inbound_mail_flg options=$arrSend_inbound_mail_flgOptions selected=$formData.send_inbound_mail_flg onclick="Disp_inbound_mail_form(this);Disp_zip_pwd(this);"}<br>
+                     {if $smarty.const.SITE_EMAIL eq ''}<p><span style="color:red;">{'/msg/set_admin_mail'|translate}{*サイト管理で管理者メールの設定を行ってください。*}</span></p>{/if}
+                     </td>
+                  </tr>
+{/if}{* is_primary2 FROM *}
+                  <tr>
+                     <td>
+                        <table class="not_list_main tokuten" id="inbound_mail_box" style="display:{if $formData.inbound_mail_subject || $formData.send_inbound_mail_flg eq 10 || $formData.send_inbound_mail_flg eq 20}block;{else}none;{/if}">
+                            <tr>
+                                <th>{'/label/title'|translate}{*タイトル*}</th>
+                                <td><input type="text" name="inbound_mail_subject" value="{$formData.inbound_mail_subject|escape}" size="50" /></td>
+                            </tr>
+                            <tr>
+                                <th>{'/label/mail_address'|translate}{*メールアドレス*}</td>
+                                <td><textarea name="inbound_mail" cols="55" rows="6">{$formData.inbound_mail|escape}</textarea>
+                                </td>
+                            </tr>
+
+                        </table> 
+                     </td>
+                 </tr>
+                 <tr>
+                     <td>
+                     <p class="hint">{'/modules/survey/msg/hint_delivering_mail_address'|translate}{*アンケートの回答があった場合、このアドレスに通知されます*}</p>
+                     </td>
+                  </tr>
+                 <tr>
+                     <td>
+                    <div id="zip_pwd" {if $formData.send_inbound_mail_flg ne '20'}style="display:none;"{/if}>管理者送信メールのZIPパスワード：<input type="text" name="zip_pwd" value="{$formData.zip_pwd|escape}" size="10" />
+                         <p class="hint">{'/modules/survey/msg/hint_zip_pwd'|translate}{*パスワードが設定されると、通知内容が圧縮されてzipファイルで送信されます。*}</p>
+                    </div>
+            {if $smarty.const.SITE_EMAIL eq ''}<p><span style="color:red;">{'/msg/set_admin_mail'|translate}{*サイト管理で管理者メールの設定を行ってください。*}</span></p>{/if}
+                     </td>
+                  </tr>
+             </table>
+      </td>
+      </tr>
+{/if}{* is_primary3 TO *}
+      <tr>
+          <th>{'/modules/survey/label/message_for_complete_answer'|translate}{*回答完了メッセージ*}</th>
+          <td>
+            <textarea name="thanks_text" cols="60" rows="3">{$formData.thanks_text|escape}</textarea>
+            <p class="hint">{'/modules/survey/msg/survey_is_completed'|translate}{*アンケートの回答が完了した際のメッセージです。*}</p>
+          </td>
+      </tr>
+{if $docmeta.is_primary}{* is_primary4 FROM *}
+      <tr>
+          <th>{'/modules/survey/label/tag_for_complete_survey'|translate}{*回答完了タグ*}</th>
+          <td>
+            <textarea name="thanks_tag" cols="60" rows="3">{$formData.thanks_tag|escape}</textarea>
+            <p class="hint">{'/modules/survey/msg/tags_to_measure_effect'|translate}{*効果測定用のタグなどをセットしてください。*}</p>
+          </td>
+      </tr>
+{/if}{* is_primary4 TO *}
+    </table>
+  </div>
+
+{if $docmeta.is_primary}{* is_primary5 FROM *}
+
+  {*} {'/modules/survey/label/target_users'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*回答対象ユーザ*}
+  <div id="blk_targetuser" style="position:relative; display:block;">
+    <h3>{'/modules/survey/label/target_users'|translate}{*回答対象ユーザ*}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th width="150">{'/modules/survey/label/target_users'|translate}{*回答対象ユーザ*}</th>
+        <td>
+          <ul>
+          <li><label><input type="radio" name="target_user" value="all" {if $formData.target_user == "all"}checked="checked"{/if} />{$targetUserOptions.all}</label></li>
+          <li><label><input type="radio" name="target_user" value="login" {if $formData.target_user == "login"}checked="checked"{/if} />{$targetUserOptions.login}</label></li>
+          <li><label><input type="radio" name="target_user" value="groups" {if $formData.target_user == "groups"}checked="checked"{/if} />{$targetUserOptions.groups}</label></li>
+          </ul>
+          <div id="group_viewer" style="margin-left:30px">
+            <ul id="group_viewer_list"></ul>
+            <a href="javascript:void(0);" onclick="refreshGroupEditor();display('group_viewer');display('group_editor');">{'/label/edit'|translate}{*編集*}</a>
+          </div>
+          <div id="group_editor" style="display:none;margin-left:30px">
+            <div id="group_editor_main">
+              <ul id="group_editor_list"></ul>
+              <select id="group_editor_select">{html_options options=$groupAr}</select><input type="button" onclick="addGroup()" value="{'/label/add_btn'|translate}{* 追加する *}" />
+              <br /><input type="button" onclick="groupEditCancel();" value="{'/label/cancel_btn'|translate}{*キャンセル*}" />
+              <select name="target_user_groups[]" id="h_selected" multiple="multiple" style="display:none">{html_options options=$groupAr selected=$formData.target_user_groups}</select>
+            </div>
+            <a href="javascript:void(0);" onclick="refreshGroupViewer();display('group_editor');display('group_viewer');">{'/label/close'|translate}{*閉じる*}</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/survey/label/multiple_answers_setting'|translate}{*二重回答の可否*}</th>
+        <td>
+          <input type="radio" name="dup_flg" value="{$smarty.const.SURVEY_DUPLICATE_OK}" id="dup_flg0" {if $formData.dup_flg == $smarty.const.SURVEY_DUPLICATE_OK}checked="checked"{/if} /><label for="dup_flg0">{'/label/able'|translate}{*できる*}</label>
+          <input type="radio" name="dup_flg" value="{$smarty.const.SURVEY_DUPLICATE_NG}" id="dup_flg1" {if $formData.dup_flg == $smarty.const.SURVEY_DUPLICATE_NG}checked="checked"{/if} /><label for="dup_flg1">{'/label/disable'|translate}{*できない*}</label>
+          <input type="radio" name="dup_flg" value="{$smarty.const.SURVEY_DUPLICATE_NG_EMAIL}" id="dup_flg2" {if $formData.dup_flg == $smarty.const.SURVEY_DUPLICATE_NG_EMAIL}checked="checked"{/if} /><label for="dup_flg2">{'/modules/survey/label/not_double_email'|translate}{*メールアドレスで制限*}</label>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+{if $rauth->canUpdate("/survey/item/"|cat:$formData.survey_id) && $formData.survey_id!=''}
+  <h3>{'/modules/blog/label/mobile_settings'|translate}{* ケータイ設定 *}</h3>
+        <table width="100%">
+          <tr>
+            <th width="25%">{'/modules/blog/label/email_address_for_post_from_mobile'|translate}{* 投稿用メールアドレス *}</th>
+            <td width="75%">
+            {if $ReceiveMail && $ReceiveMail.site_mail_email}{$ReceiveMail.site_mail_email}<br>
+            <button type="button" onclick="updateUpMail(this.form);">{'/modules/blog/label/change_emal_adress_for_post_from_mobile'|translate}{* 投稿用メールアドレスを再発行する *}</button>
+            <input type="hidden" name="site_mail_email" value="{$ReceiveMail.site_mail_email}" />
+            {else}
+            <button type="button" onclick="updateUpMail(this.form);">{'/modules/blog/label/get_emal_adress_for_post_from_mobile'|translate}{* 投稿用メールアドレスを発行する *}</button>
+            {/if}
+            </td>
+        {if $ReceiveMail && $ReceiveMail.site_mail_email}
+            <td rowspan="2"><img src="{$qrcode_path}"></td>
+        {/if}
+          </tr>
+        {if $ReceiveMail && $ReceiveMail.site_mail_email}
+          <tr>
+            <th>{'/label/deletion_of_mail_posting_settings'|translate}{* メール投稿設定を削除する *}</th>
+            <td>
+                <p class="hint">{'/msg/alert_about_posting_entries_from_mobile_settings'|translate}{*ケータイからメールで投稿された記事は、承認ステップやユーザー権限に関係なく登録されます。ケータイからの投稿を完全に制限する場合は、設定を削除して下さい。*}</p>
+                <button type="button" onclick="deleteUpMail(this.form);">{'/label/delete_btn'|translate}{* 削除する *}</button>
+            </td>
+          </tr>
+
+        {/if}
+          <tr>
+            <th>{'/label/update_of_mail2_posting_settings'|translate}{* 独自のメールアドレスを投稿設定する *}</th>
+            <td colspan="2">
+                <textarea name="site_mail_email2" cols="60" rows="3">{$ReceiveMail.site_mail_email2|escape}</textarea>
+                <button type="button" onclick="updateUpMail2(this.form);">{'/label/update_btn'|translate}{* 更新する *}</button>
+                <p class="hint">{'/msg/alert_about_posting_entries_from_mobile_settings'|translate}{*ケータイからメールで投稿された記事は、承認ステップやユーザー権限に関係なく登録されます。ケータイからの投稿を完全に制限する場合は、設定を削除して下さい。*}</p>
+            </td>
+          </tr>
+        </table>
+        <input type="hidden" name="site_mail_id" value="{$ReceiveMail.site_mail_id}" />
+{/if}
+
+  {*} {'/modules/survey/label/question_content_with_user_attribute'|translate}　★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★{*}{*質問内容(ユーザ属性)*}
+  <div id="blk_question_profile" style="position:relative; display:block;">
+    <h3>{'/modules/survey/label/question_content_with_user_attribute'|translate}{*質問内容(ユーザ属性)*}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      {foreach from=$profileItems key=key item="item" name="pfitem"}
+        {assign var=name value=$key}
+        {if $formData.$name.available ne ''}
+            {assign var=selected value=$formData.$name.available}
+        {else}
+            {assign var=selected value='0'}
+        {/if}
+        <tr><th width="150">{$item.title}</th>
+            <td>{html_radios name=$name options=$arrProfileType selected=$selected}</td>
+        </tr>
+      {/foreach}
+    </table>
+    <p>{'/label/display_position'|translate}{*表示場所*}：{html_radios name=pf_pos options=$arrPosition selected=$formData.pf_pos}</p>
+    <p>{'/label/csv_download'|translate}{*CSVダウンロード*}：<input type="checkbox" name="column_not_dl_flg" value="1" {if $formData.column_not_dl_flg}checked="checked"{/if}>{'/label/csv_download_not_display'|translate}{*入力無しの項目はCSVダウンロード時に非表示にする*}</p>
+
+  </div>
+
+{/if}{* is_primary5 TO *}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{if $formData.target_user_groups}
+var selected_group_id = [{","|@join:$formData.target_user_groups}];
+{else}
+var selected_group_id = [];
+{/if}
+{if $target_user_groups_base}
+var base_group_id = [{","|@join:$target_user_groups_base}];
+{else}
+var base_group_id = [];
+{/if}
+var group_list = new Array();
+{foreach from=$groupAr item=item key=key}
+group_list[{$key}] = '{$item}';
+{/foreach}
+
+{if $docmeta.is_primary}{* is_primary6 FROM *}
+{literal}
+
+function updateUpMail(f) {
+    f.MODE.value='UP_MAIL';
+    f.submit();
+}
+function updateUpMail2(f) {
+    f.MODE.value='UP_MAIL2';
+    f.submit();
+}
+function deleteUpMail(f) {
+    f.MODE.value='DEL_MAIL';
+    f.submit();
+}
+
+function refreshGroupViewer() {
+    var b = document.getElementById('group_viewer_list');
+    while (b.hasChildNodes()) {
+        b.removeChild(b.firstChild);
+    }
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        var item = document.createElement("li");
+//        item.appendChild(document.createTextNode(selected_group_id[i] + ":" + group_list[selected_group_id[i]]));
+        item.appendChild(document.createTextNode(group_list[selected_group_id[i]]));
+        b.appendChild(item);
+    }
+}
+function refreshGroupEditor() {
+    var b = document.getElementById('group_editor_list');
+    var h = document.getElementById('h_selected');
+    while (b.hasChildNodes()) {
+        b.removeChild(b.firstChild);
+    }
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        var item = document.createElement("li");
+        item.id = "g_sel" + selected_group_id[i];
+        item.appendChild(document.createTextNode(group_list[selected_group_id[i]]));
+        var btn = document.createElement("a");
+        btn.href = "javascript:void(0);";
+        btn.style.paddingLeft = "15px";
+        btn.appendChild(document.createTextNode("{/literal}{'/label/delete'|translate}{literal}"));//削除
+        if (navigator.userAgent.indexOf("MSIE") != -1) {
+            btn.setAttribute("onclick", new Function("delGroup(" + selected_group_id[i] + ")"));
+        }
+        else {
+            btn.setAttribute("onclick", "delGroup(" + selected_group_id[i] + ")");
+        }
+        item.appendChild(btn);
+        b.appendChild(item);
+    }
+    for (var i = h.options.length - 1 ; i >= 0 ; i--) {
+        h.options[i].selected = false;
+        for (j in selected_group_id) {
+            if (h.options[i].value == selected_group_id[j]) {
+                h.options[i].selected = true;
+                break;
+            }
+        }
+    }
+}
+function groupEditCancel() {
+    selected_group_id = base_group_id.slice(0, base_group_id.length);
+    refreshGroupEditor();
+}
+function addGroup() {
+    var b = document.getElementById("group_editor_select");
+    var val = b.value;
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        if (selected_group_id[i] == val) {
+            return;
+        }
+    }
+    selected_group_id.push(val);
+    refreshGroupEditor();
+}
+function delGroup(id) {
+    var list = new Array();
+    for (var i = 0 ; i < selected_group_id.length ; i++) {
+        if (selected_group_id[i] != id) {
+            list.push(selected_group_id[i]);
+        }
+    }
+    selected_group_id = list;
+    refreshGroupEditor();
+}
+
+function Disp_thanks_mail_form(obj){
+    if(obj.value == 1){
+        document.getElementById("thanks_mail_box").style.display ="block";
+    }else{
+        document.getElementById("thanks_mail_box").style.display ="none";
+    }
+}
+function Disp_zip_pwd(obj){
+
+    if(obj.value == 20){
+        document.getElementById("zip_pwd").style.display ="block";
+    }else{
+        document.getElementById("zip_pwd").style.display ="none";
+    }
+}
+function Disp_inbound_mail_form(obj){
+    if(obj.value == 10 || obj.value == 20){
+        document.getElementById("inbound_mail_box").style.display ="block";
+    }else{
+        document.getElementById("inbound_mail_box").style.display ="none";
+    }
+}
+
+{/literal}{/if}{* is_primary6 TO *}
+
+{if $docmeta.is_primary}{* is_primary7 FROM *}
+refreshGroupViewer();
+{/if}{* is_primary7 TO *}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

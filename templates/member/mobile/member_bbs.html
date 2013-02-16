@@ -1,0 +1,29 @@
+{if $bbs_list.items|@count > 0}
+<h2>{'/modules/member_bbs'|translate}{*メンバー掲示板*}</h2>
+    {if $bbs_list.items.thread|@count > 0}
+      <div>{'/label/thread'|translate}</div>
+      <dl>
+        {foreach from=$bbs_list.items.thread item=row}
+          <dt><a href="{$row.link}">{$row.title}</a>
+            <dl>
+              <dt>{$row.thread_update|pg_dateformat:"%Y/%m/%d"}</dt>
+              <dt><a href="{$row.link}">{'/label/comments'|translate}({$row.cnt})</a></dt>
+            </dl>
+          </dt>
+        {/foreach}
+      </dl>
+    {/if}
+    {if $bbs_list.items.comment|@count > 0}
+      <div>{'/label/comments'|translate}</div>
+      <dl> 
+        {foreach from=$bbs_list.items.comment item=row}
+          <dt><a href="{$row.link}">{$row.title}</a>
+            <dl>
+              <dt>{$row.thread_update|pg_dateformat:"%Y/%m/%d"}</dt>
+              <dt><a href="{$row.link}"></a></dt>
+            </dl>
+          </dt>
+        {/foreach}
+      </dl>
+    {/if}
+{/if}

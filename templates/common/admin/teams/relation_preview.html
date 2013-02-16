@@ -1,0 +1,24 @@
+<html>
+<head>
+<meta http-equiv="content-type" contetn="text/html; charset=utf-8" />
+{literal}
+<style type="text/css">
+#relation_item {
+  margin: 3px;
+  padding: 3px;
+  font-size: 12px;
+}
+</style>
+{/literal}
+</head>
+<body>
+<div id="relation_item">
+<dl>
+<dt>{'/label/team_type'|translate}{*チームタイプ*}</dt><dd>{$row.team_type_nm|escape}</dd> 
+<dt>{'/label/team_name'|translate}{*チーム名*}</dt><dd>{$row.team_nm|escape}</dd>
+<dt>{'/label/team_short_name'|translate}{*短縮名*}</dt><dd>{$row.team_short_nm|escape}</dd>
+<dt>{'/label/team_url'|translate}{*チームURL*}</dt><dd>{$row.team_url|escape}</dd>
+</dl>
+</div>
+</body>
+</html>

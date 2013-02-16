@@ -1,0 +1,31 @@
+{strip}
+<input name="page_sysnm[{$count}]" type="hidden" value="{$page_data.page_sysnm}" />
+<tr>
+  <td valign="top" nowrap class="font14px">
+    {* ツリー表示部分(縦棒)ここから *}
+    {section name="data" loop=$nest}
+      {assign var=i value=$smarty.section.data.iteration-1}
+      {capture assign=parent}row{if $i != 0}{$i}{/if}{/capture}
+      {if !$smarty.foreach.$parent.last}
+        <img src="{$smarty.const.IMAGES_URL}/modules/page/sitemap_1.gif" width="26" height="14" style="margin-right:10px">
+      {else}
+  <span style="margin-left:30px"></span>
+      {/if}
+    {/section}
+    {* ツリー表示部分(縦棒)ここまで *}
+
+    {capture assign=rowNow}row{if $nest != 0}{$nest}{/if}{/capture}
+    <strong class="{if !$smarty.foreach.$rowNow.last}tree-mid{else}tree-end{/if}{$nest+1}">{$page_data.page_nm}</strong>
+    <a href="/management/develop/page_edit/page_sysnm={$page_data.page_sysnm}">設定</a>|
+    <a href="/{$page_data.page_sysnm}/">表示</a>
+  </td>
+  <td>
+    {*<input type="checkbox" name="sitemap_flg[{$count}]" value="1" {if $page_data.sitemap_flg}checked{/if}> サイトマップ*}
+    <input type="checkbox" name="menu_flg[{$count}]" value="1" {if $page_data.menu_flg}checked{/if}> メニュー
+    {*<input type="checkbox" name="open_flg[{$count}]" value="1" {if $page_data.open_flg}checked{/if}> 有効
+    <input type="checkbox" name="mobile_flg[{$count}]" value="1" {if $page_data.mobile_flg}checked{/if}> 携帯*}
+    {if $page_data.page_require}<span class="required">[閲覧制限]</span>{/if}
+  </td>
+  <td>{$page_data.order_no}</td>
+</tr>
+{/strip}

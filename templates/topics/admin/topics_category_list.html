@@ -1,0 +1,150 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+
+// パラメータ生成
+function generateParam() {
+    var param = new Array();
+    var cb = document.module_param_form.module_param_contents_type;
+    if (cb.length) {
+        for (var i = 0 ; i < cb.length ; i++) {
+            if (cb[i].checked) {
+                param.push('contents_type[]=' + cb[i].value);
+            }
+        }
+    }
+    else {
+        if (cb.checked) {
+            param.push('contents_type[]=' + cb.value);
+        }
+    }
+    document.module_param_form.module_param.value = param.join('&');
+}
+-->
+{/literal}
+</script>
+<div class="list_right_bt">
+<h2>{$topics_group_nm} {'/modules/topics/label/topics_category_list'|translate}</h2>{* 記事カテゴリ一覧 *}
+<ul>
+{if $rauth->canInsert("/topics/category/[@topics_group_id=$topics_group_id]")}
+<li class="add"><a href="/management/topics/topics_category_edit/topics_group_id={$topics_group_id}"><span>{'/label/add_category_btn'|translate}</span></a></li>{* カテゴリ追加 *}
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_group_list/">{'/modules/topics/label/topics_group_list'|translate}</a>
+{'/modules/topics/label/topics_category_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> 記事 >> 記事グループ一覧 >> 記事カテゴリ一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="topics/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+
+{rcms_include file="common/admin/shonin_list.html"}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="topics_category_list" method="POST" action="/management/topics/topics_category_list/">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" />
+    <input type="hidden" name="topics_group_id" value="{$topics_group_id}" />
+    <div style="float:right;">{'/msg/data_order'|translate}{*並び順は数字の大きい順に並びます。*}</div>
+    <p class="page_links">{$page_links}</p>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th style="width:20px;">
+          <input type="checkbox" name="select_all_list" value="1" onClick="AllChecked(this.checked, this.form, 'topics_category_id[]');" />
+        </th>
+        <th style="width:30px;">ID</th>
+        <th>{'/label/category_name'|translate}</th>{* カテゴリ名 *}
+        <th>{'/label/memo'|translate}</th>{* メモ *}
+        <th>{'/label/sort'|translate}</th>{* 並び順 *}
+      </tr>
+    {foreach from=$topics_category_list item=row}
+      {assign var=category_id value=$row.topics_category_id}
+      <tr>
+        <td>
+          <input type="checkbox" name="topics_category_id[]" value="{$category_id}" {if !$rauth->canDelete("/topics/category/$category_id")}disabled="disabled"{/if} />
+        </td>
+        <td>{$category_id}</td>
+        <td {if $row.parent_id}class="child"{/if}>
+          <a class="title" href="/management/topics/topics_category_edit/topics_category_id={$category_id}">{$row.category_nm|escape}</a>
+          {rcms_include file="common/admin/language_status.html" meta=$docmetas[$category_id] link="/management/topics/topics_category_edit/topics_category_id=$category_id"}
+        </td>
+        <td>{$row.memo|escape|nl2br}</td>
+        <td><input type="text" name="category_weight[{$category_id}]" value="{$row.category_weight}" size="3" onBlur="return changeHankaku(this, 'number');" /></td>
+      </tr>
+    {/foreach}
+    </table>
+    <p class="page_links">{$page_links}</p>
+
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>{* 削除する *}
+      {* 並び順更新ボタンは右寄せ *}
+      </ul><ul style="float:right;"><button type="submit" onclick="this.form.MODE.value='CHANGE_ORDER'">{'/label/change_order_btn'|translate}</button>
+    {/buttonbox}
+  </form>
+
+  <div style="margin-top:20px">
+    <a href="javascript:;" onclick="display('generate_param_box');return false;">&gt;&gt;{'/modules/topics/label/show_category_page'|translate}</a>{* カテゴリを指定してサイト表示したい場合はこちら *}
+    <div id="generate_param_box" style="display:none">
+      <p>
+        {'/modules/topics/msg/generate_parameter_method'|translate}
+        {* カテゴリを指定して記事一覧をサイト表示することができます。方法はサイト基本設定／ページ設定でページ編集を行うときに、コンテンツのパラメータを設定することです。 *}
+      </p>
+
+      <form name="module_param_form">
+      <ul>
+      {foreach from=$topics_category_list item=row}
+        <li><input type="checkbox" name="module_param_contents_type" id="module_param_contents_type{$row.topics_category_id}" value="{$row.topics_category_id}" /><label for="module_param_contents_type{$row.topics_category_id}">{$row.category_nm}</label></li>
+      {/foreach}
+      </ul>
+      <input type="button" onclick="generateParam()" value="{'/label/generate_parameter_btn'|translate}" /><br />{* パラメータ生成 *}
+      <input type="text" size="80" name="module_param" id="module_param" />
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+{literal}
+
+<style>
+td.child a.title{
+  margin-left: 10px;
+  padding-left: 5px;
+  border-left: 1px dotted #000;
+}
+#generate_param_box {
+  margin-top:5px;
+  padding:10px 10px 10px 10px;
+  border: 1px solid #999;
+}
+#generate_param_box p {
+  margin-bottom:10px;
+  line-height: 1.25em;
+}
+</style>
+{/literal}
+
+{rcms_include file="management/footer.html"}

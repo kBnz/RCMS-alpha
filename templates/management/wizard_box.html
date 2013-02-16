@@ -1,0 +1,51 @@
+  {if $wizard_flg && $id == ''}
+    <div align="center">
+    <table class="wizardtable" width="60%">
+    <tr><td>
+    <span class="step">STEP{$wizard_options.step}.</span>{$wizard_options.title}
+    </td></tr>
+    <tr><td style="float:right;">
+    {if $wizard_options.back_com}
+    <a href="{$wizard_options.back_link}"><img src="/images/management/page_l.gif" border="0">
+    {if $wizard_options.back_com != 'default'}{$wizard_options.back_com}{else}戻る{/if}
+    </a><br />
+    {/if}
+    {if $wizard_options.skip_com}
+    <a href="{$wizard_options.skip_link}">
+    {if $wizard_options.skip_com != 'default'}{$wizard_options.skip_com}{else}SKIP{/if}
+    <img src="/images/management/page_r2.gif" border="0"></a><br />
+    {/if}
+    </td></tr>
+    </table>
+    </div>
+  {elseif $wizard}
+    <div align="center">
+    <table class="wizardtable" width="60%">
+    <tr><td>
+    <span class="step">STEP{$wizard_options.step}.</span>{$wizard_options.title}
+    </td></tr>
+    <tr><td style="float:right;">
+    {if $wizard_options.back_com}
+    <a href="{$wizard_options.back_link}"><img src="/images/management/page_l.gif" border="0">
+    {if $wizard_options.back_com != 'default'}{$wizard_options.back_com}{else}戻る{/if}
+    </a><br />
+    {/if}
+    {if $wizard_options.remake_com}
+    <a href="{$wizard_options.remake_link}">
+    {if $wizard_options.remake_com != 'default'}{$wizard_options.remake_com}{else}更に{$wizard_options.title}{/if}
+    <img src="/images/management/page_r.gif" border="0"></a><br />
+    {/if}
+    {if $wizard_options.next_com}
+    <a href="{$wizard_options.next_link}">
+    {if $wizard_options.next_com != 'default'}{$wizard_options.next_com}{else}次のSTEPへ{/if}
+    <img src="/images/management/page_r2.gif" border="0"></a><br />
+    {/if}
+    {if $wizard_options.finish_com}
+    <a href="{$wizard_options.finish_link}">
+    {if $wizard_options.finish_com != 'default'}{$wizard_options.finish_com}{else}完了{/if}
+    </a><br />
+    {/if}
+    </td></tr>
+    </table>
+    </div>
+  {/if}

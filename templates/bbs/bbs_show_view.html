@@ -1,0 +1,100 @@
+<script type="text/javascript">
+<!--
+{literal}
+function deleteAction() {
+    var form = document.bbs_show_view_form;
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        form.MODE.value = 'delete';
+        form.submit();
+    }
+}
+
+function doResponce(node) {
+    var form = document.bbs_show_view_form;
+    form.MODE.value = 'input';
+    form.reply_seq.value = node;
+    form.submit();
+}
+function doReport() {
+    var form = document.bbs_show_view_form;
+    form.MODE.value = 'report';
+    form.submit();
+}
+{/literal}
+//-->
+</script>
+
+{module name="bbs_show_view module"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+
+
+<!-- #main 本文スペース -->
+<form method="post" action="/bbs_show/bbs_header_id={$bbs_header_id}" name="bbs_show_view_form">
+
+    <input type="hidden" name="node" value="{$itemInfo.seq}">
+    <input type="hidden" name="reply_seq" value="{$itemInfo.seq}">
+    <input type="hidden" name="MODE" value="input">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+
+    <div class="bbs_item">
+
+    <h3>{if $itemInfo.dflg ne '1'}{$itemInfo.title|escape}{else}{if $itemInfo.deltype eq ''}{'/msg/deleted_by_user'|translate}{else}{'/msg/deleted_by_admin'|translate}{/if}{*ユーザーにより or 管理者により削除されました。*}{/if}</h3>
+
+{if $itemInfo.dflg ne '1'}
+
+    <p class="head"><span class="name">{'/label/name'|translate}{* 名前 *}：{$itemInfo.name|escape}</span><span class="date">{'/label/date'|translate}{* 日付 *}：{$itemInfo.create_date|pg_dateformat:"%Y/%m/%d %H:%M:%S"}</span>{if $itemInfo.new}<span class="new">new!!</span>{/if}</p>
+    <p class="body">{$itemInfo.note|escape|nl2br|urllink:$bbs_header.auto_url_link_flg}</p>
+
+    {if $itemInfo.thumb_uploadimg ne '' && $itemInfo.uploadimg ne ''}
+
+    <a href="{$smarty.const.BBS_UPLOAD_URL}{$itemInfo.uploadimg}" target="_blank"><img src="{$smarty.const.BBS_UPLOAD_URL_S}{$itemInfo.thumb_uploadimg}"></a>
+
+    {elseif $itemInfo.uploadimg ne ''}
+
+    <img src="{$smarty.const.BBS_UPLOAD_URL}{$itemInfo.uploadimg}">
+
+    {/if}
+
+    <div class="act">
+
+    <div class="btn">
+    <a href="javascript:void(0);" onclick="doResponce({$itemInfo.seq});return false;">{'/label/send_answer_btn'|translate}{* 返信する *}</a>
+    <a href="javascript:void(0);" onclick="display('itemDel_{$itemInfo.seq}');return false;">{'/label/delete_btn'|translate}{* 削除する *}</a>
+    {if $itemInfo.report_flg}
+    <a href="javascript:void(0);" onclick="doReport();return false;">{'/modules/bbs/label/report_violation_btn'|translate}{*違反報告する*}</a>
+    {/if}
+    </div>
+
+    <div id="itemDel_{$itemInfo.seq}" style="display:none">
+    PASS:<input type="password" name="delkey{$itemInfo.seq}" id="delkey{$itemInfo.seq}" value="{$cookie_del_key}" size="10"><input type="button" value="{'/label/delete_btn'|translate}{* 削除する *}" onClick="deleteAction();">
+    </div>
+
+    </div>
+{/if}
+
+    </div>
+
+    <div class="bbs_show_tree">
+    <ul class="bbs_show_tree">
+
+    {*Tree*}
+    {foreach from=$treeList item=node}
+    {include file=$smarty.const.TEMPLATE_PATH|cat:"/bbs/bbs_show_tree_printtree.html" node=$node}
+    {/foreach}
+
+    </ul>
+    </div>
+
+
+</form>
+
+
+
+</div>
+{/module}

@@ -1,0 +1,317 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div id="top_fixed">
+{if false}{* 検証のためコメントアウト *}
+    {pankuzu}
+    <a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+    <a href="/management/templateedit/templateedit_list/">{'/modules/templateedit'|translate}</a>
+    {'/modules/templateedit/label/templateedit_list'|translate}{* テンプレート一覧 *}
+    {/pankuzu}
+{/if}
+{* 検証コードここから *}
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">テンプレート編集</a>
+            <a class="navigation_node">テンプレート一覧</a>
+        </div>
+        <div class="setting_field">
+        {rcms_auth target="insert:/templateedit/item/"}
+            <p id="add-new-button">
+                <a href="/management/staticcontents/staticcontents_edit/popup_mode=1" target="_blank" class="add-new">
+                    テンプレート追加{*テンプレート追加追加*}
+                </a>
+            </p>
+        {/rcms_auth}
+        </div>
+    </div>
+{* 検証コードここまで *}
+</div>
+<form action="/management/templateedit/templateedit_list/" method="get">
+    <div id="main_contents">
+        <div id="list_cell_handle"></div>
+        <div id="list_cell_listfield">
+            {rcms_include file="management/messages_box.html" messages=$messages}
+            {rcms_include file="management/errors_box.html" errors=$errors}
+            <div class="template_search_form">
+                <input type="text" name="keyword" class="keyword" value="{$smarty.request.keyword}">
+                <input type="submit" name="subflg" value="{'/label/search'|translate}{* 検索 *}">
+                <select name="page_id" id="page_id">
+                    <option label="モジュール" value="">モジュール</option>
+                    {html_options options=$arrPage selected=$smarty.request.page_id}
+                </select>
+                <select id="templatelist_device_selector" name="templatelist_device_selector">
+                    <option name="mobile_flg" class="ds-icon-pc" value="1" checked>{* PC用 *}</option>
+                    <option name="mobile_flg" class="ds-icon-mob" value="2" >{* モバイル用 *}</option>
+                    <option name="mobile_flg" class="ds-icon-sp" value="3" >{* スマートフォン用 *}</option>
+                    <option name="mobile_flg" class="ds-icon-fb" value="4" >{* Facebook用 *}</option>
+                    <option name="mobile_flg" class="ds-icon-app" value="5" >{* App用 *}</option>
+                </select>
+            </div>
+            <div class="scroll_list">
+                {if $changedFileList|@count > 0}
+                    <table class="template_list_table">
+                        <thead>
+                            <tr>
+                                <th class="template_column01">{'/modules/templateedit/label/template'|translate}{* テンプレート *}</th>
+                                <th class="template_column02">
+                                    {'/label/module'|translate}／{'/modules/templateedit/label/contents_type'|translate}
+                                    {* コンテンツタイプ/モジュールタイプ *}
+                                </th class="template_column03">
+                                <th class="template_column04">{'/label/update_time'|translate}{* 更新日時 *}</th>
+                                <th class="template_column05">言語</th>
+    {if false}
+                                <th>{'/label/edit'|translate}{* 編集 *}</th>
+                                <th>{'/label/device'|translate}{* デバイス *}</th>
+                                <th>{'/modules/templateedit/label/coverage'|translate}</th>
+    {/if}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach item=item from=$changedFileList name=item_loop}
+                                <tr>
+    {if false}
+                                    <td {if $item.use_page_list|@count > 0}rowspan="2"{/if}>
+                                        <a href="javascript:void(0);" onClick="window.open('/management/templateedit/templateedit_edit/templateedit_id={$item.templateedit_id}&page_modify_mode=1','','width=930,height=800,scrollbars=1,resizable=yes');return false;">
+                                            {'/label/edit'|translate}{* 編集 *}
+                                        </a>
+                                    </td>
+    {/if}
+                                    <td class="template_table_span template_column01" {if $item.use_page_list|@count > 0}rowspan="2"{/if} data-num="{$smarty.foreach.item_loop.iteration}" data-id="{$item.templateedit_id}">
+                                        {if $item.mobile_flg eq 1}
+                                            <span class="devices dev-icon-mob"></span>{* モバイル *}
+                                        {elseif $item.mobile_flg eq 2}
+                                            <span class="devices dev-icon-sp"></span>{* スマートフォン *}
+                                        {elseif $item.mobile_flg eq 3}
+                                            <span class="devices dev-icon-fb"></span>{* Facebook *}
+                                        {else}
+                                            <span class="devices dev-icon-pc"></span>{* PC *}
+                                        {/if}
+                                        {$item.module_tpl_nm}
+                                    </td>
+    {*
+                                    <td class="template_column02" {if $item.use_page_list|@count > 0}rowspan="2"{/if}>{$item.target_nm|escape}</td>
+    *}
+                                    <td class="template_column03">{$item.module_title}／{$item.module_php_nm}</td>
+                                    <td class="template_column04">{$item.update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+                                    <td class="template_column05">ja en ko</td>
+                                </tr>
+                                {if $item.use_page_list|@count > 0}
+                                    <tr>
+                                        <td colspan="4" class="usepage">
+                                        使用ページ：
+                                        {foreach from=$item.use_page_list item=page}
+                                            <a href="{if $page.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $page.page_sysnm ne 'top'}{$page.page_sysnm}/{/if}" target="_blank">{$page.page_nm|escape}</a>
+                                        {/foreach}
+                                        </td>
+                                    </tr>
+                                {/if}
+                            {/foreach}
+                        </tbody>
+                    </table>
+                {/if}
+            </div>
+        </div>
+        <div id="list_cell_tabfield">
+            <div class="template_table_knob"></div>
+            <div id="tab_field">
+                <ul></ul>
+            </div>
+            <div id="iframe_field"></div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+<!--
+{literal}
+(function($) {
+    function confirmSubmit() {
+        var contentsval = document.getElementById('contents_type').value;
+        if(contentsval == '') {
+            alert('編集するテンプレートを選択してください');
+            return false;
+        }
+        return true;
+    }
+    
+    $(document).ready(function() {
+        // rcmsResizableCellsの登録
+        $("#main_contents").rcmsResizableCells({
+            cell1: "#list_cell_listfield",
+            cell2: "#list_cell_tabfield",
+            handle: "#list_cell_handle",
+            cell1MinWidth: 200,
+            cell1MaxWidth: 600,
+            direction: "horizon",
+            position: "absolute",
+            switchBtn: ".template_table_knob",
+            onMoving: resizeTable
+        });
+
+        // rcmsDeviceSelectorの登録
+        $("#templatelist_device_selector").rcmsDeviceSelector({isMultiple: true});
+
+        $(window).on("load resize", cellSizeChange);
+
+        // 各セルのサイズ定義(resizableCells対応)
+        function cellSizeChange() {
+            var configSize = $(window).height() - $("#root_globalmenu_top").height() - $("#content_head").height();
+            $("div.scroll_list").height(configSize - $(".template_search_form").height());
+            $("#iframe_field").height(configSize - $("#tab_field").height() - 7);
+        }
+
+        function changeTableContents() {
+            if ($("#list_cell_listfield").width() <= 400) {
+                $(".template_list_table td.template_table_span").attr("rowspan", "1");
+                $(".template_list_table .usepage, .template_column02, .template_column03, .template_column04, .template_column05").hide();
+            } else {
+                $(".template_list_table td.template_table_span").attr("rowspan", "2");
+                $(".template_list_table td.usepage, .template_column02, .template_column03, .template_column04, .template_column05").show();
+            }
+        }
+
+        function resizeTable() {
+            changeTableContents();
+            $(".template_list_table").width($("#list_cell_listfield").width());
+        }
+
+        // リストをクリックしたときにタブを開く
+        $("table.template_list_table tbody td.template_column01").on("click", openTab);
+        // クローズボタンを押したときにタブを閉じる
+        $("#tab_field").on("click", "button.tab_close_btn", closeTab);
+        // タブをクリックしたときに切り替える
+        $("#tab_field").on("click", "li", switchTab);
+
+        // リストをクリックしたときにタブを開く
+        function openTab() {
+            var isOpend = false;                        // 既に開いていればtrue
+            var clickedNum = $(this).data("num");       // クリックしたリストの番号
+            var clickedId = $(this).data("id");
+            // 既に選択されているクラスを除去して新たに選択
+            $("table.template_list_table tbody td.selected").removeClass("selected");
+            $(this).addClass("selected");
+            // 既に開かれていないかチェック
+            $("#tab_field li").each(function() {
+                if ($(this).data("num") == clickedNum) {
+                    // 既に開かれていた場合はそのタブを選択状態にする
+                    $("#tab_field li.selected").removeClass("selected");
+                    $(this).addClass("selected");
+                    isOpend = true;
+                }
+            });
+            // まだ開かれていなければ新しくタブを開く
+            if (!isOpend) {
+                $("#tab_field li.selected").removeClass("selected");
+                $("#iframe_field iframe").each(function() {
+                    $(this).hide();
+                });
+                $("#tab_field ul").append('<li class="selected" data-num="' + $(this).data("num") +'">' + $(this).html() + '<button type="button" class="tab_close_btn">x</button></li>');
+                $("#iframe_field").append('<iframe src="https://rcms2.dev.diverta.co.jp/management/staticcontents/staticcontents_edit/iframe_mode=1&staticcontents_id=' + clickedId + '" data-num="' + clickedNum + '"></iframe>');
+            }
+        }
+
+        // タブをクリックしたときに切り替える
+        function switchTab() {
+            var tabNum = $(this).data("num");
+            $("#tab_field li.selected").removeClass("selected");
+            $(this).addClass("selected");
+            // 選択されたタブに対応するリストを選択状態にする
+            $("table.template_list_table tbody td.selected").removeClass("selected");
+            $("table.template_list_table tbody td.template_column01").each(function() {
+                if ($(this).data("num") == tabNum) {
+                    $(this).addClass("selected");
+                }
+            });
+        }
+
+        // タブを閉じる
+        function closeTab() {
+            var li = $(this).parent();
+            li.remove();
+            $("#iframe_field iframe").each(function() {
+                if (li.data("num") == $(this).data("num")) {
+                    $(this).remove();
+                }
+            });
+        }
+
+        function changeContentsType() {
+            var module_type   = document.getElementById("module_type").value ;
+            var contents_type = document.getElementById("contents_type").value ;
+            // テンプレート一覧
+            $.getJSON(
+                "/direct/templateedit/templates/",
+                    {'module_nm':module_type,'contents_type':contents_type},
+                    function(rs) {
+                        var opt = document.getElementById("template") ;
+                        for (var i = opt.options.length ; i >= 0 ; i--) {
+                            opt.options[i] = null;
+                        }
+                        for (var i = 0 ; i < rs.length ; i++) {
+                            opt.options[i] = new Option(rs[i].name, rs[i].id);
+                        }
+                    }
+            );
+            // コンテンツ一覧
+            $.getJSON(
+                "/direct/templateedit/contents/",
+                    {'module_nm':module_type,'contents_type':contents_type},
+                    function(rs) {
+                        var opt = document.getElementById("module_id") ;
+                        for (var i = opt.options.length ; i >= 0 ; i--) {
+                            opt.options[i] = null;
+                        }
+                        for (var i = 0 ; i < rs.length ; i++) {
+                            opt.options[i] = new Option(rs[i].name, rs[i].id);
+                        }
+                        if (rs.length) {
+                            $('#target_type_content_li').show();
+                        }
+                        else {
+                            $('#target_type_content_li').hide();
+                            if ($('target_type_content').checked) {
+                                $('target_type_all').checked = true;
+                            }
+                        }
+                    }
+            );
+        }
+    
+        function contentstypeLoatedhandler(data, args) {
+            var opt = document.getElementById("contents_type") ;
+            for (var i = opt.options.length ; i >= 0 ; i--) {
+                opt.options[i] = null;
+            }
+            for (var i = 0 ; i < data.length ; i++) {
+                opt.options[i] = new Option(data[i][1], data[i][0]);
+            }
+            changeContentsType();
+        }
+        $('#contents_type').change(function() {
+            changeContentsType();
+        });
+    
+        // 個別のページを選択する場合に、ラジオボタンを自動で変更する
+        $('#page_id').click(function() {
+            $('#target_type_page').attr('checked','checked');
+        });
+        $('#module_id').click(function() {
+            $('#target_type_content').attr('checked','checked');
+        });
+
+    {/literal}{if $smarty.request.contents_type}{literal}
+    
+        $('#contents_type').val('{/literal}{$smarty.request.contents_type}{literal}');
+    {/literal}{/if}{literal}
+    {/literal}{if $smarty.request.module_tpl_id}{literal}
+    
+        $('#template').val('{/literal}{$smarty.request.module_tpl_id}{literal}');
+    {/literal}{/if}{literal}
+    });
+})(jQuery);
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

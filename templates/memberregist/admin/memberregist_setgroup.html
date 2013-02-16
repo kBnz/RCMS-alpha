@@ -1,0 +1,37 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link href="/css/blog/blog_management.css" rel="stylesheet" type="text/css" media="screen,print">
+
+
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_set'|translate}{*グループ選択*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist/label/memberregist_edit'|translate}</a>
+{'/modules/memberregist/label/memberregist_set'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 新規メンバー登録設定 >> 初期パスワード設定 *}
+
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+  <p>{'/modules/memberregist/msg/select_the_group'|translate}{*次のリストから新規登録者を招待できるグループを選んでください。*}</p>
+  <table width="80%">
+    <tr><th>{'/modules/memberregist/label/inviting_group'|translate}{*招待できるグループ*}</th></tr>
+    {foreach from=$group_name item="name"}
+      {if $newpermission.$name == 1}
+        <tr><td>{$name}</td></tr>
+      {/if}
+    {/foreach}
+  </table>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,47 @@
+{module name="cart_show_sub module"}
+<h2 class="module_title"><span>カート内一覧</span></h2>
+<div class="module_contents">
+{if $cartItems|@count == 0}
+	カートには商品はありません。
+{else}
+<table class="cart_order_table">
+	<tr>
+		<th class="goods">商品名</th>
+		<th>単価</th>
+		<th>注文数</th>
+		<th>小計</th>
+	</tr>
+{foreach from=$cartItems item=row}
+	<tr>
+		<td>
+			<a href="/{$row.item_link}">{$row.item_name}</a>
+		</td>
+		<td class="price">
+			{$row.price}円
+		</td>
+		<td class="order">
+			{$row.amount}個
+		</td>
+		<td class="price">
+			{$row.subTotal}円
+		</td>
+	</tr>
+{/foreach}
+	<tr>
+		<th colspan="3" class="price">
+			送料
+		</th>
+		<td class="price">{$cartSetting.carriage}円</td>
+	</tr>
+	<tr>
+		<th colspan="3" class="price">
+			合計
+		</th>
+		<td class="price">{$total}円</td>
+	</tr>
+</table>
+	
+	<p class="input_button"><a href="/cart_show/">カート内一覧を見る</a></p>
+{/if}
+</div>
+{/module}

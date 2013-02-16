@@ -1,0 +1,33 @@
+<hr/>
+<h2>[emoji:070]<SPAN STYLE="color: #FF6600;">{'/label/yyyymm'|translate:$arrBlogDate[0]:$arrBlogDate[1]}{* yyyy年mm月 *}</SPAN><br></h2>
+
+    {foreach from=$blog_item_list_month item=item name=item_list}
+      {if $smarty.foreach.item_list.first}
+        <table width="100%">
+          <tr>
+            <td><a href="/{$page_sysnm}/{$get_default}&date={$arrPreBlogDate[0]}-{$arrPreBlogDate[1]}">&lt;&lt;{'/label/last_month'|translate}{* 前月 *}</a></td>
+            <td align="right"><a href="/{$page_sysnm}/{$get_default}&date={$arrAftBlogDate[0]}-{$arrAftBlogDate[1]}">{'/label/next_month'|translate}{* 翌月 *}&gt;&gt;</a></td>
+          </tr>
+      {/if}
+          <tr>
+            <td colspan="2">
+                <dl>
+                    <dt>{$item.post_ymdhi|pg_dateformat}</dt>
+                    <dd><a href="/blog_detail/blog_id={$item.blog_id}&id={$item.blog_item_id}" >{$item.subject|escape}</a></dd>
+                </dl>
+            </td>
+          </tr>
+      {if $smarty.foreach.item_list.last}
+        </table>
+      {/if}
+    {foreachelse}
+        <table width="100%">
+          <tr>
+            <td><a href="/blog_my_top/blog_id={$blog_header.blog_id}&date={$arrPreBlogDate[0]}-{$arrPreBlogDate[1]}">&lt;&lt;{'/label/last_month'|translate}{* 前月 *}</a></td>
+            <td align="right"><a href="/blog_my_top/blog_id={$blog_header.blog_id}&date={$arrAftBlogDate[0]}-{$arrAftBlogDate[1]}">{'/label/next_month'|translate}{* 翌月 *}&gt;&gt;</a></td>
+          </tr>
+        </table>
+    {/foreach}
+<SPAN STYLE="color: #FFCC00; font-size: medium;">■</SPAN>
+<a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a><br>
+

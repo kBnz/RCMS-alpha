@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="/css/management/default.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div style="float:right;"><a href="javascript:;" onclick="parent.document.getElementById('{$area_name}').style.display = 'none';return false;">[×]</a></div>
+<div class="default">
+{$message}
+<div class="list_main">
+<table width="100%" border="0">
+{foreach item=member from=$member_list name=list}
+  <tr>
+    <td>{$member.disp_name}</td>
+    <td>{$member.email}</td>
+  </tr>
+{/foreach}
+</table>
+</div>
+</div>
+<style>
+{literal}
+.default {
+    text-align: left;
+}
+{/literal}
+</style>
+<script type="text/javascript">
+<!--
+parent.document.getElementById('{$area_name}').height = 28*{$max_cnt}+28;
+-->
+</script>
+</body>
+</html>

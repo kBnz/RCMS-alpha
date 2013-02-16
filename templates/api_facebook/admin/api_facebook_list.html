@@ -1,0 +1,38 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+  <h2>{$module_nm}facebookアプリ一覧</h2>
+<ul>
+{if $rauth->canInsert("/api_twitter/item/")}
+    <li class="add"><a href="/management/api_facebook/api_facebook_app_edit/"><span>{'/modules/api_facebook/label/add_new_facebook_app'|translate}</span></a></li>{* facebookアプリを新規追加 *}
+{/if}
+</ul>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/api_facebook/api_facebook_list/">{$module_nm}</a>
+{$module_nm}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+    <li><a href="/management/api_facebook/api_facebook_page_list/"> ウォール管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_app_list/" class="active"> アプリ管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_tab_edit/"> ページタブ管理</a></li>
+</ul>
+
+
+
+  <div class="list_main">
+    <li><a href="/management/api_facebook/api_facebook_page_list/"> ウォール管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_app_list/"> アプリ管理</a></li>
+    <li><a href="/management/api_facebook/api_facebook_tab_edit/"> ページタブ管理</a></li>
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+{rcms_include file="management/footer.html"}

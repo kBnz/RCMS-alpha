@@ -1,0 +1,21 @@
+{if $blogMemberData}
+{module name="blog_member"}
+<h2 class="module_title"><span>{'/modules/blog/label/member_who_wrote_this_blog_entry'|translate}{* このブログを書いた人 *}</span></h2>
+<div class="module_contents">
+  <div class="member">
+    <p class="photo">
+    <a href="/member_detail/id={$blogMemberData.member_id}">
+    {if $blogMemberURL}
+    <img src="{$blogMemberURL}" alt="{$blogMemberData.disp_name}">
+    {else}
+    <img src="/files/member/noimage.jpg" alt="noimage"><br>
+    {/if}
+    </a>
+    </p>
+
+    <p>{'/label/name'|translate}{* 名前 *}: <a href="/member_detail/id={$blogMemberData.member_id}">{$blogMemberData.disp_name}</a></p>
+    <p class="relation_link"><a href="/blog_top/member_id={$blogMemberData.member_id}" class="small_text">{'/modules/blog/label/blog_list_written_by_this_member'|translate}{* この人の書いたブログ一覧 *}</a></p>
+  </div>
+</div>
+{/module}
+{/if}

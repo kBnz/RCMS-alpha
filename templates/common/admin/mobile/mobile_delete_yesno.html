@@ -1,0 +1,16 @@
+{rcms_include file="management/mobile/header.html"}
+
+<h2 class="for_mng">削除の確認</h2>
+<br/>
+{$module_nm}を本当に削除しますか？<br/>
+<div style="text-align:center;">
+<form action="{$delete_action|escape}" method="POST">
+<input type="submit" value="はい" />
+</form>
+<br/>
+<form action="{$not_delete_action|escape}" method="POST">
+<input type="submit" value="いいえ" />
+</form>
+</div>
+
+{rcms_include file="management/mobile/footer.html"}

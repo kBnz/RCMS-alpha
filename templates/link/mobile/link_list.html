@@ -1,0 +1,15 @@
+<h2>{'/modules/link/label/link_list'|translate}{*リンク一覧*}</h2>
+{foreach item="link_data" from=$link_list name="row1"}
+  {if $link_category_id != $link_data.link_category_id}
+  <br/>■{$link_data.link_category_name}<br/>
+  {/if}
+  <a href="{$link_data.link_url}" target="_blank">
+    {if $link_data.link_image_type}
+      <img src="{$LINK_SAVE_URL}/i{$link_data.link_id}{$link_data.link_image_type}"  alt="{$link_data.link_string}"/>
+    {/if}
+    {$link_data.link_string}
+    </a><br/>
+  {assign var="link_category_id" value=$link_data.link_category_id}
+{/foreach}
+<hr/>
+

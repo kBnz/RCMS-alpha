@@ -1,0 +1,197 @@
+{module name="game_detail"}
+<h2 class="module_title">
+{$gameData.league_type} {$gameData.league_type2}
+{if $gameData.league_status eq '0' ||  $gameData.league_status eq '1'}
+試合予定
+{elseif $gameData.league_status eq '2'}
+途中経過
+{elseif $gameData.league_status eq '3'}
+試合結果
+{elseif $gameData.league_status eq '4'}
+試合結果（雨天中止）
+{/if}
+</h2>
+<div class="module_contents">
+
+<div align="left" >
+
+<table class="scoreboard">
+  <tr>
+    <td colspan="{math equation="n+4" n=$gameData.score_detail_arr.first|@count}">{$gameData.ymd}&nbsp;{$gameData.league_type}&nbsp;
+    {if $gameData.place_id != "" && $gameData.place_id != -1}
+      <a href="/location_detail/id={$gameData.place_id}">{$gameData.place}</a>
+    {else}
+      {$gameData.place}
+    {/if}
+    {if  $gameData.league_status eq '4'}<br/>雨天中止{/if}</td>
+  </tr>
+  <tr>
+    <th>チーム</th>
+{section name=score_bord loop=$gameData.score_detail_arr.first}
+    <th class="inning">{$smarty.section.score_bord.iteration}</th>
+{/section}
+    <th class="inning">R</th>
+    <th class="inning">H</th>
+    <th class="inning">E</th>
+  </tr>
+  <tr>
+    <td class="first_team">{$gameData.first_team_nm}</td>
+{section name=first_score loop=$gameData.score_detail_arr.first}
+    <td>{$gameData.score_detail_arr.first[first_score.index_next]}</td>
+{/section}
+    <th>{$gameData.score_detail_arr.first_Total}</td>
+    <td>{$gameData.score_detail_arr.first_hit}</td>
+    <td>{$gameData.score_detail_arr.first_error}</td>
+  </tr>
+  <tr>
+    <td class="second_team">{$gameData.second_team_nm}</td>
+{section name=second_score loop=$gameData.score_detail_arr.first}
+    <td>{$gameData.score_detail_arr.second[second_score.index_next]}</td>
+{/section}
+    <th>{$gameData.score_detail_arr.second_Total}</td>
+    <td>{$gameData.score_detail_arr.second_hit}</td>
+    <td>{$gameData.score_detail_arr.second_error}</td>
+  </tr>
+</table>
+
+<p align="left">
+{if $gameData.pitcher_detail_arr.win_pitcher}<strong>勝：</strong>{$gameData.pitcher_detail_arr.win_pitcher}　{/if}
+{if $gameData.pitcher_detail_arr.save}<strong>S：</strong>　{$gameData.pitcher_detail_arr.save}　{/if}
+{if $gameData.pitcher_detail_arr.lose_pitcher}<strong>負：</strong>{$gameData.pitcher_detail_arr.lose_pitcher}{/if}
+
+{if $gameData.battery_arr.self_pitcher}
+<br>
+({$gameData.first_team_nm}){$gameData.battery_arr.self_pitcher}-{$gameData.battery_arr.self_catcher}
+<br>
+({$gameData.second_team_nm}){$gameData.battery_arr.opp_pitcher}-{$gameData.battery_arr.opp_catcher}
+{/if}
+
+{if $gameData.extra_bases_arr.self_homerun || $gameData.extra_bases_arr.opp_homerun}
+<br/>
+【本塁打】
+  {if $gameData.extra_bases_arr.self_homerun}
+    {$gameData.extra_bases_arr.self_homerun}({$gameData.team_nm}) &nbsp;
+  {/if}
+  {if $gameData.extra_bases_arr.opp_homerun}
+    {$gameData.extra_bases_arr.opp_homerun}({$gameData.opponent_nm})
+  {/if}
+{/if}
+
+{if $gameData.extra_bases_arr.self_three_base || $gameData.extra_bases_arr.opp_three_base}
+<br/>
+【三塁打】
+  {if $gameData.extra_bases_arr.self_three_base}
+    {$gameData.extra_bases_arr.self_three_base}({$gameData.team_nm}) &nbsp;
+  {/if}
+  {if $gameData.extra_bases_arr.opp_three_base}
+    {$gameData.extra_bases_arr.opp_three_base}({$gameData.opponent_nm})
+  {/if}
+{/if}
+
+{if $gameData.extra_bases_arr.self_two_base || $gameData.extra_bases_arr.opp_two_base}
+<br/>
+【二塁打】
+  {if $gameData.extra_bases_arr.self_two_base}
+    {$gameData.extra_bases_arr.self_two_base}({$gameData.team_nm}) &nbsp;
+  {/if}
+  {if $gameData.extra_bases_arr.opp_two_base}
+    {$gameData.extra_bases_arr.opp_two_base}({$gameData.opponent_nm})
+  {/if}
+{/if}
+
+{if $gameData.game_comment}
+<br/>
+{$gameData.game_comment|nl2br}
+<br/>
+<br/>
+{/if}
+</p>
+
+
+</div>
+<br/>
+
+{foreach item=topicsData from=$gameTopicsList}
+<h2 class="topics_subject">{$topicsData.subject}</h2>
+<p class="topics_ymd">{$topicsData.ymd_str}</p>
+<div class="topics_contents">{$topicsData.contents}</div>
+
+{if $topicsData.pdf_url1 || $topicsData.pdf_url2 || $topicsData.pdf_url3}
+<div class="pdf_area">
+  <ul>
+{if $topicsData.pdf_url1 ne ''}<li><img src="/images/common/pdficon_small.gif"><a href={$topicsData.pdf_url1} target="_blank">{$topicsData.pdf_title1}</a></li>{/if}
+{if $topicsData.pdf_url2 ne ''}<li><img src="/images/common/pdficon_small.gif"><a href={$topicsData.pdf_url2} target="_blank">{$topicsData.pdf_title2}</a></li>{/if}
+{if $topicsData.pdf_url3 ne ''}<li><img src="/images/common/pdficon_small.gif"><a href={$topicsData.pdf_url3} target="_blank">{$topicsData.pdf_title3}</a></li>{/if}
+  </ul>
+</div>
+{/if}
+
+{if $topicsData.pdf_url1 || $topicsData.pdf_url2 || $topicsData.pdf_url3 || $topicsData.swf_url}
+<div class="pdf_area">
+  <div class="acrobat_link">
+
+{if $topicsData.swf_url}
+    <p class="banner"><a href="http://www.adobe.com/shockwave/download/index.cgi?Lang=Japanese&amp;P5_Language=Japanese&amp;P1_Prod_Version=ShockwaveFlash&amp;Lang=Japanese" target="_blank"><img alt="get_adobe_reader" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" height="31" width="88"></a></p>
+    <p><a href="http://www.adobe.com/shockwave/download/index.cgi?Lang=Japanese&amp;P5_Language=Japanese&amp;P1_Prod_Version=ShockwaveFlash&amp;Lang=Japanese" target="_blank">AdobeR Flash Player のダウンロード</a><br>
+    Flashムービーをご覧いただくには、Adobe社のFlash Playerが必要になります。<br>
+Adobe社ウェブサイトから最新のFlash Player(無料)をダウンロードし、インストールしてください。</p>
+{/if}
+
+
+{if $topicsData.pdf_url1 || $topicsData.pdf_url2 || $topicsData.pdf_url3}
+    <p class="banner"><a href="http://www.adobe.co.jp/products/acrobat/readermain.html" target="_blank"><img alt="get_adobe_reader" src="/images/common/get_adobe_reader.gif" height="31" width="88"></a></p>
+    <p>※PDFファイルをご覧いただくには、Adobe Acrobat Reader が必要です。
+<a href="http://www.adobe.co.jp/products/acrobat/readermain.html" target="_blank">Adobe Acrobat Reader のダウンロード（無償）はこちら</a>から<br>
+※PDFファイルのサイズが大きい場合、表示するまで時間がかかることがございます。</p>
+{/if}
+
+  </div>
+</div>
+{/if}
+
+{/foreach}
+<div class="relation_link"><a href="/leaguebaseball_list/" class="small_text">試合一覧へ</a></div>
+
+</div>
+
+{/module}
+<style>
+{literal}
+.scoreboard {
+  border: 1px solid gray;
+  border-collapse: collapse;
+  border-width: 1px;
+  height:60px;
+  background-color: #FFFFFF;
+  border-spacing: 0px;
+  color:#000000;
+}
+
+.scoreboard th{
+  text-align: center;
+  border: 1px solid gray;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+
+.scoreboard td{
+  text-align: center;
+  border: 1px solid gray;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+
+th.inning{
+  width:20px;
+}
+
+td.first_team{
+  background-color:#EEFFEE;
+}
+
+td.second_team{
+  background-color:#FFEEEE;
+}
+
+{/literal}
+</style>

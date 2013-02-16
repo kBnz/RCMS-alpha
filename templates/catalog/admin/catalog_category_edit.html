@@ -1,0 +1,207 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function setCB(idName){
+   cb = document.getElementById(idName);
+   cb.disabled = false;
+}
+function resetCB(idName){
+   cb = document.getElementById(idName);
+   cb.checked = false;
+   cb.disabled = true;
+}
+
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/catalog/label/catalog_category_edit'|translate}{* カテゴリ設定 *}</h2>
+<ul>
+{if $rauth->canInsert("/catalog/category/[@catalog_group_id=$catalog_group_id]")}
+<li class="add"><a href="/management/catalog/catalog_category_edit/catalog_group_id={$catalog_group_id}"><span>{'/label/create_new_category_btn'|translate}{* カテゴリ追加 *}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog'|translate}</a>
+<a href="/management/catalog/catalog_group_list/">{'/modules/catalog/label/catalog_group_list'|translate}</a>
+<a href="/management/catalog/catalog_category_list/catalog_group_id={$catalog_group_id}">{'/modules/catalog/label/catalog_category_list'|translate}</a>
+{'/modules/catalog/label/catalog_category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> カタログ >> グループ一覧 >> カテゴリ一覧 >> カテゴリ設定 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+<h3 class="title">{if $catalog_category_id != ""}{$latestRow.category_nm|escape}{else}{'/label/create_new_category_btn'|translate}{* カテゴリ追加 *}{/if}</h3>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/catalog/catalog_category_edit/catalog_category_id=$catalog_category_id&catalog_group_id=$catalog_group_id"}
+
+  <form name="catalog_category_edit" id="catalog_category_edit" action="/management/catalog/catalog_category_edit/" method="POST">
+    {if $catalog_category_id}
+    <input type="hidden" name="catalog_category_id" value="{$catalog_category_id}" />
+    {/if}
+    {if $catalog_group_id}
+    <input type="hidden" name="catalog_group_id" value="{$catalog_group_id}">
+    {/if}
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{if $latestRow.catalog_category_id}
+    {lang_selector meta=$docmeta link="/management/catalog/catalog_category_edit/catalog_category_id=$catalog_category_id&catalog_group_id=$catalog_group_id"}
+{/if}
+
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/label/category'|translate}{* カテゴリ *}</th>
+        <td>
+          <input type="text" style="width: 400px" name="category_nm" value="{$formData.category_nm}" /><span class="required">{'/label/required'|translate}{* 必須 *}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/parent_category'|translate}{* 親カテゴリ *}</th>
+        <td>
+        {if $docmeta.is_primary}
+            <select name="parent_id">{html_options options=$category_parent_options selected=$formData.parent_id}</select><span class="required">{'/label/required'|translate}{* 必須 *}</span>
+        {else}
+            {$category_parent_options[$latestRow.parent_id]}
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/layout'|translate}{* レイアウト *}</th>
+        <td>
+            <table>
+            {if $docmeta.is_primary}
+            <tr>
+                <td><img src="http://rcms.dev.diverta.co.jp/images/management/catalog_layout1.gif" alt="center"></td>
+                <td><img src="http://rcms.dev.diverta.co.jp/images/management/catalog_layout2.gif" alt="left"></td>
+                <td><img src="http://rcms.dev.diverta.co.jp/images/management/catalog_layout3.gif" alt="right"></td>
+            </tr>
+            <tr>
+                <td align="center"><input type="radio" name="layout" value=0 {if $formData.layout == 0}checked{/if}> {'/modules/catalog/label/one_row'|translate}{* 一列 *}</td>
+                <td align="center"><input type="radio" name="layout" value=1 {if $formData.layout == 1}checked{/if}> {'/modules/catalog/label/first_item_left'|translate}{* 最初の項目を左 *}</td>
+                <td align="center"><input type="radio" name="layout" value=2 {if $formData.layout == 2}checked{/if}> {'/modules/catalog/label/first_item_right'|translate}{* 最初の項目を右 *}</td>
+            </tr>
+            {else}
+                {if $latestRow.layout == 0}
+                <tr>
+                    <td><img src="http://rcms.dev.diverta.co.jp/images/management/catalog_layout1.gif" alt="center"></td>
+                </tr>
+                <tr>
+                    <td align="center"> {'/modules/catalog/label/one_row'|translate}{* 一列 *}</td>
+                </tr>
+                {elseif $latestRow.layout == 1}
+                <tr>
+                    <td><img src="http://rcms.dev.diverta.co.jp/images/management/catalog_layout2.gif" alt="left"></td>
+                </tr>
+                <tr>
+                    <td align="center">{'/modules/catalog/label/first_item_left'|translate}{* 最初の項目を左 *}</td>
+                </tr>
+                {elseif $latestRow.layout == 2}
+                <tr>
+                    <td><img src="http://rcms.dev.diverta.co.jp/images/management/catalog_layout3.gif" alt="right"></td>
+                </tr>
+                <tr>
+                    <td align="center">{'/modules/catalog/label/first_item_right'|translate}{* 最初の項目を右 *}</td>
+                </tr>
+                {/if}
+            {/if}
+            </table>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/memo'|translate}{* メモ *}</th>
+        <td>
+        {if $docmeta.is_primary}
+          <textarea name="memo" style="height: 70px; width: 400px">{$formData.memo}</textarea>
+          <p class="hint">{'/modules/catalog/msg/about_memo_explain'|translate}{* 用途などを記入しておくと便利です。 *}</p>
+        {else}
+            {$latestRow.memo}
+        {/if}
+        </td>
+      </tr>
+{if $docmeta.is_primary}
+      <tr><th>{'/label/publish_settings'|translate}{* 公開の設定 *}</th>
+        <td>
+            <input type="radio" name="open_flg" value="1" {if $formData.open_flg == 1}checked{/if}>{'/label/publish'|translate}{* 公開 *} &nbsp
+            <input type="radio" name="open_flg" value="0" {if $formData.open_flg != 1}checked{/if}>{'/label/unpublish'|translate}{* 非公開 *}
+        </td>
+      </tr>
+{/if}
+    </table>
+
+    <h3>{'/label/item_settings'|translate}{* 項目設定 *}</h3>
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/label/item_name'|translate}</th>
+        <th>{'/label/setting_item'|translate}</th>
+        <th>{'/modules/catalog/msg/use_as_an_item'|translate}</th>
+        <th>{'/modules/catalog/msg/display_in_the_list'|translate}</th>
+        <th>{'/lable/repeat_count'|translate}{*繰り返し回数*}</th>
+        <th>{'/label/sort_order_desc'|translate}</th>
+      </tr>
+    {foreach from=$formData.ext item=item key=key}
+      <tr>
+        <td>
+          {if $item.fixed}
+            {$item.ext_title|escape}
+          {else}
+            <input type="text" name="ext[{$key}][ext_title]" value="{$item.ext_title|escape}" /></td>
+          {/if}
+        </td>
+        <td>
+          {if not $item.fixed}
+          <select name="ext[{$key}][ext_type]">
+            <option value="">{'/label/no_select'|translate}</option>
+            {html_options options=$extension_options selected=$item.ext_type}
+          </select><br />
+          <textarea name="ext[{$key}][ext_option]" cols="40" rows="2">{$item.ext_option|escape}</textarea>
+          {/if}
+          {if $item.can_use_wysiwyg}
+            <input type="checkbox" name="ext[{$key}][use_wysiwyg]" id="use_wysiwyg" value="1" {if $item.use_wysiwyg}checked="chekced"{/if} />
+            <label for="use_wysiwyg">WYSIWYGエディタを使う</label>
+          {/if}
+        </td>
+        <td>
+          <input type="checkbox" name="ext[{$key}][enable]" value="1" {if $item.enable}checked="checked"{/if} />
+        </td>
+        <td>
+          <input type="checkbox" name="ext[{$key}][use_in_list]" value="1" {if $item.use_in_list}checked="checked"{/if} />
+        </td>
+        <td>
+          {if $item.repeatable}
+            <input type="text" name="ext[{$key}][ext_group_loop]" value="{$item.ext_group_loop|escape}" size="5">
+          {/if}
+        </td>
+        <td>
+          <input type="text" name="ext[{$key}][order_no]" value="{$item.order_no|escape}" size="5">
+        </td>
+      </tr>
+    {/foreach}
+    </table>
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/catalog/category/$catalog_category_id", $docmeta.lang) docmeta=$docmeta link="/management/catalog/catalog_category_edit/catalog_category_id=$catalog_category_id&catalog_group_id=$catalog_group_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+  </form>
+</div><!--//list_main-->
+</div>
+
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta name="robots" content="noindex,nofollow">
+<link href="/css/management/default.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div style="text-align:center">
+
+<h2>{'/modules/blog/label/update_theme'|translate}</h2>
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form action="" method="post" id="blog_theme_form">
+<input type="hidden" name="MODE" value="UPDATE" />
+<input type="hidden" name="list" value="{$list|escape}" />
+
+<table style="margin-top:10px" id="blog_theme_table">
+  <tr id="blog_theme_name_tr">
+    <th id="blog_theme_name_th">{'/modules/blog/label/blog_theme_name'|translate}</th>
+    <td id="blog_theme_name_td"><input type="text" name="theme_nm" value="{$formData.theme_nm|escape}" size="45"></td>
+  </tr>
+  <tr id="blog_theme_share_tr">
+    <th id="blog_theme_share_th">{'/modules/blog/label/share'|translate}</th>
+    <td id="blog_theme_share_td"><input type="checkbox" name="share_flg" value="1" {if $formData.share_flg}checked="checked"{/if} /></td>
+  </tr>
+</table>
+
+<p class="hint">{'/modules/blog/msg/you_can_write_same_theme'|translate}{* テーマを共有すると別のブログでも同じテーマでブログを書く事ができます。 *}</p>
+
+<input type="submit" value="{'/label/update_btn'|translate}" />
+
+{if $theme_id}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+  if(confirm('{/literal}{'/msg/delete_confirmation'|translate}{literal}')) {
+    f.MODE.value = "DELETE";
+    f.submit();
+  }
+}
+{/literal}
+</script>
+<input type="button" value="{'/label/delete_btn'|translate}" onclick="confirmDelete(this.form);return false;">
+{/if}
+
+</form>
+</div>
+</body>
+</html>

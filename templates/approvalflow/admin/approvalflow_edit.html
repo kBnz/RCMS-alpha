@@ -1,0 +1,204 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 削除してもよろしいですか？
+  if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+
+
+(function() {
+var arrModules = {/literal}{$FOR_MENU.INCLUDE_MODULE_LIST|@json_encode}{literal};
+var arrModule_Names = {/literal}{$FOR_MENU.contName|@json_encode}{literal};
+var arrModule_Group = {/literal}{$FOR_MENU.conf_tab|@json_encode}{literal};
+var arrModule_Auth  = {/literal}{$FOR_MENU.auth|@json_encode}{literal};
+
+var approval = {/literal}{if $formData.approval_module}{$formData.approval_module|@json_encode}{else}[]{/if}{literal};
+
+var intRowId = 0;
+Event.observe(window, 'load', function() {
+    for (var i = 0, len = approval.length ; i < len ; i++) {
+        addRow(approval[i]);
+    }
+    if (!approval.length) {
+        addRow();
+    } 
+
+    Event.observe($('approvalTable_addBtn'), 'click', function() {
+        addRow();
+    });
+});
+
+function addRow(initData) {
+    initData = initData || {};
+
+    var id = intRowId++;
+
+    var table = $('approvalTable');
+    var row = table.insertRow(table.rows.length);
+    var th = document.createElement('th');
+    th.appendChild(document.createTextNode(id + 1));
+    row.appendChild(th);
+    var col = row.insertCell(row.cells.length);
+
+    // module
+    var box = document.createElement('div');
+    col.appendChild(box);
+    box.appendChild(document.createTextNode("{/literal}{'/label/contents'|translate}{literal}:"));//コンテンツ
+    var sel = document.createElement('select');
+    sel.id = 'module_nm_' + id;
+    sel.name = 'approval_module[' + id + ']';
+    for (var intModules in arrModules) {
+        if (arrModule_Group[arrModules[intModules]] == 'contents' || arrModule_Group[arrModules[intModules]] == 'communication')
+        {
+            sel.options[sel.options.length] = new Option(arrModule_Names[arrModules[intModules]], arrModules[intModules]);
+            if (initData == arrModules[intModules]) {
+                sel.selectedIndex = sel.options.length - 1;
+            }
+        }
+    }
+    box.appendChild(sel);
+
+    // 削除ボタン
+    var varDeleteBtn = document.createElement('input');
+    varDeleteBtn.type = 'button'
+    varDeleteBtn.value = "{/literal}{'/label/delete'|translate}{literal}";  // '削除'
+    Event.observe(varDeleteBtn, 'click', function() {
+        table.deleteRow(row.rowIndex);
+    });
+    box.appendChild(varDeleteBtn);  // 削除ボタンをTDとして追加
+
+    return id;
+}
+})();
+
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2 class="approvalflow">{'/modules/approvalflow/label/approvalflow_edit'|translate}{*承認ワークフロー基本設定*}</h2>
+<ul>
+{if $auth.approvalflow.insert}
+<li class="add"><a href="/management/approvalflow/approvalflow_edit/"><span>{'/modules/approvalflow/label/create_new_workflow_btn'|translate}{*ワークフロー追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/approvalflow/approvalflow_list/">{'/modules/approvalflow'|translate}</a>
+<a href="/management/approvalflow/approvalflow_list/">{'/modules/approvalflow/label/approvalflow_list'|translate}</a>
+{'/modules/approvalflow/label/approvalflow_edit'|translate}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> 承認ワークフロー >> 承認ワークフロー一覧 >> 承認ワークフロー基本設定*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{if $formData.flow_nm}{$formData.flow_nm|escape}{else} {'/label/create_new'|translate}{*新規作成*}{/if}</h3>
+<ul class="minitabs">
+  {if $approvalflow_id}
+    <li><a href="/management/approvalflow/approvalflow_edit/approvalflow_id={$approvalflow_id}" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/approvalflow/approvalflow_member_edit/approvalflow_id={$approvalflow_id}">{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</a></li>
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><a href="/management/approvalflow/approvalflow_edit/" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><span>{'/modules/approvalflow/label/approvalflow_member_edit'|translate}{*フロー設定*}</span></li>
+  {/if}
+</ul>
+
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html"}
+{rcms_include file="management/errors_box.html"}
+
+{if $auth.approvalflow.select}
+
+    <form name="approvalflow_edit" id="approvalflow_edit" action="/management/approvalflow/approvalflow_edit/" method="POST">
+    <input type="hidden" name="approvalflow_id" value="{$approvalflow_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>{'/label/workflow_name'|translate}{*ワークフロー名*}</th>
+        <td>
+            <input type="text" name="flow_nm" size="25" value="{$formData.flow_nm}">
+            {html_radios name="enable_flg" options=$arrApprovaflowEnableflg selected=$formData.enable_flg separator="　"}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/email_notice'|translate}{*メール通知*}</th>
+        <td>
+            {html_radios name=mail_contact_flg options=$arrApprovaflow_mail_contact_flg selected=$formData.mail_contact_flg}<br>
+            <textarea name="mail_addresses" cols="60" rows="6">{$formData.mail_addresses|escape}</textarea><br>
+            <span class="hint">{'/modules/approvalflow/msg/about_notify_mail'|translate}{*このアドレスに通知されます。*}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/approvalflow/label/alert_day_span'|translate}{*アラート期限*}</th>
+        <td><input type="text" name="alert_day_span" size="3" value="{$formData.alert_day_span|escape}">{'/modules/approvalflow/msg/explain_alert_day_span'|translate}</td>
+      </tr>
+    </table>
+
+
+    <h3>{'/modules/approvalflow/label/approval_contents'|translate}{*承認対象コンテンツ*}</h3>
+    <table width="100%" border="0" id="approvalTable">
+    </table>
+    <div>
+      <input type="button" value="{'/label/approvalflow/contnets_add_btn'|translate}{*コンテンツ追加*}" id="approvalTable_addBtn" style="float: right"/>
+      <div class="clear"></div>
+    </div>
+
+
+    <h3>{'/label/mail_setting'|translate}{*メール設定*}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+        <td>
+            <table width="100%" border="0">
+                <tr>
+                    <th>{'/label/subject'|translate}{*件名*}</th>
+                    <td><input type="text" name="mail_subject" value="{$formData.mail_subject|escape}" size="50" /></td>
+                </tr>
+                <tr>
+                    <th>{'/label/body'|translate}{*本文*}</td>
+                    <td><textarea name="mail_body" cols="80" rows="15">{$formData.mail_body|escape}</textarea></td>
+                </tr>
+
+            </table> 
+            <span class="hint">{'/modules/approvalflow/msg/explain_about_mail_param_1'|translate}{* $smarty.const.SITE_NAME についての説明文 *}</span><br /><br />
+            <span class="hint">{'/modules/approvalflow/msg/explain_about_mail_param_2'|translate}{* $apply_date|pg_dateformat についての説明文 *}</span><br /><br />
+            <span class="hint">{'/modules/approvalflow/msg/explain_about_mail_param_3'|translate}{* $apply_member_nm についての説明文 *}</span><br /><br />
+            <span class="hint">{'/modules/approvalflow/msg/explain_about_mail_param_4'|translate}{* $link についての説明文 *}</span><br /><br />
+            <span class="hint">{'/modules/approvalflow/msg/explain_about_mail_param_5'|translate}{* $comment についての説明文 *}</span>
+        </td>
+    </tr>
+    </table>
+
+    {buttonbox}
+        {if $approvalflow_id == ""}
+            {if $auth.approvalflow.insert}
+                <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}{*追加する*}</button>
+            {/if}
+        {else}
+            {if $auth.approvalflow.update}
+                <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}{*更新する*}</button>
+            {/if}
+            {if $auth.approvalflow.delete}
+                <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+            {/if}
+        {/if}
+    {/buttonbox}
+
+    </form>
+{else}
+  {'/msg/not_allowed_to_select'|translate}{*権限がないため閲覧することができません。*}
+{/if}
+</div>
+</div>
+{rcms_include file="management/footer.html"}

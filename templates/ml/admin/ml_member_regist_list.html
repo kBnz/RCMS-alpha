@@ -1,0 +1,195 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="javascript" type="text/javascript" src="/js/pager.js"></script>
+<link href="/css/management/selector.css" rel="stylesheet" type="text/css" media="screen,print">
+
+<div class="list_right_bt">
+<h2>メーリングリスト　「{$header.ml_name}」　メンバー登録</h2>
+<ul>
+<li class="normal"><a href="/management/ml/ml_member_list/ml_id={$ml_id}"><span>メンバー一覧</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}</a>
+<a href="/management/ml/ml_list/">{'/modules/ml'|translate}一覧</a>
+<a href="/management/ml/ml_member_list/ml_id={$ml_id}">メンバー一覧</a>
+メンバー登録
+{/pankuzu}
+<div class="clear"></div>
+
+<h3 class="title">{$header.ml_name}</h3>
+<ul class="minitabs">
+  <li><a href="/management/ml/ml_edit/ml_id={$ml_id}">基本設定</a></li>
+  <li><a href="/management/ml/ml_bn_list/ml_id={$ml_id}">バックナンバー</a></li>
+  <li><a href="/management/ml/ml_member_list/ml_id={$ml_id}" class="active">参加者</a></li>
+</ul>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+<form name="ml_member_regist_list_form" method="POST" action="/management/ml/ml_member_regist_list/">
+    <input type="hidden" name="ml_id" value="{$ml_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table width="100%" id="selector">
+      <tr>
+        <td colspan="3">
+          学年：<select name="s_grade">{html_options options=$arrGrade selected=$s_grade}</select>
+          卒業年度：<select name="s_season">{html_options options=$arrYearGraduate selected=$s_season}</select>
+          名前：<input type="text" name="s_name" value="{$s_name}"/>
+          <input type="submit" value="補充リスト検索" onclick="document.ml_member_regist_list_form.MODE.value='SEARCH';" />
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" width="49%">
+
+{if $alternate_member|@count <= $alternate_max}
+  {assign var=totalcnt1 value=$alternate_member|@count}
+{else}
+  {assign var=totalcnt1 value=$alternate_max}
+{/if}
+{assign var=totalcnt2 value=$member_list|@count}
+
+<!-- ブログメンバー補充リスト -->
+          <h3>補充リスト</h3>
+          <p id="nav_info1"></p>
+          <div>
+            <input id="page_nav_first1" type="button" onclick="bm_al.first();" value="最初へ">
+            <input id="page_nav_prev1" type="button" onclick="bm_al.prev();" value="前へ">
+            <input id="page_nav_next1" type="button" onclick="bm_al.next();" value="次へ">
+            <input id="page_nav_last1" type="button" onclick="bm_al.last();" value="最後へ">
+          </div>
+          {if $alternate_member|@count > $alternate_max}
+            <p style="color:red">{$alternate_max}件以上データがあります。他のメンバーを表示したい場合は絞り込みを行ってください。</p>
+          {/if}
+          <table id="bm_al" width="100%">
+            <tr><th>メンバーID</th><th>名前</th><th>追加</th></tr>
+
+          {section loop=$alternate_member name=bm_al max=$alternate_max}
+<tr id="bm_al{$alternate_member[bm_al].member_id}"style="display:none">
+<td>{$alternate_member[bm_al].member_id}</td><td>{$alternate_member[bm_al].name}</td>
+<td><input type="button" onclick="bm.addItem({$alternate_member[bm_al].member_id}, new Array('{$alternate_member[bm_al].member_id}','{$alternate_member[bm_al].name}'))" value="追加"/></td>
+</tr>
+              {if $smarty.section.bm_al.last}
+              {/if}
+          {/section}
+
+          </table>
+<!-- //ブログメンバー補充リスト -->
+
+        </td>
+        <td valign="top" width="2%"></td>
+        <td valign="top" width="49%">
+
+<!-- ブログメンバー既存or編集中 -->
+          <h3>選択済みリスト</h3>
+          <p id="nav_info2"></p>
+          <p>
+            <input id="page_nav_first2" type="button" onclick="bm_sl.first();" value="最初へ">
+            <input id="page_nav_prev2" type="button" onclick="bm_sl.prev();" value="前へ">
+            <input id="page_nav_next2" type="button" onclick="bm_sl.next();" value="次へ">
+            <input id="page_nav_last2" type="button" onclick="bm_sl.last();" value="最後へ">
+          </p>
+          <table id="bm_sl" width="100%">
+            <tr><th>メンバーID</th><th>名前</th><th>ステータス</th></tr>
+
+          {section loop=$member_list name=bm_sl}
+<tr id="bm_sl{$member_list[bm_sl].member_id}" style="display:none">
+<input id="bm_sl_id{$member_list[bm_sl].member_id}" type="hidden" name="bm_sl_selected_id[]" value="{$member_list[bm_sl].member_id}" />
+<input id="bm_sl_sts{$member_list[bm_sl].member_id}" type="hidden" name="bm_sl_sts[{$member_list[bm_sl].member_id}]"; value="{$member_list[bm_sl].status}" />
+<td>{$member_list[bm_sl].member_id}</td>
+<td>{$member_list[bm_sl].name}</td>
+<td>
+    {if $member_list[bm_sl].status == "init"}
+        <input id="bm_sl_joined{$member_list[bm_sl].member_id}" style="display:inline" type="button" onclick="bm.nonjoinedItem({$member_list[bm_sl].member_id});" value="参加中"/>
+        <input id="bm_sl_nonjoined{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.del2Item({$member_list[bm_sl].member_id});" value="休止中" />
+        <input id="bm_sl_del2{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.joinedItem({$member_list[bm_sl].member_id});" value="削除" />
+    {elseif $member_list[bm_sl].status == 'nonjoined'}
+        <input id="bm_sl_joined{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.nonjoinedItem({$member_list[bm_sl].member_id});" value="参加中"/>
+        <input id="bm_sl_nonjoined{$member_list[bm_sl].member_id}" style="display:inline" type="button" onclick="bm.del2Item({$member_list[bm_sl].member_id});" value="休止中" />
+        <input id="bm_sl_del2{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.joinedItem({$member_list[bm_sl].member_id});" value="削除" />
+    {elseif $member_list[bm_sl].status == 'del'}
+        <input id="bm_sl_joined{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.nonjoinedItem({$member_list[bm_sl].member_id});" value="参加中"/>
+        <input id="bm_sl_nonjoined{$member_list[bm_sl].member_id}" style="display:none" type="button" onclick="bm.del2Item({$member_list[bm_sl].member_id});" value="休止中" />
+        <input id="bm_sl_del2{$member_list[bm_sl].member_id}" style="display:inline" type="button" onclick="bm.joinedItem({$member_list[bm_sl].member_id});" value="削除" />
+    {else}
+        <input type="button" onclick="bm.cancelAddItem({$member_list[bm_sl].member_id});" value="追加取消"/>
+    {/if}
+</td>
+</tr>
+          {/section}
+
+          </table>
+{if $auth.ml.update}
+          <input type="submit" value="更新する" onclick="document.ml_member_regist_list_form.MODE.value='UPDATE';" />
+          <input type="submit" value="キャンセル" onclick="document.ml_member_regist_list_form.MODE.value='';" />
+{/if}
+
+<!-- //メーリングリストメンバー既存or編集中 -->
+        </td>
+      </tr>
+    </table>
+</form>
+
+<script type="text/javascript">
+
+// ===== Pager & Selector =====
+// インスタンス生成
+
+var bm_al = new Pager("bm_al", {$totalcnt1}, 15, 2);
+var bm_sl = new Pager("bm_sl", {$totalcnt2}, 15, 2);
+var bm_initList = new Array({foreach from=$member_list item=item name=bm_initList}"{$item.member_id}"{if !$smarty.foreach.bm_initList.last},{/if}{/foreach});
+var bm = new ItemSelector(bm_al, bm_sl, "bm", bm_initList);
+
+{literal}
+
+bm_al.speed = 0;
+bm_sl.speed = 0;
+
+document.getElementById("page_nav_first1").disabled = true;
+document.getElementById("page_nav_prev1").disabled = true;
+document.getElementById("page_nav_next1").disabled = true;
+document.getElementById("page_nav_last1").disabled = true;
+document.getElementById("page_nav_first2").disabled = true;
+document.getElementById("page_nav_prev2").disabled = true;
+document.getElementById("page_nav_next2").disabled = true;
+document.getElementById("page_nav_last2").disabled = true;
+
+bm_al.onChangePage = function() {
+    //ボタンのonoffとか操作する。
+    var cu = this.getCurrentPageNo();
+    var fi = document.getElementById("page_nav_first1");
+    var pr = document.getElementById("page_nav_prev1");
+    var ne = document.getElementById("page_nav_next1");
+    var la = document.getElementById("page_nav_last1");
+    var nv = document.getElementById("nav_info1");
+    fi.disabled = (cu == this.getFirstPageNo());
+    pr.disabled = (cu == this.getFirstPageNo());
+    ne.disabled = (cu == this.getLastPageNo());
+    la.disabled = (cu == this.getLastPageNo());
+    nv.innerHTML = "全" + this.getRowCount() + "件 " + this.getLastPageNo() + "ページ　　現在" + cu + "ページ目";
+}
+bm_sl.onChangePage = function() {
+    //ボタンのonoffとか操作する。
+    var cu = this.getCurrentPageNo();
+    var fi = document.getElementById("page_nav_first2");
+    var pr = document.getElementById("page_nav_prev2");
+    var ne = document.getElementById("page_nav_next2");
+    var la = document.getElementById("page_nav_last2");
+    var nv = document.getElementById("nav_info2");
+    fi.disabled = (cu == this.getFirstPageNo());
+    pr.disabled = (cu == this.getFirstPageNo());
+    ne.disabled = (cu >= this.getLastPageNo());
+    la.disabled = (cu >= this.getLastPageNo());
+    nv.innerHTML = "全" + this.getRowCount() + "件 " + this.getLastPageNo() + "ページ　　現在" + cu + "ページ目";
+}
+bm_al.initView(1);
+bm_sl.initView(1);
+
+
+</script>
+
+{/literal}
+{rcms_include file="management/footer.html"}

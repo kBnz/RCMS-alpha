@@ -1,0 +1,21 @@
+<h2>{$keyword_list.keyword}</h2>
+[{$keyword_list.japanese_syllabary}]<br/>
+{if $dsp_description != ""}
+{$dsp_description|nl2br}
+{else}
+{$keyword_list.description|nl2br}
+{/if}
+
+{if $keyword_list.link_name_1 != "" || $keyword_list.link_name_2 != "" || $keyword_list.link_name_3 != "" || $keyword_list.link_name_4 != "" || $keyword_list.link_name_5 != ""}
+<br/>
+[{'/label/related_keyword_link'|translate}{*関連キーワードリンク*}]<br/>
+<ul>
+{if $keyword_list.link_name_1 != ""}<li><a href="{$keyword_list.link_1}">{$keyword_list.link_name_1}</a></li>{/if}
+{if $keyword_list.link_name_2 != ""}<li><a href="{$keyword_list.link_2}">{$keyword_list.link_name_2}</a></li>{/if}
+{if $keyword_list.link_name_3 != ""}<li><a href="{$keyword_list.link_3}">{$keyword_list.link_name_3}</a></li>{/if}
+{if $keyword_list.link_name_4 != ""}<li><a href="{$keyword_list.link_4}">{$keyword_list.link_name_4}</a></li>{/if}
+{if $keyword_list.link_name_5 != ""}<li><a href="{$keyword_list.link_5}">{$keyword_list.link_name_5}</a></li>{/if}
+</ul>
+{/if}
+
+<hr/>

@@ -1,0 +1,102 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{pankuzu}
+<a href="/management/menu/supportforum_mylist/">{'/modules/menu/label/support'|translate}</a>
+<a href="/management/menu/supportforum_list/?pageID={$smarty.request.pageID}&s_module_type={$smarty.request.s_module_type}&s_category_id={$smarty.request.s_category_id}&s_forum_text={$smarty.request.s_forum_text}">{'/modules/menu/label/questions_list'|translate}</a>
+{'/modules/menu/label/supportforum_detail_list'|translate}
+{/pankuzu}
+{*【ぱんくず】 サポート >> 質問一覧 >> 質問詳細*}
+
+<div class="clear"></div>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="main_contents supportforum_detail">
+
+{if $supportforum_detail_list|@count == 0}
+        <div style="text-align:center">
+        <a href="/management/menu/supportforum_mylist/">{'/modules/menu/label/my_question'|translate}{*自分の質問*}</a>
+        |
+        <a href="/management/menu/supportforum_list/?pageID={$smarty.request.pageID}&s_module_type={$smarty.request.s_module_type}&s_category_id={$smarty.request.s_category_id}&s_forum_text={$smarty.request.s_forum_text}">{'/modules/menu/label/questions_list'|translate}{*質問一覧*}</a>
+        に戻る
+        </div>
+{else}
+
+    <ul class="minitabs">
+        <li><a href="/management/menu/supportforum_mylist/">{'/modules/menu/label/my_question'|translate}</a></li>{* 自分の質問一覧 *}
+        <li><a href="/management/menu/supportforum_list/?pageID={$smarty.request.pageID}&s_module_type={$smarty.request.s_module_type}&s_category_id={$smarty.request.s_category_id}&s_forum_text={$smarty.request.s_forum_text}" class="active">{'/modules/menu/label/questions_list'|translate}</a></li>{* 質問一覧 *}
+    </ul>
+
+            <div id="forum_h2">
+                <h2>{$moduleList[$header.module_type]} : {$supportforum_category[$header.supportforum_category_id]}</h2>
+            </div> 
+<div class="list_main">
+
+            {foreach item=row from=$supportforum_detail_list name=supportforum_list}
+
+{if $row.rootnode != $row.supportforum_id}
+
+            <div class="answer_list">
+                <div class="answerDate">
+                    <p class="dateArea">
+                        {if $row.new}<img src="/images/management/forum/icon_new.gif" alt="new">{/if}
+                        <span class="date">{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%d  %H:%M:%S"}</span>
+                        <span class="name">{'/label/name'|translate}{*名前*}：{$row.name|escape}</span>
+                        {if $row.site_url}<span class="site"><a href="{$row.site_url|escape}" target="_blank">{'/label/site'|translate}{*サイト*}</a></span>{/if}
+                    </p>
+                    <p class="help"><a href="/management/menu/supportforum_detail_list/&MODE=addGoodCnt&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}"><img src="{'/images/management/forum/btn_help.gif'|lang_img_path}" alt="役に立った"></a>{'/modules/menu/label/suggested'|translate}{*お役立ち度*} : {$row.good_cnt}</p>
+                </div>
+
+                <div class="clearFloat"><br></div>
+
+                <p class="answer">{$row.note|escape|nl2br}</p>
+
+            </div>
+
+{else}
+
+            <div class="forum_contentsBox asking">
+                <div class="forum_contentsBox2">
+
+                    <p class="dateArea">
+                        {if $row.new}<img src="/images/management/forum/icon_new.gif" alt="new">{/if}
+                        <span class="date">{$row.inst_ymdhi|pg_dateformat:"%Y/%m/%d  %H:%M:%S"}</span>
+                        <span class="name">{'/label/name'|translate}{*名前*}：{$row.name|escape}</span>
+                        {if $row.site_url}<span class="site"><a href="{$row.site_url|escape}" target="_blank">{'/label/site'|translate}{*サイト*}</a></span>{/if}
+                        {if $row.url}&nbsp;<span class="site"><a href="{$row.url|escape}" target="_blank">{'/label/url'|translate}{*URL*}</a></span>{/if}
+
+                        {if $row.resolved_flg==1}<img src="{'/images/management/forum/solved.gif'|lang_img_path}" alt="解決済み">{/if}
+                    </p>
+                    <p class="help"><a href="/management/menu/supportforum_detail_list/&MODE=addGoodCnt&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}"><img src="{'/images/management/forum/btn_help.gif'|lang_img_path}" alt="役に立った"></a>{'/modules/menu/label/suggested'|translate}{*お役立ち度*} : {$row.good_cnt}</p>
+
+                    <h3>{$row.title|escape}</h3>
+                    <p class="writing">{$row.note|escape|nl2br}</p>
+                    <p class="buttonArea">
+                        <a href="javascript:void(0);" onClick="window.open('/management/menu/supportforum_input/&supportforum_root_id={$header.supportforum_id}', 'supportforum_input', 'width=500, height=600, menubar=no, toolbar=no, scrollbars=yes');"><img src="{'/images/management/forum/btn_answer.gif'|lang_img_path}" alt="返信する"></a>
+{if $smarty.const.SITE_ID eq $row.site_id}
+                        {if $supportforum_detail_list|@count == 1}
+                                <a href="javascript:void(0);" onClick="if(confirm('{'/msg/confirm_del'|translate}{*削除してもよろしいですか？*}')){ldelim}location.href='/management/menu/supportforum_detail_list/&MODE=DEL&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}';return false;{rdelim}"><img src="{'/images/management/forum/btn_delete.gif'|lang_img_path}" alt="削除する"></a>
+                        {/if}
+                        {if $row.resolved_flg == 0}
+                                <a href="/management/menu/supportforum_detail_list/&MODE=RESOLVED&supportforum_id={$row.supportforum_id}&DG_CODE={$DG_CODE}"><img src="{'/images/management/forum/btn_solved.gif'|lang_img_path}" alt="解決した"></a>
+                        {/if}
+                        
+{/if}
+                    </p>
+
+                </div>
+            </div>
+            <h4>{'/label/replies_list'|translate}{*回答一覧*}</h4>
+{/if}
+
+            {/foreach}
+
+
+</div>
+{/if}
+
+</div>
+
+{rcms_include file="management/footer.html"}

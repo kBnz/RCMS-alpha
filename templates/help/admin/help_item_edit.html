@@ -1,0 +1,157 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 削除してもよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+function onchangeUnresolve_link_module(module) {
+    document.getElementById('getId').src = "/direct/help/getid/module="+module;
+}
+
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/help/label/help_edit'|translate}</h2>{*Q&A編集*}
+<ul>
+  {if $rauth->canInsert('/help/item')}
+  <li class="add"><a href="/management/{$mt}/help_item_edit/pageID={$currentPageID}"><span>{'/label/help_btn'|translate}{*Q&A作成*}</span></a></li>
+  {/if}
+  {if $formData.help_item_id}
+  <li class="normal"><a href="/management/{$mt}/help_history/help_item_id={$formData.help_item_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  {/if}
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/help_item_list/">{'/modules/help'|translate}</a>
+<a href="/management/{$mt}/help_item_list/">{'/modules/help/label/help_list'|translate}</a>
+<a href="/management/{$mt}/help_item_edit/{if $formData.help_item_id}&help_item_id={$formData.help_item_id}{/if}">{'/modules/help/label/help_edit'|translate}</a>
+{/pankuzu}
+{* 【ぱんくず】 コンテンツ更新 >> Q&A >> Q&A一覧 >> Q&A編集 *}
+
+{if $formData.help_item_id}
+<p class="page_info">
+{'/label/solved'|translate}:{$formData.resolve_cnt}<br />
+{'/label/unsolved'|translate}:{$formData.unresolve_cnt}
+</p>
+{/if}
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+{rcms_include file="help/admin/minitabs.html" page_type=$ct auth=$auth }
+
+  <form action="/management/{$mt}/help_item_edit/" method="post" name="help_edit" id="help_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="help_item_id" type="hidden" value="{$formData.help_item_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="wizard" value="{$wizard}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/$mt/$ct/help_item_id=$help_item_id"}
+{rcms_include file="management/wizard_box.html" wizard_options=$wizard_options wizard_flg=$wizard id=$formData.help_item_id}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    {if $help_item_id}
+      {lang_selector meta=$docmeta link="/management/$mt/$ct/help_item_id=$help_item_id"}
+    {/if}
+
+    <table style="width:100%">
+      {if $docmeta.is_primary}
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}</th>
+        <td><select name="help_category_id">{html_options options=$helpCategoryList selected=$formData.help_category_id}</select>
+          {if $helpCategoryList|@count==0}{'/modules/help/label/no_category_now'|translate}{/if} </td>
+      </tr>
+      {/if}
+      <tr>
+        <th>{'/label/title'|translate}</th>{*タイトル*}
+        <td><input size="50" maxlength="100" name="title" type="text" value="{$formData.title|escape}" /></td>
+      </tr>
+    </table>
+
+            {rcms_include file="common/editor_info.html"}
+
+      <div class="not_list_main" style="width:100%;background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+      <div class="wysiwyg_area">
+          {$sw_html}
+      </div>
+      </div>
+    <table style="width:100%;margin-top: 20px;">
+      {if $docmeta.is_primary}
+      <tr>
+        <th>{'/modules/help/label/to_FAQ'|translate}{*よくある質問に*}</th>
+        <td><select name="prior_flg">{html_options options=$arrHelp_prior_flg selected=$formData.prior_flg}</select></td>
+      </tr>
+      <tr>
+        <th>{'/modules/help/label/unsolutionable_link'|translate}{*未解決時のリンク先*}</th>
+        <td><select name="unresolve_link_module" onchange="onchangeUnresolve_link_module(this.value)">{html_options options=$arrHelp_unsolve_link_module selected=$formData.unresolve_link_module}</select><select name="unresolve_link_id" id="unresolve_link_id">{html_options options=$unresolve_link_id_list selected=$formData.unresolve_link_id}</select></td>
+      </tr>
+      <tr>
+        <th>{'/modules/help/label/related_module'|translate}{*関連モジュール*}</th>
+        <td><select name="module_type">{html_options options=$help_module_list selected=$formData.module_type}</select></td>
+      </tr>
+      {/if}
+      <tr>
+        <th>{'/modules/help/label/related_link'|translate}{*関連リンク*}</th>
+        <td>
+          <table>
+            <tr>
+              <th>{'/label/link_name'|translate}{*リンク名*}</th>
+              <th>URL</th>
+            </tr>
+            <tr>
+              <td><input type="text" value="{$formData.relation_link_name1}" name="relation_link_name1" size="30" /></td>
+              <td><input type="text" value="{$formData.relation_link_url1}" name="relation_link_url1" size="60" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="{$formData.relation_link_name2}" name="relation_link_name2" size="30" /></td>
+              <td><input type="text" value="{$formData.relation_link_url2}" name="relation_link_url2"size="60" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="{$formData.relation_link_name3}" name="relation_link_name3" size="30" /></td>
+              <td><input type="text" value="{$formData.relation_link_url3}" name="relation_link_url3" size="60" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="{$formData.relation_link_name4}" name="relation_link_name4" size="30" /></td>
+              <td><input type="text" value="{$formData.relation_link_url4}" name="relation_link_url4" size="60" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="{$formData.relation_link_name5}" name="relation_link_name5" size="30" /></td>
+              <td><input type="text" value="{$formData.relation_link_url5}" name="relation_link_url5" size="60" /></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <a id="relation_data" name="relation_data"></a>
+    {if $docmeta.is_primary}
+    {rcms_include file="management/relation_edit.html"}
+    {/if}
+
+    {if $docmeta.is_primary}
+    {rcms_include file="management/open_date_box.html" id=$formData.help_item_id data=$formData}
+    {/if}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+    <div style="display:none">
+      <iframe id="getId" src=""></iframe>
+    </div>
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

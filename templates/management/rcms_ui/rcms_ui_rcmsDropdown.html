@@ -1,0 +1,127 @@
+{literal}
+<script type="text/javascript">
+
+(function($){
+
+    /**
+    * ドロップダウンボタンを実装するプラグイン
+    *
+    * @対象要素  <button>タグ
+    * @param   isSelectbox   bool        プルダウンとして使いたい場合はtrue
+    * @param   syncValueAt   selector    data-idの属性値をvalue属性値として反映させる要素(hidden等)へのセレクタ
+    * @実装例
+    *        <input type="hidden" id="hoge" name="hoge" value="2" />
+    *        <button id="hoge_selector" class="rcms_ui_select" data-id="2">bar</button>
+    *        <ul>
+    *            <li data-id="1">hoge</li>
+    *            <li data-id="2">bar</li>
+    *            <li data-id="3">foo</li>
+    *        </ul>
+    *
+    *        ulタグ内がドロップダウンメニューになる。
+    *
+    *       $("#hoge_selector").rcmsDropdown({isSelectbox:true,syncValueAt:"#hoge"});
+    */
+    $.fn.rcmsDropdown = function(options){
+
+        // 引数を用意
+        var options=$.extend({
+            isSelectbox : false,
+            syncValueAt : "",
+            onChange    : function(){},
+            useModal    : false,
+        },options);
+        
+        // 対象オブジェクト
+        var target, menu, list, modal, syncAt;
+        
+        // 初期化
+        function init(){
+            menu   = target.next();
+            list   = $("li",menu);
+            syncAt = $(options.syncValueAt);
+            menu.hide();
+            target.on("click.rcmsDropdown",toggleMenu);
+            
+            // モーダル領域を使用する場合
+            if(options.useModal){
+                menu.after("<div class='modal' style='background:#000;opacity:0.1;width:100%;height:100%;position:fixed;top:0;left:0;z-index:100;'/>"); // モーダル領域を生成
+                modal = menu.next();
+                modal.hide();// モーダル領域を非表示
+                modal.on("click.rcmsDropdown",hideMenu);
+            }else{
+                $("body").on("click.rcmsDropdown",hideMenu);
+            }
+
+            menu.css("z-index","101"); // メニューのzindexを調整
+            list.css("z-index","200"); // メニューのzindexを調整
+            
+            if(options.isSelectbox){
+                // selectbox指定されていた時
+                list.click(pickItem);
+            }else{
+                menu.click(hideMenu);
+
+            }
+
+        }
+        
+        // リスト選択時
+        function pickItem(){
+
+            // data-idを取得
+            var dataId = $(this).data("id");
+
+            // 現在の値と違っていたら値を変更し、onChangeを実行
+            if( dataId != target.data("id") ){
+                target.data("id",dataId);
+
+                // テキストを変更 *アイコンが指定されていれば保持
+/*                 var html   = $("span",target).size() > 0 ? $("<div>").append($("span",target).clone()).html() + $(this).text() : $(this).text(); */
+                // span判定せずに選択した要素を丸ごと渡すように変更
+                target.html($(this).html());
+
+                // valueの同期先が指定されていたら値を設定
+                if(syncAt.size()>0){
+                    syncAt.val(dataId);
+                }
+
+                options.onChange(dataId);
+            }
+            
+            // メニューを隠す
+            hideMenu();
+        }
+        
+        // トグる (ターゲットクリック時)
+        function toggleMenu(e){
+            if(options.useModal){
+                menu.toggle();
+                modal.toggle();
+            }else{
+                $("body").trigger("click.rcmsDropdown");
+                menu.toggle();
+                e.stopImmediatePropagation();
+            }
+        }
+        
+        // 隠す (modalクリック時)
+        function hideMenu(){
+            menu.hide();
+            if(options.useModal){
+                modal.hide();
+            }
+        }
+        
+        
+        // メインシーケンス
+        return this.each(function(){
+            target = $(this);
+            init();
+        });
+    };
+    
+})(jQuery);
+
+</script>
+{/literal}

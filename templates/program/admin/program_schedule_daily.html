@@ -1,0 +1,281 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script language="javascript" type="text/javascript" src="/js/yui/yahoo/yahoo.js"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/dom/dom.js"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/event/event.js"></script>
+<script language="javascript" type="text/javascript" src="/js/yui/calendar/calendar.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/yui/calendar/assets/calendar.css" />
+<script type="text/javascript">
+{literal}
+// 日付を選択したときの処理。
+var selectHandler = function(type, args, obj) {
+		var elm = document.getElementById('copy_button');
+		var arrDate = obj._selectedDates;
+		if (arrDate.length > 0){
+				elm.style.color = "#000000";
+		}
+};
+
+var deselectHandler = function(type, args, obj) {
+		var elm = document.getElementById('copy_button');
+		var arrDate = obj._selectedDates;
+		if (arrDate.length == 0){
+				elm.style.color = "#DCDCDC";
+		}
+};
+//Common setting
+var setCommonSetting = function(obj){
+				//close, start_weekday
+				obj.cfg.setProperty("CLOSE", true);
+				obj.cfg.setProperty("START_WEEKDAY", 1);
+				// Date labels for Japanese locale
+				obj.cfg.setProperty("MONTHS_SHORT", 	["1\u6708", "2\u6708", "3\u6708", "4\u6708", "5\u6708", "6\u6708", "7\u6708", "8\u6708", "9\u6708", "10\u6708", "11\u6708", "12\u6708"]);
+				obj.cfg.setProperty("MONTHS_LONG",		["1\u6708", "2\u6708", "3\u6708", "4\u6708", "5\u6708", "6\u6708", "7\u6708", "8\u6708", "9\u6708", "10\u6708", "11\u6708", "12\u6708"]);
+				obj.cfg.setProperty("WEEKDAYS_1CHAR", ["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+				obj.cfg.setProperty("WEEKDAYS_SHORT", ["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+				obj.cfg.setProperty("WEEKDAYS_MEDIUM",["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+				obj.cfg.setProperty("WEEKDAYS_LONG",	["\u65E5", "\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F"]);
+}
+
+var cal1;
+function showCal(){
+		if(!cal1){
+				cal1 = new YAHOO.widget.Calendar("cal1","cal1Container");
+				setCommonSetting(cal1);
+				cal1.cfg.setProperty("MULTI_SELECT", true);
+{/literal}
+{if $curr_month && $curr_year}
+				cal1.cfg.setProperty("pagedate","{$curr_month}/{$curr_year}");
+{/if}
+{literal}
+				cal1.selectEvent.subscribe(selectHandler, cal1, true);
+				cal1.deselectEvent.subscribe(deselectHandler, cal1, true);
+				cal1.render();
+		}
+}
+//削除用ボタン
+function confirmDelete(f) {
+		if(confirm('選択されたスケジュールを削除します。')) {
+				f.MODE.value='DELETE';
+				f.submit();
+		}
+}
+
+//コピー機能部分の表示制御関数
+function switchView(){
+	if(document.getElementById('calendar').style.display == "none"){
+		document.getElementById('calendar').style.display = "block";
+		document.getElementById('open').style.display = "none";
+	}else{
+		document.getElementById('calendar').style.display = "none";
+		document.getElementById('open').style.display = "block";
+	}
+}
+//新規追加ボタンのJS
+function insert_schedule(cal){
+		var arrDate = cal._selectedDates;
+		if(arrDate.length != 0){
+				for(i=0; i<arrDate.length; i++){
+						var d = document.createElement("input");
+						d.type = "hidden";
+						d.name = "selected_date[]";
+						dd = arrDate[i];
+						if (dd[1] < 10) { dd[1] = "0" + dd[1]; }
+						if (dd[2] < 10) { dd[2] = "0" + dd[2]; }
+						d.value = dd[0]+"-"+dd[1]+"-"+dd[2];
+						document.program_schedule_form.appendChild(d);
+				}
+				document.program_schedule_form.MODE.value='INSERT';
+				document.program_schedule_form.submit();
+		}
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}の一日スケジュール</h2>
+<ul>
+{if $auth.program.insert}
+<li class="add"><a href="/management/program/program_schedule_edit/"><span>スケジュール追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+<a href="/management/program/program_reserve_list/">スケジュール一覧</a>
+一日スケジュール
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<h3 class="title">{$curr_year}年{$curr_month}月{$curr_day}日のスケジュール一覧</h3>
+
+<!--クラス一覧とスケジュール一覧を切り替えるタブナビ-->
+<ul class="minitabs">
+ <li><a href="/management/program/program_list/">クラス一覧</a></li>
+ <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+ <li><a href="/management/program/program_schedule_list/" class="active">スケジュール一覧</a></li>
+ <li><a href="/management/program/program_reserve_list/">予約一覧</a></li>
+</ul>
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div class="calendar_list">
+
+{* 一週間の日付 *}
+<table cellspacing="0" class="calendar">
+	<tr valign="bottom">
+		<td class="pre">
+			<a href="/management/program/program_schedule_daily/day={$prev_week}"><span class="arrow">&lt;&lt;</span>前週</a>
+		</td>
+		<td class="this" colspan="5" align="center"><span class="month1">{$this_year}<span>年</span>{$this_month}<span>月</span></span></td>
+		<td class="next"><a href="/management/program/program_schedule_daily/day={$next_week}">次週<span class="arrow">&gt;&gt;</span></a></td>
+	</tr>
+	<tr class="header">
+		<th class="Mon"><span>{$this_week.0}(月)</span><br />
+			<span class="small">{if $today == $week_data.0}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.0}">表示する</a>{/if}</span>
+		</th>
+		<th class="Tue"><span>{$this_week.1}(火)</span><br />
+			<span class="small">{if $today == $week_data.1}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.1}">表示する</a>{/if}</span>
+		</th>
+		<th class="Wed"><span>{$this_week.2}(水)</span><br />
+			<span class="small">{if $today == $week_data.2}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.2}">表示する</a>{/if}</span>
+		</th>
+		<th class="Thu"><span>{$this_week.3}(木)</span><br />
+			<span class="small">{if $today == $week_data.3}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.3}">表示する</a>{/if}</span>
+		</th>
+		<th class="Fri"><span>{$this_week.4}(金)</span><br />
+			<span class="small">{if $today == $week_data.4}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.4}">表示する</a>{/if}</span>
+		</th>
+		<th class="Sat"><span>{$this_week.5}(土)</span><br />
+			<span class="small">{if $today == $week_data.5}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.5}">表示する</a>{/if}</span>
+		</th>
+		<th class="Sun"><span>{$this_week.6}(日)</span><br />
+			<span class="small">{if $today == $week_data.6}表示中{else}<a href="/management/program/program_schedule_daily/day={$week_data.6}">表示する</a>{/if}</span>
+		</th>
+	</tr>
+</table>
+</div>
+
+{*表示する時間帯の選択部分*}
+<form name="time_zone_form" method="POST" action="/management/program/program_schedule_daily/day={$today}">
+<select name="from">
+	{html_options options=$selectOptionDispTime selected=$from}
+</select>
+から
+<select name="to">
+	{html_options options=$selectOptionDispTime selected=$to}
+</select>
+を
+<input type="submit" value="表示する" />
+</form>
+
+<br />
+<div class="clear"></div>
+
+	<form name="program_schedule_form" id="program_schedule_input" method="POST"
+		action="/management/program/program_schedule_daily/day={$today}">
+		<input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+		<input type="hidden" name="MODE" value="INSERT" />
+
+{*一日スケジュール本体*}
+{if $arrHeader}
+<div>
+<table cellspacing="0" class="time_table">
+{strip}
+	<tr>{*クラス名を表示する段*}
+		<th style="width:{$time_cell_width}%;">&nbsp;</th>
+	{foreach from=$arrHeader.class_list item=class_name name = child_category}
+		<th style="width:{$column_width}%; text-align:center;">{$class_name}</th>
+	{/foreach}
+	</tr>{*クラス名表示段ここまで*}
+	{foreach from = $time_axis item = val key = time}
+	<tr>
+		{*時間軸の部分*}
+		{if $daily_schedule.$today.time.$time}
+			{foreach from=$daily_schedule.$today.time.$time.programs item=item}
+			<td style="text-align:right">{$item.program_nm}</td>
+			{/foreach}
+		{else}
+			<td>&nbsp;</td>
+		{/if}
+		{*時間軸の部分ここまで*}
+		{*スケジュール部分*}
+		{foreach from=$arrHeader.id_list item=class_id name = schedule_body}
+			{if $daily_schedule.$today.$class_id.$time}
+				<td rowspan = "{$daily_schedule.$today.$class_id.$time.length}" style="text-align:center">
+				{if $daily_schedule.$today.$class_id.$time.programs}
+					{foreach from=$daily_schedule.$today.$class_id.$time.programs item=program}
+						<p><input type="checkbox" name="program_schedule_id[]" value="{$program.program_schedule_id}" checked="checked" />
+						<span>
+						<a href="/management/program/program_schedule_edit/program_id={$program.program_id}&program_schedule_id={$program.program_schedule_id}">
+							{$program.program_nm}</a>
+						</span></p>
+						<p>
+							<span style="margin-right: 10px;">{$program.from_time}～{$program.to_time}</span>
+							{$program.teacher}<br />
+							{$program.comment|strip_tags:false|mbtruncate:30:"...":true}
+						</p>
+						</div>
+					{/foreach}
+				{/if}
+				</td>
+			{/if}
+		{/foreach}
+		{*スケジュール部分ここまで*}
+	</tr>
+	{/foreach}
+{/strip}
+</table>
+</div>
+{/if}
+
+{buttonbox}
+	<button type="button" onclick="confirmDelete(this.form)">削除する</button>
+{/buttonbox}
+
+
+<div style="display:block;" id="open">
+	<a href="javascript:void(0);" onclick="switchView();showCal();return false;">チェックされているスケジュールを複製する</a>
+</div>
+<!-- コピー機能部分 -->
+<div style="display:none;" id="calendar">
+	<a href="javascript:void(0);" onclick="switchView();return false;">選択カレンダー（複製用）をかくす</a>
+	<table border="1" cellspacing="0"  width="100%" style="border-collapse: separate;">
+		<tr><th><div>スケジュールを追加する日</div><span class="hint">(複数日選択できます。)</span></th>
+				<td><div id="cal1Container"></div></td></tr>
+	</table>
+	{buttonbox}
+		<button type="button" onclick="insert_schedule(cal1)" id="copy_button" style="color:#DCDCDC">複製する</button>
+	{/buttonbox}
+
+</div>
+	</form>
+</div>
+</div>
+
+<style>
+{literal}
+table.calendar,
+table.time_table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.calendar th,
+table.calendar td,
+table.time_table th,
+table.time_table td {
+	border: 1px solid #666;
+}
+
+</style>
+{/literal}
+
+<!-- コピー機能部分ここまで -->
+{rcms_include file="management/footer.html"}

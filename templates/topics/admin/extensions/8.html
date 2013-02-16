@@ -1,0 +1,19 @@
+{if $docmeta.is_primary}
+{assign var=file_nm value=$item.name|replace:"]":""|replace:"[":"-"}
+  <input type="text" name="{$item.name}" id="{$file_nm}" value="{$item.value|escape}" autocomplete="off" />
+  <button type="button" id="{$file_nm}-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+  <div class="pop_calendar" id="{$file_nm}-pop"></div>
+  <span class="hint">{'/label/date_example'|translate}</span>{* 日付例 *}
+<script type="text/javascript"> 
+{literal}
+<!--
+Event.observe(window, 'load', function() {
+        DUI.calendar.PopupWindow({title:"{/literal}{$item.title}", textId: '{$file_nm}', btnId: '{$file_nm}-btn', boxId: '{$file_nm}-pop', tableId: '{$file_nm}{literal}-table'});
+});
+//-->
+{/literal}
+</script> 
+{else}
+  {$item.value|escape}
+{/if}
+{if $item.ext_help_msg}<p><span class="hint">{$item.ext_help_msg}</span></p>{/if}

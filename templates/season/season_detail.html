@@ -1,0 +1,96 @@
+{module name="season_list"}
+<h2 class="module_title"><span>{$seasonData[0].wareki}　資料</span></h2>
+<div class="module_contents">
+  <table  class="list">
+    <tr>
+      <th></th>
+      <th>年度</th>
+      {if $ext_titles.ext_title_01 != ""}<th>{$ext_titles.ext_title_01}</th>{/if}
+      {if $ext_titles.ext_title_02 != ""}<th>{$ext_titles.ext_title_02}</th>{/if}
+      {if $ext_titles.ext_title_03 != ""}<th>{$ext_titles.ext_title_03}</th>{/if}
+      {if $ext_titles.ext_title_04 != ""}<th>{$ext_titles.ext_title_04}</th>{/if}
+      {if $ext_titles.ext_title_05 != ""}<th>{$ext_titles.ext_title_05}</th>{/if}
+    </tr>
+    <tr>
+      <td>{$seasonData[0].soubu}</td>
+      <td>{$seasonData[0].wareki}</td>
+      {if $ext_titles.ext_title_01 != ""}<td>{$seasonData[0].ext_01}</td>{/if}
+      {if $ext_titles.ext_title_02 != ""}<td>{$seasonData[0].ext_02}</td>{/if}
+      {if $ext_titles.ext_title_03 != ""}<td>{$seasonData[0].ext_03}</td>{/if}
+      {if $ext_titles.ext_title_04 != ""}<td>{$seasonData[0].ext_04}</td>{/if}
+      {if $ext_titles.ext_title_05 != ""}<td>{$seasonData[0].ext_05}</td>{/if}
+    </tr>
+  </table>
+<p></p>
+{if $memberList|@count > 0}
+<h2>{$highest_grade}年生一覧</h2>
+<table  class="list">
+<tr>
+<th>名前</th>{*<th>学年</th>*}<th>学部</th><th>ポジション</th><th>出身校</th><th>身長</th><th>体重</th>
+</tr>
+{section name=mydata loop=$memberList}
+  <tr>
+    <td style=" white-space:nowrap;"><a href="/member_detail/id={$memberList[mydata].member_id}">{$memberList[mydata].disp_name}</a></td>
+    {*<td>{$memberList[mydata].grade}年</td>*}
+    <td>{$memberList[mydata].school}</td>
+    <td>{$memberList[mydata].position}</td>
+    <td>{if $memberList[mydata].hs_sname ne ''}{$memberList[mydata].hs_sname}{else}{$memberList[mydata].hs_name}{/if}</td>
+    <td>{if $memberList[mydata].height != 0}{$memberList[mydata].height}{/if}</td>
+    <td>{if $memberList[mydata].weight != 0}{$memberList[mydata].weight}{/if}</td>
+  </tr>
+{/section}
+</table>
+<p></p>
+{/if}
+{if $gameList|@count > 0}
+{foreach from=$gameList item=game}
+<h2>{if $gameList|@count > 1}{$game.sports_nm}{/if}公式戦一覧</h2>
+<table  class="list">
+<tr>
+<th>日付</th><th>大会名</th><th>対戦相手</th><th>結果</th>
+</tr>
+{section name=mydata loop=$game.gamelist}
+  <tr>
+    <td>{$game.gamelist[mydata].ymd_str}</td>
+    <td>{$game.gamelist[mydata].game_type}　{$game.gamelist[mydata].game_type2}</td>
+    <td>{$game.gamelist[mydata].team_nm}</td>
+    <td style="white-space: nowrap;"><a href="/game{$game.sports_key}_detail/id={$game.gamelist[mydata].game_id}">
+
+    {if $game.gamelist[mydata].game_status eq '3'}
+        {if $game.gamelist[mydata].score_detail_arr.vs_result_self eq 'win'}
+        ○
+        {elseif $game.gamelist[mydata].score_detail_arr.vs_result_self eq 'lose'}
+        ●
+        {elseif $game.gamelist[mydata].score_detail_arr.vs_result_self eq 'even'}
+        △
+        {/if}
+    {/if}
+    {$game.gamelist[mydata].score_detail_arr.Self_Total}-{$game.gamelist[mydata].score_detail_arr.Opp_Total}</a>
+    </td>
+  </tr>
+{/section}
+</table>
+<p></p>
+{/foreach}
+{/if}
+
+{if $topicsList|@count > 0}
+<h2>トピックス一覧</h2>
+<table  class="list">
+<tr>
+<th>日付</th><th>カテゴリ</th><th>トピックス</th>
+</tr>
+{section name=mydata loop=$topicsList}
+{if $topicsList[mydata].contents_type > 0}
+  <tr>
+    <td>{$topicsList[mydata].ymd_str}</td>
+    <td>{$topicsList[mydata].contents_type_nm}</td>
+    <td><a href="/topics_detail/id={$topicsList[mydata].topics_id}">{$topicsList[mydata].subject}</a></td>
+  </tr>
+{/if}
+{/section}
+</table>
+<p></p>
+{/if}
+</div>
+{/module}

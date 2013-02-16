@@ -1,0 +1,170 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>料理の分類 編集</h2>
+  <ul>
+{rcms_auth target="insert:/restaurant_menu/category/"}
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_category_edit/"><span>料理分類追加</span></a></li>
+    <li class="add"><a href="/management/restaurant_menu/restaurant_menu_edit/restaurant_menu_category_id={$restaurant_menu_category_id}"><span>メニュー追加</span></a></li>
+    <li class="normal"><a href="/management/restaurant_menu/restaurant_menu_history/restaurant_menu_category_id={$restaurant_menu_category_id}"><span>{'/label/update_history'|translate}</span></a></li>
+
+{/rcms_auth}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/restaurant_menu/restaurant_menu_category_list/">{$module_nm}</a>
+<a href="/management/restaurant_menu/restaurant_menu_category_list/">カテゴリ設定</a>
+カテゴリ編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <form action="/management/restaurant_menu/restaurant_menu_category_edit/" method="post" ENCTYPE="multipart/form-data">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="restaurant_menu_category_id" type="hidden" value="{$restaurant_menu_category_id}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    <input type="hidden" name="img1_type" value="{$formData.img1_type}" />
+    <input type="hidden" name="img1_file" value="{$formData.img1_file}" />
+    <input type="hidden" name="img1_s_file" value="{$formData.img1_s_file}" />
+    <input type="hidden" name="prev_img1_type" value="{$formData.prev_img1_type}" />
+    <input type="hidden" name="img2_type" value="{$formData.img2_type}" />
+    <input type="hidden" name="img2_file" value="{$formData.img2_file}" />
+    <input type="hidden" name="img2_s_file" value="{$formData.img2_s_file}" />
+    <input type="hidden" name="prev_img2_type" value="{$formData.prev_img2_type}" />
+    <input type="hidden" name="img3_type" value="{$formData.img3_type}" />
+    <input type="hidden" name="img3_file" value="{$formData.img3_file}" />
+    <input type="hidden" name="img3_s_file" value="{$formData.img3_s_file}" />
+    <input type="hidden" name="prev_img3_type" value="{$formData.prev_img3_type}" />
+    <input type="hidden" name="img4_type" value="{$formData.img4_type}" />
+    <input type="hidden" name="img4_file" value="{$formData.img4_file}" />
+    <input type="hidden" name="img4_s_file" value="{$formData.img4_s_file}" />
+    <input type="hidden" name="prev_img4_type" value="{$formData.prev_img4_type}" />
+    <input type="hidden" name="img5_type" value="{$formData.img5_type}" />
+    <input type="hidden" name="img5_file" value="{$formData.img5_file}" />
+    <input type="hidden" name="img5_s_file" value="{$formData.img5_s_file}" />
+    <input type="hidden" name="prev_img5_type" value="{$formData.prev_img5_type}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div class="list_main">
+
+{rcms_include   
+    file="common/admin/shonin_message.html" 
+    docmeta=$docmeta
+    link="/management/restaurant_menu/restaurant_menu_category_edit/restaurant_menu_category_id=$restaurant_menu_category_id"
+}   
+{if $restaurant_menu_category_id}    
+    {lang_selector meta=$docmeta link="/management/restaurant_menu/restaurant_menu_category_edit/restaurant_menu_category_id=$restaurant_menu_category_id"}
+{/if}   
+
+    <table width="100%" border="0">
+      <tr>
+        <th>親カテゴリ<span class="required">※</span></th>
+        <td><select name="parent_id">{html_options options=$arrCategory selected=$formData.parent_id}</select></td>
+      </tr>
+      <tr>
+        <th>料理の分類<span class="required">※</span></th>
+        <td><input size="50" maxlength="100" name="category_nm" type="text" value="{$formData.category_nm|escape}" /></td>
+      </tr>
+      <tr>
+        <th>説明</th>
+        <td><textarea name="category_text" cols="50" rows="5">{$formData.category_text|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>並び順</th>
+        <td><input size="2" name="order_no" type="text" value="{$formData.order_no|escape}" /><br>
+        <span class="hint">数字の大きい順に並びます</span></td>
+      </tr>
+      <tr>
+        <th>大きな画像1</th>
+        <td>
+            {if $formData.img1_s_url}
+            <img src="{$formData.img1_s_url}"><br>
+            {/if}
+            {if $docmeta.is_primary}
+                 <input type="file" name="img1"><input type="checkbox" name="del_img1" value="1">画像を削除<br>
+            {/if}
+            コメント:<textarea name="img1_text" rows="2" cols="50">{$formData.img1_text|escape}</textarea><br>
+        </td>
+      </tr>
+      <tr>
+        <th>大きな画像2</th>
+        <td>
+            {if $formData.img2_s_url}
+            <img src="{$formData.img2_s_url}"><br>
+            {/if}
+            {if $docmeta.is_primary}
+                 <input type="file" name="img2"><input type="checkbox" name="del_img2" value="1">画像を削除<br>
+            {/if}
+            <table>
+            <tr><td>コメント:</td><td><textarea name="img2_text" rows="2" cols="50">{$formData.img2_text|escape}</textarea></td></tr>
+            </table>
+        </td>
+      </tr>
+      <tr>
+        <th>小さな画像1</th>
+        <td>
+            {if $formData.img3_s_url}
+            <img src="{$formData.img3_s_url}"><br>
+            {/if}
+            {if $docmeta.is_primary}
+                 <input type="file" name="img3"><input type="checkbox" name="del_img3" value="1">画像を削除<br>
+            {/if}
+            <table>
+            <tr><td>画像タイトル:</td><td><input size="50" name="img3_title" type="text" value="{$formData.img3_title|escape}" /></td></tr>
+            <tr><td>コメント:</td><td><textarea name="img3_text" rows="2" cols="50">{$formData.img3_text|escape}</textarea></td></tr>
+            <tr><td>価格:</td><td><textarea name="img3_price" rows="2" cols="50">{$formData.img3_price|escape}</textarea></td></tr>
+            </table>
+        </td>
+      </tr>
+      <tr>
+        <th>小さな画像2</th>
+        <td>
+            {if $formData.img4_s_url}
+            <img src="{$formData.img4_s_url}"><br>
+            {/if}
+            {if $docmeta.is_primary}
+                 <input type="file" name="img4"><input type="checkbox" name="del_img4" value="1">画像を削除<br>
+            {/if}
+            <table>
+            <tr><td>画像タイトル:</td><td><input size="50" name="img4_title" type="text" value="{$formData.img4_title|escape}" /></td></tr>
+            <tr><td>コメント:</td><td><textarea name="img4_text" rows="2" cols="50">{$formData.img4_text|escape}</textarea></td></tr>
+            <tr><td>価格:</td><td><textarea name="img4_price" rows="2" cols="50">{$formData.img4_price|escape}</textarea></td></tr>
+            </table>
+        </td>
+      </tr>
+      <tr>
+        <th>小さな画像3</th>
+        <td>
+            {if $formData.img5_s_url}
+            <img src="{$formData.img5_s_url}"><br>
+            {/if}
+            {if $docmeta.is_primary}
+                 <input type="file" name="img5"><input type="checkbox" name="del_img5" value="1">画像を削除<br>
+            {/if}
+            <table>
+            <tr><td>画像タイトル:</td><td><input size="50" name="img5_title" type="text" value="{$formData.img5_title|escape}" /></td></tr>
+            <tr><td>コメント:</td><td><textarea name="img5_text" rows="2" cols="50">{$formData.img5_text|escape}</textarea></td></tr>
+            <tr><td>価格:</td><td><textarea name="img5_price" rows="2" cols="50">{$formData.img5_price|escape}</textarea></td></tr>
+            </table>
+        </td>
+      </tr>
+    </table>
+
+      {rcms_include file="management/open_date_box.html" id=$restaurant_menu_category_id data=$formData}
+
+      {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    </div>
+  </form>
+</div>
+
+{rcms_include file="management/footer.html"}

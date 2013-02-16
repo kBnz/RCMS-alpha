@@ -1,0 +1,40 @@
+{$row.name1} {$row.name2} 様
+
+この度は弊社サービス「RCMS」試用版ご利用のお申込を頂きましてあ
+りがとうございます。下記の通り、試用版アカウントを発行させていただきました
+のでご連絡させていただきます。
+
+{$row.site_url}/
+
+管理画面
+{$row.ssl_url}/management/
+{if $row.member2_pwd}
+コンテンツ編集（シンプルな管理画面になります）
+ID:edit
+PWD:{$row.member2_pwd}
+{/if}
+管理者
+ID:{$row.email}
+PWD:{$row.login_pwd}
+
+で設定を行いました。
+ログインをして、サイトのデザインや各種設定を行ってください。
+
+
+退会をご希望の場合には、管理画面TOPの登録情報のページから手続きができます。
+
+今後とも弊社ならびに弊社サービス「RCMS」をよろしくお願い致しま
+す。
+
+------------------------------------------------------------
+株式会社ディバータ
+RCMS運営事務局　サポート担当
+
+東京都新宿区市谷田町2-17 八重洲市谷ビル10F
+[お問い合わせ] http://www.diverta.co.jp/inquiry_list/
+[Email] rcms-support@diverta.co.jp
+[WEB] http://www.r-cms.jp/
+[WEB] http://www.diverta.co.jp/
+※営業時間は10:00-18:45になります。
+------------------------------------------------------------
+All Rights Reserved, Copyright(C) 2005-2010 Diverta Inc.

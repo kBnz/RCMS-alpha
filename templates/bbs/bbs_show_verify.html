@@ -1,0 +1,200 @@
+<script type="text/javascript">
+<!--
+{literal}
+function changeAction(form, strAction) {
+  form.MODE.value = strAction;
+}
+{/literal}
+-->
+</script>
+{module name="bbs_show_verify module"}
+<h2 class="module_title"><span>{'/modules/bbs'|translate}{*掲示板*}：{$bbs_header.forum_title}</span></h2>
+<div class="module_contents">
+
+{rcms_include file="bbs/bbs_show_menu.html"}
+
+{if $formData.reply_seq eq ''}
+  <h2>{'/label/first_posting'|translate}{*新規投稿*}</h2>
+{else}
+  <h2>{'/label/reply_posting'|translate}{*返信投稿*}</h2>
+{/if}
+
+<form method="post" action="/{$page_sysnm}/">
+  <table width="100%" border="0" class="bbs_show_verify_form">
+  {if $formData.name|escape}
+      <tr>
+        <th>{'/label/name'|translate}{*名前*}</th>
+        <td>{$formData.name|escape}</td>
+      </tr>
+  {/if}
+      <tr>
+        <th>{'/label/title'|translate}{*タイトル*}</th>
+        <td>{$formData.title|escape}</td>
+      </tr>
+      <tr>
+        <th>URL</th>
+        <td>{$formData.bbs_url|escape}</td>
+      </tr>
+
+    {if $arrBbsDetailCategoly|@count>0}
+    <tr>
+      <th>投稿記事分類</th>
+      <td>{$arrBbsDetailCategoly[$formData.bbs_detail_category_id]|escape}</td>
+    </tr>
+    {/if}
+      <tr>
+        <th>{'/label/mail_address'|translate}{*メールアドレス*}</th>
+        <td>{$formData.mail|escape}</td>
+      </tr>
+    {if $module_installed.tag}
+    <tr>
+      <th>{'/modules/common/label/tag_input_area'|translate}{*タグ*}</th>
+      <td>{foreach from=$formData.tag_relation_str item=tag_nm name=tag}
+         {$tag_nm}{if !$smarty.foreach.tag.last}&nbsp;{/if}
+          {/foreach}
+      </td>
+    </tr>
+    {/if}
+      <tr>
+        <th>{'/label/content'|translate}{*内容*}</th>
+        <td>{$formData.note|escape|nl2br}</td>
+      </tr>
+{if $formData.temp_imgfile != ''}
+      <tr>
+        <th>{'/label/upload_image'|translate}{*画像アップロード*}</th>
+        <td><a href="{$smarty.const.TEMP_URL}/{$formData.temp_imgfile|escape}" target="_BLANK">
+        {if $formData.temp_imgfile|substr:-4 eq '.pdf'}
+        <img src="/images/common/icon_pdf.gif">
+        {else}
+        <img src="{$smarty.const.TEMP_URL}/{if $formData.temp_s_imgfile}{$formData.temp_s_imgfile|escape}{else}{$formData.temp_imgfile|escape}{/if}" border="0">
+        {/if}
+        </a></td>
+      </tr>
+{/if}
+
+
+    {if $BBS_ExtensionColumns|@count>0}
+    {foreach from=$BBS_ExtensionColumns item=bbs_ext_col}
+    {if $bbs_ext_col.disp_name}
+    {assign var=type value=$bbs_ext_col.type}
+    {assign var=is_require value=$bbs_ext_col.require}
+    {assign var=db_name value=$bbs_ext_col.db_name}
+    {assign var=disp_name value=$bbs_ext_col.disp_name}
+    <tr>
+        <th>
+            {$disp_name}
+        </th>
+        <td>
+            {if $type == $smarty.const.BBS_EXT_COL_TYPE_TEXT}
+            {*テキスト*}
+
+            {$formData.$db_name|escape}
+            <input type="hidden" name="{$db_name}" id="{$db_name}" class="{$db_name}" value="{$formData.$db_name|escape}" />
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_TEXTAREA}
+            {*テキストエリア*}
+
+            {$formData.$db_name|escape|nl2br}
+            <input type="hidden" name="{$db_name}" id="{$db_name}" class="{$db_name}" value="{$formData.$db_name|escape}" />
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_DATE}
+            {*日付*}
+
+            {assign var="ext_y" value=$db_name|cat:"_y"}
+            {assign var="ext_m" value=$db_name|cat:"_m"}
+            {assign var="ext_d" value=$db_name|cat:"_d"}
+
+            {'/label/yyyymmdd'|translate:$formData.$ext_y:$formData.$ext_m:$formData.$ext_d}
+
+            <input type="hidden" name="{$ext_y}" id="{$ext_y}" class="{$ext_y}" value="{$formData.$ext_y|escape}" />
+            <input type="hidden" name="{$ext_m}" id="{$ext_m}" class="{$ext_m}" value="{$formData.$ext_m|escape}" />
+            <input type="hidden" name="{$ext_d}" id="{$ext_d}" class="{$ext_d}" value="{$formData.$ext_d|escape}" />
+            <input type="hidden" name="{$db_name}" id="{$db_name}" class="{$db_name}" value="{$formData.$ext_y|escape}{$formData.$ext_m|escape}{$formData.$ext_d|escape}" />
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_CHECKBOX}
+            {*チェックボックス*}
+
+            {foreach from=$formData.$db_name item=bbs_ext_check}
+            {$bbs_ext_col.options[$bbs_ext_check]|escape}
+            <input type="hidden" name="{$db_name}[]" value="{$bbs_ext_check}" /><br />
+            {/foreach}
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_SELECTBOX}
+            {*セレクトボックス*}
+
+            {assign var="select_val" value=$formData.$db_name}
+            {$bbs_ext_col.options[$select_val]|escape}
+            <input type="hidden" name="{$db_name}" value="{$formData.$db_name}" />
+
+            {elseif $type == $smarty.const.BBS_EXT_COL_TYPE_RADIO}
+            {*ラジオボタン*}
+
+            {assign var="select_val" value=$formData.$db_name}
+            {$bbs_ext_col.options[$select_val]|escape}
+            <input type="hidden" name="{$db_name}" value="{$formData.$db_name}" />
+
+            {/if}
+
+        </td>
+    </tr>
+    {/if}
+    {/foreach}
+    {/if}
+
+{if $bbs_header.use_captcha eq '1'}
+      <tr>
+  <th>{'/msg/use_captcha'|translate}{*画像の英字５文字を打ち込んでください*}</th>
+  <td>
+    <img src="{$captcha}"><br>
+    <input type="text" name="phrase" class="phrase">
+  </td>
+      </tr>
+{/if}
+  </table>
+  <input type="submit" value="{'/label/post_btn'|translate}{*投稿する*}"><input type="submit" value="{'/label/modify_btn'|translate}{*修正する*}" onClick="changeAction(this.form, 'modify');">
+
+<!--入力データ-->
+<input type="hidden" name="temp_imgfile" value="{$formData.temp_imgfile|escape}">
+<input type="hidden" name="temp_s_imgfile" value="{$formData.temp_s_imgfile|escape}">
+<input type="hidden" name="name" value="{$formData.name|escape}">
+<input type="hidden" name="title" value="{$formData.title|escape}">
+<input type="hidden" name="bbs_url" value="{$formData.bbs_url|escape}">
+<input type="hidden" name="mail" value="{$formData.mail|escape}">
+<input type="hidden" name="note" value="{$formData.note|escape}" id="note">
+<input type="hidden" name="delkey" value="{$formData.delkey|escape}">
+<input type="hidden" name="reply_seq" value="{$formData.reply_seq}">
+<input type="hidden" name="bbs_header_id" value="{$bbs_header.bbs_header_id}">
+<input type="hidden" name="bbs_detail_category_id" value="{$formData.bbs_detail_category_id}">
+<input type="hidden" name="MODE" value="fin">
+{foreach from=$formData.tag_relation item=tag name=tag}
+<input type="hidden" name="tag_relation[]" value="{$tag}">
+{/foreach}
+<input type="hidden" name="DG_CODE" id="DG_CODE{$contents_id}" value="{$DG_CODE}" />
+{* --- スパム対策 --- *}
+{*
+    <input type="hidden" name="DG_CODE" id="DG_CODE{$contents_id}" value="" />
+<script type="text/javascript">
+{literal}
+new Ajax.Request(
+    '/direct.php',
+    {
+      method: 'post',
+      postBody:'mt=page&ct=setDG_CODE&key=bbs&id={/literal}{$bbs_header.bbs_header_id}{literal}',
+      onSuccess:function(httpobj){$("DG_CODE{/literal}{$contents_id}{literal}").value = httpobj.responseText;},
+      onFailure:function(){alert("スパム対策処理に失敗しました。お手数をおかけいたしますが、このフォームを再読み込みしてください。");}
+    });
+{/literal}
+</script>
+<noscript>
+<div align="center">
+<table class="errtable">
+  <tr><td class="errmsg">JavaScriptを有効にしないとこのフォームは使用できません。</td></tr>
+</table>
+</div>
+</noscript>
+*}
+{* --- //スパム対策 --- *}
+
+</form>
+</div>
+{/module}

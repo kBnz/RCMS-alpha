@@ -1,0 +1,35 @@
+<h2>{'/modules/game/label/game_record_with'|translate:$gameData.team_nm:$gameData.opponent_grade}{*●●との戦績*}</h2>
+
+{if $gameRecord.start_year ne ''}
+{'/modules/game/label/official_game_record'|translate}{*公式戦対戦成績*}（{'/label/yyyy'|translate:$gameRecord.start_year}～{'/label/yyyy'|translate:$gameRecord.end_year}） {$smarty.const.SELF_TEAM_SNM} {'/label/win_lose_draw'|translate:$gameRecord.win_cnt:$gameRecord.lose_cnt:$gameRecord.even_cnt}{*n勝n敗n分*}<br/>
+{/if}
+{if $gameList.0.opponent eq ''}
+{'/msg/past_game_record_not_exist'|translate}{*過去の戦績はありません*}
+{else}
+{'/label/results_of_latest_three_games'|translate}{*過去３試合の対戦結果*}<br/>
+{section name=mydata loop=$gameList max=3}
+{$gameList[mydata].ymd_str} {$gameList[mydata].game_type}{$gameList[mydata].game_type2} <br/>
+<a href="/gamebaseball_detail/id={$gameList[mydata].game_id}">
+{if $gameList[mydata].game_status eq '3'}
+{if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+△
+{/if}
+{$gameList[mydata].score_detail_arr.Self_Total}{/if}
+-{if $gameList[mydata].game_status eq '3'}
+{$gameList[mydata].score_detail_arr.Opp_Total}
+{if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+○
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+●
+{elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+△
+{/if}
+{/if}
+</a><br/>
+{/section}
+{/if}
+<hr/>

@@ -1,0 +1,180 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript" src="/js/swfobject.js"></script>
+
+<script type="text/javascript" id="_script">
+<!--
+SpawEngine.setSpawDir("/wysiwyg/spaw2/");
+SpawEngine.setPlatform("php");
+var _obj = new SpawEditor("");
+SpawEngine.registerEditor(_obj);
+_obj.setTheme(SpawThemespaw2lite);
+_obj.setLang("ja");
+_obj.setOutputCharset("UTF-8");
+_obj.stylesheet = "/wysiwyg/spaw2/wysiwyg.css";
+_obj.scid = "354d8d81cdeb4efbaafc3c250cc9dff3";
+_obj.setConfigValue("rendering_mode", "xhtml");
+_obj.setConfigValue("beautify_xhtml_output", true);
+_obj.setConfigValue("base_href", "");
+_obj.setConfigValue("strip_absolute_urls", true);
+_obj.setConfigValue("resizing_directions", "vertical");
+_obj.setConfigValue("convert_html_entities", false);
+_obj.setConfigValue("spawfm_path_separator", "|");
+_obj.addControlledEditor(_obj);
+_obj.controlled_by = _obj;
+var _page = new SpawEditorPage("","","ltr");
+_obj.addPage(_page);
+_obj.getTab("").template = "";
+_obj.getTab("").active_template = "";
+_obj.active_page =_page;
+_obj.addToolbarItem(new SpawTbButton("core","image","img_select_popup","isInDesignMode","","imageClick","/wysiwyg/spaw2/plugins/core/lib/theme/spaw2lite/img/tb_image.gif",true),"insert");
+//-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/simple_file/label/simple_file_edit'|translate}</h2>{*簡易更新ファイル編集*}
+<ul>
+<li class="add"><a href="/management/simple_file/simple_file_edit/"><span>{'/label/create_new'|translate}{*新規作成*}</span></a></li>
+<li class="normal"><a href="/management/simple_file/simple_file_history/simple_file_id={$formData.simple_file_id}"><span>{'/label/update_history'|translate}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/simple_file/simple_file_list/">{'/modules/simple_file'|translate}</a>
+<a href="/management/simple_file/simple_file_list/">{'/modules/simple_file/label/simple_file_list'|translate}</a>{*簡易更新ファイル一覧*} 
+<a href="/management/simple_file/simple_file_edit/simple_file_id={$formData.simple_file_id}">{'/modules/simple_file/label/simple_file_edit'|translate}</a>{*簡易更新ファイル編集*}
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div id="simple_file_edit" class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/simple_file/simple_file_edit/simple_file_id=$simple_file_id"}
+{if $simple_file_id}    
+    {lang_selector meta=$docmeta link="/management/simple_file/simple_file_edit/simple_file_id=$simple_file_id"}
+{/if}   
+  <form action="/management/simple_file/simple_file_edit/" method="post">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="update" />
+    <input type="hidden" name="simple_file_id" value="{$formData.simple_file_id}" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    <input type="hidden" name="old_file_path" value="{$formData.file_path}">
+
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <th>{'/label/file_name'|translate}</th>{*ファイル名*}
+        <td><input type="text" style="width:350px" name="file_nm" value="{$formData.file_nm|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/explanation'|translate}</th>{*説明*}
+        <td><textarea name="comment" style="width:350px;height:100px">{$formData.comment|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>{'/label/file_type'|translate}</th>{*ファイルタイプ*}
+        <td>{if $docmeta.is_primary}
+                <select style="width:100px" name="file_type">{html_options options=$file_type_options selected=$formData.file_type}</select>
+            {else}
+              {$file_type_options[$formData.file_type]}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/file_path'|translate}{*ファイルパス*}<br><span class="hint">{'/modules/simple_file/label/file_path_limit'|translate}{*/files/以下しか設定できません。*}</span></th>
+        <td>
+            {if $docmeta.is_primary}
+                <input type="text" style="width:350px" name="file_path" value="{$formData.file_path|escape}" id="simple_file_path"/>
+                <span style="white-space: nowrap;"><img id="img_select_popup" src="/wysiwyg/spaw2/plugins/core/lib/theme/spaw2lite/img/tb_image.gif" style="cursor: default;" class="spaw2liteButton" onclick="SpawPGrcms.imageClick_toGetSimpleFile(_obj.getTargetEditor(),_obj.getToolbarItem('img_select_popup'), this);" /></span>
+            {/if}
+            {if $formData.file_type eq '2'}
+                <p>
+                <br>{'/label/current_file'|translate}{*現在、設定されているファイル*}：{$formData.file_path}<br>
+                <div id="flashcontent{$formData.simple_file_id}"></div>
+                <script type="text/javascript">
+                // <![CDATA[
+                var so = new SWFObject("{$formData.file_path}", "swf", "600", "300", "7", "#000000");
+                so.write("flashcontent{$formData.simple_file_id}");
+                // ]]>
+                </script>
+                </p>
+            {elseif $formData.file_path}
+                <p>
+                <br>{'/label/current_file'|translate}{*現在、設定されているファイル*}：{$formData.file_path}<br>
+                <img src="{$formData.file_path}">
+                </p>
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/width'|translate}</th>{*横幅*}
+        <td>
+            {if $docmeta.is_primary}
+                <input type="checkbox" id="width_free" name="width_free" value="1" {if $formData.max_width eq '0' || $formData.max_width eq ''}checked{/if} onChange="chk_width(this.checked);">{'/label/no_limit'|translate}{*制限なし*}
+                <input type="text" id="max_width" style="width:50px" name="max_width" value="{if $formData.max_width > 0}{$formData.max_width|escape}{/if}" maxlength="5" {if $formData.max_width eq '0' || $formData.max_width eq ''}disabled="disabled"{/if}/>px
+            {else}
+                {if $formData.max_width eq '0' || $formData.max_width eq ''}
+                    {'/label/no_limit'|translate}{*制限なし*}
+                {else}
+                    {if $formData.max_width > 0}{$formData.max_width|escape}px{/if}
+                {/if}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/height'|translate}</th>{*規定の縦幅*}
+        <td>
+            {if $docmeta.is_primary}
+                <input type="checkbox" id="height_free" name="height_free" value="1" {if $formData.max_height eq '0' || $formData.max_height eq ''}checked{/if} onChange="chk_height(this.checked);">{'/label/no_limit'|translate}{*制限なし*}
+                <input type="text" id="max_height" style="width:50px;" name="max_height" value="{if $formData.max_height > 0}{$formData.max_height|escape}{/if}" maxlength="5" {if $formData.max_height eq '0' || $formData.max_height eq ''}disabled="disabled"{/if} />px
+            {else}
+                {if $formData.max_height eq '0' || $formData.max_height eq ''}
+                    {'/label/no_limit'|translate}{*制限なし*}
+                {else}
+                    {if $formData.max_height > 0}{$formData.max_height|escape}px{/if}
+                {/if}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/sort'|translate}</th>{*並び順*}
+        <td>
+            {if $docmeta.is_primary}
+                <input type="text" style="width:50px" name="order_no" value="{$formData.order_no|escape}"  maxlength="5"/>
+            {else}
+              {$formData.order_no|escape}
+            {/if}
+        </td>
+      </tr>
+    </table>
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+<script>
+{literal}
+function chk_width($chk){
+    if($chk){
+        $('max_width').disabled  = true;
+        $('max_width').value  = "";
+    }else{
+        $('max_width').disabled  = false;
+    }
+}
+
+function chk_height($chk){
+    if($chk){
+        $('max_height').disabled  = true;
+        $('max_height').value  = "";
+    }else{
+        $('max_height').disabled  = false;
+    }
+
+}
+{/literal}
+
+</script>
+{rcms_include file="management/footer.html"}

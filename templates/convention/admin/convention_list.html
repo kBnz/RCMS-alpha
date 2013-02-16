@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{if $auth.convention.insert}
+<li class="add"><a href="/management/convention/convention_edit/"><span>大会追加</span></a></li>
+{/if}
+<li class="view"><a href="{$smarty.const.ROOT_URL}/convention_list/" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/convention/convention_list/">{$module_nm}</a>
+{$module_nm}一覧
+{/pankuzu}
+
+<p class="page_info">
+<a href="/management/accesscount/accesscount_list/">一覧へのアクセス数：{$access_cnt}pv</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  <form action="/management/convention/convention_list/">
+    <fieldset class="search_box">
+      {rcms_seasonOptions name="season" selected=$season firstOption="true"}
+      <input type="submit" value="検索する" />
+    </fieldset>
+  </form>
+
+  {pager info=$pageInfo}
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th style="width:50px">公開</th>
+      <th style="width:50px">年度</th>
+      <th>大会名</th>
+      <th width="58">設定</th>
+      <th width="58">結果入力</th>
+    </tr>
+    {foreach from=$convention_list item=row}
+    <tr>
+      <td>{$row.open_flg|rcms_publicimg}</td>
+      <td>{$row.season}</td>
+      <td>{$row.convention_name|escape}</td>
+      <td><a href="/management/convention/convention_edit/convention_id={$row.convention_id}&pageID={$currentPageID}">設定</a></td>
+      <td><a href="/management/convention/convention_detail_list/convention_id={$row.convention_id}&pageID={$currentPageID}">結果入力</a></td>
+    </tr>
+    {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,224 @@
+{literal}
+<script type="text/javascript">
+(function($){
+
+    $(document).ready(function() {
+
+        initEditField();
+        setFormValues();
+        setStatusMsg();
+
+    });
+    
+    /**
+    * 編集画面の初期化
+    */
+    function initEditField(){
+
+        // イベント登録
+        $("#permission_settings").on("click",showEditField);
+        
+        $("#permission_settings_edit_field input[name='secure_flg']").on("click",toggleElm);
+        $("#permission_settings_edit_field input[name='editable_flg']").on("click",toggleElm);
+        
+        $("#permission_settings_edit_field .secure_level_parent").on("change",toggleLoginMember)
+
+        // 編集画面の設定
+        $("#permission_settings_edit_field").dialog({
+            title     : "{/literal}{'/label/view_edit_limit'|translate}{*閲覧・編集制限*}{literal}",
+            autoOpen  : false,
+            resizable : true,
+            height    : 500,
+            width     : 500,
+            modal     : true,
+            buttons: {
+                "OK" : function() {
+                    setFormValues();
+                    setStatusMsg();
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+
+
+    }
+    
+    /**
+    * 要素の切り替え
+    */
+    function toggleElm(){
+        var selector = $(this).data("for");
+        var visible = $(this).data("visible");
+
+        if(visible){
+            $(selector).show();
+        }else{
+            $(selector).hide();
+        }
+    }
+    
+    /**
+    * ログインメンバーの切り替え
+    */
+    function toggleLoginMember(){
+        if( $(this).is(":checked") ){
+            $("#permission_settings_edit_field .secure_level_child").attr("disabled", "disabled");
+        }else{
+            $("#permission_settings_edit_field .secure_level_child").removeAttr("disabled");
+        }
+    }
+    
+    /**
+    * 編集画面の表示
+    */
+    function showEditField(){
+        $("#permission_settings_edit_field").dialog("open");
+    }
+    
+    /**
+    * ステータスメッセージのセット
+    */
+    function setStatusMsg(){
+
+        var msg = "";
+        var secure_flg   = $("#permission_settings_edit_field [name^='secure_flg']:checked").val();
+        var editable_flg = $("#permission_settings_edit_field [name^='editable_flg']:checked").val();
+        
+        if(secure_flg == 'on'){
+            msg = "{/literal}{'/label/limited'|translate}{*制限有り*}{literal}";
+        }else{
+            msg = "{/literal}{'/label/unlimited'|translate}{*制限無し*}{literal}";
+        }
+
+        msg += " / ";
+
+        if(editable_flg == 'on'){
+            msg += "{/literal}{'/label/limited'|translate}{*制限有り*}{literal}";
+        }else{
+            msg += "{/literal}{'/label/unlimited'|translate}{*制限無し*}{literal}";
+        }
+
+        $("#permission_settings .status_msg").html(msg);
+    }
+
+    /**
+    * フォームの値をセット
+    */
+    function setFormValues(){
+        $("#permission_settings_form_field").empty();
+
+        // 要素を複製してセット
+        var clone_target = $("#permission_settings_edit_field .clone_target").clone();
+        $("#permission_settings_form_field").append(clone_target);
+        
+        // hiddenに置き換えてセット
+        var secure_flg   = $("#permission_settings_edit_field [name^='secure_flg']:checked").val();
+        var editable_flg = $("#permission_settings_edit_field [name^='editable_flg']:checked").val();
+        var editable_group = $("#permission_settings_edit_field [name^='editable_group']").val();
+        
+        var hiddens  = "<input type='hidden' name='secure_flg' value='"+secure_flg+"'>";
+            hiddens += "<input type='hidden' name='editable_flg' value='"+editable_flg+"'>";
+        if(editable_group){
+            //editable_groupはmultipleなので走査する
+            $.each(editable_group,function(){
+                hiddens += "<input type='hidden' name='editable_group[]' value='" + this + "'>";
+            });
+        }
+        $("#permission_settings_form_field").append(hiddens);
+        
+
+    }
+}(jQuery));
+</script>
+
+{/literal}
+
+<div id="permission_settings" class="metasettings">
+    <h1 class="title">{'/label/view_edit_limit'|translate}{*閲覧・編集制限*}</h1>
+    <p class="status_msg">status message here.</p>
+
+    {* 送信用データ *}
+    <div id="permission_settings_form_field" style="display:none;">
+        <input type="hidden" name="secure_flg" value="{if $formData.secure_flg != 'on'}off{else}on{/if}" />
+        <input type="checkbox" name="secure_level[]" value="N" {if 'N'|in_array:$formData.secure_level}checked="checked"{/if} />
+        <input type="checkbox" name="secure_level[]" value="A" {if 'A'|in_array:$formData.secure_level}checked="checked"{/if} />
+        {foreach from=$arrAdmin key=key item=row name=secure_level_list}
+            <input type="checkbox" name="secure_level[]" value="{$key}" {if $key|in_array:$formData.secure_level}checked="checked"{/if} {if 'A'|in_array:$formData.secure_level}disabled="disabled"{/if} />
+        {/foreach}
+        {if $auth.staticcontents_admin.update}
+            <input type="hidden" name="editable_flg" value="{if $formData.editable_flg != 'on'}off{else}on{/if}"/>
+            <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.editable_group}</select>
+        {/if}
+
+
+    </div>
+
+    {* 編集画面 *}
+    <div id="permission_settings_edit_field">
+
+      <table width="100%">
+        <tr>
+          <th width="150">{'/label/viewing_limit'|translate}</th>{*閲覧制限*}
+          <td>
+            <label>
+                <input type="radio" name="secure_flg" value="off" data-for="#secure_group_list" data-visible="false" {if $formData.secure_flg != 'on'}checked="checked"{/if} />
+                {'/label/unlimited'|translate}{*制限無し*}
+            </label>
+            <label>
+                <input type="radio" name="secure_flg" value="on" data-for="#secure_group_list" data-visible="true" {if $formData.secure_flg == 'on'}checked="checked"{/if} />
+                {'/label/limited'|translate}{*制限有り*}
+            </label>
+            <div id="secure_group_list" style="{if $formData.secure_flg != 'on'}display:none;{/if}">
+              <p class="hint">{'/msg/select_group_for_view'|translate}</p>{*閲覧を許可するユーザ・グループを選択してください。(複数選択できます)*}
+              <ul class="secure_level_list">
+                <li>
+                    <label>
+                        <input type="checkbox" name="secure_level[]" value="N" class="clone_target" {if 'N'|in_array:$formData.secure_level}checked="checked"{/if} /><label for="secure_level_N">
+                        {'/label/all_notlogin_members'|translate}{*未ログインメンバー*}
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="secure_level[]" value="A" class="clone_target secure_level_parent" {if 'A'|in_array:$formData.secure_level}checked="checked"{/if} /><label for="secure_level_A">
+                        {'/label/all_login_members'|translate}{*全てのログインメンバー*}
+                    </label>
+                </li>
+              {foreach from=$arrAdmin key=key item=row name=secure_level_list}
+                {if $smarty.foreach.secure_level_list.first}<ul id="secure_level_groups">{/if}
+                  <li>
+                      <label>
+                          <input type="checkbox" name="secure_level[]" value="{$key}" class="clone_target secure_level_child" {if $key|in_array:$formData.secure_level}checked="checked"{/if} {if 'A'|in_array:$formData.secure_level}disabled="disabled"{/if}/>
+                          {$row|escape}
+                      </label>
+                  </li>
+                {if $smarty.foreach.secure_level_list.last}</ul>{/if}
+              {/foreach}
+              </ul>
+            </div>
+          </td>
+        </tr>
+{if $auth.staticcontents_admin.update}
+        <tr>
+          <th>{'/label/editing_limit'|translate}</th>{*編集制限*}
+          <td>
+            <label>
+                <input type="radio" name="editable_flg" value="off"  data-for="#editable_group_list" data-visible="false" {if $formData.editable_flg != 'on'}checked="checked"{/if}/>
+                {'/label/unlimited'|translate}{*制限無し*}
+            </label>
+            <label>
+                <input type="radio" name="editable_flg" value="on"  data-for="#editable_group_list" data-visible="true" {if $formData.editable_flg == 'on'}checked="checked"{/if} />
+                {'/label/limited'|translate}{*制限有り*}
+            </label>
+            <div id="editable_group_list" style="{if $formData.editable_flg != 'on'}display:none;{/if}">
+              <p class="hint">
+                {'/modules/staticcontent/msg/select_group_editing_this_staticcontent'|translate}
+                {*この自由HTMLの編集を許可するグループを選択してください。グループは複数選択できます。*}
+              </p>
+              <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.editable_group}</select>
+            </div>
+          </td>
+        </tr>
+{/if}
+      </table>
+    </div>
+</div>

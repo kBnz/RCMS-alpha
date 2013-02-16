@@ -1,0 +1,198 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<div class="list_right_bt">
+<h2>基本設定</h2>
+<ul>
+<li class="add"><a href="javascript:void(0);" onClick="window.open('/wysiwyg/ckfinder/standalone.php', 'file_manager', 'width='+((screen.width-50)<1050?(screen.width-50):1050)+'px, height='+((screen.height-120)<600?(screen.height-120):600)+'px, menubar=no, toolbar=no, scrollbars=yes');return false;"><span>{'/label/add_image_btn'|translate}{*画像追加*}</span></a></li>
+</ul>
+</div>
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/rcms/rcms_menu/">RCMS</a>
+基本設定
+{/pankuzu}
+<div class="clear"></div>
+<div class="main_contents">
+
+{rcms_include file="rcms/admin/minitabs.html"}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<span class="hint">更新が反映されるまで1時間かかります。</span>
+  <form name="rcms_oem_edit" id="rcms_oem_edit" action="/management/rcms/rcms_oem_edit/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+
+    <table style="width:100%">
+      <tr>
+        <th>サービス名</th>
+        <td>
+          <input type="text" name="oem_product_nm" value="{$formData.oem_product_nm|escape}" size="80" /><br>
+          <span class="hint">RCMSの登録完了メールなどに記載されるサービス名です。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>管理画面ロゴURL<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="mng_logo_url" value="{$formData.mng_logo_url|escape}" size="80" /><br>
+          <span class="hint">必ずhttps://で始まるURLにしてください。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>管理画面フッターテキスト<span class="required">必須</span></th>
+        <td>
+          <input type="text" name="management_footer" value="{$formData.management_footer|escape}" size="80" />
+        </td>
+      </tr>
+      <tr>
+        <th>ユーザー側クレジットテキスト</th>
+        <td>
+          <input type="text" name="edition_text" value="{$formData.edition_text|escape}" size="80" />
+        </td>
+      </tr>
+      <tr>
+        <th>サービス共通メールアドレス</th>
+        <td>
+          <input type="text" name="oem_email" value="{$formData.oem_email|escape}" size="80" /><br>
+          <span class="hint">RCMSの登録完了メールやサポートなどの送信元のメールアドレス</span>
+        </td>
+      </tr>
+      <tr>
+        <th>管理者ID</th>
+        <td>
+          <input type="text" name="admin_id" value="{$formData.admin_id|escape}" size="20" /><br>
+          <span class="hint">OEM配下のサイトであれば、どのサイトにもログインできるユーザーです。扱いには気を付けてください。<br>英数字6文字以上で設定してください。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>管理者PWD</th>
+        <td>
+          <input type="text" name="admin_pwd" value="" size="20" /><br>
+          <span class="hint">入力しない場合は、変更されません。英数字10文字以上で設定してください。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>サービス共通メールアドレス名</th>
+        <td>
+          <input type="text" name="oem_email_from_nm" value="{$formData.oem_email_from_nm|escape}" size="80" /><br>
+          <span class="hint">RCMSの登録完了メールやサポートなどの送信者名　例）RCMS事務局</span>
+        </td>
+      </tr>
+      <tr>
+        <th>サービス共通問い合わせ先</th>
+        <td>
+          <input type="text" name="inquiry_url" value="{$formData.inquiry_url|escape}" size="80" /><br>
+          <span class="hint">問い合わせ先のURL　例）http://www.r-cms.jp/inquiry_list/</span>
+        </td>
+      </tr>
+      <tr>
+        <th>料金プランの選択肢</th>
+        <td>
+          <textarea name="payment_plan" rows="5" cols="60">{$formData.payment_plan|escape}</textarea><br>
+          <span class="hint">例)1:無料版[改行]2:有料版(法人)[改行]3:有料版(法人以外)</span>
+        </td>
+      </tr>
+      <tr>
+        <th>コンタクト通知の転送先メールアドレス</th>
+        <td>
+          <textarea name="contact_mail" rows="5" cols="60">{$formData.contact_mail|escape}</textarea><br>
+          <span class="hint">設定したメールアドレスに傘下のサイトの問い合わせ等の通知が届きます。改行区切りで複数設定が可能です。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>よく使う機能のデフォルト設定</th>
+        <td>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.0}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.1}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.2}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.3}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.4}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.5}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.6}</select><br>
+          <select name="favorite_menu[]"><option value="">選択してください↓</option>{html_options options=$module_list selected=$formData.favorite_menu.7}</select><br>
+          <span class="hint">８つまで設定できます。</span>
+        </td>
+      </tr>
+      <tr>
+        <th>通常管理画面のカスタマイズ</th>
+        <td>
+          <input type="checkbox" name="menu_html_flg" value="1" {if $formData.menu_html_flg}checked{/if}>カスタマイズする<br>
+          <textarea name="menu_html" rows="5" cols="60">{$formData.menu_html|escape}</textarea><br>
+          <a href="javascript:void(0);" onClick="Effect.toggle('menu_html_default', 'blind');">デフォルトのものを表示</a>
+              <div id="menu_html_default" style="display:none">
+                  <textarea name="menu_html_default" rows="10" cols="60">{$formData.menu_html_default|escape}</textarea>
+              </div>
+        </td>
+      </tr>
+      <tr>
+        <th>簡易管理画面のカスタマイズ</th>
+        <td>
+          <input type="checkbox" name="menu_easy_html_flg" value="1" {if $formData.menu_easy_html_flg}checked{/if}>カスタマイズする<br>
+          <textarea name="menu_easy_html" rows="5" cols="60" id="menu_easy_html">{$formData.menu_easy_html|escape}</textarea><br>
+          <a href="javascript:void(0);" onClick="Effect.toggle('menu_easy_html_default', 'blind');">デフォルトのものを表示</a>
+              <div id="menu_easy_html_default" style="display:none">
+                  <textarea name="menu_easy_html_default" rows="10" cols="60">{$formData.menu_easy_html_default|escape}</textarea>
+              </div>
+        </td>
+      </tr>
+      <tr>
+          <th>管理画面CSS</th><td><textarea name="management_css" rows="5" cols="60">{$formData.management_css|escape}</textarea></td>
+      </tr>
+      <tr>
+          <th>管理画面JS</th><td><textarea name="management_js" rows="5" cols="60">{$formData.management_js|escape}</textarea></td>
+      </tr>
+      <tr>
+        <th>登録完了メールSubject</th>
+        <td>
+          <input type="text" name="regist_mail_subject" value="{$formData.regist_mail_subject|escape}" size="80" /><br>
+          <span class="hint">RCMSの登録完了メールの題名　例）RCMSのサイト構築が完了いたしました！</span>
+        </td>
+      </tr>
+      <tr>
+          <th>登録完了メール</th><td><textarea name="rcms_thanks_text" rows="5" cols="60">{$formData.rcms_thanks_text|escape}</textarea></td>
+      </tr>
+     <tr>
+         <th>スーパーユーザー登録フラグ</th><td><input type="checkbox" value="1" name="regist_super_user_flg" {if $formData.regist_super_user_flg}checked{/if}>登録する<br>
+         <span class="hint">登録ユーザーをスーパーユーザーにするかどうか</span>
+        </td>
+     </tr>
+     <tr>
+         <th>Facebookタブアプリ</th><td><textarea name="fb_pagetab_appid" rows="3" cols="60" id="fb_pagetab_appid">{$formData.fb_pagetab_appid|escape}</textarea></td>
+     </tr>
+      <tr>
+        <th>RCMS管理機能<br/>拡張項目列名カスタマイズ</th>
+        <td>
+          <textarea name="ext_col_titles" rows="10" cols="60" id="ext_col_titles">{$formData.ext_col_titles|escape}</textarea><br>
+          <span class="hint">[番号:項目タイトル](改行) [列番号:列名](改行) [列番号:列名](改行)・・・の表記ルールに従って設定してください。番号は1から10までです。項目タイトルにはタグも使えます。</span><br />
+<br/>(例)<br/>
+1:タイトルＡ<br />
+2:タイトルＢ<br />
+3:タイトルＣ<br />
+・・・<br />
+10:タイトルＪ<br />
+<br />上記要領で、1から10まで設定してください。
+
+        </td>
+      </tr>
+    </table>
+
+  <div class="btn_box_bottom">
+     <ul class="bt_orange">
+     <li><a href="javascript:void(0)" onclick="document.rcms_oem_edit.upBtn.click();return false;"><span>更新する</span></a></li>
+     </ul>
+
+     <!--spaw submit対応 消さないで-->
+     <div style="display:none">
+       <input type="submit" name="upBtn" />
+       <input type="submit" name="inBtn" />
+     </div>
+
+     <div class="clear"></div>
+  </div>
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

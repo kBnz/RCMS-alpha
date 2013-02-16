@@ -1,0 +1,12 @@
+<h2>[emoji:070]{'/modules/blog/label/blog_theme_name'|translate}{* ブログテーマ *}</h2>
+
+{foreach from=$themeList item=item}
+{if $blog_id eq ''}<a href="/blog_top/theme={$item.theme_id}">
+{else}<a href="/blog_my_top/blog_id={$blog_id}&theme={$item.theme_id}">
+{/if}
+  {$item.theme_nm}（{$item.cnt}）</a><br/>
+{/foreach}
+<div style="text-align:right;font-size:small;">
+<a href="/blog_top/">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a>
+</div>
+<hr/>

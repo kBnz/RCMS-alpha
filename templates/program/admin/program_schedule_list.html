@@ -1,0 +1,182 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+{if $this_month == 12}
+  {assign var="aft_year" value=$next_year}
+  {assign var="bef_year" value=$this_year}
+{elseif $this_month == 1}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$pre_year}
+{else}
+  {assign var="aft_year" value=$this_year}
+  {assign var="bef_year" value=$this_year}
+{/if}
+
+
+<div class="list_right_bt">
+<h2>スケジュール一覧</h2>
+<ul>
+{if $auth.program.insert}
+<li class="add"><a href="/management/program/program_schedule_edit/"><span>スケジュール追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/program/program_list/">{$module_nm}</a>
+スケジュール一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<!--クラス一覧とスケジュール一覧を切り替えるタブナビ-->
+<ul class="minitabs">
+ <li><a href="/management/program/program_list/">クラス一覧</a></li>
+ <li><a href="/management/program/program_category_list/">カテゴリ設定</a></li>
+ <li><a href="/management/program/program_schedule_list/" class="active">スケジュール一覧</a></li>
+ <li><a href="/management/program/program_reserve_list/">予約一覧</a></li>
+</ul>
+
+{*一覧表示部分*}
+<div class="list_main">
+
+<div class="calendar_list">
+
+{* 年月の選択テーブル *}
+<table width="100%" border="0" cellspacing="2" cellpadding="0" class="navi">
+<tr class="header">
+  <th colspan="12">
+  <span>{$this_year}年</span>[今月:<a href="/management/program/program_schedule_list/">{$curr_year}年{$curr_month}月</a>]
+  </th>
+</tr>
+<tr class="month">
+  <td>{if $this_month=="01"}<span>１月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}01">１月</a>{/if}</td>
+  <td>{if $this_month=="02"}<span>２月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}02">２月</a>{/if}</td>
+  <td>{if $this_month=="03"}<span>３月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}03">３月</a>{/if}</td>
+  <td>{if $this_month=="04"}<span>４月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}04">４月</a>{/if}</td>
+  <td>{if $this_month=="05"}<span>５月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}05">５月</a>{/if}</td>
+  <td>{if $this_month=="06"}<span>６月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}06">６月</a>{/if}</td>
+  <td>{if $this_month=="07"}<span>７月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}07">７月</a>{/if}</td>
+  <td>{if $this_month=="08"}<span>８月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}08">８月</a>{/if}</td>
+  <td>{if $this_month=="09"}<span>９月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}09">９月</a>{/if}</td>
+  <td>{if $this_month=="10"}<span>１０月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}10">１０月</a>{/if}</td>
+  <td>{if $this_month=="11"}<span>１１月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}11">１１月</a>{/if}</td>
+  <td>{if $this_month=="12"}<span>１２月</span>{else}<a href="/management/program/program_schedule_list/ym={$this_year}12">１２月</a>{/if}</td>
+</tr>
+<tr class="jump">
+  <td colspan="12">
+    <form name="program_schedule_form" method="POST" action="/management/program/program_schedule_list/">
+      <select name="year" style="width:60px;">{html_options options=$arrYear selected=$year}</select>年
+      <select name="month" style="width:60px;">{html_options options=$arrMonth selected=$month}</select>月
+     <input type="submit" name="subflg" value="移動する" />
+    </form>
+  </td>
+</tr>
+</table>
+<br style="clear:both">
+
+{* 検索入力欄 *}
+<form name="schedule_search_form" method="POST" action="/management/program/program_schedule_list/{if $ym}ym={$ym}{/if}">
+
+  <!--検索部分-->
+  カテゴリ：
+  <select name="category">
+    {html_options options=$searchCategory selected = $selected_category_id}
+  </select>
+  &nbsp;
+    公開状況：
+  <select name="opflg">
+    {html_options options=$searchOpflg selected=$opflg}
+  </select>
+<br />
+  クラス名：<input type="text" name="s_name" value="{$s_name}" />
+&nbsp;
+  担当者名：<input type="text" name="s_teacher" value="{$s_teacher}" />
+&nbsp;
+  <input type="submit" name="search" value="検索する" />
+
+</form>
+
+<br style="clear:both">
+
+{* 月間カレンダー本体 *}
+
+<table width="100%" border="0" cellspacing="1" cellpadding="0" class="monthCal">
+<tr class="header">
+  <th colspan="7">
+    <span class="pre"><a href="/management/program/program_schedule_list/ym={$bef_year}{$pre_month}">&lt;&lt;</a></span>
+    <span class="this">{$this_year}年{$this_month}月</span>
+    <span class="next"><a href="/management/program/program_schedule_list/ym={$aft_year}{$next_month}">&gt;&gt;</a></span>
+  </th>
+</tr>
+<tr class="daysHeader">
+  <td class="Mon">日</td>
+  <td class="Tue">月</td>
+  <td class="Wed">火</td>
+  <td class="Thu">水</td>
+  <td class="Fri">木</td>
+  <td class="Sat">金</td>
+  <td class="Sun">土</td>
+</tr>
+
+{foreach item=cal_line from=$cal_data.days}
+<tr class="days">
+  {* 週毎の段 *}
+  {foreach key=key item=item from=$cal_line}
+  {* 日毎のデータ *}
+    <td class="{$item.day_type}" width="90">
+  {if $item.day_type == "Out"}
+    <div class="head"><span>{$item.day}</span><br /></div>
+      <ul>
+      {foreach  from=$monthly_schedule[$item.date] item = category_data key = category_id}
+      <li><span>{$category_data.category_nm}{if $category_data.category_subnm}({$category_data.category_subnm}){/if}&nbsp : &nbsp {$category_data.program_num}</span></li>
+      {/foreach}
+      </ul>
+  {else}
+    <div class="head">
+      <span>{$item.day}</span>
+      <a href="/management/program/program_schedule_daily/day={$this_year}-{$this_month}-{$item.day}">表示</a>
+    </div>
+      <br style="clear:both"/>
+    <ul>
+    {if !$search_result}
+      {foreach  from=$monthly_schedule[$item.date] item = category_data key = category_id}
+      <li><span>
+        {$category_data.category_nm}&nbsp : &nbsp {$category_data.program_num}</span></li>
+      {/foreach}
+    {else}
+      {foreach from=$search_result[$item.day] item=program}
+      <li><span>
+        <a href="/management/program/program_schedule_edit/program_id={$program.program_id}&program_schedule_id={$program.program_schedule_id}" >{$program.program_nm}</a>
+        {$program.from_time}-{$program.to_time}
+        {$program.teacher}</span><br />
+      </li>
+      {/foreach}
+    {/if}
+    </ul>
+  {/if}
+    </td>
+    {/foreach}
+</tr>
+
+{/foreach}
+
+</table>
+
+</div> <!--calendar_list-->
+</div><!-- list_main -->
+</div>
+
+<style type="text/css">
+{literal}
+div.schedule_list .dailySch tr.low td{
+height:1px;
+}
+{/literal}
+</style>
+
+{rcms_include file="management/footer.html"}
+

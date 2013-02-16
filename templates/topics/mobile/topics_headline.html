@@ -1,0 +1,20 @@
+<h2>[emoji:158]{'/modules/topics/label/topics_user_page_name'|translate}{* ﾄﾋﾟｯｸｽ *}</h2>
+{section name=mydata loop=$topicsList max=4}
+
+    {if $topicsList[mydata].link_flg eq '1'}
+        ▼<a href="/{$link_page_sysnm}{if !$link_page_flg && $topicsList[mydata].topics_group_id}{$topicsList[mydata].topics_group_id}{/if}/id={$topicsList[mydata].topics_id}">{$topicsList[mydata].subject}</a>
+    {elseif $topicsList[mydata].link_flg eq '2'}
+        ▼<a href="{$topicsList[mydata].link_url}">{$topicsList[mydata].subject}</a>
+    {else}
+        ▼{$topicsList[mydata].subject}
+    {/if}
+    {if !$topicsList[mydata].no_use_ymd}
+    {if $topicsList[mydata].new_flg}[emoji:120]{/if}
+    <div style="text-align:right;font-size:small;">[{$topicsList[mydata].ymd_str}]</div>
+    {/if}
+{/section}
+<br/>
+<div style="text-align:right;font-size:small;">
+<a href="/{if $topics_group_id == "all"}alltopics_list{else}topics_list{if $topics_group_id}{$topics_group_id}{/if}{/if}/" >{'/modules/topics/label/topics_list_user_page_name'|translate}{* トピックス一覧 *}</a>
+</div>
+<hr/>

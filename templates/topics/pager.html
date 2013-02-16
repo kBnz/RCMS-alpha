@@ -1,0 +1,14 @@
+<div class="pageInfo">
+  <ul>
+    {if $pageInfo.currentOffset > 0}
+      <li><a href="{$pageInfo.url}&amp;pno={math equation="i - 1" i=$pageInfo.currentOffset}">«</a></li>
+    {/if}
+    {foreach from=$pageInfo.range key=offset item=i}
+      <li {if $pageInfo.currentOffset == $offset}class="current"{/if}><a href="{$pageInfo.url}&amp;pno={$offset}">{$i}</a></li>
+    {/foreach}
+    {if $pageInfo.currentOffset < $pageInfo.totalPageCnt - 1}
+      <li><a href="{$pageInfo.url}&amp;pno={math equation="i + 1" i=$pageInfo.currentOffset}">»</a></li>
+    {/if}
+    <li class="summary">Page {$pageInfo.pageNo}/{$pageInfo.totalPageCnt}</li>
+  </ul>
+</div>

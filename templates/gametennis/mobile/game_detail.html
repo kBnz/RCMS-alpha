@@ -1,0 +1,36 @@
+<h2>大会詳細</h2>
+
+■開催日時<br/>
+{if $header.start_ymd_str eq $header.end_ymd_str}{$header.start_ymd_str}{else}{$header.start_ymd_str}～{$header.end_ymd_str}{/if}<br/>
+<br/>
+■試合会場<br/>
+{if $header.place_id != "" && $header.place_id != -1}
+  <a href="/location_detail/id={$header.place_id}">{$header.place}</a>
+{else}
+  {$header.place}
+{/if}<br/>
+<br/>
+
+{if $header.game_comment}
+■コメント］<br/>
+{$header.game_comment|escape|nl2br}<br/>
+<br/>
+{/if}
+
+  {if $dispLink}
+      {if $show == $smarty.const.GAME_TENNIS_GAME_TYPE_SINGLE}個人戦{else}<a href="/gametennis_detail/game_id={$header.game_id}&show={$smarty.const.GAME_TENNIS_GAME_TYPE_SINGLE}">個人戦</a>{/if}｜
+      {if $show == $smarty.const.GAME_TENNIS_GAME_TYPE_TEAM}団体戦{else}<a href="/gametennis_detail/game_id={$header.game_id}&show={$smarty.const.GAME_TENNIS_GAME_TYPE_TEAM}">団体戦</a>{/if}
+    <br/>
+  {/if}
+
+  {if $numRows == 0}
+    試合結果の入力はありません。
+  {else}
+    {if $show == $smarty.const.GAME_TENNIS_GAME_TYPE_SINGLE}
+      {rcms_include file="gametennis/mobile/game_single.html"}
+    {elseif $show == $smarty.const.GAME_TENNIS_GAME_TYPE_TEAM}
+      {rcms_include file="gametennis/mobile/game_team.html"}
+    {/if}
+  {/if}
+
+<hr/>

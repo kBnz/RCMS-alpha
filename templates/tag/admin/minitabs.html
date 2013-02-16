@@ -1,0 +1,4 @@
+<ul class="minitabs">
+  <li><a href="/management/tag/tag_list/" {if $page_type eq 'tag_list' || $page_type eq 'tag_edit'}class="active"{/if}>{'/modules/tag/label/tag_list'|translate}</a></li>{*タグ一覧*}
+  <li><a href="/management/tag/tag_category_list/" {if $page_type eq 'tag_category_list' || $page_type eq 'tag_category_edit'}class="active"{/if}>{'/label/categories_list'|translate}</a></li>{*カテゴリ設定*}
+</ul>

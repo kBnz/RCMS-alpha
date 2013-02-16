@@ -1,0 +1,254 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+{literal}
+<link rel="stylesheet" href="/css/management/v2/edit.css">
+<style type="text/css">
+
+.field_header{
+    width:980px;
+    padding:10px;
+    margin-bottom:0px;
+    border: 1px solid #cdcdcd;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    background: -moz-linear-gradient(center bottom, #edede9 0%,#ffffff 100%);
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #edede9),color-stop(1, #ffffff));
+}
+
+.field_body{
+    width:940px;
+    padding:30px;
+    background-color: #ffffff;
+    border: 1px solid #cdcdcd;
+    border-top:0px;
+    -moz-border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
+
+}
+.field_container{
+    margin-bottom:20px;
+}
+
+input.default{
+    color:#a0a0a0;
+}
+
+</style>
+{/literal}
+
+
+<h3>Add new facebook-page watcher</h3>
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+  <div class="list_main">
+
+    <form id="agForm" action="/management/social/facebook_watcher_edit/" method="post">
+        <input type="hidden" name="id" value="{$watcher.social_facebook_watcher_id}" />
+        <input type="hidden" name="MODE" value="UPDATE"  />
+        <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+
+      {rcms_include file="management/messages_box.html" messages=$messages}
+      {rcms_include file="management/errors_box.html" errors=$errors}
+
+
+{if $watcher.social_facebook_watcher_id}
+
+  {buttonbox}
+    <button type="button" onclick="confirmDelete(this.form);">{'/label/delete_btn'|translate}</button>{* 削除する *}
+  {/buttonbox}
+
+    <h3>facebookページの詳細</h3>
+    <table>
+        <tr>
+            <th>facebookページ</th>
+            <td><img src="https://graph.facebook.com/{$watcher.page_id}/picture" /></td>
+            <td>{$watcher.page_name}</td>
+        </tr>
+        <tr>
+            <th>登録したユーザー</th>
+            <td><img src="https://graph.facebook.com/{$watcher.user_id}/picture" /></td>
+            <td><a href="http://www.facebook.com/?id={$watcher.user_id}" target="_blank">{$watcher.user_name}</a></td>
+        </tr>
+    </table>
+    </form>
+
+{else}
+
+    {if $fb_key && $user_info}
+    
+        <div class="field_container">
+            <h4 class="field_header">facebookページ</h4>
+            <div class="field_body">
+                <form action="/management/social/facebook_watcher_edit/" method="post">
+                    <input type="hidden" name="MODE" value="INSERT"  />
+                    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+                    <input type="hidden" name="fb_key" value="{$fb_key}" />
+                    <input type="hidden" name="user_id" value="{$user_info.user_id}" />
+                    <input type="hidden" name="user_name" value="{$user_info.user_name}" />
+                    
+                    
+                        URL : <input type="text" id="fb_page_url" class="default" size="80" value="facebookページのURLをペースト"/>
+                        <button id="get_page_detail_btn">ページ情報を取得</button>
+                        
+                        <div id="fb_basic_info" style="display:none;">
+                            ID: <input type="text" id="fb_page_id" name="page_id" size="100" readonly="readonly" /><br />
+                            Name: <input type="text" id="fb_page_name" name="page_name" size="100" readonly="readonly" /><br />
+                            <img id="fb_page_pict" src="">
+                            {buttonbox}
+                            <button type="button" onclick="doSubmit(this.form);">{'/label/add_btn'|translate}</button>
+                            {/buttonbox}
+                        </div>
+                </form>
+            </div><!- field_body ->
+        </div><!- field_container ->
+
+        <div class="field_container">
+            <h4 class="field_header">グループ</h4>
+            <div class="field_body" style="display:none;">
+                <form action="/management/social/facebook_watcher_edit/" method="post">
+                    <input type="hidden" name="MODE" value="INSERT"  />
+                    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+                    <input type="hidden" name="fb_key" value="{$fb_key}" />
+                    <input type="hidden" name="user_id" value="{$user_info.user_id}" />
+                    <input type="hidden" name="user_name" value="{$user_info.user_name}" />
+                    
+                    <select name="group_data">
+                        {foreach from=$fb_groups item=item}
+                        <option value='{$item.json_data}'>{$item.group_name}</option>
+                        {/foreach}
+                    </select>
+    
+                    {buttonbox}
+                    <button type="button" onclick="doSubmit(this.form);">{'/label/add_btn'|translate}</button>
+                    {/buttonbox}
+                </form>
+            </div><!- field_body ->
+        </div><!- field_container ->
+    
+    {else}
+    <p>あなたの管理するfacebookページの一覧を取得します。</p>
+
+    <button id="add_to_facebook_page">facebookページを追加</button>
+    <span class="hint">
+        別画面でfacebookページを管理する権限の要求ウィンドウが開きます。(初回のみ)
+    </span>
+
+    {/if}
+
+{/if}
+
+    
+
+
+  </div>  <!-- end of div#list_main -->
+</div>  <!-- end of div#main_contents-->
+
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  
+  // 選択された項目を削除します。\nよろしいですか？
+  if (confirm("{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}")) {
+      f.MODE.value='DELETE';
+      f.submit();
+  }
+}
+
+function doSubmit(f) {
+    f.submit();
+}
+
+function openWindow(){
+    window.open("/direct/social/fb_auth_facebook_watcher_admin/?callbackUrl={/literal}{$smarty.const.ROOT_SSL_URL}/management/social/facebook_watcher_edit/{literal}", "RCMS","width=500,height=500,resizable=yes,scrollbars=yes");
+return false;
+}
+
+j$(document).ready(function(){
+    j$("#add_to_facebook_page").click(openWindow); // 新規登録
+    SWEdit.init();
+});
+
+var SWEdit = {
+
+    defaultUrlTextStr  : null,
+    
+    // 初期化
+    init:function(){
+        j$("#get_page_detail_btn").click(SWEdit.getPageInfo); // page name抽出
+        j$(".field_header").click(SWEdit.toggleField);        // pageとgroupを切り替え
+        j$("#fb_page_url").focus(SWEdit.celearUrlTextbox);    // テキストボックスのクリア
+        j$("#fb_page_url").blur(SWEdit.resetUrlTextbox);      // テキストボックスのリセット
+
+        SWEdit.defaultUrlTextStr = j$("#fb_page_url").val();
+    },
+    
+    // ページ情報の取得
+    getPageInfo:function(){
+    
+        j$("#fb_basic_info").hide();
+    
+        var url = j$("#fb_page_url").val();
+        var pageName = (url.match(/.+\/(.+?)(\?.*)?$/)||[])[1];
+    
+        j$.ajax({
+            type: "POST",
+            async: true,
+            url: "https://graph.facebook.com/" + pageName,
+            dataType : "jsonp",
+            success : function(data, status){
+                console.log(data);
+                if(data.id && data.name){
+                    j$("#fb_page_id").val(data.id);
+                    j$("#fb_page_name").val(data.name);
+                    j$("#fb_page_pict").attr({"src":data.picture});
+                    j$("#fb_basic_info").show();
+                }
+            },
+            complete : function(){
+            }
+        });
+        return false;
+    },
+    
+    // フォームの切り替え
+    toggleField:function(){
+        if(j$(".field_body",j$(this).parent()).is(":hidden")){
+            j$(".field_body").slideUp("fast");
+            j$(".field_body",j$(this).parent()).slideDown("fast");
+        }
+    },
+    
+    // フォーカスを受け取る:URLテキストボックス
+    celearUrlTextbox:function(){
+        
+        //初期値だった時:フォームをクリア
+        if( SWEdit.defaultUrlTextStr == j$(this).val()){
+            j$(this).val('');
+        }
+        j$(this).removeClass("default");
+    },
+    
+    // フォーカスが外れる:URLテキストボックス
+    resetUrlTextbox:function(){
+
+        //空だったとき:初期値に戻す
+        if( j$(this).val() == '' ){
+            j$(this).val(SWEdit.defaultUrlTextStr);
+            j$(this).addClass("default");
+        }
+    
+    }
+}
+
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}
+

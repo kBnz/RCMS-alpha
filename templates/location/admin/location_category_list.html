@@ -1,0 +1,88 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+<!--
+function confirmDelete(f) {
+   // 選択された項目を削除します。\nよろしいですか？
+   if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+       f.MODE.value = 'DELETE';
+       f.submit();
+   }
+}
+-->
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/location/label/location_category_list'|translate}{*カテゴリ設定*}</h2>
+<ul>
+{if $auth.location.insert}
+<li class="add"><a href="/management/location/location_category_edit/"><span>{'/label/create_new_category_btn'|translate}{*カテゴリ追加*}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/location/location_list/">{'/modules/location'|translate}</a>
+{'/modules/location/label/location_category_list'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 地図情報 >> カテゴリ設定 *}
+
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<div class="list_main">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+{rcms_include file="common/admin/shonin_list.html"}
+
+  <form method="POST" action="/management/location/location_category_list/">
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="MODE" type="hidden" value="" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        {if $auth.location.delete}
+          <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'location_category_id[]');" /></th>
+        {/if}
+        <th>ID</th>
+        <th>{'/label/category'|translate}{*カテゴリ*}</th>
+        <th>{'/label/last_updated_time'|translate}{*最終更新日時*}</th>
+      </tr>
+
+      {foreach item=row from=$location_category_list}
+        {assign var=location_category_id value=$row.location_category_id}
+        <tr>
+          <td>
+            <input type="checkbox" name="location_category_id[]" value="{$location_category_id}" {if !$rauth->canDelete("/location/category/$location_category_id")}disabled="disabled"{/if} />
+          </td>
+          <td>{$location_category_id}</td>
+          <td>
+            <a href="/management/location/location_category_edit/location_category_id={$location_category_id}">{$row.location_category_name|escape}</a>
+            {rcms_include file="common/admin/language_status.html" meta=$docmetas[$location_category_id] link="/management/location/location_category_edit/location_category_id=$location_category_id"}
+          </td>
+          <td>{$row.update_ymdhi|pg_dateformat}</td>
+        </tr>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    {buttonbox}
+      <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+      <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

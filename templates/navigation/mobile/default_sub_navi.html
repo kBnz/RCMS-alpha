@@ -1,0 +1,30 @@
+{if $navi_menu_list|@count>0}
+{module name="sub_navi"}
+
+{foreach item="navi_menu" from=$navi_menu_list name="navi_menu_list"}
+
+    {if $navi_menu.is_first_ul}<ul class="sub_navi level{$navi_menu.level}">{/if}
+
+      <li class="sub_navi gsub_navi{$smarty.foreach.navi_menu_list.iteration}{if $smarty.foreach.navi_menu_list.first} first{elseif $smarty.foreach.navi_menu_list.last} last{/if}">
+    {if $navi_menu.this}
+          <strong>{$navi_menu.page_nm}</strong>
+    {else}
+          <a href="/{if $navi_menu.page_sysnm ne 'top'}{$navi_menu.page_sysnm}/{/if}">{$navi_menu.page_nm}</a>
+    {/if}
+
+    {* 次で階層が下がらないなら閉じる *}
+    {if $navi_menu.next_down  eq 0}
+      </li>
+    {/if}
+
+    {if $navi_menu.is_last_ul && $navi_menu.next_down eq 0 }</ul>{/if}
+
+    {if $navi_menu.level > 1 && $navi_menu.is_last_ul}</li>{/if}
+    {if $navi_menu.level > 1 && $smarty.foreach.navi_menu_list.last}</ul>{/if}
+
+
+{/foreach}
+
+<div class="clr"></div>
+{/module}
+{/if}

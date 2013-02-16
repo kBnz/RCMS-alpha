@@ -1,0 +1,8 @@
+<h2>[emoji:085]{'/modules/survey/msg/survey_sent'|translate:$survey_list.title}{*アンケート名送信完了*}</h2>
+
+  {$survey_list.thanks_text|nl2br}
+  {$survey_list.thanks_tag}
+{if $survey_list.public_total == '0'}<br /><a href="/survey_report/id={$survey_list.survey_id}">{'/label/reseach_result'|translate}{*集計結果*}</a><br/>{/if}
+
+<hr/>
+

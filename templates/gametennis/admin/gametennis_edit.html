@@ -1,0 +1,164 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+{literal}
+<script type="text/javascript">
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'start_ymd', btnId: 'start_ymd-btn', boxId: 'start_ymd-pop', tableId: 'ymd-table'});
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'end_ymd', btnId: 'end_ymd-btn', boxId: 'end_ymd-pop', tableId: 'ymd-table'});
+
+    // var が無いのは外部windowから呼び出せるようにするためです (window.placeChecker = ... と同じ)
+    placeChecker = new Checker({notifier : document.getElementById('subInfo'),
+                                idInput  : document.game_edit.place_id,
+                                nmInput  : document.game_edit.place});
+});
+function placeInput(){
+    window.open('/direct/page/locationInput/jsObject=placeChecker&type=gametennis_place','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameTypeInput(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type&type=gametennis_game_type','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function gameType2Input(){
+    window.open('/js/optionAssist.php?target=game_edit.game_type2&type=gametennis_game_type2','','width=250,height=400,scrollbars=1,resizable=yes');
+}
+function teamInput() {
+    window.open('/js/teamInput.php?type=tennis','','width=400,height=250,scrollbars=1,resizable=yes');
+}
+
+function confirmDelete(f){
+    // 削除してもよろしいですか？
+    if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+function Checker(option) {
+    var notifier = option.notifier; // [object HTMLSpanElement]
+    var idInput  = option.idInput;  // [object HTMLInputElement]
+    var nmInput  = option.nmInput;  // [object HTMLInputElement]
+
+    var idInputValue = idInput.value;
+    var nmInputValue = ((idInputValue == "" || idInputValue == -1) ? "" : nmInput.value);
+
+    nmInput.onblur = check;
+    check();
+
+    // called from locationInput.php
+    this.reset = function (option) {
+        nmInputValue = nmInput.value = option.location_nm;
+        idInputValue = idInput.value = option.location_id;
+        notifier.innerHTML = ((idInputValue == "" || idInputValue == -1) ? "({/literal}{'/label/not_registered_data'|translate}{literal})" : "");
+        if ((idInputValue == "" || idInputValue == -1)) nmInputValue = "";
+    }
+
+    function check (e) {
+        if (nmInputValue != nmInput.value) {
+            notifier.innerHTML = "({/literal}{'/label/not_registered_data'|translate}{literal})";
+            idInput.value = -1;
+        } else {
+            notifier.innerHTML = "";
+            idInput.value = idInputValue;
+        }
+    }
+}
+</script>
+{/literal}
+
+<div id="main_contents">
+<div class="list_right_bt">
+<h2>{$module_nm} {'/label/edit'|translate}{*編集*}</h2>
+<ul>
+  {if $auth.gametennis.insert}
+  <li class="add"><a href="/management/gametennis/gametennis_edit/"><span>{'/modules/game/label/create_new_game_btn'|translate}{*試合追加*}</span></a></li>
+  {/if}
+  {if $game_id}
+  <li class="normal"><a href="/management/gametennis/gametennis_history/game_id={$game_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=gametennis&id={$game_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="/gametennis_detail/game_id={$game_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+  {/if}
+
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm}</a>
+<a href="/management/{$mt}/{$mt}_list/">{$module_nm} {'/label/list'|translate}</a>
+{$module_nm} {'/label/edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> 各種ゲーム >> 各種ゲーム一覧 >> 各種ゲーム編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}{*関連情報*}：{if $data.relation_cnt}{$data.relation_cnt}{else}0{/if}{*件*}</a>　<a href="/gametennis_detail/id={$game_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $data.accesscount_cnt}{$data.accesscount_cnt}{else}0{/if}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="gametennis/admin/minitabs.html" page_type=$ct auth=$auth header=$header}
+
+<div class="list_main">
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="game_edit" id="gametennis_edit" action="/management/gametennis/gametennis_edit/" method="POST">
+    <input type="hidden" name="game_id" value="{$game_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <input type="hidden" name="place_id" value="{$data.place_id|escape}" />
+
+    <a id="relation_data" name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <br style="clear: both;">
+
+      <h3>{'/modules/game/label/game_information'|translate}{*試合情報*}</h3>
+      <table width="100%">
+        <tr>
+          <th>{'/label/season'|translate}{*シーズン*}<span class="required">※</span></th>
+          <td><select name="season" id="season">{rcms_seasonOptions selected=$data.season}</select></td>
+        </tr>
+        <tr>
+          <th>{'/label/convention_name'|translate}{*大会名*}<span class="required">※</span></th>
+          <td><input type="text" name="game_name" value="{$data.game_name|escape}" />{'/modules/game/label/official_game'|translate}{*公式戦*}<input type="checkbox" name="official_flg" {if $data.official_flg == "1"}checked{/if}></td>
+        </tr>
+        <tr>
+          <th>{'/label/term'|translate}{*期間*}<span class="required">※</span></th>
+          <td>
+            <input type="text" name="start_ymd" id="start_ymd" value="{$data.start_ymd|escape}" autocomplete="off" />
+            <button type="button" id="start_ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="start_ymd-pop"></div>
+            ～
+            <input type="text" name="end_ymd" id="end_ymd" value="{$data.end_ymd|escape}" autocomplete="off" />
+            <button type="button" id="end_ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="end_ymd-pop"></div><br/>
+            <span class="hint">{'/modules/game/msg/input_same_date_one_day_convention'|translate}{*1日開催の場合は同じ日付を入れてください*}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>{'/modules/game/label/convention_site'|translate}{*会場*}<span class="required">※</span></th>
+          <td><input type="text" name="place" value="{$data.place|escape}" /><a href="javascript:void(0);" onclick="placeInput()">{'/label/select_btn'|translate}{*選択*}</a><span id="subInfo"></span></td>
+        </tr>
+        <tr>
+          <th>{'/label/comments'|translate}{*コメント*}</th>
+          <td><textarea name="game_comment" rows="3" cols="40">{$data.game_comment|escape}</textarea></td>
+        </tr>
+      </table>
+      <br style="clear: both;">
+
+      {rcms_include file="management/open_date_box.html" id=$game_id data=$data}
+
+    {buttonbox}
+      {if $auth.gametennis.update}
+        <button type="submit">{'/label/update_btn'|translate}{*更新する*}</button>
+      {/if}
+      {if $auth.gametennis.delete && $game_id != ''}
+        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

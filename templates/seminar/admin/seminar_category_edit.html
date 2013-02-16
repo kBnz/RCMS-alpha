@@ -1,0 +1,128 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    if(confirm('{/literal}{'/modules/msg/confirm_del_this_categories'|translate}{literal}')) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{'/modules/seminar/label/seminar_category_edit'|translate}</h2>{*セミナーカテゴリ編集*}
+  <ul>
+{rcms_auth target="insert:/seminar/category/"}
+    <li class="add"><a href="/management/seminar/seminar_category_edit/pageID={$pageID}"><span>{'/label/add_category_btn'|translate}</span></a></li>{*カテゴリ追加*}
+{/rcms_auth}
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/seminar/seminar_list/">{'/modules/seminar'|translate}</a>
+<a href="/management/seminar/seminar_list/">{'/modules/seminar/label/seminar_list'|translate}</a>
+<a href="/management/seminar/seminar_category_list/">{'/modules/seminar/label/seminar_category_list'|translate}</a>
+{'/modules/seminar/label/seminar_category_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >> セミナー >> セミナー一覧 *}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="seminar/admin/minitabs.html" page_type=$ct}
+
+  <form action="/management/seminar/seminar_category_edit/" method="post">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="seminar_category_id" type="hidden" value="{$formData.seminar_category_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div class="list_main">
+
+{rcms_include   
+    file="common/admin/shonin_message.html" 
+    docmeta=$docmeta
+    link="/management/seminar/seminar_category_edit/seminar_category_id=$seminar_category_id"
+}   
+{if $seminar_category_id}    
+    {lang_selector meta=$docmeta link="/management/seminar/seminar_category_edit/seminar_category_id=$seminar_category_id"}
+{/if}   
+
+    <table width="100%" border="0">
+      <tr>
+        <th>{'/label/sort'|translate}</th>
+        <td>
+            {if $docmeta.is_primary}
+            <input type="text" size="3" maxlength="3" name="order_no" value="{$formData.order_no|escape}" />
+            <span class="hint">{'/msg/data_order'|translate}{*並び順は数字の大きい順に並びます。*}</span>
+            {else}
+              {$latestRow.order_no|escape}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+      <th>{'/label/category_name'|translate}</th>{*カテゴリ名*}
+        <td><input size="25" maxlength="50" name="category_nm" type="text" value="{$formData.category_nm|escape}" /></td>
+      </tr>
+    </table>
+
+    {buttonbox}
+        {if $seminar_category_id != ""}
+            {if $docmeta.is_waiting}
+            {* これは承認待ちドキュメント *}
+                {if $rauth->canUpdate("/seminar/category/$seminar_category_id", $docmeta.lang)}
+                    {if $rauth->unlimitedUpdate("/seminar/category/$seminar_category_id", $docmeta.lang)}
+                    {* 許可する権限がある *}
+                        <button type="submit" onclick="this.form.MODE.value='ACCEPT'">{'/label/accept'|translate}</button>
+                        <button type="submit" onclick="this.form.MODE.value='REJECT'">{'/label/reject'|translate}</button>
+                    {elseif $docmeta.own}
+                    {* 自分が作成したので再修正できる *}
+                        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                    {else}
+                    {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                    {/if}
+                {else}
+                    {if $docmeta.own}
+                    {* 自分が作成したので再修正できる *}
+                        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                    {else}
+                    {'/msg/not_allowed_to_data_operate'|translate}{* 権限は何もない *}
+                    {/if}
+                {/if}
+            {else}
+            {* これは通常ドキュメント *}
+                {if $docmeta.has_waiting}
+                {* 承認待ちドキュメントがある場合は何もできない *}
+                {'/msg/approval_waiting'|translate}{* 承認待ちのドキュメントがあるので、更新できません。 *}
+                <p class="link"><a href="{$docmeta.waiting_link}">{'/msg/display_data_approval_waiting'|translate}{*申請中のデータを表示する *}</a><p>
+                {else}
+                {* 通常ドキュメントに対する更新処理 *}
+                    {if $rauth->canUpdate("/seminar/category/$seminar_category_id", $docmeta.lang)}
+                        <button type="submit" onclick="this.form.MODE.value='UPDATE'">{'/label/update_btn'|translate}</button>
+                    {/if}
+                    {if $rauth->canDelete("/seminar/category/$seminar_category_id", $docmeta.lang)}
+                    {* 削除権限がある *}
+                        <button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}</button>
+                    {/if}
+                {/if}
+            {/if}
+        {else}
+            {if $rauth->canInsert("/seminar/category/")}
+                <button type="submit" onclick="this.form.MODE.value='INSERT'">{'/label/add_btn'|translate}</button>
+            {/if}
+        {/if}
+    {/buttonbox}
+
+    </div>
+  </form>
+</div>
+
+{rcms_include file="management/footer.html"}

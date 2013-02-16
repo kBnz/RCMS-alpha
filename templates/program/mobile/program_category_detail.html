@@ -1,0 +1,29 @@
+<h2>ﾌﾟﾛｸﾞﾗﾑの案内</h2>
+
+{if $class_data}
+<th>区分</th><th>クラス名</th><th>時間</th><th>内容</th><th>強度</th><th>難易度</th>
+</tr>
+    {foreach from=$class_data item = programs key = class_nm}
+
+        {foreach from = $programs item = program name=program_data}
+            {if $smarty.foreach.program_data.first}
+■{$class_nm}<br/>
+            {/if}
+[{$program.program_nm}]<br/>
+{if $program.minutes ne ''}
+時間：{$program.minutes}<br/>
+{/if}
+{if $program.strength ne ''}
+強度：{$program.strength}<br/>
+{/if}
+{if $program.target ne ''}
+難易度：{$program.target}<br/>
+{/if}
+{if $program.content ne ''}
+内容：{$program.content|nl2br}<br/>
+{/if}
+
+        {/foreach}
+<hr/>
+    {/foreach}
+{/if}

@@ -1,0 +1,862 @@
+{headblock}
+<script type="text/javascript" src="/js/swfobject.js"></script>
+{/headblock}
+
+{*よく使う機能*}
+{capture name=menu_often_use}
+<div class="menu_often_use dragbox" id="menu_often_use" {if $menu_easy_disp && !'menu_often_use'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+    <h3>{'/modules/menu/label/modules_using_often'|translate}{*よく使う機能*}</h3>
+        <div class="dragbox-content">
+        <ul class="dropdown subnav2">
+        {foreach from=$smarty.session.favoriteMenu key=f_key item=mod name=favoriteManagementMenu}
+        {if $auth.$f_key.select}<li class="{$f_key}"><a href="{$management_menus.$f_key.link}"><span>{$f_key|translate_modules}</span></a>
+
+            {if $f_key eq 'topics' && $auth.topics.insert}<ul>{foreach from=$menu_topics_group_list item=group}<li><a href="/management/topics/topics_edit/topics_group_id={$group.topics_group_id}">{$group.group_nm|escape}</a></li>{/foreach}</ul>
+            {elseif $f_key eq 'blog' && $auth.blog.insert}<ul>{foreach from=$menu_blog_list item=blog}<li><a href="/management/blog/blog_item_edit/blog_id={$blog.blog_id}">{$blog.title}</a></li>{/foreach}</ul>
+            {/if}
+
+        </li>{/if}
+        {/foreach}
+    </ul>
+    <div class="clearFloat"><br></div>
+    </div>
+</div>
+{/capture}
+
+{*最近使ったもの*}
+{capture name=menu_used_recently}
+<div class="menu_used_recently dragbox" id="menu_used_recently" {if $menu_easy_disp && !'menu_used_recently'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+    <h3>{'/modules/menu/label/module_used_recently'|translate}{*最近使ったもの*}</h3>
+        <div class="dragbox-content">
+        <ul class="dropdown subnav2">
+        {foreach from=$smarty.session.recentManagementMenus key=r_key item=mod name=recentManagementMenu}
+        {if $auth.$r_key.select}<li class="{$r_key}"><a href="{$management_menus.$r_key.link}"><span>{$r_key|translate_modules}</span></a>
+
+            {if $r_key eq 'topics' && $auth.topics.insert}<ul>{foreach from=$menu_topics_group_list item=group}<li><a href="/management/topics/topics_edit/topics_group_id={$group.topics_group_id}">{$group.group_nm|escape}</a></li>{/foreach}</ul>
+            {elseif $r_key eq 'blog' && $auth.blog.insert}<ul>{foreach from=$menu_blog_list item=blog}<li><a href="/management/blog/blog_item_edit/blog_id={$blog.blog_id}">{$blog.title|escape}</a></li>{/foreach}</ul>
+            {/if}
+
+        </li>{/if}
+        {/foreach}
+    </ul>
+    <div class="clearFloat"><br></div>
+    </div>
+</div>
+{/capture}
+
+
+{*一時更新ユーザ*}
+{capture name=onetime}
+<div class="onetime_link_list dragbox" id="onetime">
+    <h3>{'/modules/onetime/label/you_can_operate_the_contents_below'|translate}{*あなたが閲覧・更新可能なコンテンツ*}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list">
+    {foreach from=$onetime_link_list item=row}
+        <tr>
+            <td>
+                <a href="{$row.link.link}">{$row.link.title|escape}</a>
+                <ul>
+                    <li class="module_nm">{$row.module_nm|translate_modules}</li>
+                    {if $row.resource_type != 'item'}
+                    <li class="target_type">{$row.resource_type}</li>
+                    {/if}
+                    <li class="lang">{$row.lang}</li>
+                </ul>
+            </td>
+        </tr>
+    {/foreach}
+    </table>
+</div>
+{/capture}
+
+{* 管理メモ *}
+{capture name=admin_memo}
+        <div class="admin_memo dragbox" id="admin_memo" {if $menu_easy_disp && !'admin_memo'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+            <h3>{'/modules/menu/label/admin_memo'|translate}</h3>{* 管理メモ *}
+            <div class="dragbox-content">
+                {if $sitedata.admin_memo}<span class="hint">{'/modules/menu/msg/admin_memo_explain'|translate}</span><br>{/if}{* このメモはこのページにログインしたメンバーに共通で表示されます。 *}
+                <pre id="admin_memo_area">{if $sitedata.admin_memo}{$sitedata.admin_memo}{else}{'/modules/menu/msg/admin_memo'|translate}{/if}</pre>{* ここにサイト管理に関するメモを残すことができます。
+    全員のこのページに共通で表示されます。 *}
+                <div id="admin_memo_line"><img src="/images/management/forum/icon_next.gif"><a href="javascript:void(0);" id="admin_memo_msg">{'/label/edit_btn'|translate}</a></div>
+            </div>
+        </div>
+
+{headblock}
+{if !$onetime_link_list}
+{literal}
+<script type="text/javascript">
+<!--
+
+
+var EditableValue = Class.create();
+
+EditableValue.prototype = {
+  initialize: function(target_id) {
+    this.text = $(target_id);
+    this.input = document.createElement('textarea');
+    this.input.style.width = '90%';
+    this.input.setAttribute('rows', 6);
+    this.input.setAttribute('class','memo');
+    this.text.parentNode.appendChild(this.input);
+
+    Event.observe($('admin_memo_msg'), 'click', this.enableInput.bindAsEventListener(this), false);
+    Event.observe(this.input, 'blur', this.disableInput.bindAsEventListener(this), false);
+
+    Element.show(this.text);
+    Element.hide(this.input);
+
+    this.input.value = this.text.innerHTML;
+
+  },
+  enableInput: function() {
+    Element.toggle(this.text);
+    Element.toggle(this.input);
+    Field.focus(this.input);
+    $('admin_memo_line').style.display = 'none';
+  },
+  disableInput: function() {
+
+    $('admin_memo_line').style.display = 'block';
+    $('admin_memo_msg').innerHTML = '{/literal}{'/label/edit_btn'|translate}{literal}';
+    if(this.text.innerHTML != this.input.value){
+        $('admin_memo_msg').innerHTML = '{/literal}{'/msg/now_updating'|translate}{literal}';
+        var ajax = new Ajax.Request('/management/menu/update_admin_memo/', { method:'post', parameters: 'text='+this.input.value, onComplete: function(httpObj){$('admin_memo_msg').innerHTML = '{/literal}{'/msg/updated'|translate}{literal}'}});
+
+        this.text.innerHTML = this.input.value;
+        
+        setTimeout(function(){$('admin_memo_msg').innerHTML ='{/literal}{'/label/edit_btn'|translate}{literal}';},3000);
+    }
+    Element.toggle(this.text);
+    Element.toggle(this.input);
+
+  }
+};
+
+j$(document).ready( function() {
+            new EditableValue('admin_memo_area');
+});
+//-->
+</script>
+{/literal}
+{/if}
+{/headblock}
+
+
+{/capture}
+
+{* すぐに更新！ショートカットメニュー *}
+{capture name=shortcut}
+        <div class="shortcut dragbox" id="shortcut" {if $menu_easy_disp && !'shortcut'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+            <h3>{'/modules/menu/label/shortcut'|translate}</h3>{* すぐに更新！ショートカットメニュー *}
+
+            <ul class="dropdown" id="mainnav">
+            {if $auth.topics.insert}
+                <li class="mainnav_topics"><a href="/management/topics/topics_list/"><span>{'/modules/topics/label/write_article'|translate}</span></a>
+                    <ul>
+                    {foreach from=$menu_topics_group_list item=group}
+                        <li><a href="/management/topics/topics_edit/topics_group_id={$group.topics_group_id}">{$group.group_nm|escape}</a></li>
+                    {/foreach}
+                    </ul>
+                </li>
+            {/if}
+            {if $auth.blog.insert}
+                <li class="mainnav_blog"><a href="/management/blog/blog_list/"><span>{'/modules/blog/label/write_article'|translate}</span></a>
+                    <ul>
+                    {foreach from=$menu_blog_list item=blog}
+                        <li><a href="/management/blog/blog_item_edit/blog_id={$blog.blog_id}">{$blog.title|escape}</a></li>
+                    {/foreach}
+                    </ul>
+                </li>
+            {/if}
+            {if $auth.page.insert}
+                <li class="mainnav_page"><a href="/management/page/page_edit/"><span>ページを作る</span></a>
+                    <ul>
+                        <li><a href="#">ページのテンプレート一覧と記事追加、ブログ追加</a></li>
+                    </ul>
+                </li>
+            {/if}
+            {if $auth.moduleedit.insert}
+                <li class="mainnav_moduleedit"><a href="/management/moduleedit/moduleedit_list/"><span>モジュールを追加</span></a>
+                    <ul>
+                    {foreach from=$menu_module_list item=module}
+                        <li><a href="/management/menu/menu/?mng_type={$MNG_TYPE}&MODE=module_add&module={$module.module_nm}">{$module.module_disp_nm}を追加</a></li>
+                    {/foreach}
+                    </ul>
+                </li>
+            {/if}
+            </ul>
+
+            <div class="clearFloat"><br></div>
+        </div>
+{/capture}
+
+
+{* サイト全体を把握しよう！サイトマップ *}
+{capture name=sitemap_easy}
+{if $auth.page.select && $MNG_TYPE == 1}
+{headblock}
+<style type="text/css">
+{literal}
+.jstree_edit{
+background-image: url(/images/management/tmp_img251.gif);
+background-repeat: no-repeat;
+}
+{/literal}
+</style>
+{/headblock}
+
+        <div class="sitemap_easy dragbox" id="sitemap_easy" {if $menu_easy_disp && !'sitemap_easy'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+            <h3>{'/modules/menu/label/sitemap_easy'|translate}</h3>{* サイト全体を把握しよう！サイトマップ *}
+            <p class="hint">右クリックで各ページの編集ができます。</p>
+            <p class="hint">ドラッグ＆ドロップでページを移動できます。ただし、そのページのURLは変わりません。</p>
+
+            <p class="button"><input type="button" onclick="new Ajax.Request('/direct/menu/setPageData/',{ldelim}'method': 'post','parameters':'result='+encodeURI(j$.tree.focused().get().replace(/[\n\r]/g,'').replace(/#/g,'').replace(/=/g,'@@@')),onSuccess: function(transport) {ldelim}alert('保存しました。');{rdelim}{rdelim});" value="保存する"></p>
+
+<div id="demo_1">
+<ul>
+        <li id="node-1" class="top open" rel="root" preview_url="{$smarty.const.ROOT_URL}/"><a href="#"><ins>　</ins>TOP</a>(/)
+        <ul>
+{foreach from=$page_list item=page_data}
+    {if $page_data.open_flg}
+        <li id="node-{$page_data.page_id}" class="first {if $page_data.child1|@count > 0}open{/if}" preview_url="{$smarty.const.ROOT_URL}/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/"><a href="#"><ins>&nbsp;</ins>{$page_data.page_nm}</a>(/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/){if $page_data.child1|@count==0}</li>{/if}
+    {/if}
+
+    {foreach item="page_data1" from=$page_data.child1 name="row1"}
+        {if $smarty.foreach.row1.first}<ul class="row1">{/if}
+        {if $page_data1.open_flg}
+            <li id="node-{$page_data1.page_id}" {if $page_data1.child2|@count > 0}class="open"{/if} preview_url="{$smarty.const.ROOT_URL}/{if $page_data1.page_sysnm_alias}{$page_data1.page_sysnm_alias}{else}{$page_data1.page_sysnm}{/if}/"><a href="#"><ins class="icon1">&nbsp;</ins>{$page_data1.page_nm}</a>(/{if $page_data1.page_sysnm_alias}{$page_data1.page_sysnm_alias}{else}{$page_data1.page_sysnm}{/if}/){if $page_data1.child2|@count==0 && !$smarty.foreach.row1.last}</li>{/if}
+
+        {/if}
+
+                {foreach item="page_data2" from=$page_data1.child2 name="row2"}
+                    {if $smarty.foreach.row2.first}<ul class="row2">{/if}
+                    {if $page_data2.open_flg}
+                        <li id="node-{$page_data2.page_id}" {if $page_data2.child3|@count > 0}class="open"{/if} preview_url="{$smarty.const.ROOT_URL}/{if $page_data2.page_sysnm_alias}{$page_data2.page_sysnm_alias}{else}{$page_data2.page_sysnm}{/if}/"><a href="#"><ins class="icon1">&nbsp;</ins>{$page_data2.page_nm}</a>(/{if $page_data2.page_sysnm_alias}{$page_data2.page_sysnm_alias}{else}{$page_data2.page_sysnm}{/if}/){if $page_data2.child3|@count==0 && !$smarty.foreach.row2.last}</li>{/if}
+                    {/if}
+
+                {foreach item="page_data3" from=$page_data2.child3 name="row3"}
+                    {if $smarty.foreach.row3.first}<ul class="row3">{/if}
+                    {if $page_data3.open_flg}
+                        <li id="node-{$page_data3.page_id}" {if $page_data3.child4|@count > 0}class="open"{/if} preview_url="{$smarty.const.ROOT_URL}/{if $page_data3.page_sysnm_alias}{$page_data3.page_sysnm_alias}{else}{$page_data3.page_sysnm}{/if}/"><a href="#"><ins class="icon1">&nbsp;</ins>{$page_data3.page_nm}</a>(/{if $page_data3.page_sysnm_alias}{$page_data3.page_sysnm_alias}{else}{$page_data3.page_sysnm}{/if}/){if $page_data3.child4|@count==0 && !$smarty.foreach.row3.last}</li>{/if}
+                    {/if}
+
+                {foreach item="page_data4" from=$page_data3.child4 name="row4"}
+                    {if $smarty.foreach.row4.first}<ul class="row4">{/if}
+                    {if $page_data4.open_flg}
+                        <li id="node-{$page_data4.page_id}" {if $page_data4.child5|@count > 0}class="open"{/if} preview_url="{$smarty.const.ROOT_URL}/{if $page_data4.page_sysnm_alias}{$page_data4.page_sysnm_alias}{else}{$page_data4.page_sysnm}{/if}/"><a href="#"><ins class="icon1">&nbsp;</ins>{$page_data4.page_nm}</a>(/{if $page_data4.page_sysnm_alias}{$page_data4.page_sysnm_alias}{else}{$page_data4.page_sysnm}{/if}/){if $page_data4.child5|@count==0 && !$smarty.foreach.row4.last}</li>{/if}
+                    {/if}
+
+                {foreach item="page_data5" from=$page_data4.child5 name="row5"}
+                    {if $smarty.foreach.row5.first}<ul class="row5">{/if}
+                    {if $page_data5.open_flg}
+                        <li id="node-{$page_data5.page_id}" preview_url="{$smarty.const.ROOT_URL}/{if $page_data5.page_sysnm_alias}{$page_data5.page_sysnm_alias}{else}{$page_data5.page_sysnm}{/if}/"><a href="#"><ins class="icon1">&nbsp;</ins>{$page_data5.page_nm}</a>(/{if $page_data5.page_sysnm_alias}{$page_data5.page_sysnm_alias}{else}{$page_data5.page_sysnm}{/if}/)</li>
+                    {/if}
+                    {if $smarty.foreach.row5.last}</ul>{/if}
+                {/foreach}
+
+                    {if $smarty.foreach.row4.last}</li></ul>{/if}
+                {/foreach}
+
+
+                    {if $smarty.foreach.row3.last}</li></ul>{/if}
+                {/foreach}
+
+                    {if $smarty.foreach.row2.last}</li></ul>{/if}
+                {/foreach}
+
+                    {if $smarty.foreach.row1.last}</li></ul>{/if}
+                 {/foreach}
+{/foreach}
+        </ul>
+        </li>
+</ul>
+</div>
+
+{headblock}
+{literal}
+    <script type="text/javascript" src="/js/jstree/jquery.tree.js"></script>
+    <script type="text/javascript" src="/js/jstree/plugins/jquery.tree.contextmenu.js"></script>
+    <script type="text/javascript">
+<!--
+    j$(function () {
+        var first;
+        j$("#demo_1").tree({
+            ui : {
+                theme_name : "classic"
+            },
+            plugins : { 
+                contextmenu : { 
+                    items : {
+                        // get rid of the remove item
+                        remove : false,
+                        create : false,
+                        //rename : true,
+                        // add an item of our own
+                        rcms_preview : {
+                            label   : "ページを確認する", 
+                            icon    : "", // you can set this to a classname or a path to an icon like ./myimage.gif
+                            visible : function (NODE, TREE_OBJ) { 
+                                // this action will be disabled if more than one node is selected
+                                if(NODE.length != 1) return 0; 
+                                // this action will not be in the list if condition is met
+                                if(TREE_OBJ.get_text(NODE) == "Child node 1") return -1; 
+                                // otherwise - OK
+                                return 1; 
+                            }, 
+                            action  : function (NODE, TREE_OBJ) { 
+                                                                obj = TREE_OBJ.get_node(NODE);
+                                                                //obj.attr("id").substring(5)
+                                                                window.open().location.href = obj.attr("preview_url");
+                                //location.href(obj.attr("preview_url")); 
+                            },
+                            separator_before : false
+                        },
+                        rcms_page_edit : {
+                            label   : "ページを編集する", 
+                            icon    : "", // you can set this to a classname or a path to an icon like ./myimage.gif
+                            visible : function (NODE, TREE_OBJ) { 
+                                // this action will be disabled if more than one node is selected
+                                if(NODE.length != 1) return 0; 
+                                // this action will not be in the list if condition is met
+                                if(TREE_OBJ.get_text(NODE) == "Child node 1") return -1; 
+                                // otherwise - OK
+                                return 1; 
+                            }, 
+                            action  : function (NODE, TREE_OBJ) { 
+                                                                obj = TREE_OBJ.get_node(NODE);
+                                                                //obj.attr("id").substring(5)
+                                location.href = "/management/page/page_edit/page_page_id="+obj.attr("id").substring(5); 
+                            },
+                            separator_before : false
+                        }
+                    }
+                }
+            },
+            rules : {
+                valid_children : [ "root" ]
+            },
+            types : {
+                "default" : {
+                    deletable : false,
+                    renameable : true,
+                    max_depth :4
+                }
+            },
+            callback : {
+                    onchange : function (NODE) {
+                    //alert(j$(NODE).children("a:eq(0)").attr('href'));
+                    //document.location.href = $(NODE).children("a:eq(0)");
+                    //return obj;
+                    //  j$("#log").append("Focus changed<br />");
+                    }
+            }
+        });
+    });
+//-->
+    </script>
+{/literal}
+{/headblock}
+
+                <div class="clearFloat"><br></div>
+        </div>
+{/if}
+ 
+{/capture}
+
+{*承認待ちコンテンツ*}
+{capture name="unauthorized"}
+{if $unauthorizedList|@count>0}
+        <div class="unauthorized dragbox" id="unauthorized" {if $menu_easy_disp && !'unauthorized'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                        <h3>{'/label/approval_waiting_contents'|translate}{*承認待ちコンテンツ*}</h3>
+                        <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list">
+                            <tr>
+                                <th width="135px">{'/modules/menu/label/updated_date'|translate}</th>{* 更新日 *}
+                                <th width="100px">{'/modules/menu/label/update_by'|translate}</th>{* 更新者 *}
+                                <th width="267px">{'/label/title'|translate}</th>{* タイトル *}
+                            </tr>
+                        </table>
+                        <div class="tablelist_content">
+                            <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list gray_list_content">
+                {foreach from=$unauthorizedList item=row}
+                                <tr>
+                                    <td width="135px">{$row.update_ymdhi|pg_dateformat2:"%m/%d(%%w%%) %H:%M"}</td>
+                                    <td width="100px">{$row.admin_nm|escape}</td>
+                                    <td width="267px">
+                                        <p>{$row.module_type|translate_modules}{if $row.target_type != 'item'}&nbsp;&nbsp;{$row.target_type}{/if}{if $smarty.const.USE_MULTILANG}[{$row.langName}]{/if}</p>{* 言語 *}
+                                        <a href="{$row.link.link}">{$row.link.title|strip_tags|escape}</a>
+                                    </td>
+                                </tr>
+                {/foreach}
+                            </table>
+                        </div>
+        </div>
+{/if}
+{/capture}
+
+{*最近の更新コンテンツ*}
+{capture name="update"}
+        <div class="update dragbox" id="update" {if $menu_easy_disp && !'update'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                <h3>{'/modules/menu/label/recent_update_contents'|translate}</h3>{*最近の更新コンテンツ*}
+                <p class="contents_menu"><a href="/management/menu/subscription_edit/">{'/modules/menu/label/subscription_edit'|translate}</a></p>{* 更新受信設定 *}
+                <p class="contents_menu"><a href="/management/menu/update/">{'/modules/menu/label/update_list'|translate}</a></p>{* 更新履歴一覧 *}
+                <br class="clr">
+                <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list">
+                        <tr>
+                                <th width="135px">{'/modules/menu/label/updated_date'|translate}</th>{* 更新日 *}
+                                <th width="100px">{'/modules/menu/label/update_by'|translate}</th>{* 更新者 *}
+                                <th width="267px">{'/modules/menu/label/action'|translate}</th>{* アクション *}
+                        </tr>
+                </table>
+                <div class="tablelist_content">
+                    <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list gray_list_content">
+                        {section name=i loop=$data_history_list}
+                                <tr>
+                                        <td width="135px">{$data_history_list[i].change_ymdhi|pg_dateformat2}</td>
+                                        <td width="100px">{if $data_history_list[i].admin_nm}{$data_history_list[i].admin_nm}{else}{$data_history_list[i].admin_nm2}{/if}</td>
+                                        <td width="267px">
+                                        {if $data_history_list[i].content_exists==0}
+                                                {$data_history_list[i].module_text|escape}
+                                        {else}
+                                                <a href="{$data_history_list[i].module_link}">{$data_history_list[i].module_text|escape}</a>
+                                        {/if}
+                                        </td>
+                                </tr>
+                        {/section}
+                    </table>
+                </div>
+        </div><!-- update -->
+{/capture}
+
+{capture name="easy_menu_design"}
+{if $auth.design.select || $auth.page.select || $auth.layout.select || $auth.headerfooter.select}
+        <div class="easy_menu_design dragbox" id="easy_menu_design" {if $menu_easy_disp && !'easy_menu_design'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+            <h3>{'/modules/menu/label/easy_menu_design'|translate}</h3>{* デザインならここから！デザイナーズNavi *}
+            <div id="design_guide" style="width:517px;height:728px;display:block;">
+                    <strong>Loading....</strong>
+            </div>
+        </div>
+
+{literal}
+<script type="text/javascript">
+<!--
+
+    j$(document).ready( function() {
+                var so2 = new SWFObject("{/literal}{'/images/management/design_guide.swf'|lang_img_path}{literal}", "design_guide", "517px", "728px", "8", "#FFFFFF");
+                so2.addParam("wmode", "transparent");
+                so2.write("design_guide");
+    });
+
+//-->
+</script>
+{/literal}
+
+{/if}
+{/capture}
+
+{*使用容量*}
+{capture name="use"}
+            <div class="use dragbox" id="use" {if $menu_easy_disp && !'use'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                <dl>
+                    <dt>{'/label/use_capacity'|translate}{*使用容量*}：</dt>
+                    <dd>
+{if $sitedata.plan eq 10}
+{'/modules/menu/label/paid_version'|translate}{* 有料版 *}
+{else}
+{'/modules/menu/label/free_version'|translate}{* 無料版 *}
+{/if}
+　<span id="disk_space">checking...</span> / {$limit_space}</dd>
+                </dl>
+            </div><!-- use -->
+
+
+{literal}
+<script type="text/javascript">
+<!--
+   j$('#disk_space').load('/direct/menu/diskspace/');
+//-->
+</script>
+{/literal}
+
+{/capture}
+
+{*アクセス数*}
+{capture name="access"}
+{if ($smarty.const.NO_ACCESSCOUNT ne '1' && $auth.accesscount.select) || ($use_google_analytics && $auth.api_googleanalytics.select)}
+                <div class="access dragbox" id="access" {if $menu_easy_disp && !'access'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                        <div class="title">
+                                <h3>{'/label/view'|translate}{*アクセス数*}</h3>
+                                {if $smarty.const.NO_ACCESSCOUNT}
+                                <p><a href="/management/api_googleanalytics/access_data/">≫{'/modules/menu/label/api_googleanalytics'|translate}{*アクセス統計*}</a></p>
+                                {else}
+                                <p><a href="/management/accesscount/accesscount_list/">≫{'/modules/menu/label/access_statistic'|translate}{*アクセス統計*}</a></p>
+                                {/if}
+                        </div>
+                        <dl class="traffic">
+                                <dt>{'/label/this_month'|translate}{*今月*}：</dt>
+                                <dd id="monthly_total_cnt"></dd>
+                                <dt>{'/label/yesterday'|translate}{*昨日*}：</dt>
+                                <dd id="yesterday_total_cnt"></dd>
+                        </dl>
+                        <div id="flashcontent" style="width:230px;height:140px;display:block;">
+                                        <strong>Loading....</strong>
+                        </div>
+                </div><!-- access -->
+
+{literal}
+<script type="text/javascript">
+<!--
+    j$(document).ready( function() {
+                j$.getJSON("/direct/menu/getGadata/", {}, function(json){
+                    j$('#monthly_total_cnt').html(json[0]+'<span>PV</span>');
+                    j$('#yesterday_total_cnt').html(json[1]+'<span>PV</span>');
+                });
+
+                var host = location.protocol + "//" + location.hostname;
+                var so = new SWFObject("/images/common/amcharts/amline.swf", "amline", "230px", "140px", "8", "#FFFFFF");
+                so.addVariable("path", "/images/common/amcharts/");
+                so.addVariable("data_file", escape(host + '/direct/accesscount/accesscount_graph_menu/?page_sysnm=site&dayCount=10'));
+                so.addVariable("settings_file", escape(host + '/direct/accesscount/accesscount_graph_settings_menu/?page_sysnm=site&dayCount=10'));
+                so.addVariable("preloader_color", "#000000");
+                so.addParam("wmode", "transparent");
+                so.write("flashcontent");
+    });
+
+//-->
+</script>
+{/literal}
+
+
+{/if}
+
+{/capture}
+
+{*お知らせ*}
+{capture name="infomation"}
+{if $rcmsinfo|@count > 0}
+                <div class="infomation dragbox" id="infomation" {if $menu_easy_disp && !'infomation'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                        <h3>{'/label/information'|translate}</h3>{*お知らせ*}
+                        <dl class="osirase">
+                                {foreach from=$rcmsinfo item=info}
+                                        <dt>{$info.inst_ymdhi|pg_dateformat2:"%m/%d(%%w%%)"}</dt>
+                                        {if $info.link_flg eq '1'}
+                                                <dd><a href="{$info.site_url}/rcms_info_detail/id={$info.rcms_info_id}">{$info.title|escape}</a></dd>
+                                        {elseif $info.link_flg eq '2'}
+                                                <dd><a href="{$info.link_url}">{$info.title|escape}</a></dd>
+                                        {else}
+                                                <dd>{$info.title|escape}</dd>
+                                        {/if}
+                                {/foreach}
+                        </dl>
+                </div><!-- infomation -->
+{/if}
+
+{/capture}
+
+{* お問い合わせ *}
+{capture name="inquiry"}
+{if $auth.inquiry.select}
+        <div class="inquiry dragbox" id="inquiry" {if $menu_easy_disp && !'inquiry'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+            <h3>{'/modules/menu/label/inquiry'|translate}</h3>{* お問い合わせ *}
+            <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list">
+                <tr>
+                    <th width="267px">{'/modules/menu/label/inquiry'|translate}{*問い合わせ*}</th>
+                    <th width="100px">{'/label/category'|translate}</th>
+                    <th width="135px">{'/modules/menu/label/unsupported'|translate}{*未対応/返信あり*}</th>
+                </tr>
+            </table>
+            <div class="tablelist_content">
+                <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list gray_list_content">
+                {section name=i loop=$inquiry_list}
+                    <tr>
+                        <td width="267px"><a href="/management/inquiry/inquiry_bn_list/inquiry_id={$inquiry_list[i].inquiry_id}&s_category={$inquiry_list[i].inquiry_category}">{$inquiry_list[i].inquiry_name}</a></td>
+                        <td width="100px">{$inquiry_list[i].inquiry_category_name}</td>
+                        <td width="135px"><a href="/management/inquiry/inquiry_bn_list/inquiry_id={$inquiry_list[i].inquiry_id}&s_status=0&s_category={$inquiry_list[i].inquiry_category}">{$inquiry_list[i].mail_cnt}件</a>/<a href="/management/inquiry/inquiry_bn_list/inquiry_id={$inquiry_list[i].inquiry_id}&s_status=20&s_category={$inquiry_list[i].inquiry_category}">{$inquiry_list[i].re_mail_cnt}件</a></td>
+                    </tr>
+                {/section}
+                </table>
+            </div>
+        </div><!-- inquiry -->
+{/if}
+
+{/capture}
+
+{* 新着コメント *}
+{capture name="new_detail_comment"}
+{if $auth.comment.select}
+                        <div class="new_detail_comment dragbox" id="new_detail_comment" {if $menu_easy_disp && !'new_detail_comment'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                                <h3>{'/modules/menu/label/new_comments'|translate}</h3>{* 新着コメント *}
+                                <dl>
+                                {foreach item=itemList from=$commentList name=commentdata}
+                                        <dt>
+                                                <span>［{$itemList.create_date|pg_dateformat2:"%m/%d(%%w%%) %H:%M"}］</span>
+                                                {if $itemList.open_flg == 2}
+                                                        <img src="/images/management/sankaku.gif"><a href="/management/comment/comment_edit/comment_id={$itemList.comment_id}&comment_header_id={$itemList.comment_header_id}&module_id={$itemList.module_id}">{$itemList.module_name}({'/modules/menu/msg/applying'|translate})</a>{* 申請中 *}
+                                                {else}
+                                                        <a href="{$itemList.link}#comment_form">{$itemList.module_name}</a>
+                                                {/if}
+                                                &nbsp;by&nbsp;{if $itemList.mail != ""}<a href="mailto:{$itemList.mail|escape}">{$itemList.name|escape}</a>{else}{$itemList.name|escape}{/if}
+                                        </dt>
+                                        <dd>
+                                                {$itemList.note|strip_tags|mbtruncate:100|escape}
+                                        </dd>
+                                {/foreach}
+                                </dl>
+                        </div>
+{/if}
+
+{/capture}
+
+{* 新着掲示板 *}
+{capture name="new_detail_bbs"}
+{if $auth.bbs.select}
+                        <div class="new_detail_bbs dragbox" id="new_detail_bbs" {if $menu_easy_disp && !'new_detail_bbs'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                                <h3>{'/modules/menu/label/new_bulletins'|translate}</h3>{* 新着掲示板 *}
+                                <dl>
+                                        {foreach item=itemList from=$bbsList name=bbsdata}
+                                                <dt>［{$itemList.thread_update|pg_dateformat2:"%m/%d(%%w%%) %H:%M"}］</dt>
+                                                <dd>
+                                                        {if $itemList.open_flg == 2}
+                                                                <a href="/management/bbs/bbs_detail_edit/bbs_header_id={$itemList.bbs_header_id}&bbs_id={$itemList.bbs_id}">{$itemList.title|escape}（{'/modules/menu/msg/applying'|translate}）</a>{* 申請中 *}
+                                                        {else}
+                                                                <a href="/management/bbs/bbs_detail_edit/bbs_header_id={$itemList.bbs_header_id}&bbs_id={$itemList.bbs_id}">{$itemList.title|escape}</a>
+                                                        {/if}
+                                                        from {$itemList.name|escape}<br>
+                                                </dd>
+                                        {/foreach}
+                                </dl>
+                        </div>
+{/if}
+
+{/capture}
+
+{* 新着トラックバック *}
+{capture name="new_detail_tb"}
+{if $auth.tb.select}
+                <div class="new_detail_tb dragbox" id="new_detail_tb" {if $menu_easy_disp && !'new_detail_tb'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                        <h3>{'/modules/menu/label/new_trackbacks'|translate}</h3>{* 新着トラックバック *}
+                        <dl>
+                                {foreach item=itemList from=$trackbackList name=mydata}
+                                        <dt>［{$itemList.receive_ymdhi|pg_dateformat2:"%m/%d(%%w%%) %H:%M"}］</dt>
+                                        <dd>
+                                                <a href="{$itemList.link}">{$itemList.title|escape}</a>
+                                                from {$itemList.blog_name|escape}<br>
+                                        </dd>
+                                {/foreach}
+                        </dl>
+                </div>
+{/if}
+{/capture}
+
+{*携帯管理画面QRコード*}
+{capture name="mobile_qr"}
+                <div class="mobile_qr dragbox" id="mobile_qr" {if $menu_easy_disp && !'mobile_qr'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                        <h3>{'/label/qr_code_to_mobile_management'|translate}{*携帯管理画面QRコード*}</h3>
+                        <img src="{$qrcode_path}"><br>
+                        <a href="mailto:?subject={$subject}&body={$qrcode_url}">{'/msg/send_url_by_mail'|translate}{*URLをメールで送る*}</a>
+                <br/>
+                <input type="button" value="{'/modules/mobile/label/mobile_preview'|translate}{*モバイル版プレビュー*}" onClick="window.open('/direct/mobile/preview/', 'mobile_preview', 'width=250, height=600, menubar=no, toolbar=no, scrollbars=yes');return false;" /><br/>
+                <input type="button" value="{'/modules/mobile/label/smart_phone_preview'|translate}{*スマートフォン版プレビュー*}" onClick="window.open('/direct/mobile/preview/?smart_phone=1', 'mobile_preview', 'width=320, height=600, menubar=no, toolbar=no, scrollbars=yes');return false;" />
+                </div><!-- mobile_qr -->
+
+{/capture}
+
+{*全文検索ボックス*}
+{capture name="text_search"}
+  <div class="text_search dragbox" id="text_search" {if $menu_easy_disp && !'text_search'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+
+    <form action="/management/search/search_list/">
+      <div>
+        <input type="text" name="p" value="" />
+        <input type="submit" value="{'/label/search'|translate}" />
+      </div>
+{*
+      <div class="option">
+        <div style="margin-top:10px">
+          {'/label/language'|translate}:<select name="lang"><option value="">----</option>{html_options options=$lang_options selected=$smarty.get.lang}</select>
+        </div>
+      </div>
+*}
+    </form>
+  </div><!-- text_search -->
+{/capture}
+
+{*メニュー*}
+{capture name="menu_link"}
+            <div class="menu dragbox" id="menu_link" {if $menu_easy_disp && !'menu_link'|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+                <h3>{'/label/menu'|translate}</h3>{* メニュー *}
+                <div class="menu_list_bottom">
+                <div class="menu_list">
+                    <table cellspacing="2">
+                        <tr>
+                            <th>{'/label/menus/contents'|translate}</th>{* コンテンツ更新 *}
+                            <td>
+                                <ul>
+                                {foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+                                    {if $FOR_MENU.conf_tab[$module] eq 'contents'}
+                                        {if $FOR_MENU.auth[$module].select}
+                                            <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+                                        {/if}
+                                    {/if}
+                                {/foreach}
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                    <table cellspacing="2">
+                        <tr>
+                            <th>{'/label/menus/communication'|translate}</th>{* コミュニケーション *}
+                            <td>
+                                <ul>
+                                {foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+                                    {if $FOR_MENU.conf_tab[$module] eq 'communication'}
+                                        {if $FOR_MENU.auth[$module].select}
+                                            <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+                                        {/if}
+                                    {/if}
+                                {/foreach}
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                    <table cellspacing="2">
+                        <tr>
+                            <th>{'/label/menus/design'|translate}</th>{* デザイン *}
+                            <td>
+                                <ul>
+                                {foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+                                    {if $FOR_MENU.conf_tab[$module] eq 'design'}
+                                        {if $FOR_MENU.auth[$module].select}
+                                            <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+                                        {/if}
+                                    {/if}
+                                {/foreach}
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                    <table cellspacing="2">
+                        <tr>
+                            <th>{'/label/menus/setup'|translate}</th>{* サイト基本設定 *}
+                            <td>
+                                <ul>
+                                {foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+                                    {if $FOR_MENU.conf_tab[$module] eq 'setup'}
+                                        {if $FOR_MENU.auth[$module].select}
+                                            <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+                                        {/if}
+                                    {/if}
+                                {/foreach}
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                    <table cellspacing="2" class="last">
+                        <tr>
+                            <th>{'/label/menus/member'|translate}</th>{* メンバー管理 *}
+                            <td>
+                                <ul>
+                                {foreach from=$FOR_MENU.INCLUDE_MODULE_LIST item=module}
+                                    {if $FOR_MENU.conf_tab[$module] eq 'member'}
+                                        {if $FOR_MENU.auth[$module].select}
+                                            <li><a href="{$FOR_MENU.management_menus[$module].link}">{$module|translate_modules|default:$FOR_MENU.contName[$module]}</a></li>
+                                        {/if}
+                                    {/if}
+                                {/foreach}
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div><!-- menu -->
+{/capture}
+
+{foreach from=$widget_list item=widget}
+{if $widget.str}
+{capture name='widget'|cat:$widget.site_widget_id}
+<div class="widget dragbox" id="widget{$widget.site_widget_id}" {if $menu_easy_disp && !'widget'|cat:$widget.site_widget_id|@in_array:$menu_easy_disp}style="display:none;"{/if}>
+    <h3>{$widget.widget_nm}</h3>
+    <div class="dragbox-content">
+        {$widget.str}
+    </div>
+</div>
+{/capture}
+{/if}
+{/foreach}
+
+
+{if $auth.menu.update}
+{headblock}
+<script type="text/javascript">
+google.load("jqueryui", "1.8.7"); 
+</script>
+
+{literal}
+<script type="text/javascript">
+<!--
+    j$(function () {
+j$('.column').sortable({  
+    connectWith: '.column',  
+    handle: 'h3',
+    cursor: 'move',  
+    placeholder: 'placeholder',
+    forcePlaceholderSize: true,  
+    opacity: 0.4,
+        stop : function(){
+            var left=[];
+            j$("#left>div.dragbox").each(function(i,v){
+                left.push(v.id);
+            });
+            var right=[];
+            j$("#right>div.dragbox").each(function(i,v){
+                right.push(v.id);
+            });
+            new Ajax.Request("/direct/menu/update_menu_order/", { "method": "post", "parameters": "mng_type={/literal}{$MNG_TYPE}{literal}&left="+left.toString()+"&right="+right.toString()});
+        }
+
+});
+
+j$('.dragbox').each(function(){
+    j$(this).hover(function(){
+        j$(this).find('h3').addClass('collapse');
+    }, function(){
+        j$(this).find('h3').removeClass('collapse');
+    })
+    .find('h3').hover(function(){
+        j$(this).find('.configure').css('visibility', 'visible');
+    }, function(){
+        j$(this).find('.configure').css('visibility', 'hidden');
+    })
+    .find('.configure').click(function(){
+        j$(this).siblings('.dragbox-content').toggle();
+    })
+    .end()
+    .find('.configure').css('visibility', 'hidden');
+});
+
+    });
+//-->
+</script>
+
+<style type="text/css">
+.dragbox{
+    margin-bottom: 20px;
+}
+.dragbox h3{
+    cursor: move;
+}
+
+.column .placeholder{
+    background: #f0f0f0;  
+    border:2px dashed #ddd;  
+}
+.dragbox h3 span.configure{
+    margin-right:5px;
+    float:right;
+    cursor: pointer;
+}
+</style>
+{/literal}
+{/headblock}
+{/if}
+
+

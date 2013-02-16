@@ -1,0 +1,115 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+<h2>グループ編集　{if $formData.version_no}第{$formData.version_no}版{if $formData.latest_flg eq '1'}(最新){/if}{/if}</h2>
+<ul>
+  {if $auth.shopping.insert}
+  <li class="add"><a href="/management/shopping/shopping_group_edit/"><span>グループ追加</span></a></li>
+  {/if}
+  {if $shopping_group_id}
+  <li class="normal"><a href="/management/shopping/shopping_history/shopping_group_id={$shopping_group_id}"><span>{'/label/update_history'|translate}</span></a></li>
+  {/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/shopping/shopping_group_list/">{$module_nm}</a>
+<a href="/management/shopping/shopping_group_list/">グループ一覧</a>
+グループ編集
+{/pankuzu}
+
+<p class="page_info">
+<a href="#relation_data">関連情報：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}件</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{if $shopping_group_id}
+<ul class="minitabs">
+  <li><a href="/management/shopping/shopping_group_edit/shopping_group_id={$shopping_group_id}" class="active">グループ設定</a></li>
+  <li><a href="/management/shopping/shopping_list/shopping_group_id={$shopping_group_id}">商品一覧</a></li>
+  <li><a href="/management/shopping/shopping_edit/shopping_group_id={$shopping_group_id}">商品編集</a></li>
+  <li><a href="/management/shopping/shopping_lump/shopping_group_id={$shopping_group_id}">一括処理</a></li>
+  <li><a href="/management/shopping/shopping_category_list/shopping_group_id={$shopping_group_id}" >カテゴリ設定</a></li>
+</ul>
+<div class="clear"></div>
+{/if}
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="shopping_group_edit" id="shopping_group_edit" action="/management/shopping/shopping_group_edit/" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="shopping_group_id" value="{$shopping_group_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="subflg" value="" />
+
+  <div class="list_main">
+
+    <table width="100%" border="0">
+      <tr>
+    <th style="white-space:nowrap">グループ名<span class="required">必須</span></th>
+    <td>
+      <input type="text" name="group_nm" value="{$formData.group_nm|escape}" size="80" />
+    </td>
+      </tr>
+    </table>
+
+
+    <h3><span class="link_button">詳細設定</span></h3>
+    <table width="100%">
+      <tr>
+        <th style="width:150px">アクセス制限:</th>
+        <td><select name="secure_level[]" size="5" multiple="multiple">{html_options options=$arrAdmin selected=$arrSecure_level}</select></td>
+      </tr>
+    </table>
+
+
+{*関連情報はひとまずなし
+  <a id="relation_data" name="relation_data"></a>
+  {rcms_include file="management/relation_edit.html"}
+*}
+
+  {rcms_include file="management/open_date_box.html" id=$shopping_group_id data=$formData}
+
+  {buttonbox}
+    {if $auth.shopping.update && $shopping_group_id != ""}
+      <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+    {/if}
+    {if $auth.shopping.insert && $shopping_group_id == ""}
+      <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+    {/if}
+    {if $auth.shopping.delete && $shopping_group_id != ""}
+      <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+    {/if}
+  {/buttonbox}
+
+  {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </div>
+  </form>
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+
+function confirmDelete(f){
+    if(confirm("このグループ内の全ての商品も消去されますが、削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+{/literal}
+-->
+</script>
+
+{rcms_include file="management/footer.html"}

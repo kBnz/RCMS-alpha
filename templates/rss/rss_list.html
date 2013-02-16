@@ -1,0 +1,21 @@
+{module name="rss_list"}
+<h2 class="module_title"><span>サイト内のrss情報一覧</span></h2>
+<div class="module_contents">
+
+<div style="overflow:auto;">
+{foreach from=$allRSS key=module_nm item=feeds}
+  <div class="rss_item">
+    <h4 class="module_nm">{$contName[$module_nm]}</h4>
+    <ul>
+      {foreach from=$feeds item=feed}
+        <li>
+          <a href="{$feed.link}"><span class="rss_button"><img src="/images/modules/rss/rss.gif" alt="rss"></span></a>
+          <a href="{$feed.srcLink}">{$feed.title|escape}</a>
+        </li>
+      {/foreach}
+    </ul>
+  </div>
+{/foreach}
+</div>
+</div>
+{/module}

@@ -1,0 +1,14 @@
+<h2>{'/modules/api_youtube/label/api_youtube_list'|translate}</h2>
+{'/modules/api_youtube/label/youtube_list_explain'|translate}{*このサイトで紹介しているYouTube動画の一覧です。*}<br/>
+
+
+      {foreach from=$items item=item}
+<div style="text-align:center;font-size:small;">
+<a href="{$item.detail}"><img src="{$item.thumb}" alt="{$item.name}" /></a><br/>
+<a href="{$item.detail}">{$item.name}</a><br/>
+<br/>
+</div>
+      {/foreach}
+  {rcms_include file="common/mobile/pageLinks.html" pageInfo=$pageInfo page_num=10}
+<hr/>
+

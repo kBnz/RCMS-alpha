@@ -1,0 +1,47 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<link href="/css/blog/blog_management.css" rel="stylesheet" type="text/css" media="screen,print">
+
+
+<div class="list_right_bt">
+<h2 class="member">{'/modules/memberregist/label/memberregist_change'|translate}{*新規メンバー登録条件*}</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist'|translate}</a>
+<a href="/management/memberregist/memberregist_edit/">{'/modules/memberregist/label/memberregist_edit'|translate}</a>
+{'/modules/memberregist/label/memberregist_change'|translate}
+{/pankuzu}
+{* 【ぱんくず】メンバー >> 登録・招待設定 >> 新規メンバー登録設定 >> 新規メンバー登録条件 *}
+
+<div class="clear"></div>
+
+<div class="main_contents" >
+<div class="list_main">
+
+  <p class="lead">{'/modules/memberregist/msg/select_condition'|translate}{*新規メンバーの登録条件を選んでください。*}</p>
+  <form method="POST" action="/management/memberregist/memberregist_set/" name="change">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <table width="100%">
+    {foreach from=$fields item="word" key="type"}
+      {if $type == $current_type}
+        <tr><td><input type="radio" name = "type_new" value={$type} checked></td>
+            <td>{$word}</td></tr>
+      {else}
+        <tr><td><input type="radio" name="type_new" value={$type}></td>
+          <td>{$word}</td></tr>
+      {/if}
+    {/foreach}
+    </table>
+
+    {buttonbox}
+      <button type="submit">{'/label/set_up'|translate}{*設定する*}</button>
+    {/buttonbox}
+    <p class="hint">{'/modules/memberregist/msg/alert_about_select_cant_register_new'|translate}{*新規登録を禁止すると、招待中のメンバーも全員キャンセルされます。*}</p>
+  </form>
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

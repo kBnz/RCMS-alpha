@@ -1,0 +1,20 @@
+{if $is_SmartPhone && $page_sysnm eq 'top'}
+<div style="text-align:center;background-color:#eeeeee;" id="switch_SmartPhonePCView"><a href="{$smarty.const.ROOT_URL}?SmartPhonePCView=1"><span style="color:#1111cc;font-size:10pt;">PC版に切り替える</span></a></div>
+{/if}
+<a id="top"></a>
+{if $page_sysnm eq 'top'}
+{if $mobile_logo_url ne ''}
+<div style="text-align:center;">
+<img src="{$mobile_logo_url}" alt="<!--%site_nm%-->" />
+</div>
+{/if}
+<h1><!--%site_nm%--></h1>
+{if $mobile_marquee ne ''}
+{if $is_SmartPhone}
+<marquee>{$mobile_marquee}</marquee>
+{else}
+<div style="display:-wap-marquee;">{$mobile_marquee}</div>
+{/if}
+{/if}
+{/if}
+

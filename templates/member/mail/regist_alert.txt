@@ -1,0 +1,3 @@
+{$friend_nm}さん、こんにちは！
+{$site_title}からの自動送信です。
+{$friend_nm}さんが{$site_title}へ招待された{$name}さん({$email})の登録が完了しました。

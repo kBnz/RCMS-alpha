@@ -1,0 +1,81 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+<h2>{'/modules/tag/label/tag_edit'|translate}</h2>
+  <ul>
+    {if $auth.tag.insert}
+        <li class="add"><a href="/management/tag/tag_edit/"><span>{'/label/add_btn'|translate}</span></a></li>
+    {/if}
+  </ul>
+</div>
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/tag/tag_list/">{'/modules/tag'|translate}</a>
+<a href="/management/tag/tag_list/">{'/modules/tag/label/tag_list'|translate}</a>
+{'/modules/tag/label/tag_edit'|translate}
+{/pankuzu}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+{rcms_include file="tag/admin/minitabs.html" page_type=$ct}
+
+<div class="list_main">
+  <form action="/management/tag/tag_edit/" method="post" name="tag_edit" id="tag_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="tag_id" type="hidden" value="{$tag_id}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+    {rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/tag/tag_edit/tag_id=$tag_id"}
+    {rcms_include file="management/messages_box.html"}
+    {rcms_include file="management/errors_box.html"}
+
+    {if $tag_id}  
+    {lang_selector meta=$docmeta link="/management/tag/tag_edit/tag_id=$tag_id"}
+    {/if}  
+
+    <table width="100%">
+      <tr>
+        <th>{'/label/title'|translate}</th>{*タイトル*}
+        <td><input size="25" maxlength="50" name="tag_nm" type="text" value="{$formData.tag_nm|escape}" /></td>
+      </tr>
+      <tr>
+        <th>{'/label/category'|translate}</th>{*カテゴリ*}
+        <td><select name="tag_category_id">{html_options options=$arrCategory selected=$formData.tag_category_id}</select></td>
+      </tr>
+      {if $tag_id}  
+      <tr>
+        <th>{'/modules/tag/label/open_contents_cnt'|translate}</th>
+        <td>{$formData.open_contents_cnt|escape}</td>
+      </tr>
+      <tr>
+        <th>{'/modules/tag/label/all_contents_cnt'|translate}</th>
+        <td>{$formData.all_contents_cnt|escape}</td>
+      </tr>
+      {/if}
+    </table>
+
+
+    {if $docmeta.is_primary}
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+
+    <div class="clear"></div>
+
+    {rcms_include file="management/open_date_box.html" id=$tag_id data=$formData}
+    {/if}{* is_primary *}
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/photo/item/$photo_id", $docmeta.lang) docmeta=$docmeta link="/management/photo/photo_edit/photo_id=$photo_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

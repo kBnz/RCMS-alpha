@@ -1,0 +1,16 @@
+<h2>ｲﾍﾞﾝﾄ一覧</h2>
+  <table>
+    <tr>
+      <th>公演日</th>
+      <th>ﾀｲﾄﾙ</th>
+    </tr>
+{section name=mydata loop=$liveinfoList}
+    <tr>
+      <td>{$liveinfoList[mydata].ymd_str}</td>
+      <td>
+  <a href="/liveinfo_detail/id={$liveinfoList[mydata].liveinfo_id}">{$liveinfoList[mydata].title}</a>
+      </td>
+    </tr>
+{/section}
+  </table>
+

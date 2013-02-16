@@ -1,0 +1,147 @@
+{module name="restaurant_detail"}
+<h2 class="module_title"><span>店舗情報</span></h2>
+
+<div class="module_contents">
+<div class="pr_text">
+<h3>{$restaurantData.pr1|escape|nl2br}</h3> 
+<p class="text">{$restaurantData.pr2|escape|nl2br}</p>
+</div>
+
+<table class="list">
+{foreach from=$restaurantData.order_list item=key name=list_data}
+
+  {if $key == "address"}
+      {if $restaurantData.zip_main || $restaurantData.zip_sub || $restaurantData.tdfk_nm || $restaurantData.address1 || $restaurantData.address2}
+      <tr>
+        <th nowrap>住所</th>
+          <td>
+          {if $restaurantData.zip_main || $restaurantData.zip_sub}
+            <p>{$restaurantData.zip_main}&nbsp;-&nbsp;{$restaurantData.zip_sub}</p>
+          {/if}
+            <p>{$restaurantData.tdfk_nm}{$restaurantData.address1|nl2br} {$restaurantData.address2|nl2br}</p>
+
+          {if $location_linkurl|@count == 1}
+            <p>
+              [ <a href="{$location_linkurl.0.url}" >MAP</a> ]
+            </p>
+          {elseif  $location_linkurl|@count > 1}
+            <p>
+              {section name=location_url loop=$location_linkurl}
+                  [ <a href="{$location_linkurl[location_url].url}" >{$location_linkurl[location_url].location_nm}</a> ]
+              {/section}
+            </p>
+          {/if}
+
+          </td>
+      </tr>
+      {/if}
+  {elseif $key == "email"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurant_items_options[$key].name}</th>
+              <td><a href="mailto:{$restaurantData.ext_txt_01|escape}">{$restaurantData.ext_txt_01|escape|nl2br}</a></td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_01"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_01|nl2br}</th>
+              <td>{$restaurantData.ext_txt_01|nl2br}</td>
+          </tr>
+      {/if}
+   {elseif $key == "ext_title_02"}
+     {if $restaurantData[$key]}
+         <tr>
+             <th nowrap>{$restaurantData.ext_title_02|nl2br}</th>
+             <td>{$restaurantData.ext_txt_02|nl2br}</td>
+         </tr>
+     {/if}
+  {elseif $key == "ext_title_03"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_03|nl2br}</th>
+              <td>{$restaurantData.ext_txt_03|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_04"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_04|nl2br}</th>
+              <td>{$restaurantData.ext_txt_04|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_05"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_05|nl2br}</th>
+              <td>{$restaurantData.ext_txt_05|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_06"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_06|nl2br}</th>
+              <td>{$restaurantData.ext_txt_06|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_07"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_07|nl2br}</th>
+              <td>{$restaurantData.ext_txt_07|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_08"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_08|nl2br}</th>
+              <td>{$restaurantData.ext_txt_08|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_09"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_09|nl2br}</th>
+              <td>{$restaurantData.ext_txt_09|nl2br}</td>
+          </tr>
+      {/if}
+  {elseif $key == "ext_title_10"}
+      {if $restaurantData[$key]}
+          <tr>
+              <th nowrap>{$restaurantData.ext_title_10|nl2br}</th>
+              <td>{$restaurantData.ext_txt_10|nl2br}</td>
+          </tr>
+      {/if}
+  {else}
+      {if $restaurantData[$key] && $key ne 'pr1' && $key ne 'pr2' && $key ne 'img1_type' && $key ne 'img2_type' && $key ne 'img3_type' && $key ne 'img4_type'}
+      <tr>
+          <th nowrap>{$restaurant_items_options[$key].name}</th>
+          <td>{$restaurantData[$key]|nl2br}</td>
+      </tr>
+      {/if}
+  {/if}
+{/foreach}
+
+
+
+
+</table>
+
+<div class="pr_photo">
+	<ul>
+{if $restaurantData.img1_s_url}
+	<li><img alt="{$restaurantData.img1_text}" src="{$restaurantData.img1_s_url}" /><br>{$restaurantData.img1_text|escape|nl2br}</li> 
+{/if}
+{if $restaurantData.img2_s_url}
+	<li><img alt="{$restaurantData.img2_text}" src="{$restaurantData.img2_s_url}" /><br>{$restaurantData.img2_text|escape|nl2br}</li> 
+{/if}
+{if $restaurantData.img3_s_url}
+	<li><img alt="{$restaurantData.img3_text}" src="{$restaurantData.img3_s_url}" /><br>{$restaurantData.img3_text|escape|nl2br}</li> 
+{/if}
+{if $restaurantData.img4_s_url}
+	<li><img alt="{$restaurantData.img4_text}" src="{$restaurantData.img4_s_url}" /><br>{$restaurantData.img4_text|escape|nl2br}</li> 
+{/if}
+	</ul>
+</div>
+</div>
+{/module}

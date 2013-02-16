@@ -1,0 +1,154 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+    if(confirm("削除してもよろしいですか？")){
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+
+function setCB(idName){
+   cb = document.getElementById(idName);
+   cb.disabled = false;
+}
+function resetCB(idName){
+   cb = document.getElementById(idName);
+   cb.checked = false;
+   cb.disabled = true;
+}
+
+{/literal}
+-->
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}カテゴリ編集</h2>
+<ul>
+{if $auth.shopping.insert}
+<li class="add"><a href="/management/shopping/shopping_category_edit/shopping_group_id={$shopping_group_id}"><span>カテゴリ追加</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/shopping/shopping_group_list/">{$module_nm}</a>
+<a href="/management/shopping/shopping_group_list/">グループ一覧</a>
+<a href="/management/shopping/shopping_category_list/shopping_group_id={$shopping_group_id}">「{$arrGroup[$shopping_group_id]}」のカテゴリ設定</a>
+カテゴリ編集
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/shopping/shopping_group_edit/shopping_group_id={$shopping_group_id}">グループ設定</a></li>
+  <li><a href="/management/shopping/shopping_list/shopping_group_id={$shopping_group_id}">商品一覧</a></li>
+  <li><a href="/management/shopping/shopping_edit/shopping_group_id={$shopping_group_id}">商品編集</a></li>
+  <li><a href="/management/shopping/shopping_lump/shopping_group_id={$shopping_group_id}">一括処理</a></li>
+  <li><a href="/management/shopping/shopping_category_list/shopping_group_id={$shopping_group_id}" class="active">カテゴリ設定</a></li>
+</ul>
+<h3 class="title">{if $cateInfo.shopping_category_id != ""}{$cateInfo.category_nm|escape}{else}カテゴリ新規作成{/if}</h3>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form name="shopping_category_edit" id="shopping_category_edit" action="/management/shopping/shopping_category_edit/shopping_category_id={$cateInfo.shopping_category_id}&shopping_group_id={$shopping_group_id}" method="POST">
+{*    <input type="hidden" name="shopping_category_id" value="{$cateInfo.shopping_category_id}" />*}
+{*    <input type="hidden" name="shopping_group_id" value="{$shopping_group_id}">*}
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+
+    <table width="100%" border="0">
+      <tr>
+        <th>カテゴリ名</th>
+        <td>
+          <input type="text" style="width: 400px" name="category_nm" value="{$formData.category_nm}" /><span class="required">必須</span>
+        </td>
+      </tr>
+      <tr>
+        <th>親カテゴリ</th>
+        <td>
+          <select name="parent_id">{html_options options=$category_parent_options selected=$formData.parent_id}</select><span class="required">必須</span>
+        </td>
+      </tr>
+      <tr>
+        <th>項目の設定</th>
+        <td>
+          <table id="user_profile_table" class="not_list_main">
+            <tr class=""><td></td><th colspan="2">項目に使用</th><th rowspan="2">一覧で表示する</th><th rowspan="2">並び順(大きい方が上)</th></tr>
+            <tr class=""><td></td><th>する</th><th>しない</th></tr>
+            {foreach from=$shopping_profile_options item=val key=key}
+            <tr>
+              {if $val.free}
+              <td><input type="text" name="{$key}" value="{$shopping_profile_options.$key.name|escape}" /></td>
+              {else}
+              <td>{$val.name}</td>
+              {/if}
+              <td class="btn"><input type="radio" name="user_profile[{$key}]" value="{$smarty.const.SHOPPING_PROFILE_ON}"
+                               {if $formData.user_profile.$key eq $smarty.const.SHOPPING_PROFILE_ON}checked{/if} onClick="setCB('{$key}_cb')"/>
+              </td>
+              <td class="btn"><input type="radio" name="user_profile[{$key}]" value="{$smarty.const.SHOPPING_PROFILE_OFF}"
+                               {if $formData.user_profile.$key eq $smarty.const.SHOPPING_PROFILE_OFF}checked{/if} onClick="resetCB('{$key}_cb')"/>
+              </td>
+              <td class="btn"><input type="checkbox" name="in_list[{$key}]" value="{$smarty.const.SHOPPING_PROFILE_ON}"
+                               {if $formData.in_list.$key eq $smarty.const.SHOPPING_PROFILE_ON}checked{/if}
+                               {if $formData.user_profile.$key eq $smarty.const.SHOPPING_PROFILE_OFF}disabled{/if} id="{$key}_cb"/>
+              </td>
+              <td><input type="text" name="grade[{$key}]" size="10" value="{if $formData.grade.$key}{$formData.grade.$key}{else}0{/if}" /></td>
+            </tr>
+            {/foreach}
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th>レイアウト</th>
+        <td><table>
+             <tr>
+             <td><img src="http://rcms.dev.diverta.co.jp/images/management/shopping/catalog_layout1.gif" alt="center"></td>
+             <td><img src="http://rcms.dev.diverta.co.jp/images/management/shopping/catalog_layout2.gif" alt="left"></td>
+             <td><img src="http://rcms.dev.diverta.co.jp/images/management/shopping/catalog_layout3.gif" alt="right"></td>
+             </tr>
+             <tr>
+             <td align="center"><input type="radio" name="layout" value=0 {if $formData.layout == 0}checked{/if}> 一列</td>
+             <td align="center"><input type="radio" name="layout" value=1 {if $formData.layout == 1}checked{/if}> 最初の項目を左</td>
+             <td align="center"><input type="radio" name="layout" value=2 {if $formData.layout == 2}checked{/if}> 最初の項目を右</td>
+             </tr></table>
+        </td>
+      </tr>
+      <tr>
+        <th>買い物１回あたりの購入限度数（既定値）</th>
+        <td><input type="text" name="default_threshold" value="{$formData.default_threshold}" size="5"></td>
+      </tr>
+      <tr>
+        <th>メモ</th>
+        <td>
+          <textarea name="memo" style="height: 150px; width: 400px">{$formData.memo}</textarea>
+          <p class="hint">用途などを記入しておくと便利です。</p>
+        </td>
+      </tr>
+      <tr><th>公開・非公開の設定</th>
+          <td><input type="radio" name="open_flg" value="1" {if !$formData.open_flg || $formData.open_flg != 0}checked{/if}>公開 &nbsp
+              <input type="radio" name="open_flg" value="0" {if $formData.open_flg && $formData.open_flg == 0}checked{/if}>非公開</td>
+      </tr>
+    </table>
+
+    {buttonbox}
+      {if $auth.shopping.update && $cateInfo}
+        <button type="submit" onclick="this.form.MODE.value='UPDATE'">更新する</button>
+      {/if}
+      {if $auth.shopping.insert && !$cateInfo}
+        <button type="submit" onclick="this.form.MODE.value='INSERT'">追加する</button>
+      {/if}
+      {if $auth.shopping.delete && $cateInfo}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

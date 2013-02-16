@@ -1,0 +1,42 @@
+{module name="manual_list"}
+<style type="text/css">
+{literal}
+.tree-mid1, .tree-mid2, .tree-mid3, .tree-mid4, .tree-mid5, .tree-mid6 {
+  background: url(/images/modules/page/sitemap_2.gif) no-repeat left center;
+  padding-right: 15px;
+  padding-left: 30px;
+}
+
+.tree-end1, .tree-end2, .tree-end3, .tree-end4, .tree-end5, .tree-end6 {
+  background: url(/images/modules/page/sitemap_3.gif) no-repeat left center;
+  padding-right: 15px;
+  padding-left: 30px;
+}
+#pageListTable strong span {
+  color: #888;
+}
+{/literal}
+</style>
+
+<div class="module_contents">
+<table>
+{strip}
+<h3>{'/modules/manual/label/manual_index'|translate}{* マニュアル目次 *}</h3>
+{foreach item="manual_data" from=$menuList  name="row"}
+    {rcms_include file="manual/manual_list_child.html" page_data=$manual_data nest=0}<!--{$count++}-->
+    {foreach item="manual_data1" from=$manual_data.manual_list name="row1"}
+        {rcms_include file="manual/manual_list_child.html" page_data=$manual_data1 nest=1}<!--{$count++}-->
+    {/foreach}
+    {foreach item="child_data1" from=$manual_data.child name="row1"}
+        {rcms_include file="manual/manual_list_child.html" page_data=$child_data1 nest=1}<!--{$count++}-->
+        {foreach item="manual_data2" from=$child_data1.manual_list name="row2"}
+            {rcms_include file="manual/manual_list_child.html" page_data=$manual_data2 nest=2}<!--{$count++}-->
+        {/foreach}
+    {/foreach}
+{foreachelse}
+{'/msg/no_data'|translate}{*表示するデータがありません*}
+{/foreach}
+{/strip}
+</table>
+</div>
+{/module}

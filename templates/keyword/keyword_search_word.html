@@ -1,0 +1,10 @@
+{module name="keyword_search_word"}
+<h2 class="module_title"><span>{'/modules/keyword/label/search_keyword'|translate}{*キーワード検索*}</span></h2>
+<div class="module_contents">
+<form action="/{$list_page_sysnm}/" method="GET">
+<input type="text" name="keyword_s_word" value="{$keyword_s_word}">
+<input type="submit" value="{'/label/search'|translate}{*検索*}" >
+<input type="submit" name="show" value="{'/label/display'|translate}{*表示*}" >
+</form>
+</div>
+{/module}

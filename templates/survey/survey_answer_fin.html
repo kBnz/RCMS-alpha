@@ -1,0 +1,10 @@
+{module name="answer_fin"}
+<h2 class="module_title"><span>{'/modules/survey'|translate}{*アンケート*}</span></h2>
+<div class="module_contents">
+<h2>{$survey_list.title}</h2>
+<div style="margin-top:50px;margin-left:50px;margin-bottom:50px;">
+  {$survey_list.thanks_text|nl2br}
+  {$survey_list.thanks_tag}
+  {if $survey_list.public_total == '0'}<br><a href="/survey_report/id={$survey_list.survey_id}">{'/label/reseach_result'|translate}{*集計結果*}</a>{/if}</div>
+</div>
+{/module}

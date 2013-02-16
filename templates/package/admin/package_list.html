@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<div class="list_right_bt">
+  <h2>{$module_nm}</h2>
+</div>  <!-- end of div#list_right_bt -->
+
+{pankuzu}
+<a href="/management/menu/setup/">{'/label/menus/setup'|translate}</a>
+<a href="/management/package/package_list/">{'/modules/package'|translate}</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<div class="list_main">
+  <h3 class="big">パッケージ一覧</h3>
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<span style="color:red;">※注意！！　この機能は現在テスト中です。適用すると、ページの構成やデザインが消去されます。ご注意ください。</span>
+
+  {pager info=$pageInfo}
+  <table class="list">
+      {foreach from=$official item=item}
+
+<form action="/management/" method="post" onSubmit="return confirm('現在のページ構成、デザインは消去されます。よろしいですか？');">
+<input type="hidden" name="mt" value="package">
+<input type="hidden" name="ct" value="package_list">
+<input type="hidden" name="package_id" value="{$item.package_id}">
+<input type="hidden" name="MODE" value="UPDATE">
+<input type="hidden" name="DG_CODE" value="{$DG_CODE}">
+      <tr>
+          <th>
+<img src="/direct/output/url2jpeg/url={$item.sample_url2|urlencode}&width=150&height=150" width="150" height="150">
+          </th>
+          <th>
+                {$item.package_nm}<br><br>
+                カテゴリ：{$item.tag}<br>
+                {if $item.site_id}<a href="{$item.sample_url}" target="_blank">サンプルサイト</a><br>{/if}
+          </th>
+          <td>
+                {$item.comment|nl2br}
+          </td>
+          <td>
+                <input type="submit" value="適用する">
+          </td>
+      </tr>
+</form>
+      {/foreach}
+  </table>
+  {pager info=$pageInfo}
+
+</div>  <!-- end of div#list_main -->
+</div>
+
+{rcms_include file="management/footer.html"}

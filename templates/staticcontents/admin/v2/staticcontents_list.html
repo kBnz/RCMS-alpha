@@ -1,0 +1,166 @@
+{rcms_include file="management/header.html"}
+
+{literal}
+<style type="text/css">
+    td.usepage a {
+        font-size: 0.8em;
+        margin-right: 15px;
+    }
+    #s_category {
+        font-size: 13px;
+    }
+</style>
+<script type="text/javascript">
+    function confirmDelete(f) {
+            if(confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+                    f.MODE.value = 'DELETE';
+                    f.submit();
+            }
+    }
+    (function($) {
+
+        $(function(){
+            $("#select_sc_list_cat_config").rcmsDropdown();
+            $("#s_category").on("change", autosubmit);      //検索条件が変わったらサブミット
+        });
+
+        function autosubmit() {
+            if ($(this).val() != "") {
+                $("form").submit();
+            }
+        }
+
+    })(jQuery);
+</script>
+{/literal}
+
+<div id="top_fixed">
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents'|translate}{*自由HTML*}</a>
+            <a class="navigation_node">{'/modules/staticcontents/label/staticcontents_list'|translate}{*自由HTML一覧*}</a>
+        </div>
+    
+        <div class="setting_field">
+        {rcms_auth target="insert:/staticcontents/item/"}
+            <p id="add-new-button">
+                <a href="/management/staticcontents/staticcontents_edit/popup_mode=1" target="_blank" class="add-new">
+                    {'/modules/staticcontents/label/add_staticcontents'|translate}{*自由HTML追加*}
+                </a>
+            </p>
+        {/rcms_auth}
+            <div class="setting_dropdown">
+                <button id="select_sc_list_cat_config" class="rcms_ui_select">
+                        <div class="setting_icon"></div>{'/label/setting'|translate}{*設定*}
+                </button>
+                <ul>
+                    <li>
+                        <a href="/management/staticcontents/staticcontents_category_list/" {if $page_type eq 'staticcontents_category_list' || $page_type eq 'staticcontents_category_edit'}class="active"{/if}>
+                            {'/label/categorieslist'|translate}{*カテゴリ設定*}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form name="staticcontents_list_form" method="POST" action="/management/staticcontents/staticcontents_list/">
+
+<div id="main_contents" class="main_contents">
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <!-- 承認待ち自由HTML一覧 -->
+    {rcms_include file="common/admin/shonin_list.html"} 
+
+        <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+        <input type="hidden" name="MODE" />
+        {pager info=$pageInfo}
+            <div class="search_box">
+                <select name="s_category" id="s_category">{html_options options=$arrCategory selected=$s_category}</select>&nbsp;&nbsp;
+                {rcms_include file="management/ajax_page_picker.html" name=s_page_id selected=$s_page_id}
+                <input type="text" id="s_contents" name="s_contents" size="40" value="{$s_contents}" placeholder="タイトルまたは内容で検索" />
+                <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+            </div>
+            <table class="list-table" cellspacing="0">
+                <thead>
+                <tr>
+                    <th scope="col" class="cb first"><input type="checkbox" onClick="AllChecked(this.checked, this.form, 'static_id[]');" /></th>
+                    <th scope="col" class="status">{'/label/publishing'|translate}{*公開中*}</th>
+                    <th scope="col" class="limit_reading">{*閲覧制限*}</th>
+                    <th scope="col" class="title">{'/label/title'|translate}{*タイトル*}</th>
+                    <th scope="col" class="category">{'/label/category'|translate}{*カテゴリ*}</th>
+                    <th scope="col" class="lastupdate">{'/label/updatetime'|translate|sort_link:update_ymdhi:$sort_url:$sort:$desc}{*最終更新日時*}</th>
+                    <th scope="col" class="language">{'/label/language'|translate}{*言語*}</th>
+                </tr>
+                </thead>
+                {foreach from=$static_list item=row}
+                {assign var=static_id value=$row.static_id}
+                <tbody class="the-list">
+                <tr>
+                    <td class="cb first" rowspan="2"><input type="checkbox" name="static_id[]" value="{$row.static_id}" 
+                            {if !$rauth->canUpdate("/staticcontents/item/$static_id") && !$rauth->canDelete("/staticcontents/item/$static_id")}disabled="disabled"{/if} />
+                    </td>
+                    <td class="status rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1" rowspan="2">
+                        {if $row.open_flg == "1"}
+                            <div class="status_icon"></div>
+                        {elseif $row.open_flg == "0"}
+                            <div class="private_icon"></div>
+                        {/if}
+                    </td>
+                    <td class="limit_reading rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1" rowspan="2">
+                        {if $row.open_status == "restrict" }
+                            <div class="limit_reading_icon"></div>
+                        {/if}
+                    </td>
+                    <td class="title rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1" rowspan="2">
+                        <a href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1" target="_blank">{$row.subject|escape}</a>    
+                    </td>
+                    <td class="category rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1">{$row.category_nm}</td>
+                    <td class="lastupdate rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1">{$row.update_ymdhi|pg_dateformat2:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+                    <td class="language rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1">
+                        {rcms_include
+                                file="common/admin/language_status.html" 
+                                meta=$docmetas[$static_id] 
+                                link="/management/staticcontents/staticcontents_edit/static_id=$static_id"
+                                ext_query="popup_mode=1"
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="usepage_contents rcms_anchor" data-target="_blank" data-href="/management/staticcontents/staticcontents_edit/static_id={$row.static_id}&popup_mode=1" colspan="3">
+                        <div class="usepage_title">{'/label/target_page'|translate}{*使用ページ*}</div>
+                        {if $row.use_page}
+                        <div class="usepage_detail">
+                            {foreach from=$row.use_page item=pageRow}
+                                <a href="/{$pageRow.page_sysnm}" target="_blank">{$pageRow.page_nm|escape}</a>
+                            {/foreach}
+                        </div>
+                        {/if}
+                    </td>
+                </tr>
+                </tbody>
+                {/foreach }
+            </table>
+        {pager info=$pageInfo}
+    <div class="float_area"></div>{*浮いてるbuttonboxのため*}
+</div><!-- #main_contents -->
+
+<div id="bottom_fixed">
+    <div class="buttonbox">
+        <ul>
+            <p>選択した項目を一括で</p>
+            <li class="list_action_open_li"><button type="submit" onclick="this.form.MODE.value='PUBLIC'">{'/label/publish_btn'|translate}{*公開にする*}</button></li>
+            <li class="list_action_delete_li"><button type="button" onclick="confirmDelete(this.form)">{'/label/delete_btn'|translate}{*削除する*}</button></li>
+            <li class="list_action_close_li"><button type="submit" onclick="this.form.MODE.value='PRIVATE'">{'/label/unpublish_btn'|translate}{*非公開にする*}</button></li>
+        </ul>
+    </div>
+</div><!-- #bottom_fixed -->
+
+</form>
+
+
+{rcms_include file="management/footer.html"}

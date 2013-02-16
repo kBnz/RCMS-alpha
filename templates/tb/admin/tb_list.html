@@ -1,0 +1,141 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+<script type="text/javascript">
+{literal}
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"From", textId: 'from_dt', btnId: 'from_dt-btn', boxId: 'from_dt-pop', tableId: 'from_dt-table'});
+    DUI.calendar.PopupWindow({title:"To", textId: 'to_dt', btnId: 'to_dt-btn', boxId: 'to_dt-pop', tableId: 'to_dt-table'});
+});
+
+function addInhibit(url) {
+    window.open('/js/addInhibit.php?url=' + url,'','width=600,height=280,scrollbars=1,resizable=yes');
+}
+
+function showInhibit() {
+    window.open('/js/showInhibit.php','','width=600,height=250,scrollbars=1,resizable=yes');
+}
+
+function confirmDelete(f) {
+    if (confirm('選択されたトラックバックを削除します。')) {
+        f.MODE.value = 'DELETE';
+        f.submit();
+    }
+}
+
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>{$module_nm}一覧</h2>
+<ul>
+{if $auth.tb.insert}
+<li class="add"><a href="/management/tb/tb_input/"><span>新規送信</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/tb/tb_list/">{'/modules/tb'|translate}</a>
+{$module_nm}一覧
+{/pankuzu}
+<div class="clear"></div>
+
+<div class="main_contents">
+<ul class="minitabs">
+  <li><a href="/management/tb/tb_list/tb_kbn={$smarty.const.TB_KBN_RECEIVE}" {if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}class="active"{/if}>受信一覧</a></li>
+  <li><a href="/management/tb/tb_list/tb_kbn={$smarty.const.TB_KBN_SEND}" {if $tb_kbn == $smarty.const.TB_KBN_SEND}class="active"{/if}>送信一覧</a></li>
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+  <form action="/management/tb/tb_list/">
+    <input type="hidden" name="tb_kbn" value="{$tb_kbn}" />
+    <fieldset class="search_box">
+      {if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+        <label>ステータス:</label><select name="s_open_flg">{html_options options=$s_arrTb_open_flg selected=$s_open_flg}</select>
+        <label style="margin-left:20px">受信日:</label>
+        <input type="text" name="s_from_dt" id="from_dt" value="{$s_from_dt|escape}" />
+        <button type="button" id="from_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="from_dt-pop"></div>
+        ～
+        <input type="text" name="s_to_dt" id="to_dt" value="{$s_to_dt|escape}" />
+        <button type="button" id="to_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="to_dt-pop"></div>
+        <input type="submit" value="検索する" />
+      {else}
+        <label>送信日</label>
+        <input type="text" name="s_from_dt" id="from_dt" value="{$s_from_dt|escape}" />
+        <button type="button" id="from_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="from_dt-pop"></div>
+        ～
+        <input type="text" name="s_to_dt" id="to_dt" value="{$s_to_dt|escape}" />
+        <button type="button" id="to_dt-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="to_dt-pop"></div>
+        <input type="submit" value="検索する" />
+      {/if}
+    </fieldset>
+  </form>
+
+  <form action="/management/tb/tb_list/" method="POST">
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="tb_kbn" value="{$tb_kbn}" />
+    {if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+      <input type="hidden" name="s_open_flg" value="{$s_open_flg|escape}" />
+    {/if}
+    <input type="hidden" name="s_from_dt" value="{$s_from_dt|escape}" />
+    <input type="hidden" name="s_to_dt" value="{$s_to_dt|escape}" />
+
+    {pager info=$pageInfo}
+    <table width="100%" border="0" cellspacing="2" cellpadding="0">
+      <tr>
+    {if $auth.tb.update || $auth.tb.delete}
+        <th style="width:20px"><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'tb_id[]');" /></th>
+    {/if}
+    {if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+        <th style="width:30px">公開</th>
+    {/if}
+        <th>記事タイトル</th>
+        <th style="width:140px">{if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}受信日時{else}送信日時{/if}</th>
+      </tr>
+  {foreach from=$tb_list item=row}
+{strip}
+      <tr>
+    {if $auth.tb.update || $auth.tb.delete}
+        <td><input type="checkbox" name="tb_id[]" value="{$row.tb_id}" /></td>
+    {/if}
+    {if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+        <td>{$row.open_flg|rcms_publicimg}</td>
+    {/if}
+        <td><a href="/management/tb/tb_detail/tb_id={$row.tb_id}">{$row.title}</a></td>
+        <td>{if $tb_kbn == $smarty.const.TB_KBN_RECEIVE}{$row.receive_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{else}{$row.send_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}{/if}</td>
+      </tr>
+{/strip}
+  {/foreach}
+
+    </table>
+    {pager info=$pageInfo}
+
+    {if $auth.tb.update || $auth.tb.delete}
+      {buttonbox}
+        <p>選択したトラックバックを一括で</p>
+        {if $auth.tb.update && $tb_kbn == $smarty.const.TB_KBN_RECEIVE}
+          <button type="submit" onclick="this.form.MODE.value='OPEN'">公開にする</button>
+          <button type="submit" onclick="this.form.MODE.value='CLOSE'">非公開にする</button>
+        {/if}
+        {if $auth.tb.delete}
+          <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+        {/if}
+      {/buttonbox}
+    {/if}
+
+  </form>
+
+</div>
+</div>
+
+{rcms_include file="management/footer.html"}

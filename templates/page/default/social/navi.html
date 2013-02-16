@@ -1,0 +1,30 @@
+{if !$smarty.request.social_on_tab}
+{if $rcms_fb_profile.isLogin}
+<a href="{$rcms_fb_profile.profile_url}" target="_top"><img src="{$rcms_fb_profile.pic_big}"></a><br>{$rcms_fb_profile.name}<hr/>
+<a href="#">友達を招待する</a><br>
+<a href="#">自分のコメント一覧</a><br>
+<hr/>
+{/if}
+
+ {foreach name="menu_list" item="menu" from=$global_menu_list}
+  {if $menu.page_sysnm ne 'top'}{*  TOPは表示しない  *}
+
+  {if $smarty.foreach.menu_list.iteration <= 10}
+    [emoji:{$smarty.foreach.menu_list.iteration+123}]<a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}" accesskey="{$smarty.foreach.menu_list.iteration-1}" class="arrow">{$menu.page_nm}</a>
+  {elseif $smarty.foreach.menu_list.iteration == 11}
+    [emoji:{$smarty.foreach.menu_list.iteration+123}]<a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}" accesskey="0" class="arrow">{$menu.page_nm}</a>
+  {else}
+    □<a href="/{if $menu.page_sysnm ne 'top'}{$menu.page_sysnm}/{/if}" class="arrow">{$menu.page_nm}</a>
+  {/if}<br/>
+
+  {/if}
+ {/foreach}
+
+<hr/>
+{if $rcms_fb_profile.isLogin}
+{foreach from=$rcms_fb_friends item=friend}
+<a href="{$friend.profile_url}" target="_top"><img src="{$friend.pic_square}" alt="{$friend.name}" style="width:25px;height:25px;"></a>
+{/foreach}
+<hr/>
+{/if}
+{/if}

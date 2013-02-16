@@ -1,0 +1,17 @@
+{* トピックス一覧などで使います *}
+
+{* 多言語対応の場合だけ表示する *}
+
+{if $meta|@count > 1}
+
+<ul class="doc_lang_status_simple doc_lang_status">
+  {foreach from=$meta item=m}
+    {if $m.status == 2}{assign var='addlink' value='&_doc_waiting=1'}{else}{assign var='addlink' value=''}{/if}
+    <li class="{if $m.status == 1}created{elseif $m.status == 2}waiting{/if}">
+      <a href="{$link}&amp;_doc_lang={$m.lang}{$addlink}{if $ext_query}&{$ext_query}{/if}" target="_blank">{$m.lang}</a>
+    </li>
+    {* {$m.update_ymdhi} *}
+  {/foreach}
+</ul>
+
+{/if}

@@ -1,0 +1,25 @@
+{if $alerts}
+
+{literal}
+<script type="text/javascript">
+    jQuery(function($){
+        $("#error_box").rcmsNotificationBox();
+    });
+</script>
+{/literal}
+
+<div id="error_box">
+    <table class="errtable">
+        <tr><td class="errmsg">{'/modules/page/label/error_occurred'|translate}{*エラーが発生しました*}</td></tr>
+        <tr><td align="left">
+            <ul>
+                {foreach from=$alerts item=item name=errlist}
+                <li>{$msg}</li>
+                {/foreach}
+            </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{/if}

@@ -1,0 +1,30 @@
+<input name="page_id[{$count}]" type="hidden" value="{$page_data.page_id}">
+<tr class="toggleTarget_{$count}">
+<td>
+{* ツリー表示部分(縦棒)ここから *}
+{section name="data" loop=$nest}
+{assign var=i value=$smarty.section.data.iteration-1}
+{capture assign=parent}row{if $i != 0}{$i}{/if}{/capture}
+{if !$smarty.foreach.$parent.last}<img src="/images/modules/page/sitemap_1.gif" width="26" height="14" style="margin-right:10px">{else}<span style="margin-left:30px"></span>{/if}
+{/section}
+{* ツリー表示部分(縦棒)ここまで *}
+{capture assign=rowNow}row{if $nest != 0}{$nest}{/if}{/capture}
+<strong style="font-size:110%;" class="{if !$smarty.foreach.$rowNow.last}tree-mid{else}tree-end{/if}{$nest+1}">{$page_data.page_nm}<span class="gray">({if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if})</span></strong>
+[ <a href="/management/page/page_edit/page_page_id={$page_data.page_id}">{'/label/settings'|translate}{*設定*}</a> | 
+<a href="{$smarty.const.ROOT_URL}/{if $page_data.page_sysnm_alias}{$page_data.page_sysnm_alias}{else}{$page_data.page_sysnm}{/if}/" target="_blank">{'/label/display'|translate}{*表示*}</a> ]
+{if $page_data.page_require}<span class="required">[{'/label/viewing_limit'|translate}{*閲覧制限*}]</span>{/if}
+</td>
+<td class="disp_col02">{$arrTemplateType[$page_data.template]}</td>
+<td class="disp_col03"><input type="checkbox" name="mobile_flg[{$count}]" value="1" {if $page_data.mobile_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+{if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+<td class="disp_col04"><input type="checkbox" name="ssl_flg[{$count}]" value="1" {if $page_data.ssl_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+{else}
+  <input type="hidden" name="ssl_flg[{$count}]" value="0">
+{/if}
+<td class="disp_col05"><input type="checkbox" name="open_flg[{$count}]" value="1" {if $page_data.open_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+<td class="disp_col06"><input type="checkbox" name="menu_flg[{$count}]" value="1" {if $page_data.menu_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+<td class="disp_col07"><input type="checkbox" name="menu_head_sub_flg[{$count}]" value="1" {if $page_data.menu_head_sub_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+<td class="disp_col08"><input type="checkbox" name="menu_footer_flg[{$count}]" value="1" {if $page_data.menu_footer_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+<td class="disp_col09"><input type="checkbox" name="sitemap_flg[{$count}]" value="1" {if $page_data.sitemap_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+<td class="disp_col10"><input style="width:30px" name="page_weight[{$count}]" type="text" value="{$page_data.page_weight}" {if $page_data.ssl_flg}checked{/if} {rcms_auth not=true target="update:/page/item/"}disabled="disabled"{/rcms_auth}></td>
+</tr>

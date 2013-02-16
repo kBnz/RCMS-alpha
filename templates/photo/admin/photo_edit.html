@@ -1,0 +1,187 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+{head_include file="common/calendar_scripts.html"}
+
+{literal}
+<script type="text/javascript">
+{/literal}{if $docmeta.is_primary}{literal}
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{literal}", textId: 'ymd', btnId: 'ymd-btn', boxId: 'ymd-pop', tableId: 'ymd-table'});
+});
+{/literal}{/if}{literal}
+function disabledFalse(){
+    document.getElementById('copyright').disabled = false;
+    document.getElementById('font_size').disabled = false;
+    document.getElementById('position').disabled = false;
+    document.getElementById('font').disabled = false;
+    document.getElementById('font').disabled = false;
+}
+</script>
+{/literal}
+
+
+<div class="list_right_bt">
+<h2>{'/modules/photo/label/photo_edit'|translate}</h2>{*画像編集*}
+<ul>
+{if $rauth->canInsert("/photo/item/")}
+    <li class="add"><a href="/management/photo/photo_edit/"><span>{'/label/add_image_btn'|translate}{*画像追加*}</span></a></li>
+{/if}
+
+{if $latestRow.photo_id}
+  <li class="normal"><a href="/management/photo/photo_history/photo_id={$photo_id}&_doc_lang={$docmeta.lang}"><span>{'/label/update_history'|translate}</span></a></li>
+  <li class="normal"><a href="/management/accesscount/accesscount_list/module=photo&id={$photo_id}"><span>{'/label/access_analysis'|translate}</span></a></li>
+  <li class="view"><a href="{$smarty.const.ROOT_URL}/photo_detail/id={$photo_id}" target="_blank"><span>{'/label/view_page'|translate}</span></a></li>
+{/if}
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">{'/label/menus/contents'|translate}</a>
+<a href="/management/photo/photo_list/">{'/modules/photo/label/photo_list'|translate}</a>
+{'/modules/photo/label/photo_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コンテンツ更新 >>  画像一覧 >> 画像編集 *}
+
+<p class="page_info">
+<a href="#relation_data">{'/label/related_info'|translate}：{if $formData.relation_cnt}{$formData.relation_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>　<a href="/photo_detail/id={$photo_id}">{'/label/total_view_count'|translate}{*総アクセス数*}:{if $formData.accesscount_cnt}{$formData.accesscount_cnt}{else}0{/if}{'/label/item'|translate}{*件*}</a>
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/photo/photo_edit/photo_id=$photo_id"}
+
+<div class="list_main">
+
+{rcms_include file="$mt/admin/minitabs.html" page_type=$ct auth=$auth}
+
+  <form name="photo_edit" id="photo_edit" action="/management/photo/photo_edit/" method="POST" ENCTYPE="multipart/form-data">
+    <input type="hidden" name="pageID" value="{$pageID}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    {if $formData.photo_file != ""}
+        <input type="hidden" name="photo_file" value="{$formData.photo_file}" />
+        <input type="hidden" name="photo_s_file" value="{$formData.photo_s_file}" />
+    {/if}
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    {if $photo_id}
+    <input type="hidden" name="photo_id" value="{$photo_id}" />
+    {/if}
+    {if $latestRow.photo_id}
+    {lang_selector meta=$docmeta link="/management/photo/photo_edit/photo_id=$photo_id"}
+    {/if}
+
+    {rcms_include file="management/messages_box.html"}
+    {rcms_include file="management/errors_box.html"}
+
+    <table width="100%">
+      <tr>
+        <th width="150px">{'/label/season'|translate}{*シーズン*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+        <td>
+        {if $docmeta.is_primary}
+            <select name="season">{html_options options=$arrYear_graduate selected=$formData.season}</select>
+        {else}
+            <span style="font-size:14px;">{$arrYear_graduate[$latestRow.season]}</span>
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/filming_date'|translate}{*撮影日付*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+        <td>
+        {if $docmeta.is_primary}
+            <span style="font-size:14px;">{if $formData.photo_id}{$formData.ymd|replace:"-":"/"}{/if}</span>
+            <div id="manual_ymd" {if $formData.manual_ymd_flg eq ''}style="display:none;"{/if}>
+            <input type="text" name="ymd" id="ymd" value="{$formData.ymd|replace:"-":"/"}" autocomplete="off" />
+            <button type="button" id="ymd-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="ymd-pop"></div>
+            </div>
+            <input type="checkbox" name="manual_ymd_flg" value="1" {if $formData.manual_ymd_flg}checked="checked"{/if} onclick="{literal}display('manual_ymd');{/literal}">{'/label/set_by_hand'|translate}{*手動で設定*}
+            <p class="hint">{'/msg/filming_date_is_set_automatically'|translate}{*撮影日付は自動取得します。変更したい場合はチェックしてください。*}</p>
+        {else}
+            <span style="font-size:14px;">{if $latestRow.photo_id}{$latestRow.ymd|replace:"-":"/"}<input type="hidden" name="ymd" value="{$latestRow.ymd}" />{/if}</span>
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/category'|translate}{*カテゴリ*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+        <td>
+        {if $docmeta.is_primary}
+            <select name="category_id">{html_options options=$arrCategoryList selected=$formData.category_id}</select>
+        {else}
+            <span style="font-size:14px;">{$arrCategoryList[$latestRow.category_id]}</span>
+        {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/image_title'|translate}{*イメージタイトル*}<span class="required">{'/label/required'|translate}{*必須*}</span></th>
+        <td><input type="text" name="title" value="{$formData.title|escape}" size="80" /></td>
+      </tr>
+    {if $formData.photo_url || $formData.photo_s_url}
+      <tr>
+        <td colspan="2">
+          <div id="photo_img">
+            {if $formData.photo_url}<div><img src="{$formData.photo_url}" /></div>{/if}
+            <a href="javascript:void(0);" onclick="display('photo_img_s');display('photo_img');return false;">{'/label/display_thumbnail'|translate}{*サムネイルを確認*}</a>
+          </div>
+          <div id="photo_img_s" style="display:none;">
+            {if $formData.photo_s_url}<div><img src="{$formData.photo_s_url}" /></div>{/if}
+            <a href="javascript:void(0);" onclick="display('photo_img_s');display('photo_img');return false;">{'/label/display_image'|translate}{*画像を確認*}</a>
+          </div>
+        </td>
+      </tr>
+    {/if}
+
+    {if $docmeta.is_primary}
+      <tr>
+        <th>{'/label/image'|translate}{*画像*}</th>
+        <td>
+          <input type="file" name="photo" onchange="if(this.value !='')disabledFalse();return false;"/>
+          <p class="hint">{'/msg/maximum_image_size'|translate:30}{*アップロードできる最大サイズは30Mバイトまでです。*}</p>
+          <p class="hint">{'/msg/if_image_size_is_wider_than_photo_width'|translate:$photo_width:$photo_width}{*写真幅サイズは{$photo_width}pxを超える場合、{$photo_width}pxに縮小されます*}</p>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/copy_right'|translate}{*コピーライト*}</th>
+        <td>
+          {'/label/copy_right_text'|translate}{*表記*}:<input type="text" name="copyright" value="{$formData.copyright}" size="60" id="copyright" disabled="disabled" /><br />
+          {'/label/font_size'|translate}{*大きさ*}:<input type="text" name="font_size" value="{$formData.font_size}" size="4" id="font_size" disabled="disabled" />px
+          {'/label/position'|translate}{*位置*}:<select name="position" id="position" disabled="disabled">{html_options options=$position_option selected=$formData.position}</select>
+          {'/label/font'|translate}{*フォント*}:<select name="font" id="font" disabled="disabled">{html_options options=$font_option selected=$formData.font}</select><br />
+          <p class="hint">{'/msg/copy_right_will_be_put_on'|translate}{*copyrightは画像アップロードを行う時のみ埋め込み可能です。*}</p>
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/image_supplier'|translate}{*画像の提供者*}</th>
+        <td>
+          <input type="text" name="offerer_name" value="{$formData.offerer_name|escape}" />
+          <input type="checkbox" name="offerer_flg" value="1" {if $formData.offerer_flg eq '1'}checked="checked"{/if} />{'/label/display_image_supplier'|translate}{*写真の提供者を表記*}
+        </td>
+      </tr>
+    {/if}{* is_primary *}
+      <tr>
+        <th>{'/label/comments'|translate}{*コメント*}</th>
+        <td><textarea name="comment" cols="60" rows="5">{$formData.comment|escape}</textarea></td>
+      </tr>
+    </table>
+
+    {if $docmeta.is_primary}
+    <a name="relation_data"></a>
+    {rcms_include file="management/relation_edit.html"}
+    <div class="clear"></div>
+
+    {editTagsBox docmeta=$docmeta}{/editTagsBox}
+
+    {rcms_include file="management/open_date_box.html" id=$photo_id data=$formData}
+    {/if}{* is_primary *}
+
+    {* 承認ワークフロー選択 *}
+    {rcms_include file="management/workflow_box.html" isUnlimited=$rauth->unlimitedUpdate("/photo/item/$photo_id", $docmeta.lang) docmeta=$docmeta link="/management/photo/photo_edit/photo_id=$photo_id"}
+
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+
+    {rcms_include file="management/update_comment.html" comment=$formData.update_comment}
+
+  </form>
+</div>
+</div>
+{rcms_include file="management/footer.html"}

@@ -1,0 +1,36 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+
+<div class="list_right_bt">
+<h2 class="member">確認</h2>
+</div>
+
+{pankuzu}
+<a href="/management/menu/member/">{'/label/menus/member'|translate}</a>
+<a href="/management/memberregist/memberregist_invite/">友人を招待する。</a>
+{/pankuzu}
+<div class="clear"></div>
+
+<!-- 確認メッセージの表示の表示 -->
+<div class="main_contents">
+{if $errors}
+  {foreach from=$errors item = "msg"}
+  {$msg}
+  {/foreach}
+{else}
+  ようこそRCMSへ！！<br style="clear:both;">
+  <br style="clear:both;">
+  {$friendname}さんの友人ですね。
+  下のボタンを押して登録画面にお進みください。
+  <br style="clear:both;">
+  <br style="clear:both;">
+  <p class="bt_green">
+  <a href="/management/login/regist/">
+    <span>登録画面へ</span>
+  </a></p>
+{/if}
+</div>
+
+{rcms_include file="management/footer.html"}
+

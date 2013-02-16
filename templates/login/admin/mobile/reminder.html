@@ -1,0 +1,14 @@
+{rcms_include file="management/mobile/header.html"}
+<h1 class="for_mng">{'/label/reminder'|translate}{*ﾘﾏｲﾝﾀﾞｰ*}</h1>
+
+<form action="/management/login/reminder/" method="post">
+{$form.hidden}
+{rcms_include file="management/mobile/messages_box.html" messages=$messages}
+{rcms_include file="management/mobile/errors_box.html" errors=$errors}
+    <div>{'/label/mail_address'|translate}{*メールアドレス*}({'/label/login_id'|translate}{*ログインID*})</div>
+    <div><input name="email" type="text"/></div>
+    <div><input type="submit" name="subflg" value="{'/label/send_btn'|translate}{*送信する*}" /></div>
+    <br/>{'/msg/send_remind_mail'|translate}{*ご登録いただいているメールアドレスにパスワードを送信いたします。*}
+
+</form>
+{rcms_include file="management/mobile/footer.html"}

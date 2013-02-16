@@ -1,0 +1,135 @@
+{module name="game_typelist"}
+<div class="module_contents">
+{if $this_month == 1 || $this_month == 2}
+  {assign var="bef_year" value=$pre_year}
+  {assign var="aft_year" value=$this_year}
+{else}
+  {assign var="bef_year" value=$this_year}
+  {assign var="aft_year" value=$next_year}
+{/if}
+<table width="720" border="0" cellpadding="0" cellspacing="0" class="box2">
+  <tr>
+    <td width="57" height="32" align="center" valign="top" background="{imageurl}/modules/calendar/month-space2.gif" class="year"><strong>{$this_year}</strong></td>
+    <td width="663" class="BGC-hadairo">
+      <a href="/calendar_list/year={$bef_year}&month=3" onMouseOver="swapImage('March','','{imageurl}/modules/calendar/3c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/3{if $this_month eq '03'}b{/if}.gif" alt="３月" name="March" width="51" height="32" border="0" id="March"></a><a href="/calendar_list/year={$bef_year}&month=4" onMouseOver="swapImage('April','','{imageurl}/modules/calendar/4c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/4{if $this_month eq '040'}b{/if}.gif" alt="４月" name="April" width="51" height="32" border="0" id="April"></a><a href="/calendar_list/year={$bef_year}&month=5" onMouseOver="swapImage('May','','{imageurl}/modules/calendar/5c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/5{if $this_month eq '05'}b{/if}.gif" alt="５月" name="May" width="51" height="32" border="0" id="May"></a><a href="/calendar_list/year={$bef_year}&month=6" onMouseOver="swapImage('June','','{imageurl}/modules/calendar/6c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/6{if $this_month eq '06'}b{/if}.gif" alt="６月" name="June" width="51" height="32" border="0" id="June"></a><a href="/calendar_list/year={$bef_year}&month=7" onMouseOver="swapImage('July','','{imageurl}/modules/calendar/7c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/7{if $this_month eq '07'}b{/if}.gif" alt="７月" name="July" width="51" height="32" border="0" id="July"></a><a href="/calendar_list/year={$bef_year}&month=8" onMouseOver="swapImage('August','','{imageurl}/modules/calendar/8c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/8{if $this_month eq '08'}b{/if}.gif" alt="８月" name="August" width="51" height="32" border="0" id="August"></a><a href="/calendar_list/year={$bef_year}&month=9" onMouseOver="swapImage('September','','{imageurl}/modules/calendar/9c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/9{if $this_month eq '09'}b{/if}.gif" alt="９月" name="September" width="51" height="32" border="0" id="September"></a><a href="/calendar_list/year={$bef_year}&month=10" onMouseOver="swapImage('October','','{imageurl}/modules/calendar/10c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/10{if $this_month eq '10'}b{/if}.gif" alt="１０月" name="October" width="51" height="32" border="0" id="October"></a><a href="/calendar_list/year={$bef_year}&month=11" onMouseOver="swapImage('November','','{imageurl}/modules/calendar/11c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/11{if $this_month eq '11'}b{/if}.gif" alt="１１月" name="November" width="51" height="32" border="0" id="November"></a><a href="/calendar_list/year={$bef_year}&month=12" onMouseOver="swapImage('December','','{imageurl}/modules/calendar/12c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/12{if $this_month eq '12'}b{/if}.gif" alt="１２月" name="December" width="51" height="32" border="0" id="December"></a><a href="/calendar_list/year={$aft_year}&month=1" onMouseOver="swapImage('January','','{imageurl}/modules/calendar/1c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/1{if $this_month eq '01'}b{/if}.gif" alt="１月" name="January" width="51" height="32" border="0" id="January"></a><a href="/calendar_list/year={$aft_year}&month=2" onMouseOver="swapImage('February','','{imageurl}/modules/calendar/2c.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/calendar/2{if $this_month eq '02'}b{/if}.gif" alt="２月" name="February" width="51" height="32" border="0" id="February"></a><img src="{imageurl}/modules/calendar/month-space.gif" alt="" height="32" width="50"></td>
+  </tr>
+  <tr>
+    <td class="BGC-hadairo" colspan="2"><img src="{imageurl}/modules/gamerugby/game-space.gif" alt="" width="63" height="31"><a href="/gamerugby_typelist/game_type=9" onMouseOver="swapImage('game_9','','{imageurl}/modules/gamerugby/game_9b.gif','Image9','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_9.gif" alt="全早慶明" name="game_9" width="102" height="31" border="0" id="game_9"></a><img src="{imageurl}/modules/gamerugby/game-space.gif" alt="" width="204" height="31"><a href="/gamerugby_typelist/game_type=4" onMouseOver="swapImage('game_4','','{imageurl}/modules/gamerugby/game_4b.gif','Image4','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_4.gif" alt="関東大学ジュニア選手権" name="game_4" width="169" height="31" border="0" id="game_4"></a><img src="{imageurl}/modules/gamerugby/game_jpcup.gif" alt="" name="game_jpcup" width="181" height="31" border="0" id="game_jpcup"><br>
+<img src="{imageurl}/modules/gamerugby/game-space.gif" alt="" width="115" height="31"><a href="/gamerugby_typelist/game_type=5" onMouseOver="swapImage('game_5','','{imageurl}/modules/gamerugby/game_5b.gif','Image5','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_5.gif" alt="招待試合" name="game_5" width="153" height="31" border="0" id="game_5"></a><img src="{imageurl}/modules/gamerugby/game-space.gif" alt="" width="101" height="31"><a href="/gamerugby_typelist/game_type=1" onMouseOver="swapImage('game_1','','{imageurl}/modules/gamerugby/game_1b.gif','Image1','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_1.gif" alt="関東大学対抗戦" name="game_1" width="169" height="31" border="0" id="game_1"></a><a href="/gamerugby_typelist/game_type=2" onMouseOver="swapImage('game_2','','{imageurl}/modules/gamerugby/game_2b.gif','Image2','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_2.gif" alt="全国大学選手権" name="game_2" width="86" height="31" border="0" id="game_2"></a><a href="/gamerugby_typelist/game_type=3" onMouseOver="swapImage('game_3','','{imageurl}/modules/gamerugby/game_3b.gif','Image3','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_3.gif" alt="日本選手権" name="game_3" width="95" height="31" border="0" id="game_3"></a><br>
+<img src="{imageurl}/modules/gamerugby/game-space.gif" alt="" width="63" height="31"><a href="/gamerugby_typelist/game_type=8" onMouseOver="swapImage('game_8','','{imageurl}/modules/gamerugby/game_8b.gif','Image8','','{imageurl}/modules/gamerugby/arrow2.gif',1)" onMouseOut="swapImgRestore()"><img src="{imageurl}/modules/gamerugby/game_8.gif" alt="練習試合" name="game_8" width="641" height="31" border="0" id="game_8"></a><img src="{imageurl}/modules/gamerugby/game-space.gif" alt="" width="15" height="31">
+    </td>
+  </tr>
+</table>
+<table width="720" border="0" cellpadding="0" cellspacing="0" class="box2">
+  <tr>
+    <td valign="top">
+      <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="20"></td>
+        </tr>
+      </table>
+      <table width="680" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top"><img src="{imageurl}/modules/gamerugby/game-{$game_type}.gif" alt="{$gameList.0.game_type}" width="258" height="38"></td>
+        </tr>
+        <tr>
+          <td height="1" valign="top" bgcolor="#666666"></td>
+        </tr>
+        <tr>
+          <td height="40" valign="top" class="fontsize080">{$arrGame_comment[$game_type]}</td>
+        </tr>
+      </table>
+      <table width="680" border="0" align="center" cellpadding="0" cellspacing="0" class="font14px">
+{section name=mydata loop=$gameList}
+  {if $smarty.section.mydata.first}
+        <tr bgcolor="#990000" class="BGC-enji">
+          <td width="20">&nbsp;</td>
+          <td>日時</td>
+          <td>早大</td>
+          <td>対戦チーム</td>
+          <td>スコア</td>
+          <td>試合会場</td>
+        </tr>
+  {/if}
+        <tr>
+          <td height="24">&nbsp;</td>
+          <td height="24">{$gameList[mydata].ymd_str} {$gameList[mydata].ko_time}</td>
+          <td>{$gameList[mydata].team_grade}</td>
+          <td height="24">{$gameList[mydata].team_nm}</td>
+          <td height="24">
+          <a href="/gamejyudou_detail/id={$gameList[mydata].game_id}">
+          {if $gameList[mydata].game_status eq '3'}
+              {if $gameList[mydata].score_detail_arr.vs_result_self eq 'win'}
+              ○
+              {elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'lose'}
+              ●
+              {elseif $gameList[mydata].score_detail_arr.vs_result_self eq 'even'}
+              △
+              {/if}
+          {/if}
+          {if $gameList[mydata].game_status >= '2'}
+              {$gameList[mydata].score_detail_arr.Self_Total}
+          {/if}
+          -
+          {if $gameList[mydata].game_status >= '2'}
+              {$gameList[mydata].score_detail_arr.Opp_Total}
+          {/if}
+          {if $gameList[mydata].game_status eq '3'}
+              {if $gameList[mydata].score_detail_arr.vs_result_opp eq 'win'}
+              ○
+              {elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'lose'}
+              ●
+              {elseif $gameList[mydata].score_detail_arr.vs_result_opp eq 'even'}
+              △
+              {/if}
+          {/if}
+          </a></td>
+          <td height="24">        	
+            {if $gameList[mydata].place_id != "" && $gameList[mydata]ata.place_id != -1}
+              <a href="/location_detail/id={$gameList[mydata].place_id}">{$gameList[mydata].place}</a>
+            {else}
+              {$gameList[mydata].place}
+            {/if}
+          </td>
+        </tr>
+{/section}
+        <tr>
+          <td height="1" colspan="6" bgcolor="#999999"></td>
+        </tr>
+      </table>
+      <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="40"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</div>
+{/module}
+
+<style>
+{literal}
+.box2 { /*下右*/
+    border-color: gray;
+    border-style: solid;
+    border-width: 0px 1px 1px 0px;
+    background-color: #ffffff;
+}
+.fontsize080 { font-size: 80%;  line-height: 130%; }
+.font14px { font-size: 85%; }
+.year {
+    font-size: 16px;
+    font-weight:bold;
+    color: #333333;
+    font-family: "Arial", "Helvetica", "sans-serif", "ＭＳ Ｐゴシック", "Osaka";
+}
+.BGC-hadairo {
+    background-color: #fff3e6;
+}
+.BGC-enji {
+    background-color: #990000;
+    color: #ffffff;
+}
+{/literal}
+</style>

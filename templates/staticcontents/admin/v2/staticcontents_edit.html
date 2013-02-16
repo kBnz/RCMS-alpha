@@ -1,0 +1,723 @@
+{rcms_include file="management/header.html"}
+
+{headblock}
+{literal}
+
+<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css" />
+
+<link rel="stylesheet" href="/css/management/modules/templateedit.css"/>
+<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css" />
+<script src="/js/codemirror/lib/codemirror.js"></script>
+<script src="/js/codemirror/lib/searchcursor.js"></script>
+<script src="/js/codemirror/lib/overlay.js"></script>
+<script src="/js/codemirror/mode/xml/xml.js"></script>
+<script src="/js/codemirror/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror/mode/css/css.js"></script>
+<link rel="stylesheet" href="/js/codemirror/theme/default.css">
+<link rel="stylesheet" href="/js/codemirror/theme/night.css">
+<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link rel="stylesheet" href="/css/management/v2/temp_edit.css">
+<script src="/js/management/v2/template_edit.js"></script>
+{/literal}
+{/headblock}
+
+
+{if $smarty.request.iframe_mode != 1}
+<div id="top_fixed">
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents'|translate}{*自由HTML*}</a>
+            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents/label/staticcontents_list'|translate}{*自由HTML一覧*}</a>
+            {if $formData.static_category_id}<a class="navigation_node" href="/management/staticcontents/staticcontents_list/?s_category={$formData.static_category_id}">{$arrCategoryId[$formData.static_category_id]|escape}</a>{/if}
+            <a class="navigation_node">{if $formData.static_id}{$formData.subject|escape}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
+        </div>
+    </div>
+</div>
+{/if}
+
+<form action="/management/staticcontents/staticcontents_edit/{if $smarty.request.iframe_mode}iframe_mode=1{elseif $smarty.request.popup_mode}popup_mode=1{/if}" method="post" name="static_edit" id="static_edit">
+
+<div id="main_contents">
+
+    {rcms_include file="management/v2/notification_box.html" errors=$errors messages=$messages alerts=$alerts}
+
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="MODE" type="hidden" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+    {if $static_id}
+        <input name="static_id" type="hidden" value="{$static_id}" />
+    {/if}
+
+    <!-- コンテンツ -->
+    <div id="contents_collection" class="contents" style="display:none">
+        <textarea id="device_1_contents" class="contents" name="device_1_contents">{$formData.device_1_contents}</textarea>
+        <textarea id="device_2_contents" class="contents" name="device_2_contents">{$formData.device_2_contents}</textarea>
+        <textarea id="device_3_contents" class="contents" name="device_3_contents">{$formData.device_3_contents}</textarea>
+        <textarea id="device_4_contents" class="contents" name="device_4_contents">{$formData.device_4_contents}</textarea>
+        <textarea id="device_5_contents" class="contents" name="device_5_contents">{$formData.device_5_contents}</textarea>
+    </div>
+
+    <div id="tool_bar" class="rcms_ui_toolbar">
+        <ul>
+            <li class="menu_left_list">
+                <input type="hidden" id="device_type" name="device_type" value="1" />
+                <button type="button" id="device_selector" class="rcms_ui_select" data-id="{$smarty.request.device_type}">
+                    {if $smarty.request.device_type == 2}
+                        <span class="devices dev-icon-mob"></span>携帯版
+                    {elseif $smarty.request.device_type == 3}
+                        <span class="devices dev-icon-sp"></span>スマートフォン版
+                    {elseif $smarty.request.device_type == 4}
+                        <span class="devices dev-icon-fb"></span>Facebook版
+                    {elseif $smarty.request.device_type == 5}
+                        <span class="devices dev-icon-app"></span>スマートフォンアプリ版
+                    {else}
+                        <span class="devices dev-icon-pc"></span>PC版
+                    {/if}
+                </button>
+                <ul>
+                    <li data-id="1"><span class="devices dev-icon-pc "></span>PC版</li>
+                    <li data-id="2"><span class="devices dev-icon-mob"></span>携帯版</li>
+                    <li data-id="3"><span class="devices dev-icon-sp "></span>スマートフォン版</li>
+                    <li data-id="4"><span class="devices dev-icon-fb "></span>Facebook版</li>
+                    <li data-id="5"><span class="devices dev-icon-app"></span>スマートフォンアプリ版</li>
+                </ul>
+
+            </li>
+                {if $latestRow.static_id}
+            <li class="menu_left_list">
+                {lang_selector_v2_dropdown
+                    meta=$docmeta link="/management/staticcontents/staticcontents_edit/static_id=$static_id&popup_mode=1"
+                }
+            </li>
+            <li class="menu_right_list">
+                {rcms_include file="management/ajax_history_dropdown.html" mt=staticcontents id=$static_id pk=static_id}
+            </li>
+                {/if}
+        </ul>
+    </div>
+    <div id="template_table_edit_wrapper">
+        <div id="template_handle"></div>
+        <div id="template_name_table">
+            <table>
+                <tr>
+                    <td class="template_item">{'/label/title'|translate}{* タイトル *} / {'/label/category'|translate}{* カテゴリ *}</td>
+                    <td>
+                        <input style="width:300px;" name="subject" type="text" value="{$formData.subject|escape}" /> / 
+                        {if $docmeta.is_primary}
+                            <select name="static_category_id">
+                                {html_options options=$arrCategoryId selected=$formData.static_category_id}
+                            </select>
+                        {else}
+                            {$arrCategoryId[$latestRow.static_category_id]}
+                        {/if}
+                        <p id="category-add-new-button">
+                            <a href="/management/staticcontents/staticcontents_category_edit/" class="category-add-new">
+                                {'/label/add_category_btn'|translate}{*カテゴリ追加*}
+                            </a>
+                        </p>
+                    </td>
+                </tr>
+                <tr class="usingpage">
+                    <td class="template_item">モード{* モード *}</td>
+                    <td>
+                        <span id="smarty_flg_collection" class="hidden_contents">
+                            {foreach from=$arrStaticContentsLinkedDeviceTypeOptions key=device_type item=value}
+                                {assign var="each_device_smarty_flg" value="device_"|cat:$device_type|cat:"_smarty_flg"}
+                                <select name="device_{$device_type}_smarty_flg" id="device_{$device_type}_smarty_flg" class="smarty_flg" {if !$docmeta.is_primary}disabled="disabled"{/if}>
+                                    <option value="0" {if $formData.$each_device_smarty_flg==0}selected="selected"{/if}>HTML</option>
+                                    <option value="1" {if $formData.$each_device_smarty_flg==1}selected="selected"{/if}>Smarty</option>
+                                </select>
+                            {/foreach}
+                        </span>
+                        <span id="design_flg_collection" class="hidden_contents">
+                            {foreach from=$arrStaticContentsLinkedDeviceTypeOptions key=device_type item=value}
+                                {assign var="each_device_design_flg" value="device_"|cat:$device_type|cat:"_design_flg"}
+                                <label id="device_{$device_type}_design_flg" class="design_flg">
+                                    <input type="checkbox" name="device_{$device_type}_design_flg" value="1"
+                                        {if $formData.$each_device_design_flg}checked="checked"{/if}
+                                        {if !$docmeta.is_primary}disabled="disabled"{/if}
+                                    />
+                                    {'/modules/staticcontents/lable/use_design'|translate}{*サイトのデザインを引き継ぐ*}
+                                </label>
+                            {/foreach}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="usingpage">
+                    <td class="template_item">テンプレートの転用</td>
+                    <td>
+                        <span id="linked_device_type_collection" class="hidden_contents">
+                            {foreach from=$arrStaticContentsLinkedDeviceTypeOptions key=parent_device_type item=value}
+                                <select id="device_{$parent_device_type}_linked_device_type" class="linked_device_type" name="device_{$parent_device_type}_linked_device_type" {if !$docmeta.is_primary}disabled="disabled"{/if}>
+                                    <option value="">{'/lable/make_original_data'|translate}</option>{*オリジナルを作成する*}
+                                    {assign var="each_device_linked_flg" value="device_"|cat:$parent_device_type|cat:"_linked_device_type"}
+                                    {foreach from=$arrStaticContentsLinkedDeviceTypeOptions key=child_device_type item=child_device}
+                                        {if $parent_device_type ne $child_device_type}
+                                            <option value="{$child_device_type}" {if $formData.$each_device_linked_flg == $child_device_type}selected="selected"{/if}>
+                                                {$child_device}
+                                            </option>
+                                        {/if}
+                                    {/foreach}
+                                </select>
+                            {/foreach}
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="editor_box_container">
+            <div class="table_knob up-icon"></div>
+            <div id="edit_area_wrapper">
+                <div class="edit_area">
+                    <div id="smarty_codemirror">
+                        <div id="support_tool">
+                            <input type="text" id="query" placeholder="検索文字列">
+                            <input type="text" id="replace" placeholder="置換文字列">
+                            <button type="button" id="replace_btn">置換</button>
+                            <button type="button" id="setup_dropdown_btn" class="rcms_ui_dropdown"><span class="icon-cog"></span></button>
+                            <ul>
+                                <li id="reverse_color_btn"><span class="icon-adjust"></span>文字色を反転</li>
+                                <li id="highlight_syntax_btn"><span class="icon-bookmark"></span>シンタックスをハイライト</li>
+                            </ul>
+                        </div>
+                        <textarea id="template_text"></textarea>
+                    </div>
+                    <div id="html_ckeditor">{$sw_html}</div>
+                </div>
+                <div id="side_menu_box" class="metasettings_container">
+                    {if $docmeta.is_primary}
+                        <div>{rcms_include file="management/v2/use_page.html" use_page=$formData.use_page}{* 仕様ページ *}</div>
+                        <div>{rcms_include file="management/v2/permission_box.html" arrAdmin=$arrAdmin formData=$formData}{* 閲覧編集制限 *}</div>
+                        <div>{rcms_include file="management/v2/relation_edit.html"}{* 関連するコンテンツ *}</div>
+                        <div>{rcms_include file="management/v2/open_date_box.html" id=$staic_id data=$formData}{* 公開設定 *}</div>
+                    {/if}
+                    <div>
+                        {rcms_include
+                            file="management/v2/workflow_box.html"
+                            isUnlimited=$rauth->unlimitedUpdate("/staticcontents/item/$static_id", $docmeta.lang)
+                        }{* ワークフロー設定 *}
+                    </div>
+                    <div>
+                        {rcms_include
+                            file="management/v2/update_comment.html"
+                            comment=$formData.update_comment
+                            mt=staticcontents id=$static_id pk=static_id
+                        }{* 更新コメント *}
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div><!-- #main_contents -->
+
+<div id="bottom_fixed">
+    {rcms_include
+            file="common/admin/v2/shonin_message.html"
+            docmeta=$docmeta
+            link="/management/staticcontents/staticcontents_edit/popup_mode=1&static_id=$static_id"
+    }
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+</div>
+</form>
+
+{literal}
+
+
+<!-- サンドボックス -->
+<script type="text/javascript">
+(function($) {
+
+    $(document).ready(function(){
+
+    /***************** 初期設定 *****************/
+
+        // CKEDITORのサイズ変更をユーザーへ許可しない
+        CKEDITOR.config.resize_enabled = false;
+
+        // デバイスを切り替える前と後のデバイス番号
+        var beforeDevice;
+        var currentDevice = $("#device_type").val();
+
+        // 表示しない項目を非表示にする
+        $("#smarty_codemirror").hide();
+        $("#html_ckeditor").hide();
+        $(".linked_device_type").hide();
+        $(".smarty_flg").hide();
+        $(".design_flg").hide();
+
+        // 検索のテキストボックス内でエンターを押したときの動作
+        $("input").on("keypress", function (e) {
+            var code = null;
+            code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) {
+                // エンターを押したらフォーカスアウトする
+                $(this).focusout();
+                return false;
+            }
+        });
+
+        // エディターのサイズを初期化
+        editAreaSizeChange();
+
+
+    /**************** イベントの登録 ****************/
+
+        // currentDeviceを更新
+        updateDeviceType();
+
+        // エディターのsmarty、htmlの切り替え
+        $(".smarty_flg").on("change", changeEditor);
+
+
+        // デバイスを変更したときの項目の表示制御
+        $("#device_type").on("change", updateDeviceType);
+        $("#device_type").on("change", eachDeviceValueControl);
+        $(".linked_device_type").on("change", commonAnotherDevice);
+        $("#device_type").on("change", function() {
+            $(".edit_area, #smarty_flg_collection, #design_flg_collection, #linked_device_type_collection").hide();
+            commonAnotherDevice();
+            $(".edit_area, #smarty_flg_collection, #design_flg_collection, #linked_device_type_collection").fadeIn(500);
+        });
+
+        // テンプレートの転用の値を変更する前の値を格納
+        var beforeChangeValue;
+        $(".linked_device_type").on("click", function() { beforeChangeValue = $(this).val(); });
+        $(".linked_device_type").on("change", checkReferenceCirculation);
+
+        // エディターのシンタックハイライトと文字色を反転するクリックイベント
+        $("#highlight_syntax_btn").on("click", switchCodeMirror);
+        $("#reverse_color_btn").on("click", switchTheme);
+
+        // 検索したときの動作
+        $("#query").on("focusout",CodeMirrorSearch);
+        $("#replace_btn").on("click", CodeMirrorReplace);
+
+        // ウィンドウサイズが変わったとき
+        $(window).on("resize", editAreaSizeChange);
+
+
+    /**************** プラグインの適用 ****************/
+
+        // ドロップダウンメニューを作成
+        $("#setup_dropdown_btn").rcmsDropdown();
+        $("#history_selector").rcmsDropdown({isSelectbox:true});
+        $("#lang_selector").rcmsDropdown({isSelectbox:true});
+        $("#editstatus_selector").rcmsDropdown({isSelectbox:true});
+
+        // デバイスセレクターを作成
+        $("#device_selector").rcmsDropdown({
+            isSelectbox: true,
+            syncValueAt: "#device_type",
+            onChange   : function() {$("#device_type").trigger("change");}
+        });
+
+        // rcmsResizableCellsを適用
+        var tableHeight = $("#template_name_table").outerHeight();
+        $("#template_table_edit_wrapper").rcmsResizableCells({
+            cell1         : "#template_name_table",
+            cell2         : "#editor_box_container",
+            handle        : "#template_handle",
+            direction     : "vertical",
+            position      : "relative",
+            cell1MinHeight: $("#template_name_table tr:eq(0)").height(),
+            cell1MaxHeight: tableHeight + 12,
+            onMoving      : editAreaSizeChange,
+            switchBtn     : ".table_knob"
+        });
+
+
+    /**************** 関数の定義 ****************/
+
+        // currentDeviceを更新する
+        function updateDeviceType() {
+            beforeDevice = currentDevice;
+            currentDevice = $("#device_type").val();
+        }
+
+        // 最初にエディターへデータをセットする
+        function initData() {
+            var currentValue = $("#device_" + currentDevice + "_contents").val();
+            setAndGetCKEditor(currentValue);
+            setAndGetCodeMirror(currentValue);
+            CodeMirrorRefresh();
+        }
+
+        // デバイスごとに表示内容を切り替え、hiddenに保持する
+        function eachDeviceValueControl() {
+            // 一旦全ての項目を隠す
+            $(".linked_device_type").hide();
+            $(".smarty_flg").hide();
+            $(".design_flg").hide();
+            
+            // 表示の変更前に表示されているエディターの内容をを登録する
+            var beforeHiddenValue = $("#device_" + beforeDevice + "_contents");
+
+            if ($("#device_" + beforeDevice + "_smarty_flg").val() == 0) {
+                beforeHiddenValue.val(setAndGetCKEditor());
+            } else {
+                beforeHiddenValue.val(setAndGetCodeMirror());
+            }
+            initData();
+            // 選択したデバイスを表示
+            $("#device_" + currentDevice + "_linked_device_type").show();
+            $("#device_" + currentDevice + "_smarty_flg").show();
+            $("#device_" + currentDevice + "_design_flg").show();
+        }
+
+        // モードの選択に合わせてエディターの表示を変える
+        function changeEditor() {
+            if ($("#device_" + currentDevice + "_smarty_flg").val() == 0) {
+                $("#editor_box_container").data("edit", setAndGetCodeMirror());
+                setAndGetCKEditor($("#editor_box_container").data("edit"));
+                $("#smarty_codemirror").hide();
+                $("#html_ckeditor").show();
+            } else {
+                $("#editor_box_container").data("edit", setAndGetCKEditor());
+                setAndGetCodeMirror($("#editor_box_container").data("edit"));
+                CodeMirrorRefresh();
+                $("#html_ckeditor").hide();
+                $("#smarty_codemirror").show();
+            }
+            editAreaSizeChange();
+        }
+
+        // テンプレートの転用の選択に合わせてエディターを非表示にし、アイコン画像を表示する
+        function commonAnotherDevice() {
+            // 転用するデバイス番号を定義
+            var anotherNum = $("#device_" + currentDevice + "_linked_device_type").val();
+            // テンプレートの定義
+            var data = {
+                currentNum: currentDevice,
+                anotherNum: anotherNum,
+                currentDeviceName: deviceName(currentDevice),
+                anotherDeviceName: deviceName(anotherNum)
+            };
+            var anotherDeviceImage = $("#rcms_common_another_device_tmpl").tmpl(data);
+            // エディターを登録
+            var codemirror = $("#smarty_codemirror");
+            var ckeditor   = $("#html_ckeditor");
+
+            // valueの値を表示用文字列に変換するインナー関数
+            function deviceName(val) {
+                switch (val) {
+                    case "1"  : return "PC";
+                    case "2" : return "モバイル";
+                    case "3"  : return "スマートフォン";
+                    case "4"   : return "facebook";
+                    case "5" : return "App";
+                }
+            }
+
+            // 一度プルダウンを全て選択可能にして、メッセージを削除する
+            $(".smarty_flg, .linked_device_type, .design_flg input").removeAttr("disabled");
+            $("#common_all_message").remove();
+            codemirror.hide();
+            ckeditor.hide();
+
+            if (currentDevice == 0) {          // 全デバイス共通が選択されているとき(エディター出力＆転用使用不可)
+                $(".linked_device_type").attr("disabled", "disabled");
+                if ($(".smarty_flg").val() == 0) {
+                    ckeditor.show();
+                } else {
+                    codemirror.show();
+                }
+            } else {
+                // オリジナルを作成するとき
+                if (anotherNum == "") {                // その他のデバイスでオリジナルが選択されているとき(エディター出力)
+                    if ($("#device_" + currentDevice + "_smarty_flg").val() == 0) {
+                        $("#html_ckeditor").show();
+                    } else {
+                        $("#smarty_codemirror").show();
+                    }
+                // 他のデバイスを転用するとき
+                } else {                                        // デバイスの転用が選択されているとき(エディター非表示＆モード使用不可)
+                    $(".smarty_flg").attr("disabled", "disabled");
+                    $(".edit_area").append(anotherDeviceImage);
+                }
+            }
+            if ("{/literal}{$docmeta.is_primary}{literal}" != 1) {
+                $(".smarty_flg, .linked_device_type").attr("disabled", "disabled");
+            }
+        }
+
+        // テンプレートの転用時の循環参照をチェック
+        function checkReferenceCirculation() {
+                var isContradiction = false;                                                              // 参照の矛盾のチェック
+            var selectedValue = $("#device_" + currentDevice + "_linked_device_type");                    // 選ぼうとしている項目
+            var targetDeviceValue = $("#device_" + selectedValue.val() + "_linked_device_type").val();    // 参照先の参照先
+            // 選択中のデバイスが他のデバイスに参照されているのに、他デバイスを参照しようとしていないかチェック
+            $("#linked_device_type_collection").children().each(function() {
+                if ($(this).val() == currentDevice && selectedValue.val() >= 1) {
+                    isContradiction = true;
+                };
+            });
+            // 参照先がオリジナルかチェック
+            if (targetDeviceValue >= 1) {
+                isContradiction = true;
+            }
+            // 矛盾が生じていた場合はアラートを出して、元の値に戻し、changeイベントをファイヤーさせる
+            if (isContradiction) {
+                alert("{/literal}{'/modules/staticcontents/msg/substituted_deviced_alert'|translate}{literal}");
+                selectedValue.val(beforeChangeValue).trigger("change");
+            }
+        }
+
+        // 包含するdiv要素の大きさの変化に合わせてエディターの大きさを変更
+        function editAreaSizeChange() {
+            var knob = $("div.table_knob");
+            var ckeHeight = $("#html_ckeditor");
+            // エディターの大きさを動的に設定
+            $("#template_table_edit_wrapper").height($(window).height() - 147);
+            $(".CodeMirror, .CodeMirror-scroll, .CodeMirror-gutter").height($("#smarty_codemirror").height() - 58);
+            $("#cke_contents_contents").height(ckeHeight.height() - $("#cke_top_contents").height() - 107);
+            // テーブルの折りたたみ時のアイコンの切り替え
+            if ($("#editor_box_container").position().top > tableHeight) {
+                knob.removeClass("down-icon").addClass("up-icon");
+            } else {
+                knob.removeClass("up-icon").addClass("down-icon");
+            }
+        }
+    
+    
+    /**************** 編集の有無のチェック ****************/
+    
+        // inputタグ内の編集の有無
+        var isChanged = false;
+    
+        // エディターの編集チェック
+        CKEDITOR.instances.contents.on("focus", function() {
+            isChanged = true;
+        });
+        // テキストボックスの編集チェック
+        $("input").on("focus", function() {
+            $(this).keyup(function() {
+                isChanged = true;
+            });
+        });
+        // プルダウンの編集チェック
+        $(".linked_device_type").on("change", function() {
+            isChanged = true;
+        });
+    
+        // 最新のエディターのDOM要素と比較して変更があればアラートで確認
+        $(window).on("beforeunload", function() {
+            var inited = $("#editor_box_container").data("edit");
+            var edited;
+            if ($("#smarty_flg").val() == 1) {
+                edited = setAndGetCodeMirror();
+                if (inited != edited) {
+                    isChanged = true;
+                }
+            }
+            if (isChanged) return "編集内容が破棄されます。ページを移動しますか？";
+        });
+    
+        // submitではページ移動の確認をしない
+        $("form").on("submit",function(){
+            $(window).off('beforeunload');
+        });
+    
+        // submit時に閉じているエディターの情報を削除する
+        $("#edit_action_update_li").on("click", function() {
+            updateDeviceType();
+            eachDeviceValueControl();
+            $("#smarty_codemirror").remove();
+            $("#html_ckeditor").remove();
+        });
+    
+        function resetConfirm(f) {
+            var msg = "{/literal}{'/modules/templateedit/msg/reset_confirm'|translate}{* これまで編集した内容を破棄して、\nRCMSの初期テンプレートを読み込みます。\nよろしいですか？ *}{literal}";
+            if (confirm(msg)) {
+                f.MODE.value = "RESET";
+                f.submit();
+                f.MODE.value = "";
+            }
+        }
+        
+        function deleteConfirm(f) {
+            var msg = "{/literal}{'/modules/templateedit/msg/delete_confirm'|translate}{* 削除してもよろしいですか？ *}{literal}";
+            if (confirm(msg)) {
+                f.MODE.value = "DELETE";
+                f.submit();
+                f.MODE.value = "";
+            }
+        }
+    
+    
+    /**************** CodeMirrorの各種機能の定義 ****************/
+    
+        CodeMirror.defineMode("smarty", function(config, parserConfig) {
+            var smartyOverlay = {
+                token: function(stream, state) {
+                if (stream.match("{*")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "*" && stream.next() == "}") break;
+                    return "smarty-cmt";
+                }else if (stream.match("{$")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-val";
+                }else if (stream.match("{if")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-if";
+                }else if (stream.match("{/if")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-if";
+                }else if (stream.match("{else")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-if";
+                }else if (stream.match("{foreach")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-foreach";
+                }else if (stream.match("{/foreach")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-foreach";
+                }else if (stream.match("{")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty";
+                }
+                while (stream.next() != null && !stream.match("{", false) && !stream.match("{*", false)) {}
+                return null;
+                }
+            };
+            return CodeMirror.overlayParser(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), smartyOverlay);
+        });
+        
+        // CodeMirrorのエディターオブジェクトを生成
+        var editor = CodeMirror.fromTextArea(
+            document.getElementById("template_text"),
+            {
+                mode           : "smarty",
+                indentUnit     : 4,
+                indentWithTabs : false,
+                tabMode        : "shift",
+                enterMode      : "keep",
+                electricChars  : false,
+                lineWrapping   : true,          // エディターサイズより長い行を折り返すかどうか
+                lineNumbers    : true,
+                firstLineNumber: 1,
+                gutter         : false,
+                fixedGutter    :false,
+                matchBrackets  : true
+            });
+        var lastPos   = null;       // 検索対象と一致した最後のワードの開始位置
+        var lastQuery = null;       // 検索対象の文字列
+        var marked    = [];         // 検索対象と一致した文字列に印をつける"markText()"で返ってくるオブジェクト群
+        
+        // CodeMirrorのエディターに値をセットして値を返す *引数が文字列でない場合は値のみを返す
+        function setAndGetCodeMirror(str) {
+            if (typeof str == "string") {
+                editor.setValue(str);
+            }
+            return editor.getValue();
+        }
+        
+        // CKEditorのエディターに値をセットして値を返す *引数が文字列でない場合は値のみを返す
+        function setAndGetCKEditor(str) {
+            // CKEDITOR.instances.(テキストエリアのID).getData()で編集内容を取得、setData()で値をセット
+            if (typeof str == "string") {
+                CKEDITOR.instances.contents.setData(str);
+            }
+            return CKEDITOR.instances.contents.getData();
+        }
+    
+        // markTextメソッドが返すオブジェクトのメソッド"clear()"で選択解除
+        function markedClear() {
+            for (var i = 0; i < marked.length; i++)
+            marked[i].clear();
+        }
+        
+        // 文字列を検索
+        function CodeMirrorSearch() {
+            markedClear();
+            var text = $("#query").val();
+            if (!text) return;
+            // getSerchCursorで検索文字列の位置を取得し、markTextで見つかった文字列のオブジェクトに"searched"クラスを付ける
+            for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+            marked.push(editor.markText(cursor.from(), cursor.to(), "searched"));
+            if (lastQuery != text) lastPos = null;
+            var cursor = editor.getSearchCursor(text, lastPos || editor.getCursor());
+            if (!cursor.findNext()) {
+                cursor = editor.getSearchCursor(text);
+                if (!cursor.findNext()) return;
+            }
+            // 検索ヒット文字列で洗濯中の文字列に色を付ける
+            editor.setSelection(cursor.from(), cursor.to());
+            lastQuery   = text;
+            lastPos   = cursor.to();
+        }
+        
+        // 検索ヒット文字列を全て置換
+        function CodeMirrorReplace() {
+            markedClear();
+            var text = document.getElementById("query").value,
+                replace = document.getElementById("replace").value;
+            if (!text) return;
+            for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+                cursor.replace(replace);
+        }
+    
+        // シンタックスハイライト
+        function switchCodeMirror(){
+            if(editor.getOption("mode")){
+                editor.setOption("mode", false);
+            }else{
+                editor.setOption("mode", "smarty");
+            }
+        }
+        
+        // 文字色を反転
+        function switchTheme(){
+            if(editor.getOption("theme")=="default"){
+                editor.setOption("theme", 'night');
+            }else{
+                editor.setOption("theme", 'default');
+            }
+        }
+    
+        // CodeMirrorの仕様エディターの変更内容がすぐには表示されないため、リフレッシュが必要
+        function CodeMirrorRefresh() {
+            setTimeout( editor.refresh, 0 );
+        }
+    
+        // エディターを生成し終わってから初期化
+        initData();
+        eachDeviceValueControl();
+        commonAnotherDevice();
+        // エディターの初期描画処理
+        var updateSize = setInterval(editAreaSizeChange, 500);
+        setTimeout(function() {
+            clearInterval(updateSize);
+        }, 5000);
+    });
+})(jQuery);
+</script>
+<!-- テンプレートの定義 -->
+<script id="rcms_common_another_device_tmpl" type="text/x-jquery-tmpl">
+<div id="common_all_message"><div id="common_images">
+    <div id="common_this_device" class="large_${currentNum}"></div>
+    <div id="common_arrow" class="large_arrow"></div>
+    <div id="common_target_device" class="large_${anotherNum}"></div></div>
+    <div id="common_message_text">
+        <span class="common_device_font">${currentDeviceName}版</span>では
+        <span class="common_device_font">${anotherDeviceName}版</span>を使用します
+    </div>
+</div>
+</script>
+<script id="rcms_common_all_device_tmpl" type="text/x-jquery-tmpl">
+    <div id="common_all_message">
+        <img src="../../../images/modules/staticcontents/all_device.png" />
+    <div id="common_all_message_text">全デバイス共通のHTMLを利用しています。<br />デバイス別にHTMLを設定するには、全デバイス共通のチェックボックスをOFFにしてください。</div>
+</div>
+
+</script>
+{/literal}
+
+{rcms_include file="management/rcms_ui/rcms_ui.html"}

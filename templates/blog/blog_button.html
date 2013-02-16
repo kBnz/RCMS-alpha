@@ -1,0 +1,26 @@
+{if $blog_list|@count >= 1}
+{*LightWindowの準備が出来ているか判断するjavascriptエラー回避するため*}
+{literal}
+<script type="text/javascript">
+    function call_light_window(url){
+        if(typeof rcmsLightWindow != 'undefined' && rcmsLightWindow != null){
+            rcmsLightWindow.showManagement(url);
+        }
+    }
+</script>
+{/literal}
+{module name="blog_button"}
+<h2 class="module_title"><span>{'/modules/blog/label/blog_button'|translate}{* ブログ投稿ボタン *}</span></h2>
+<div class="module_contents">
+<ul class="blog_title">
+{foreach from=$blog_list item=blog}
+  <li>
+      <div>{$blog.title|escape}</div>
+      <div><input type="button" value="{'/label/post_btn'|translate}{*投稿する*}" onclick="call_light_window('/management/blog/blog_item_edit/blog_id={$blog.blog_id}');return false;" ></div>
+  </li>
+{/foreach}
+</ul>
+<div class="relation_link"><a href="/blog_top/" class="small_text">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a></div>
+</div>
+{/module}
+{/if}

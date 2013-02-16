@@ -1,0 +1,47 @@
+{if !$Login_member_id}{* 未ログインのときに表示する *}
+{module name="login_input"}
+
+<a name="login{$contents_id}"></a>
+<h2 class="module_title"><span>{'/label/login'|translate}{*ログイン*}</span></h2>
+
+<div class="module_contents">
+{if $login_code == '1'}
+  <p style="color:red">{'/modules/login/msg/cant_login_because_of_wrong_info_error'|translate}{*入力が正しくないためログインできませんでした。<br />入力内容を確認してください。*}</p>
+{elseif $login_code == '2'}
+  <p style="color:red">{'/modules/login/msg/must_login_before_display_page'|translate}{*この情報はログインしてご覧ください。*}</p>
+{/if}
+
+<form method="post" action="/direct/login/login/">
+  <input type="hidden" name="Retrun_URL" value="{$Retrun_URL|escape}">
+  <input type="hidden" name="_lang" value="{$mylang}">
+  <input type="hidden" name="Retrun_Err_URL" value="{$Retrun_Err_URL|escape}">
+  <input type="hidden" name="Retrun_a_name" value="login{$contents_id}">
+  <input type="hidden" name="subflg" value="1">
+  <p>
+  <label for="login_input_email" >{'/label/mail_address'|translate}{*メールアドレス*}({'/label/login_id'|translate}{*ログインID*})</label><br />
+  <input type="text" id="login_input_email" name="email" value="" >
+  </p>
+  <p>
+  <label for="login_input_password" >{'/label/password'|translate}{*パスワード*}</label><br>
+  <input type="password" id="login_input_password" name="password" value="" >
+  <input name="login_save" id="login_save" value="1" checked="checked" type="checkbox"><br><label for="login_save">{'/msg/auto_login_next_time'|translate}{*次回から自動的にログイン*}</label>
+  </p>
+  <input type="submit" value="{'/label/login'|translate}{*ログイン*}" >
+</form>
+</div>
+{/module}
+{elseif $login_code == '2'}
+{module name="login_input"}
+
+<div class="module_contents">
+  <p style="color:red">{'/modules/login/msg/current_login_account_not_have_and_logout'|translate}{*現在ログインしているIDでは閲覧する権限がありません。ログアウトして、違うIDでログインをしてください。*}</p>
+<p>
+<form method="get" action="/direct/login/logout/">
+  <input type="submit" value="{'/label/logout'|translate}{*ログアウト*}" />
+</form>
+</p>
+
+</div>
+
+{/module}
+{/if}

@@ -1,0 +1,23 @@
+{module name="help_detail"}
+<h2 class="module_title"><span>Ｑ．{$helpRow.title}</span></h2>
+<div class="module_contents">
+Ａ．<br />
+{$helpRow.contents}
+{if $helpRow.unresolve_link_module=='help' || $helpRow.unresolve_link_module=='inquiry'}
+<br /><hr /><br />
+{'/modules/help/msg/solved_your_questions'|translate}{* 解決しましたか？ *}<br />
+<form action="/direct/help/redirect/" method="post" name="help_detail">
+<input type="submit" name="yes" value="{'/label/yes'|translate}{* はい *}" />　{'/modules/help/msg/solved'|translate}{* 解決しました。 *}<br />
+<input type="submit" name="no" value="{'/label/no'|translate}{* いいえ *}" />　{'/modules/help/msg/not_solved'|translate}{* まだ解決していません。 *}
+{if $helpRow.unresolve_link_module=='help'}{'/modules/help/msg/refer_to_another_help'|translate}{* 別のQ&Aを参照します。 *}{elseif $helpRow.unresolve_link_module=='inquiry'}{'/modules/help/msg/inquire'|translate}{* 問い合わせます。 *}{/if}
+<input type="hidden" name="help_item_id" value="{$helpRow.help_item_id}" />
+</form>
+{/if}
+{if $helpRow.relation_link_url1}<br><a href="{$helpRow.relation_link_url1}" target="_blank">{$helpRow.relation_link_name1}</a>{/if}
+{if $helpRow.relation_link_url2}<br><a href="{$helpRow.relation_link_url2}" target="_blank">{$helpRow.relation_link_name2}</a>{/if}
+{if $helpRow.relation_link_url3}<br><a href="{$helpRow.relation_link_url3}" target="_blank">{$helpRow.relation_link_name3}</a>{/if}
+{if $helpRow.relation_link_url4}<br><a href="{$helpRow.relation_link_url4}" target="_blank">{$helpRow.relation_link_name4}</a>{/if}
+{if $helpRow.relation_link_url5}<br><a href="{$helpRow.relation_link_url5}" target="_blank">{$helpRow.relation_link_name5}</a>{/if}
+<div class="relation_link"><a href="/help_list/">{'/modules/help/label/help_list'|translate}{* Q&A一覧 *}</a></div>
+</div>
+{/module}

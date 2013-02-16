@@ -1,0 +1,13 @@
+<h2>[emoji:079]{'/modules/topics/label/topics_archive'|translate}{* アーカイブ *}</h2>
+<ul>
+{foreach from=$topics_archive_list item=row}
+{if $yearly_flg}
+<li><a href="/{$link_page_sysnm}/date={$row.y}">{'/label/yyyy'|translate:$row.y}({$row.cnt})</a></li>
+{elseif $season_flg}
+<li><a href="/{$link_page_sysnm}/season={$row.season}">{'/label/season_yyyy'|translate:$row.season}{* YYYYシーズン *}({$row.cnt})</a></li>
+{else}
+<li><a href="/{$link_page_sysnm}/date={$row.y}-{$row.m}">{'/label/yyyymm'|translate:$row.y:$row.m}({$row.cnt})</a></li>
+{/if}
+{/foreach}
+</ul>
+<hr/>

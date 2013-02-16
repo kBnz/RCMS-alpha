@@ -1,0 +1,7 @@
+<h2>{'/modules/member/label/member_search'|translate}{*メンバー検索*}</h2>
+<form action="/{$page_sysnm}/" method="get">
+  {'/label/name'|translate}{*名前*}：<input type="text" name="s_name" value="{$smarty.request.s_name}" />
+  <input type="submit" value="{'/label/search'|translate}{*検索*}" />
+</form>
+
+<hr/>

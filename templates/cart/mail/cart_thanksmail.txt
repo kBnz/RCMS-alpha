@@ -1,0 +1,40 @@
+このメールは{$site_title}のフォームから送信されたメールです。
+以下の内容で注文を受け付けました。ご確認ください。
+
+注文ID：{$cart_order_header_id}
+
+■注文商品
+{foreach from=$cartItems item=item}
+・{$item.item_name} {$item.price}円×{$item.amount}個＝{$item.subTotal}円
+{/foreach}
+送料：{$carriage}円
+合計：{$total}円
+
+■注文者情報
+・氏名       ： {$name}
+・メール     ： {$email}
+・住所       ： {$zip_main}-{$zip_sub} {$address}
+・電話番号   ： {$phone_number}
+・メール     ： {$email}
+・支払い方法 ： {$settlement}
+・メッセージ ： {$message}
+{section name=ext_loop loop=$smarty.const.CART_EXT_COLUMN_CNT}{*自由項目*}
+{assign var="i" value=$smarty.section.ext_loop.iteration|string_format:"%02d"}
+{assign var="ext_title" value="ext_title_$i"}
+{assign var="ext_txt" value="ext_txt_$i"}
+{if $cartSetting.$ext_title}
+・{$cartSetting.$ext_title} ： {$input.$ext_txt}
+{/if}
+{/section}
+
+{$other_contents}
+{if $send_to_another}
+■送付先情報
+・送付先氏名       ： {$another_name}
+・送付先住所       ： {$another_zip_main}-{$another_zip_sub} {$another_address}
+・送付先電話番号   ： {$another_phone_number}
+{/if}
+
+-------------------------
+{$site_title}
+{$smarty.const.ROOT_URL}/

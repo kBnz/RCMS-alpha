@@ -1,0 +1,18 @@
+{module name="inquiry_list"}
+<h2 class="module_title"><span>{'/modules/inquiry/label/inquiry_list_for_user'|translate}{*お問い合わせ一覧*}</span></h2>
+<div class="module_contents">
+
+{foreach from=$inquiry_list item=item name=inquiry_list}
+  {if $smarty.foreach.inquiry_list.first}
+    <ul>
+  {/if}
+  <li>
+    <a href="/inquiry_detail/id={$item.inquiry_id}">{$item.inquiry_name}</a>
+    <p>{$item.inquiry_info}</p>
+  </li>
+  {if $smarty.foreach.inquiry_list.last}
+    </ul>
+  {/if}
+{/foreach}
+</div>
+{/module}

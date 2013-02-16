@@ -1,0 +1,243 @@
+{head_include file="common/calendar_scripts.html"}
+<style type="text/css">
+<!--
+{literal}
+div.changeSyoriArea {
+   color: #CCCCCC;
+}
+
+div.changeMemberArea {
+   color: #CCCCCC;
+}
+/* ポップアップカレンダー */
+div.pop_calendar {
+  display:none;
+  position:absolute;
+  z-index: 100;
+}
+div.pop_calendar a span {
+  display: inline;
+}
+{/literal}
+-->
+</style>
+
+{literal}
+<script type="text/javascript">
+<!--
+Event.observe(window, 'load', function() {
+    DUI.calendar.PopupWindow({title:"{/literal}{'/label/date'|translate}{*日付*}{literal}", textId: 'limit_date', btnId: 'limit_date-btn', boxId: 'limit_date-pop', tableId: 'limit_date-table'});
+});
+
+var tmp_member_name;
+var tmp_member_id;
+
+function inputMemberInfo(order_no) {
+   tmp_member_name = document.getElementById('member_name').value;
+   tmp_member_id = document.getElementById('member_id').value;
+   var element = document.getElementById('member_name');
+   document.getElementById('inputFrame').src = '/js/infoInput.php?type=gamemember';
+   document.getElementById('inputArea').style.visibility = "visible";
+   document.getElementById('inputArea').style.display = "";
+}
+
+function chkMemId(order_no) {
+    if(tmp_member_name != document.getElementById('member_name').value
+    && tmp_member_id == document.getElementById('member_id').value
+    && document.getElementById('member_name').value != "") {
+    // 名前が変わっているがidが変わっていない場合は手で入力したとみなす
+        document.getElementById('member_id').value = "";
+        document.getElementById('subInfo').style.display = "inline";
+    }
+    else if(document.getElementById('member_name').value == "") {
+        document.getElementById('subInfo').style.display = "none";
+    }
+}
+
+function writeWithKeybourd(order_no) {
+    document.getElementById('member_id').value = "";
+    document.getElementById('inputArea').style.visibility = "hidden";
+    if(document.getElementById('member_name').value != "") {
+        document.getElementById('subInfo').style.display = "inline";
+    }
+    else {
+        document.getElementById('subInfo').style.display = "none";
+    }
+}
+
+function confirm_delete() {
+  // 削除してもよろしいですか？
+  if (confirm("{/literal}{'/msg/confirm_del'|translate}{literal}")) {
+    document.getElementById('MODE').value='DELETE' ;
+    document.getElementById('tasklist_edit_form').submit() ;
+  }
+}
+
+function onChangeSyori_flg(elem) {
+    if(elem.checked) {
+        document.getElementById('changeSyoriArea').style.color = '#000000';
+        document.getElementById('syori_flg').disabled = '';
+    } else {
+        document.getElementById('changeSyoriArea').style.color = '#CCCCCC';
+        document.getElementById('syori_flg').disabled = 'disabled';
+    }
+}
+
+function onChangeMember_name(elem) {
+    if(elem.checked) {
+        document.getElementById('changeMemberArea').style.color = '#000000';
+        document.getElementById('member_name').disabled = '';
+        document.getElementById('infoButton').disabled = '';
+    } else {
+        document.getElementById('changeMemberArea').style.color = '#CCCCCC';
+        document.getElementById('member_name').disabled = 'disabled';
+        document.getElementById('infoButton').disabled = 'disabled';
+    }
+}
+-->
+</script>
+{/literal}
+{module name="tasklist_edit"}
+<h2 class="module_title"><span>{if $formData.cate_title}{'/modules/tasklist/label/edit_the_task'|translate:$formData.cate_title}{elseif $formData.parent_cate_title}{$formData.parent_cate_title}{else}{'/modules/tasklist/label/edit_the_new_task'|translate}{* 新規課題を編集 *}{/if}</span></h2>
+<div class="module_contents">
+<p class="add_item"><a href="/tasklist_edit/">{'/modules/tasklist/label/create_new_task_btn'|translate}{* 課題追加 *}</a></p>
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<form name="tasklist_edit_form" id="tasklist_edit_form" action="/tasklist_edit/" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="member_id" id="member_id" value="{$formData.member_id}" />
+  <input type="hidden" name="member_grade" id="member_grade" value="" />
+{if $parentInfo}
+  <input type="hidden" name="id" value="{$parentInfo.tasklist_id}" />
+{/if}
+{if $replyInfo}
+  <input type="hidden" name="reply_id" value="{$replyInfo.tasklist_id}" />
+{/if}
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="MODE" id="MODE" value="UPDATE" />
+
+{if $formData.response_flg != 1}
+  <!-- 親記事作成 -->
+  <table>
+    <tr>
+      <th>{'/label/title'|translate}{* タイトル *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+      <td><input type="text" name="cate_title" size="40" value="{$formData.cate_title}"></td>
+    </tr>
+    <tr>
+      <th>{'/label/content'|translate}{* 内容 *}<span class="required">{'/label/required'|translate}{* 必須 *}</span></th>
+      <td><textarea name="bug_explanation" rows="10" cols="50">{$formData.bug_explanation}</textarea></td>
+    </tr>
+    <tr>
+      <th>{'/label/deadline'|translate}{* 期限 *}</th>
+      <td>
+        <input type="text" name="limit_date" id="limit_date" value="{$limit_date|escape}" autocomplete="off" />
+        <button type="button" id="limit_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+        <div class="pop_calendar" id="limit_date-pop"></div>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/representative'|translate}{* 担当者 *}</th>
+      <td>
+        <input type="text" name="member_name" id="member_name" value="{$formData.member_name}" size="30" onBlur="chkMemId(0)" onKeyup="writeWithKeybourd(0)">
+        <input type="button" value="..." onclick="inputMemberInfo(0);" />
+        <span id="subInfo" style="display:none">({'/label/not_registered_data'|translate}{* 登録外 *})</span>
+        <div id="inputArea" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;z-index:1;">
+          <iframe name="inputFrame" id="inputFrame" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/category'|translate}{* カテゴリ *}</th>
+      <td><select name="category" id="category">{html_options options=$arrcategory selected=$formData.category}</select></td>
+    </tr>
+    <tr>
+        <th>{'/label/attach_files'|translate}</p>{* 添付ファイル *}</th>
+        <td align="left" id="task_file">
+          {section name=files loop=$task_file }
+          {assign var="loop_cnt" value=$smarty.section.files.iteration}
+            {'/label/title'|translate}{* タイトル *}{$loop_cnt}
+              <input type="text" name="file{$loop_cnt}_title" value="{$task_file[$loop_cnt].title}" size="15" />
+              <input type="hidden" name="file{$loop_cnt}_extension" value="{$task_file[$loop_cnt].extension}" size="15" />
+              <input type="file" name="task_file{$loop_cnt}" size="40"/>   
+              {if ($task_file[$loop_cnt].title ) != "" } 
+                <a href="{$task_file[$loop_cnt].link}" >{$task_file[$loop_cnt].title}.{$task_file[$loop_cnt].extension}</a> &nbsp;
+                <input type="checkbox" name="file{$loop_cnt}_del" id="file{$loop_cnt}_del" {if $task_file[$loop_cnt].del} checked="checked" {/if} />  
+                <label for="file{$loop_cnt}_del">{'/label/delete'|translate}</label>{* PDF削除 *}
+              {/if}
+              <br>
+          {/section}
+        </td>
+    </tr>
+
+    <tr>
+      <th>{'/label/importance'|translate}{* 重要度 *}</th>
+      <td><select name="serious_flg">{html_options options=$arrserious_flg selected=$formData.serious_flg}</select></td>
+    </tr>
+    <tr>
+      <th>{'/label/priority'|translate}{* 優先度 *}</th>
+      <td><select name="priority_flg">{html_options options=$arrpriority_flg selected=$formData.priority_flg}</select></td>
+    </tr>
+    <tr>
+      <th>{'/label/status'|translate}{* 状態 *}</th>
+      <td><select name="syori_flg">{html_options options=$arrsyori_flg selected=$formData.syori_flg}</select></td>
+    </tr>
+  </table>
+
+{else}
+  <!-- 返信作成 -->
+  <input type="hidden" name="cate_title" value="{$formData.parent_cate_title}" />
+  <table>
+    <tr><td><textarea name="bug_explanation" rows="10" cols="50">{$formData.bug_explanation}</textarea></td></tr>
+    <tr><td>
+        <div class="changeSyoriArea" id="changeSyoriArea">
+            <input type="checkbox" name="changeSyori_flg" value="1" onclick="onChangeSyori_flg(this);" />
+            {'/label/status'|translate}{* 状態 *}：<select name="syori_flg" id="syori_flg" disabled>{html_options options=$arrsyori_flg selected=$formData.syori_flg}</select>
+        </div>
+    </td></tr>
+    <tr><td>
+        <div class="changeMemberArea" id="changeMemberArea">
+        <input type="checkbox" name="changeMember_name" value="1" onclick="onChangeMember_name(this);" />
+        {'/label/representative'|translate}{* 担当者 *}：<input type="text" name="member_name" id="member_name" value="{$formData.member_name}" size="30" onBlur="chkMemId(0)" onKeyup="writeWithKeybourd(0)" disabled>
+        <input type="button" value="..." onclick="inputMemberInfo(0);" id="infoButton" disabled />
+        <span id="subInfo" style="display:none">({'/label/not_registered_data'|translate}{* 登録外 *})</span>
+        <div id="inputArea" class="inputArea" style="position:absolute;visibility:hidden;border:1px solid;z-index:1;">
+          <iframe name="inputFrame" id="inputFrame" frameborder="0" vspace="-5" hspace="-5" marginwidth="0" marginheight="0" src="" scrolling="no" width="350" height="370"></iframe>
+        </div>
+        </div>
+    </td></tr>
+  </table>
+{/if}
+
+{if $formData.response_flg == 1}
+  <!-- 返信 -->
+  {if !$replyInfo}
+    {if $auth.tasklist.insert}
+      <input type="button" name="button" value="{'/label/add_btn'|translate}{* 追加する *}" class="submitButton" onclick="document.getElementById('MODE').value='INSERT';document.getElementById('tasklist_edit_form').submit();return false;" />
+    {/if}
+  {else}
+    {if $auth.tasklist.update}
+      <input type="button" name="button" value="{'/label/update_btn'|translate}{* 更新する *}" class="submitButton" onclick="document.getElementById('MODE').value='UPDATE';document.getElementById('tasklist_edit_form').submit();return false;" />
+    {/if}
+    {if $auth.tasklist.delete}
+      <input type="button" name="button" value="{'/label/delete_btn'|translate}{* 削除する *}" class="submitButton" onclick="confirm_delete(); return false;" />
+    {/if}
+  {/if}
+{else}
+  <!-- 親記事 -->
+  {if !$parentInfo}
+    {if $auth.tasklist.insert}
+      <input type="button" name="button" value="{'/label/add_btn'|translate}{* 追加する *}" class="submitButton" onclick="document.getElementById('MODE').value='INSERT';document.getElementById('tasklist_edit_form').submit();return false;" />
+    {/if}
+  {else}
+    {if $auth.tasklist.update}
+      <input type="button" name="button" value="{'/label/update_btn'|translate}{* 更新する *}" class="submitButton" onclick="document.getElementById('MODE').value='UPDATE';document.getElementById('tasklist_edit_form').submit();return false;" />
+    {/if}
+    {if $auth.tasklist.delete}
+      <input type="button" name="button" value="{'/label/delete_btn'|translate}{* 削除する *}" class="submitButton" onclick="confirm_delete(); return false;" />
+    {/if}
+  {/if}
+{/if}
+
+</form>
+</div>
+{/module}

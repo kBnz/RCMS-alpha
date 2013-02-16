@@ -1,0 +1,366 @@
+{literal}
+<!-- rcmsCustomizableTemplatePicker -->
+<script type="text/javascript">
+
+(function($){
+
+    /**
+    * カスタマイズ可能なテンプレートを選択するプラグイン
+    * テンプレートのリストはローカルストレージにキャッシュ。ハッシュ値により変更を毎回確認し、変更がある場合は最新版をダウンロードする。
+    *
+    * @対象要素  <div>タグ
+    * @param   showAll = true    bool           すべてを表示する場合はtrue、まだカスタマイズされていないテンプレートを薄く表示する場合はfalse 
+    * @param   source            JSON           テンプレートのリストをJSONで渡す。通常は変更しない。この値はローカルストレージにキャッシュされる。
+    * @param   onChange          function(id)   選択時に実行する関数。引数としてidが渡される
+    *
+    * @使用例
+    *       <div id="tmpl_type_picker" data-id="" >モジュールから検索</div>
+    *       $("#tmpl_type_picker").rcmsCustomizableTemplatePicker({onChange:function(id){alert(id);},showAll:false});
+    *
+    */
+    $.fn.rcmsCustomizableTemplatePicker = function(options){
+
+        // 対象オブジェクト
+        var target = this;
+        var picker;
+        var isInit = false;     // 初回ロードかどうか
+        var clicked;
+
+        // セットアップ
+        function setup(){
+            // add class
+            target.addClass("rcms_ui_content_selector_triger");
+            
+            // Build html. 外枠のdivを表示
+            var flameHtml = $("#rcms_ui_content_selector_tmpl").tmpl();
+            target.after(flameHtml);
+            picker = target.next();
+            
+            // Install event listener.
+            $(".ok_btn", picker).on("click.rcmsCustomizableTemplatePicker",hidePicker);        // OK
+            $(".cancel_btn",picker).on("click.rcmsCustomizableTemplatePicker",hidePicker);     // Cancel
+            target.on("click.rcmsCustomizableTemplatePicker",showPicker);                      // Picker表示
+            $(".rcms_ui_content_selector_node_main_field").live("change.rcmsCustomizableTemplatePicker", assignControll);
+
+            hidePicker();
+        }
+
+        // 初期化
+        function init(){
+            isInit = true;
+            
+            var data = target.data("rcmsCustomizableTemplatePicker");
+            
+            if( !data ){
+                // 初回実行時.
+                setup();
+                data = {
+                    "picker" : picker
+                };
+                target.data("rcmsCustomizableTemplatePicker",data);
+            }else{
+                // 2回目以降
+                picker = data.picker;
+            }
+            
+        };
+        
+        
+        // Show picker
+        function showPicker(){
+            picker.show();
+        }
+        
+        // Hide picker
+        function hidePicker(){
+            // DB用にクエリを置き換えてdata-queryに格納
+            var query = $("select.rcms_ui_content_selector_node_options").serialize();
+            query = query.replace("topics_category_id", "content_type").replace("topics_id", "id");
+            $.data(target.get(0), "query", query);
+            picker.hide();
+        }
+        
+        // Load contents list
+        function requestContentsList(url,controller){
+            url = "/direct/topics/admin_contents_selector/";
+            if(url){
+                $.ajax({
+                    type   : "POST",
+                    async  : true,
+                    url    : url,
+                    data   : {controller : 52},
+                    success: initContentsList
+                });
+            }
+        }
+
+        function initContentsList(response){
+console.log("response");
+console.log(response);
+            var contentsList = $.parseJSON(response);
+            
+            // 最初に取得したJSONを対象要素のdeta-initJSONに格納
+            $.data(target.get(0), "initJSON", contentsList);
+            
+            $(".rcms_ui_content_selector_body", picker).empty();
+            
+            // ノードごとのセレクタを生成
+            $.each(contentsList.node, function(){
+                var node = this;
+                var html = $("#rcms_ui_content_selector_node_tmpl").tmpl(node);
+                var query = $("select.rcms_ui_content_selector_node_options").serialize();
+                $(".rcms_ui_content_selector_body", picker).append(html);
+
+                // 受け取ったJSONの"enable_multiple"のboolに合わせて"multiple"に設定
+                if (node.enable_multiple)
+                $(".rcms_ui_content_selector_node_options").attr("multiple", "multiple");
+
+                // デフォルト値を挿入
+                var defaults = $("#rcms_ui_content_selector_node_option_tmpl").tmpl(node.default);
+                $(".rcms_ui_content_selector_node_options", "#rcms_ui_content_selector_node_" + node.node_no).html(defaults);
+            });
+            if (isInit) {
+                // serialize()関数を実行したときのためにそれぞれの項目のnameを設定
+                var initNum = 0;
+                contentsListLoad(initNum, "");
+                $("select.rcms_ui_content_selector_node_options:eq(" + initNum++ + ")").attr("name", "topics_group_id[]");
+                
+                contentsListLoad(initNum, "");
+                $("select.rcms_ui_content_selector_node_options:eq(" + initNum++ + ")").attr("name", "topics_category_id[]");
+                
+                contentsListLoad(initNum, "");
+                $("select.rcms_ui_content_selector_node_options:eq(" + initNum++ + ")").attr("name", "topics_id[]");
+                isInit = false;
+            }
+        }
+
+        // 選択したリストによって表示項目を割り振る
+        function assignControll() {
+            var $this = $(this);
+            var listNum = $(this).parent().data().node_no;
+            var query = $("select.rcms_ui_content_selector_node_options").serialize();
+            var checkList = $("div.rcms_ui_ajax_selector_container:eq(" + listNum + ") input:checkbox");
+
+            // リストの最上部の全選択にチェックが入っているときはそれ以外のチェックを外して"query"を空にする
+            if ($("div.rcms_ui_ajax_selector_container:eq(" + listNum + ") label:first").hasClass("selected")) {
+                clicked = $.data(target.get(0), "before-checked").val();
+                if (clicked === "") {
+                    checkList.attr("checked", false);
+                    checkList.parent().removeClass("selected");
+                    checkList.eq(0).attr("checked", true);
+                    query = "";
+                } else {
+                    checkList.eq(0).attr("checked", false);
+                }
+            }
+
+            switch (listNum) {
+                case 0 :
+                    contentsListLoad(listNum + 1, query);
+                    contentsListLoad(listNum + 2, query);
+                    break;
+                case 1 : contentsListLoad(listNum + 1, query);
+                    break;
+            }
+console.log(query);
+        }
+
+        // ajaxでリストを動的に読み込む *rcms_ui_rcmsAjaxSelectorプラグインを使用
+        function contentsListLoad(num, query) {
+            var requestNodeKey;
+            var node = $.data(target.get(0), "initJSON").node[num];     // targetに格納したdataを取得
+            
+            // デフォルト値を挿入
+            var defaults = $("#rcms_ui_content_selector_node_option_tmpl").tmpl(node.default);
+            $(".rcms_ui_content_selector_node_options", "#rcms_ui_content_selector_node_" + num).html(defaults);
+            
+            // リクエストを投げる場所によってリクエストノードキーを選択
+            switch (num) {
+                case 0 : requestNodeKey = "request_node_key=topics_group_id&";
+                    break;
+                case 1 : requestNodeKey = "request_node_key=topics_category_id&";
+                    break;
+                case 2 : requestNodeKey = "request_node_key=topics_id&";
+                    break;
+            }
+            
+            // 現在表示されているリストを削除してrcmsAjaxSelectorを使って新しいリストを取得
+            $(".rcms_ui_ajax_selector_container:eq(" + num + ")").remove();
+            $("select.rcms_ui_content_selector_node_options:eq(" + num + ")")
+                .rcmsAjaxSelector({
+                    url : "/direct/topics/admin_contents_selector/" + requestNodeKey + query,
+                    enableAutoPaging : true,
+                    autoSelectValues : [],
+                    beforeSyncOptions: beforeCheckList
+                });
+        }
+
+        function beforeCheckList(checkedItem, checkedTarget) {
+            $.data(target.get(0), "before-checked", checkedItem);
+        }
+
+        // Public methods
+        var methods = {
+            loadContentsList : function(options){
+                
+                var url        = options.url;
+                var controller = options.controller;
+                
+                requestContentsList(url,controller);
+                
+            }
+        };
+
+        init();
+
+        // Method calling logic
+        if ( methods[ options ] ) {
+            return methods[ options ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        } else if ( typeof options === 'object' || ! options ) {
+            return init();
+        } else {
+            $.error( 'Method ' +  options + ' does not exist on jQuery.tooltip' );
+        }
+    };
+
+})(jQuery);
+</script>
+
+<!-- テンプレートの定義   rcms_ui_content_selector_tmpl-->
+<script id="rcms_ui_content_selector_tmpl" type="text/x-jquery-tmpl">
+    <div class="rcms_ui_content_selector_root" style="display:none;">
+        <div class="rcms_ui_content_selector_body">
+        </div>
+        <div class="rcms_ui_content_selector_footer">
+            <button class="cancel_btn">Cancel</button>
+            <button class="ok_btn">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- テンプレートの定義   rcms_ui_content_selector_node_tmpl-->
+<script id="rcms_ui_content_selector_node_tmpl" type="text/x-jquery-tmpl">
+    <div class="rcms_ui_content_selector_node_container" data-node_no="${node_no}" id="rcms_ui_content_selector_node_${node_no}">
+        <div class="rcms_ui_content_selector_node_header_field">
+            ${node_name}
+        </div>
+        <div class="rcms_ui_content_selector_node_search_field" style="display:none">
+            <input type="search" />
+        </div>
+        <div class="rcms_ui_content_selector_node_main_field">
+            <select name="example" size="10" class="rcms_ui_content_selector_node_options">
+
+            </select>
+        </div>
+        <div class="rcms_ui_content_selector_node_footer_field">
+            <button class="rcms_ui_content_selector_node_add_btn">+</button>
+            <button class="rcms_ui_content_selector_node_search_btn">search</button>
+            <button class="rcms_ui_content_selector_node_edit_btn">edit</button>
+        </div>
+    </div>
+</script>
+
+<!-- テンプレートの定義   rcms_ui_content_selector_options_tmpl-->
+<script id="rcms_ui_content_selector_node_option_tmpl" type="text/x-jquery-tmpl">
+    <option value="${value}" data-parent="${parent}" alt="${name}">${name}</option>
+</script>
+
+
+<style type="text/css">
+
+.rcms_ui_content_selector_triger{
+    background: #fff;
+    border: inset #aaa 1px;
+    width: 190px;
+    padding: 5px;
+    text-overflow: ellipsis;
+    position: relative;
+}
+.rcms_ui_content_selector_triger:after{
+    background: #fff;
+    border-left: solid #aaa 1px;
+    content: "edit";
+    font-size: 8px;
+    width: 20px;
+    position: absolute;
+    top:0;
+    right:0;
+    bottom: 0;
+    font-color: #aaa;
+}
+.rcms_ui_content_selector_triger:hover:after{
+    background: #eee;
+    border-left: solid #aaa 1px;
+    content: "edit";
+    font-size: 8px;
+    width: 20px;
+    position: absolute;
+    top:0;
+    right:0;
+    bottom: 0;
+    font-color: #aaa;
+}
+
+
+/* root */
+.rcms_ui_content_selector_root{
+    position : absolute;
+    z-index : 100;
+    background: #fff;
+    border: solid #aaa 1px;
+    width: 500px;
+    height: 300px;
+    -webkit-box-shadow:  2px 2px 5px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow:  2px 2px 5px 2px rgba(0, 0, 0, 0.2);
+    box-shadow:  2px 2px 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* body */
+.rcms_ui_content_selector_body{
+    width: 100%;
+}
+
+/* フッタ */
+.rcms_ui_content_selector_footer{
+    position : absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 30px;
+    background: #eee;
+    border-top: solid #aaa 1px;
+}
+
+/* ノードコンテナ */
+.rcms_ui_content_selector_node_container{
+    float: left;
+
+}
+
+/* ノードヘッダー */
+.rcms_ui_content_selector_node_header_field{
+
+}
+
+/* ノード検索フィールド */
+.rcms_ui_content_selector_node_search_field{
+
+}
+
+/* ノードメインフィールド */
+.rcms_ui_content_selector_node_main_field{
+
+}
+.rcms_ui_content_selector_node_main_field select{
+    font-size: 10px;
+    width: 160px;
+}
+
+
+
+/* ノードオプション */
+.rcms_ui_content_selector_node_options{
+
+}
+</style>
+{/literal}

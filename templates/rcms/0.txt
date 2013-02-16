@@ -1,0 +1,82 @@
+<?php
+define("OEM_ID","<!--%OEM_ID%-->");
+define("ROOT_URL","<!--%ROOT_URL%-->");
+define("ROOT_SSL_URL","<!--%ROOT_SSL_URL%-->");
+define("ROOT_CDN_ORIGIN_URL","<!--%ROOT_CDN_ORIGIN_URL%-->");
+define("SITE_ID","<!--%SITE_ID%-->");
+define("SITE_PATH","<!--%DIR%-->");
+define("ROOT_DIR","<!--%DIR%-->/".SITE_ID);
+define("LIB_PATH","<!--%PROGRAM_DIR%-->/lib");
+define("SERVER_LIB_PATH","<!--%PROGRAM_DIR%-->/server_lib");
+define("TEMPLATE_PATH","<!--%PROGRAM_DIR%-->/templates");
+define("SERVER_TEMPLATE_PATH","<!--%PROGRAM_DIR%-->/server_templates");
+define("ORIGINAL_DIR","<!--%PROGRAM_DIR%-->/original");
+
+define("RCMS_USE_CACHE","<!--%RCMS_CACHE%-->"); //キャッシュを使用しない場合は0 使用する場合は有効期間（分）
+define("USE_HARD_CACHE","<!--%USE_HARD_CACHE%-->"); //強力なキャッシュ　使用しない場合は0 使用する場合は1
+define("SECURE_LEVEL","<!--%SECURE_LEVEL%-->"); //セキュリティレベル　通常：NORMAL 高:HIGH
+define("RCMS_DEV_MODE","<!--%RCMS_DEV_MODE%-->");
+define("RCMS_PLAN","<!--%RCMS_PLAN%-->");
+
+//DB関連
+if(RCMS_DEV_MODE == 1){
+define("DB_NAME", "rcms_dev"); // DB名
+}else{
+define("DB_NAME", "rcms<!--%SITE_ID%-->"); // DB名
+}
+define("DB_USER", "postgres"); // DBユーザ名
+define("DB_PASSWORD", ""); // DBパスワード
+define("DB_HOST", "<!--%DB_HOST%-->"); // DBホスト
+define("DB_PORT", "<!--%DB_PORT%-->"); // DBポート
+define("DB_HOST_ADMIN", "<!--%DB_HOST_ADMIN%-->"); // サイト管理DBホスト
+
+if(RCMS_DEV_MODE == 1){
+define("DB_NAME2", ""); // DB名
+}else{
+define("DB_NAME2", "rcms<!--%SITE_ID%-->"); // DB名
+}
+define("DB_USER2", "rcms"); // DBユーザ名
+define("DB_PASSWORD2", "rcms"); // DBパスワード
+define("DB_HOST2", "<!--%DB_HOST2%-->"); // DBホスト
+
+define("MEM_SERVER", "<!--%MEM_SERVER%-->"); // Memcacheホスト
+define("PROXY_HOST", "<!--%PROXY_HOST%-->"); // PROXYホスト
+
+//LOG デバッグレベルはPEAR_LOG_DEBUG/PEAR_LOG_INFO/PEAR_LOG_ERRから選択
+$logger_level = 'PEAR_LOG_ERR';
+
+define("RCMS_MENTE_FLG","<!--%RCMS_MENTE_FLG%-->");
+define("RCMS_MENTE_FLG2","<!--%RCMS_MENTE_FLG2%-->");
+define("RCMS_MENTE_TITLE","<!--%RCMS_MENTE_TITLE%-->");
+define("RCMS_MENTE_DATE","<!--%RCMS_MENTE_DATE%-->");
+define("RCMS_MENTE_CONTENTS","<!--%RCMS_MENTE_CONTENTS%-->");
+
+define("RCMS_BAKUP_DIR","<!--%RCMS_BAKUP_DIR%-->");
+
+// システムエラー、DBエラーが発生した場合にエラー画面に詳細情報を表示するかを設定
+// 表示する場合はtrue, 表示しない場合はfalseまたは変数未定義
+$display_errors = <!--%DISPLAY_ERRORS%-->;
+
+//サイト毎の設定
+define("USE_MODULES","<!--%USE_MODULES%-->");
+define("MNG_TYPE","<!--%MNG_TYPE%-->");
+define("NOUSE_SUPPORT","<!--%NOUSE_SUPPORT%-->");
+define("NO_ACCESSCOUNT","<!--%NO_ACCESSCOUNT%-->");
+define("MOBILE_SSL_USE_FLG","<!--%MOBILE_SSL_USE_FLG%-->");
+define("OFFICIAL_MOBILE","<!--%OFFICIAL_MOBILE%-->");
+define("CANT_LOGIN","<!--%CANT_LOGIN%-->");
+
+//言語の設定
+define("I18N_DEFAULT_LANGUAGES", "<!--%I18N_DEFAULT_LANGUAGES%-->");
+define("I18N_OTHER_LANGUAGES", "<!--%I18N_OTHER_LANGUAGES%-->");
+define("USE_MULTILANG", "<!--%USE_MULTILANG%-->");
+
+// テキスト検索
+define('HYPER_ESTRAIER_NODE_MASTER', 'http://127.0.0.1:1978/');
+define('HYPER_ESTRAIER_NODE_SERVER', HYPER_ESTRAIER_NODE_MASTER . '/node/' . SITE_ID);
+
+if(is_file(ROOT_DIR."/lib/site_preload.php")){
+    require_once(ROOT_DIR."/lib/site_preload.php");
+}
+
+require_once(LIB_PATH."/system.php");

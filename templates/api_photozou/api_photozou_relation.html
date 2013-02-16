@@ -1,0 +1,12 @@
+{if $photo_list}
+{module name="api_photozou_relation"}
+<h2 class="module_title"><span>関連写真</span></h2>
+<div class="module_contents">
+  {foreach from=$photo_list item=photo}
+  <div style="margin:1em;float:left;"><a href="{$photo.detail}"><img src="{$photo.thumbnail_image_url}"></a></div>
+  {/foreach}
+  <div class="clearFloat"></div>
+  <div style="text-align:right;"><a href="http://photozou.jp/" onclick="return !window.open(this.href)"><img src="http://photozou.jp/img/photozou_logo.gif" width="120" height="30" alt="写真共有サイト「フォト蔵」は簡単に写真や動画を投稿・共有することができる無料のフォトアルバムです。" /></a></div>
+</div>
+{/module}
+{/if}

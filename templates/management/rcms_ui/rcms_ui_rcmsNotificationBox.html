@@ -1,0 +1,116 @@
+{literal}
+<script type="text/javascript">
+(function($) {
+    /**
+    * DOMが読み込まれたときに上部に通知を表示するプラグイン
+    * 対象要素のdivの内容をそのまま表示
+    * スタイルシートはLESSを使用
+    *
+    * @対象要素  <div>タグ
+    * @使用例
+    *    <div id="hoge"><div>
+    *
+    *
+    *       $("#hoge").rcmsNotificationBox();
+    *
+    */
+
+    $.fn.rcmsNotificationBox = function(options) {
+        
+        var options=$.extend({
+            duration    : 300,
+            showTime    : 3000,
+            hideButton : false
+        },options);
+
+        // 対象要素のjQueryオブジェクト
+        var targetElm;
+
+        // 初期化
+        function init() {
+            // 初期配置
+            targetElm.css("top", - (targetElm.height() + 30));
+            // 対象要素にクラスを追加
+            targetElm.addClass("rcms_ui_notification_box_container");
+            
+            // 対象要素のjQueryオブジェクトをdata()でセット
+            $.data(targetElm.get(0), "box", $(".rcms_ui_notification_box_container"));
+            
+            // イベントを登録
+            $(window).on("load", boxShow);
+            if( options.hideButton ){
+                // 閉じるボタンがある場合
+                options.hideButton.on("click", boxHide);
+            }else{
+                // 閉じるボタンが無い場合（どこをクリックしても閉じる）
+                $(".rcms_ui_notification_box_container").on("click", boxHide);
+            }
+            
+        }
+
+        // 通知を出す
+        function boxShow() {
+            $.data(targetElm.get(0), "box").animate({top: 0}, options.duration);
+            // 一定時間表示した後隠す
+            if (options.showTime != 0) {
+                setTimeout(boxHide, options.showTime);
+            }
+        }
+
+        // 通知を隠す
+        function boxHide() {
+            $.data(targetElm.get(0), "box").animate({top: - (targetElm.height() + 30)}, options.duration);
+        }
+
+        // メインシーケンス
+        return this.each(function() {
+            targetElm = $(this);
+            init();
+        });
+    }
+})(jQuery);
+</script>
+<style type="text/less">
+/* 変数定義 */
+@width : 400px;
+
+/* 関数定義 */
+.border-radius-bottom-left(@radius: 3px) {
+    -moz-border-bottom-left-radius: @radius;
+    -webkit-border-bottom-left-radius: @radius;
+    -o-border-bottom-left-radius: @radius;
+    -ms-border-bottom-left-radius: @radius;
+}
+.border-radius-bottom-right(@radius: 3px) {
+    -moz-border-bottom-right-radius: @radius;
+    -webkit-border-bottom-right-radius: @radius;
+    -o-border-bottom-right-radius: @radius;
+    -ms-border-bottom-right-radius: @radius;
+}
+.box-shadow(@side_round: 3px, @bottom_round: 3px, @round: 10px, @shadow: 0.2) {
+-moz-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
+-webkit-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
+-o-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
+-ms-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
+} 
+
+/* 通知ボックスのスタイル指定 */
+.rcms_ui_notification_box_container {
+    width: @width;
+    background-color: white;
+    .border-radius-bottom-left();
+    .border-radius-bottom-right();
+    .box-shadow();
+    position: absolute;
+    z-index: 9999;
+    left: 50%;
+    margin-left: -@width / 2;
+    padding: 10px;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    border-color: #cccccc;
+}
+
+
+</style>
+{/literal}

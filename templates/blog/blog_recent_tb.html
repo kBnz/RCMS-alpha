@@ -1,0 +1,18 @@
+{if $blogTBList}
+{module name="blog_recent_tb"}
+<h2 class="module_title"><span>{'/modules/blog/label/blog_latest_trackback_list'|translate}{* 最新トラックバック *}</span></h2>
+<div class="module_contents">
+
+<ul class="module-list">
+{foreach item=itemList from=$blogTBList name=mydata}
+  <li class="module-list-item">
+    &raquo;
+    <a rel="nofollow" href="{$itemList.url}">{$itemList.title|escape}</a>
+    from {$itemList.blog_name|escape}<br>
+    {$itemList.excerpt|escape}
+  </li>
+{/foreach}
+</ul>
+</div>
+{/module}
+{/if}

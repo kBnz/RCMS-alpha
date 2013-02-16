@@ -1,0 +1,16 @@
+{if $BlogList}
+{module name="blog_relation"}
+<h2 class="module_title"><span>{'/modules/blog/label/blog_relation'|translate}{* 関連ブログ *}</span></h2>
+<div class="module_contents">
+{foreach from=$BlogList item=blogData key=blog_id}
+  {if $blogData.title|escape}[{'/modules/blog'|translate}{* ブログ *}] <a href="/{$arrLink.blog.$blog_id}">{$blogData.title|escape}</a>{/if}
+  {section name=mydata loop=$blogData.items}
+    {if $smarty.section.mydata.first}<ul>{/if}
+    {assign var="item_id" value=$blogData.items[mydata].blog_item_id}
+    <li>[{'/modules/blog/label/blog_entry'|translate}{* ブログ記事 *}] <a href="/{$arrLink.blog_item.$item_id}">{$blogData.items[mydata].subject|escape}</a></li>
+    {if $smarty.section.mydata.last}</ul>{/if}
+  {/section}
+{/foreach}
+</div>
+{/module}
+{/if}

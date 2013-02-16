@@ -1,0 +1,45 @@
+{module name="blog_top module"}
+<h2 class="module_title"><span>{'/modules/blog'|translate} {$blog_sub_title|escape}{* ブログ＋サブタイトル *}</span></h2>
+<div class="module_contents">
+<link rel="alternate" type="application/rss+xml" title="{$smarty.const.SITE_TITLE}  BLOG" href="{$smarty.const.ROOT_URL}/files/blog/rss/RSS_BLOG_ALL.rdf">
+<div align="right"><a href="{$smarty.const.ROOT_URL}/files/blog/rss/RSS_BLOG_ALL.rdf"><img src="/images/modules/rss/rss.gif" alt="rss"></a></div>
+<!-- 最新記事 ｎ本 -->
+  <div id="blog_new_item_list">
+<table width="100%">
+<tr>
+<td>{if $blog_pre_pos != ""}<a href="/blog_top/blog_pos={$blog_pre_pos}{$defaultRequest}">&lt;&lt;{'/label/prev'|translate}</a>{/if}</td>{* 前へ *}
+<td align="right">{if $blog_pos > 0}<a href="/blog_top/blog_pos={$blog_next_pos}{$defaultRequest}">{'/label/next'|translate}&gt;&gt;</a>{/if}</td>{* 次へ *}
+</tr>
+</table>
+
+    {section name=new_item loop=$blog_item_list}
+
+      <div class="blog_item">
+        <h4 class="subject"><span class="article_tit"><a href="/blog_detail/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}">{$blog_item_list[new_item].subject|escape}</a></span><span class="blog_tit">[<a href="/blog_my_top/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}">{$blog_item_list[new_item].title|escape}</a>]</span></h4>
+<p class="post">
+{if $blog_item_list[new_item].member_open eq 1}<span class="blog_author">　written by　<a href="/member_detail/id={$blog_item_list[new_item].member_id}">{$blog_item_list[new_item].disp_name|escape}</a></span>{/if}<span class="posting_ymdt">{'/label/post_date'|translate}{* 投稿日時 *}：{$blog_item_list[new_item].post_ymdhi|pg_dateformat}</span>
+</p>
+        <div class="blog_contents">{$blog_item_list[new_item].contents}</div>
+        <div class="relation_link">
+{if $blog_item_list[new_item].comment_flg != 0}
+<a href="/blog_detail/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}#comment_form" class="small_text">{'/label/comments'|translate}{* コメント *}({$blog_item_list[new_item].commentCnt})</a>
+{/if}
+{if $blog_item_list[new_item].trackback_flg != 0}
+<a href="/blog_detail/blog_id={$blog_item_list[new_item].blog_id}&id={$blog_item_list[new_item].blog_item_id}#trackback" class="small_text">{'/label/trackback'|translate}{* トラックバック *}({$blog_item_list[new_item].tbCnt})</a>
+{/if}
+        </div>
+      </div>
+    {/section}
+  </div>
+
+<table width="100%">
+<tr>
+<td>{if $blog_pre_pos != ""}<a href="/blog_top/blog_pos={$blog_pre_pos}{$defaultRequest}">&lt;&lt;{'/label/prev'|translate}</a>{/if}</td>{* 前へ *}
+<td align="right">{if $blog_pos > 0}<a href="/blog_top/blog_pos={$blog_next_pos}{$defaultRequest}">{'/label/next'|translate}&gt;&gt;</a>{/if}</td>{* 次へ *}
+</tr>
+</table>
+
+<!-- // 最新記事 -->
+<div class="relation_link"><a href="/blog_top/" class="small_text">{'/modules/blog/label/blog_top'|translate}{* ブログトップ *}</a></div>
+</div>
+{/module}

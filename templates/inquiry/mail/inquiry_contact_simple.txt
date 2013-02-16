@@ -1,0 +1,11 @@
+このメールは{$smarty.const.SITE_TITLE}のフォームから送信されたメールです。
+
+「{$inquiryHeader.inquiry_name}」への問い合わせがありました。
+ログインして確認してください。
+{$smarty.const.ROOT_SSL_URL}/management/inquiry/inquiry_reply_edit/inquiry_id={$inquiry_id}&inquiry_bn_id={$parent_inquiry_bn_id}#{$inquiry_bn_id}
+
+
+■{$smarty.const.SITE_TITLE}
+{$smarty.const.ROOT_URL}/
+■管理画面
+{$smarty.const.ROOT_SSL_URL}/management/

@@ -1,0 +1,23 @@
+{module name="season_google_box"}
+<h2 class="module_title"><span>サイト検索</span></h2>
+<div class="module_contents">
+<script src="//www.google.com/jsapi" type="text/javascript"></script>
+<script language="Javascript" type="text/javascript">
+{literal}
+//<![CDATA[
+
+google.load("search", "1");
+
+function OnLoad() {
+  GSearch.getBranding(document.getElementById("branding"));
+}
+google.setOnLoadCallback(OnLoad);
+//]]>
+{/literal}
+</script>
+<form action="/season_google/" method="post">
+<input type="text" name="keyword" value="{$smarty.request.keyword|escape}" style="width:70%;"><input type="submit" value="検索">
+</form>
+<div id="branding">Loading...</div>
+</div>
+{/module}

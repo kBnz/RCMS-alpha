@@ -1,0 +1,112 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    if(confirm("削除よろしいですか？")) {
+        f.MODE.value='DELETE';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+<div class="list_right_bt">
+<h2>バナー編集</h2>
+  <ul>
+    {if $auth.banner.insert}
+    <li class="add"><a href="/management/banner/banner_edit/pageID={$currentPageID}"><span>バナー追加</span></a></li>
+    {/if}
+  </ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/contents/">コンテンツ更新</a>
+<a href="/management/banner/banner_contents_list/">{$module_nm}</a>
+<a href="/management/banner/banner_list/">{$module_nm}一覧</a>
+バナー編集
+{/pankuzu}
+
+<p class="page_info">
+総表示数:{$formData.impression_cnt}
+総クリック数:{$formData.click_cnt}
+</p>
+<div class="clear"></div>
+
+<div class="main_contents">
+
+<ul class="minitabs">
+  <li><a href="/management/banner/banner_contents_list/">広告枠一覧</a></li>
+  <li><a href="/management/banner/banner_list/">バナー一覧</a></li>
+  <li><a href="/management/banner/banner_client_list/">クライアント一覧</a></li>
+  <li><a href="/management/banner/banner_summary/">集計結果</a></li>
+  {if $auth.banner.insert}
+  <li><a href="/management/banner/banner_client_edit/wizard=1" {if $wizard}class="active"{/if}>広告枠簡単作成</a></li>
+  {/if}
+</ul>
+
+  <form action="/management/banner/banner_edit/" method="post">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="banner_id" type="hidden" value="{$formData.banner_id}" />
+    <input name="pageID" type="hidden" value="{$pageID}" />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="wizard" value="{$wizard}" />
+
+{rcms_include file="management/wizard_box.html" wizard_options=$wizard_options wizard_flg=$wizard id=$formData.banner_id}
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div class="kiji_hensyu_top">
+      <table width="100%" border="0">
+        <tr>
+          <th style="width:150px">タイトル</th>
+          <td><input style="width:300px" maxlength="50" name="title" type="text" value="{$formData.title|escape}" /></td><br>
+        </tr>
+        <tr>
+          <th>リンク先URL</th>
+          <td><input style="width:300px" maxlength="200" name="link" type="text" value="{$formData.link|escape}" /></td>
+        </tr>
+        <tr>
+          <th>クライアント</th>
+          <td><select name="client_id">{html_options options=$all_client_list selected=$formData.client_id}</select></td>
+        </tr>
+        <tr>
+          <th>リンクを自動でつける</th>
+          <td>
+            <input type="checkbox" name="a_tag_flg" value="1" {if $formData.a_tag_flg}checked{/if} onclick="display('a_tag_alert')" />
+            <p class="hint">flash等の場合はチェックをはずしてください。下部のバナーの設定部分でもリンク先を設定してしまうと挙動がおかしくなる可能性がありますので、気をつけてください。</p>
+          </td>
+        </tr>
+      </table>
+      <div id="a_tag_alert" {if $formData.a_tag_flg}style="display:none"{/if} class="alerttable">
+        下のhtmlのタグ内のリンク先を「%%link%%」にしてください。
+        例 : &lt;a href="%%link%%"&gt;RCMS&lt;/a&gt;<br>
+        また、flashの場合は「%%flashlink%%」としてください。
+        例 : &lt;param value="link_url=%%flashlink%%"&gt;
+      </div>
+    </div>
+
+    {rcms_include file="common/editor_info.html"}
+
+    <div class="not_list_main" style="width:100%;background-color:#EEEEEE; border:solid #FFFFFF 2px;" >
+      <div class="wysiwyg_area">
+          {$sw_html}
+      </div>
+    </div>
+    <div class="clear"></div>
+
+    {buttonbox}
+      {if $auth.banner.update && $banner_id != ""}
+        <button type="submit" onclick="SPAW_updateInput(contents_obj);this.form.MODE.value='UPDATE'">更新する</button>
+      {/if}
+      {if $auth.banner.insert && $banner_id == ""}
+        <button type="submit" onclick="SPAW_updateInput(contents_obj);this.form.MODE.value='INSERT'">追加する</button>
+      {/if}
+      {if $auth.banner.delete && $banner_id != ""}
+        <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+      {/if}
+    {/buttonbox}
+
+  </form>
+</div>
+{rcms_include file="management/footer.html"}

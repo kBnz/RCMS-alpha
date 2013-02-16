@@ -1,0 +1,394 @@
+{rcms_include file="management/header.html"}
+{rcms_include file="menu/admin/subnavi.html"}
+
+<script type="text/javascript">
+
+{if $docmeta.is_primary}
+{literal}
+
+function addOptionRow() {
+    var a = parseInt(document.mainform.option_cnt.value) ;
+    var b = Math.floor(a / option_cnt_step + 1) * option_cnt_step;
+    if (b > option_system_max) {
+        alert('{/literal}{'/msg/no_more_line_to_add'|translate}{literal}');//これ以上行を増やすことはできません。
+        return;
+    }
+    var list = document.getElementById("option_list");
+
+    var newTd = null;
+    var buf = null;
+    for (var i = a + 1 ; i <= b ; i++) {
+        var newRow = list.insertRow(list.rows.length);
+        newRow.insertCell(0).appendChild(document.createTextNode(""));  // 削除チェックボックスは不要
+        newRow.insertCell(1).appendChild(document.createTextNode(i + ".")); // NO
+
+
+        // item_text
+        var item_text = document.createElement("input");
+        item_text.type = "text";
+        item_text.name = "item_text" + i;
+        item_text.size = "50";
+        newRow.insertCell(2).appendChild(item_text);
+
+        buf = new Array();
+        buf.push(
+          '<input type="text" name="item_color' + i + '" id="item_color' + i + '" size="10" onkeyup="changeColor(' + i + ')" />',
+          '<input type="hidden" name="item_id' + i + '" value="" />'
+        );
+        newTd = newRow.insertCell(3) ;
+        newTd.innerHTML = buf.join("");
+        newTd.id = "color_td1_" + i;
+
+        // color_swatch
+        buf = new Array();
+        buf.push('<div id="item_color_swatch' + i + '" onclick="showColorPicker(' + i + ')" class="rgbSwatch">&nbsp;</div>');
+        newTd = newRow.insertCell(4);
+        newTd.innerHTML = buf.join("");
+        newTd.id = "color_td2_" + i;
+
+        // color_swatch2
+        buf = new Array();
+        buf.push('<div id="item_color_swatch2_' + i + '" class="rgbSwatch">&nbsp;</div>');
+        newTd = newRow.insertCell(5);
+        newTd.innerHTML = buf.join("");
+        newTd.id = "color_td3_" + i;
+    }
+    document.mainform.option_cnt.value = b;
+    colorOnOff(document.getElementById('option_color_flg1').checked);
+}
+
+function changeColor(id) {
+    var rgb = document.getElementById('item_color' + id).value;
+    var swatch = document.getElementById('item_color_swatch' + id);
+    if (rgb.match(/^#[0-9a-z]{6}$/i)) {
+        swatch.style.backgroundColor = rgb;
+    }
+    else if (rgb.match(/^[0-9a-z]{6}$/i)) {
+        swatch.style.backgroundColor = "#" + rgb;
+    }
+    else {
+        swatch.style.backgroundColor = "#000000"; //TODO
+    }
+}
+
+/* ===== color picker呼び出し ===== */
+var color_picker_current_id = null;
+function showColorPicker(id) {
+    color_picker_current_id = id;
+    var wnd = window.open(
+        '/js/colorpicker/colorpicker.php?callback=callback_color_picker',
+        "color_picker",
+        'status=no,modal=yes,width=350,height=250'
+    );
+
+    // 現在の色を渡す
+    var rgb = document.getElementById('item_color' + id).value;
+    if (rgb.match(/^#[0-9a-z]{6}$/i)) {
+        // OK
+    }
+    else if (rgb.match(/^[0-9a-z]{6}$/i)) {
+        rgb = "#" + rgb;
+    }
+    else {
+        rgb = "#000000";
+    }
+    wnd.dialogArguments = rgb;
+    return wnd;
+}
+
+function callback_color_picker(wnd) {
+    document.getElementById('item_color' + color_picker_current_id).value = wnd.returnValue;
+    var swatch = document.getElementById('item_color_swatch' + color_picker_current_id);
+    swatch.style.backgroundColor = wnd.returnValue;
+}
+
+/* ===== 色設定 ===== */
+function colorOnOff(b) {
+    var o = document.getElementById('option_color_template');
+    o.disabled = b;
+
+    var cnt = parseInt(document.mainform.option_cnt.value) ;
+    if (b) {
+        // 手動
+        document.getElementById('color_th1').style.display = '';
+        document.getElementById('color_th2').style.display = 'none';
+        for (var i = 1 ; i <= cnt ; i++) {
+            document.getElementById('color_td1_' + i).style.display = '';
+            document.getElementById('color_td2_' + i).style.display = '';
+            document.getElementById('color_td3_' + i).style.display = 'none';
+        }
+    }
+    else {
+        // テンプレート
+        document.getElementById('color_th1').style.display = 'none';
+        document.getElementById('color_th2').style.display = '';
+        for (var i = 1 ; i <= cnt ; i++) {
+            document.getElementById('color_td1_' + i).style.display = 'none';
+            document.getElementById('color_td2_' + i).style.display = 'none';
+            document.getElementById('color_td3_' + i).style.display = '';
+        }
+        changeColorTemplate();
+    }
+}
+
+function changeColorTemplate() {
+    var id = document.getElementById('option_color_template').value;
+    if (colorTemplateList[id]) {
+        var cnt = parseInt(document.mainform.option_cnt.value) ;
+        for (var i = 1 ; i <= cnt ; i++) {
+            var j =  (i-1) % colorTemplateList[id].length;
+            var swatch = document.getElementById('item_color_swatch2_' + i);
+            swatch.style.backgroundColor = colorTemplateList[id][j];
+        }
+    }
+}
+{/literal}{/if}{literal}
+
+</script>
+{/literal}
+
+<div class="list_right_bt">
+<h2>{'/modules/survey/label/survey_question_edit'|translate}{*アンケート質問編集*}</h2>
+<ul>
+  {if $rauth->canInsert("/survey/question/[@survey_id=$survey_id]")}
+    <li class="add"><a href="/management/survey/survey_question_edit/survey_id={$header.survey_id}"><span>{'/label/add_question'|translate}{*質問追加*}</span></a></li>
+  {/if}
+  <li class="normal"><a href="/management/survey/survey_color_template_list/"><span>{'/label/graph_color_setting_btn'|translate}{*グラフ色設定*}</span></a></li>
+</ul>
+</div>
+
+{pankuzu}
+<a href="/management/menu/communication/">{'/label/menus/communication'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey'|translate}</a>
+<a href="/management/survey/survey_list/">{'/modules/survey/label/survey_list'|translate}</a>
+<a href="/management/survey/survey_question_list/survey_id={$header.survey_id}">{'/modules/survey/label/survey_question_list'|translate}</a>
+{'/modules/survey/label/survey_question_edit'|translate}
+{/pankuzu}
+{* 【ぱんくず】コミュニケーション >> アンケート >> アンケート一覧 >> アンケート質問一覧 >> アンケート質問編集*}
+
+<div class="clear"></div>
+
+<div class="main_contents">
+<h3 class="title">{$header.title|escape}</h3>
+
+{rcms_include file="common/admin/shonin_message.html" docmeta=$docmeta link="/management/survey/survey_question_edit/survey_id=$survey_id&qid=$qid"}
+
+<ul class="minitabs">
+  <li><a href="/management/survey/survey_edit/survey_id={$header.survey_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+  <li><a href="/management/survey/survey_question_list/survey_id={$header.survey_id}" class="active">{'/label/question_list'|translate}{*質問設定*}</a></li>
+    {if $canRESULT}
+        <li><a href="/management/survey/survey_report/survey_id={$header.survey_id}">{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</a></li>
+    {elseif $canDL}
+        <li><a href="/management/survey/survey_download/survey_id={$header.survey_id}">{'/modules/survey/label/survey_result'|translate}{*アンケート結果*}</a></li>
+    {/if}
+</ul>
+
+<div class="list_main">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+{if $qid}   
+    {lang_selector meta=$docmeta link="/management/survey/survey_question_edit/survey_id=$survey_id&qid=$qid"}
+{/if}
+
+<form action="/management/survey/survey_question_edit/" method="post" name="mainform">
+  <input type="hidden" name="qid" value="{$formData.qid}" />
+  <input type="hidden" name="survey_id" value="{$header.survey_id}" />
+  <input type="hidden" name="MODE" value="" />
+  <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+  <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+  <h3>{'/label/question_setting'|translate}{*質問設定*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+{if $docmeta.is_primary}
+    <tr>
+      <th>{'/label/display_order'|translate}{*表示順序*}</th>
+      <td>
+        <select name="shownum" style="min-width:40px">
+          {html_options options=$shownumOptions selected=$formData.shownum}
+        </select>
+      </td>
+    </tr>
+{/if}
+    <tr>
+      <th>{'/label/question'|translate}{*質問*}</th>
+      <td>
+        <textarea name="question" cols="60" rows="6">{$formData.question|escape}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <th>{'/modules/survey/label/nickname'|translate}{*略称*}</th>
+      <td>
+        <input type="text" name="short_nm" value="{$formData.short_nm|escape}" />
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/notes'|translate}{*注意事項*}</th>
+      <td>
+        <textarea name="notes" rows="2" cols="60">{$formData.notes|escape}</textarea>
+      </td>
+    </tr>
+{if $docmeta.is_primary}
+    <tr>
+      <th>{'/label/answer_type'|translate}{*回答形態の選択*}</th>
+      <td>
+        {html_radios name="formtype" options=$formtypeOptions selected=$formData.formtype|default:1 separator="<br />"}
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/require_setting'|translate}{*回答の要否*}</th>
+      <td>
+       {html_radios name="require" options=$requireOptions selected=$formData.require|default:0}
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/reseach_result_page'|translate}{*集計結果画面*}</th>
+      <td>
+        {html_radios name="public_total" options=$showOptions selected=$formData.public_total|default:0}
+      </td>
+    </tr>
+  </table>
+
+  <h3>{'/label/options_setting'|translate}{*選択項目の設定*}</h3>
+  <table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+      <th>{'/label/limit_for_answers'|translate}{*回答数の制限*}</th>
+      <td>
+        <div class="hint">{'/msg/multiple_choices_available'|translate}{*回答形態が複数選択の場合に有効な設定です*}</div>
+        {assign var=response_limit value=$formData.response_limit|default:0}
+        <input type="radio" name="response_limit" id="response_limit1" value="0" {if $response_limit eq '0'}checked="checked"{/if} /><label for="response_limit1">{'/label/unlimited'|translate}{*制限無し*}</label><br />
+        <input type="radio" name="response_limit" id="response_limit2" value="1" {if $response_limit eq '1'}checked="checked"{/if} /><label for="response_limit2">{'/label/fix'|translate}{*固定*}</label>
+        <input type="text" name="response_limit_fix" size="3" value="{$formData.response_limit_fix|escape}" />{'/label/item'|translate}{*個*}<br />
+        <input type="radio" name="response_limit" id="response_limit3" value="2" {if $response_limit eq '2'}checked="checked"{/if} /><label for="response_limit3">{'/label/select_scope'|translate}{*範囲指定*}</label>
+        {'/label/minimum'|translate}{*最小*}<input type="text" name="response_limit_min" size="3" value="{$formData.response_limit_min|escape}" />
+        {'/label/maximum'|translate}{*最大*}<input type="text" name="response_limit_max" size="3" value="{$formData.response_limit_max|escape}" />
+      </td>
+    </tr>
+    <tr>
+      <th>{'/label/color_setting_for_options'|translate}{*選択項目の色設定*}</th>
+      <td>
+        <p>
+          <input type="radio" name="option_color_flg" id="option_color_flg1" value="1" onclick="colorOnOff(true);" {if $formData.option_color_flg != '2'}checked="checked"{/if} /><label for="option_color_flg1">{'/label/set_by_hand'|translate}{*手動で設定*}</label><br />
+          <input type="radio" name="option_color_flg" id="option_color_flg2" value="2" onclick="colorOnOff(false);" {if $formData.option_color_flg == '2'}checked="checked"{/if} /><label for="option_color_flg2">{'/label/use_templates'|translate}{*テンプレートを使用*}</label><br />
+          <select style="margin-left:10px; width:200px" id="option_color_template" name="option_color_template" onchange="changeColorTemplate()">{html_options options=$colorTemplateOptions selected=$formData.option_color_template}</select>
+        </p>
+      </td>
+    </tr>
+{else}
+<input type="hidden" id="formtype" name="formtype" value="{$formData.formtype}" />
+{/if}
+
+    <tr>
+      <th>{'/label/options'|translate}{*選択項目*}</th>
+      <td>
+        <div class="hint">{'/msg/hint_options'|translate}{*回答形態が単一選択・複数選択の場合に有効です。(100文字まで)*}</div>
+        <table id="option_list" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+{if $docmeta.is_primary}
+            <td>{'/label/delete'|translate}{*削除*}</td>
+{/if}
+            <td>NO</td>
+            <td>{'/label/options'|translate}{*選択項目*}</td>
+{if $docmeta.is_primary}
+            <td id="color_th1" colspan="2">{'/label/graph_color'|translate}{*グラフの色*}</td>
+            <td id="color_th2">{'/label/graph_color'|translate}{*グラフの色*}</td>
+{/if}
+          </tr>
+
+        {foreach from=$formData.options item=opitem name=opname}
+          {assign var=id_key value="item_id"|cat:$smarty.foreach.opname.iteration}
+          {assign var=tx_key value="item_text"|cat:$smarty.foreach.opname.iteration}
+          {assign var=color_key value="item_color"|cat:$smarty.foreach.opname.iteration}
+          {assign var=color_swatch_key value="item_color_swatch"|cat:$smarty.foreach.opname.iteration}
+          {assign var=color_swatch_key2 value="item_color_swatch2_"|cat:$smarty.foreach.opname.iteration}
+          {assign var=del_key value="item_del"|cat:$smarty.foreach.opname.iteration}
+          <tr>
+{if $docmeta.is_primary}
+            <td>
+              {if $opitem.survey_question_option_id != ""}
+                <input type="checkbox" name="{$del_key}" value="1" {if $opitem.dflg == "1"}checked="checked"{/if} />
+              {else}
+                &nbsp;
+              {/if}
+            </td>
+{/if}
+            <td>{$smarty.foreach.opname.iteration}.</td>
+            <td>
+              <input name="{$id_key}" type="hidden" value="{$opitem.survey_question_option_id}" />
+              <input name="{$tx_key}" type="text" size="50" value="{$opitem.text|escape}" />
+            </td>
+{if $docmeta.is_primary}
+            <td id="color_td1_{$smarty.foreach.opname.iteration}"><input name="{$color_key}" id="{$color_key}" type="text" size="10" value="{$opitem.fore_color}" onkeyup="changeColor({$smarty.foreach.opname.iteration})" /></td>
+            <td id="color_td2_{$smarty.foreach.opname.iteration}"><div id="{$color_swatch_key}" onclick="showColorPicker({$smarty.foreach.opname.iteration})" class="rgbSwatch">&nbsp;</div></td>
+            <td colspan="2" id="color_td3_{$smarty.foreach.opname.iteration}"><div id="{$color_swatch_key2}" class="rgbSwatch">&nbsp;</div></td>
+          </tr>
+<script type="text/javascript">changeColor({$smarty.foreach.opname.iteration});</script>
+{/if}
+        {/foreach}
+
+        </table>
+        <input type="hidden" name="option_cnt" value="{$smarty.foreach.opname.total}" />
+{if $docmeta.is_primary}
+        <input type="button" onclick="addOptionRow();" value="{'/label/add_line'|translate}{*行を追加*}"  />    {'/msg/max_line'|translate:$option_system_max}{*最大{$option_system_max}行まで増やせます*}
+{/if}
+      </td>
+    </tr>
+{if $docmeta.is_primary}
+    <tr>
+      <th>{'/label/research_display_type'|translate}{*集計の表示方法*}</th>
+      <td>
+        <div class="hint">{'/msg/hint_research_display_type'|translate}{*単一選択・複数選択の場合に有効な設定です。*}</div>
+        {html_radios name="summary_order" options=$summaryOrderOptions selected=$formData.summary_order|default:0}
+      </td>
+    </tr>
+{/if}
+  </table>
+
+  {editActionBox docmeta=$docmeta}{/editActionBox}
+
+</form>
+</div>
+</div>
+
+{if $docmeta.is_primary}
+<script type="text/javascript">
+<!--
+
+// システム上追加可能な行数
+var option_system_max = {$option_system_max};
+
+{literal}
+
+// 行を追加ボタンで増やす単位
+var option_cnt_step = 10;
+if (0 == parseInt(document.mainform.option_cnt.value)) {
+    addOptionRow();
+}
+{/literal}
+
+var colorTemplateList = new Array();
+{foreach from=$colorTemplateList item=item}
+colorTemplateList[{$item.survey_color_template_id}] = new Array();
+{foreach from=","|@split:$item.option_color item=item_color}
+colorTemplateList[{$item.survey_color_template_id}].push('{$item_color}');
+{/foreach}
+{/foreach}
+
+colorOnOff({if $formData.option_color_flg != '2'}true{else}false{/if});
+changeColorTemplate();
+
+// -->
+</script>
+{/if}
+
+{literal}
+<style>
+.rgbSwatch {
+  cursor: pointer;
+  height: 15px;
+  width: 50px;
+  border: 1px solid #cccccc;
+}
+</style>
+{/literal}
+
+{rcms_include file="management/footer.html"}

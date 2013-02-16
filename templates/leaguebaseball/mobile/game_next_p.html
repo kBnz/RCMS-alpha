@@ -1,0 +1,8 @@
+{if $gameList|@count > 0}
+<h2>予告先発</h2>
+{$ymd_str}<br>
+{foreach from=$gameList item=game}
+{if $game.first_pitcher_name1}{$game.first_pitcher_name1}{else}未定{/if}({$game.team_nm}) vs {if $game.second_pitcher_name1}{$game.second_pitcher_name1}{else}未定{/if}({$game.opponent_nm})<br/>
+{/foreach}
+<hr>
+{/if}
