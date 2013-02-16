@@ -1,28 +1,32 @@
 {literal}
 <script id="rcms_ui_option_editor_tmpl" type="text/x-jquery-tmpl">
-<div class="rcms_ui_option_editor_container">
-    <table class="option_editor_table" border="1">
-        <thead>
-            <tr>
-                <th>key</th>
-                <th>value</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{each data}}
-            <tr>
-                <td class="key_span">${key}</td>
-                <td class="value_span">${value}</td>
-            </tr>
-            {{/each}}
-            <tr class="edit_span">
-                <td class="key_span edit_area"></td>
-                <td class="value_span edit_area"></td>
-            </tr>
-        </tbody>
-    </table>
-    <input type="button" class="plusButton" value="+">
-    <input type="button" class="minusButton" value="−">
+<div class="rcms_ui_option_editor_container parameter_content">
+    <div class="rcms_ui_option_editor_scroll_field">
+        <table class="option_editor_table ">
+            <thead>
+                <tr>
+                    <th>${key}</th>
+                    <th>${value}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{each data}}
+                <tr>
+                    <td class="key_span">${key}</td>
+                    <td class="value_span">${value}</td>
+                </tr>
+                {{/each}}
+                <tr class="edit_span">
+                    <td class="key_span edit_area"></td>
+                    <td class="value_span edit_area"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="rcms_ui_option_editor_footer">
+            <button class="add_btn"><span class="icon-add icon_size_12"></span></button>
+            <button class="del_btn"><span class="icon-del icon_size_12"></span></button>
+        </div>
+    </div>
 </div>
 </script>
 <script type="text/javascript">
@@ -41,11 +45,17 @@
     *       $("#hoge").rcmsOptionEditor();
     *
     */
-    $.fn.rcmsOptionEditor = function() {
+    $.fn.rcmsOptionEditor = function(options) {
+
+        var options=$.extend({
+            key   : "{/literal}{'/label/parameters'|translate}{*パラメータ*}{literal}",
+            value : "{/literal}{'/label/value'|translate}{*値*}{literal}"
+        },options);
+
         // グローバル変数
         var targetElm;                      // 対象要素の$(this)
-        var encodeString;                   //クエリストリング
-        var decodeArray;                    //クエリストリングを配列に変換
+        var encodeString;                   // クエリストリング
+        var decodeArray;                    // クエリストリングを配列に変換
         var tableSize;                      // テーブルの行の大きさ
 
         //テンプレートへ文字列を生成
@@ -56,7 +66,7 @@
             targetElm.after(html);                                                  //対象要素の後ろにテンプレートを流し込む
             tableSize = $(".option_editor_table tbody").children().length;          //テーブルの大きさを登録
             // inuptタグ内でのエンターキーで編集完了
-            $(document).on("keypress", "input:text", function (e) {
+            $(document).on("keypress", ".rcms_ui_option_editor_container input:text", function (e) {
                 var code = null;
                 code = (e.keyCode ? e.keyCode : e.which);
                 if (code == 13) {
@@ -73,11 +83,11 @@
                 editTextBox($(this));
             });
             // プラスボタンでテキストボックス出現
-            $(".plusButton").on("click.rcmsOptionEditor", function() {
+            $(".add_btn").on("click.rcmsOptionEditor", function() {
                 editTextBox($(".option_editor_table td.edit_area:eq(0)"));
             });
             // マイナスボタンで項目削除
-            $(".minusButton").on("click.rcmsOptionEditor", editMinus);
+            $(".del_btn").on("click.rcmsOptionEditor", editMinus);
             // 対象要素の"value"の値が変わったらテーブルに反映
             $(document).on("change.rcmsOptionEditor", this, refreshTable);
         }
@@ -85,7 +95,7 @@
         // テンプレート用の配列を生成 *keyとvalueを付けて連想配列にする
         function tmplArrayGen() {
             // 配列全体にdataラベルを付け、データにkey、valueラベルを付ける
-            var tmplArray = {data: []};
+            var tmplArray = {data: [], key: options.key, value: options.value};
                 for (var i = 0; i < decodeArray.length; i++) {
                     tmplArray.data.push({key: decodeArray[i][0].replace("[]", ""), value: decodeArray[i][1]});
                 }
@@ -104,8 +114,6 @@
                 if (kvArray[i][0] == "") {
                     kvArray.splice(i, 1);
                 }
-                // 既に"[]"が付いているものを除去して全てのキー要素に"[]"を追加
-                kvArray[i][0] = kvArray[i][0].replace("[]", "") + "[]";
             }
             decodeArray = kvArray;                      // decodeArrayを更新
             encodeArrayToQueryString();                 // encodeStringを更新
@@ -126,6 +134,7 @@
 
         // クリックして選択 *空白行以外
         function selectColumn() {
+            $(".hasfocus").removeClass("hasfocus");
             $(".selected").removeClass("selected");
             $(this).addClass("selected");
         }
@@ -172,10 +181,13 @@
 
         //テキストボックスを出現させて編集を反映
         function editTextBox(target) {
-            $(".selected").removeClass("selected");
             var targetText = target.text();
             var key   = $(".option_editor_table td.edit_area:eq(0)");
             var value = $(".option_editor_table td.edit_area:eq(1)");
+
+            $(".selected").removeClass("selected");
+            $(".hasfocus").removeClass("hasfocus");
+            target.parent().addClass("hasfocus");
             // keyの編集エリアをダブルクリックしたときの処理
             if (key.is(target)) {
                 target.html('<input type="text" class="key_text" placeholder="input key" value="' + targetText + '">');

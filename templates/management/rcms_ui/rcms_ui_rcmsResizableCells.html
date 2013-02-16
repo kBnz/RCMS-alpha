@@ -125,11 +125,19 @@
                 w2 = targetWidth()-l > minW2 ? targetWidth()-l : minW2;
                 cell1.css({"left":"0px","top":"0px"});
                 cell1.width( l );
-                cell1.height( "100%" );
+//                cell1.height( "100%" );
                 cell2.css({"left": l+"px","top":"0px"});
                 cell2.width( w2 );
-                cell2.height( "100%" );
+//                cell2.height( "100%" );
                 handle.css("left",l+"px");
+                // 大きさに合わせてアイコン用のクラスを切り替える
+                if (l >= maxW1) {
+                    switchBtn.removeClass("to_maximum");
+                    switchBtn.addClass("to_minimum");
+                } else {
+                    switchBtn.removeClass("to_minimum");
+                    switchBtn.addClass("to_maximum");
+                }
             }else{
                 var t,h2;
                 t  = handle.position().top;
@@ -139,12 +147,21 @@
                 t  = targetHeight()-t > maxH2 ? targetHeight()- maxH2 : t;
                 h2 = targetHeight()-t > minH2 ? targetHeight()-t : minH2;
                 cell1.css({"left":"0px","top":"0px"});
-                cell1.width( "100%" );
+//                cell1.width( "100%" );
                 cell1.height( t );
                 cell2.css({"left": "0px","top": t+"px"});
-                cell2.width( "100%" );
+//                cell2.width( "100%" );
                 cell2.height( h2 );
                 handle.css("top",t+"px");
+                // 大きさに合わせてアイコン用のクラスを切り替える
+                if (t >= maxH1) {
+                    switchBtn.removeClass("to_maximum");
+                    switchBtn.addClass("to_minimum");
+                } else {
+                    switchBtn.removeClass("to_minimum");
+                    switchBtn.addClass("to_maximum");
+                }
+
             }
             options.onMoving();
         }

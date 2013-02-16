@@ -1,0 +1,29 @@
+<div class="setting_field">
+{if $ct eq 'staticcontents_category_edit' || $ct eq 'staticcontents_category_list'}
+{rcms_auth target="insert:/staticcontents/item/"}
+<a href="/management/staticcontents/staticcontents_category_edit/" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/label/add_category_btn'|translate}{*カテゴリ追加*}
+</a>
+{/rcms_auth}
+{else}
+{rcms_auth target="insert:/staticcontents/item/"}
+<a href="/management/staticcontents/staticcontents_edit/" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/modules/staticcontents/label/add_staticcontents'|translate}{*自由HTML追加*}
+</a>
+{/rcms_auth}
+{/if}
+    <div class="setting_dropdown">
+        <div class="rcms_ui_dropdown">
+            <button id="select_sc_list_cat_config" class="rcms_ui_select">
+                <span class="icon-wrench icon-white"></span>{'/label/setting'|translate}{*設定*}
+            </button>
+            <ul>
+                <li>
+                    <a href="/management/staticcontents/staticcontents_category_list/" {if $page_type eq 'staticcontents_category_list' || $page_type eq 'staticcontents_category_edit'}class="active"{/if}>
+                    {'/label/categorieslist'|translate}{*カテゴリ設定*}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

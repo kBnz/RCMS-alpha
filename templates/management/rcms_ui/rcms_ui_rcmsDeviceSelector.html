@@ -38,7 +38,8 @@
 
         // 引数を用意
         var options = $.extend({
-            isMultiple: false
+            isMultiple: false,
+            isNoSelect: false
         }, options);
 
 
@@ -70,16 +71,19 @@
                 targetElm.val( v );
             // multipuleな時
             } else {
-                if ($this.hasClass("select")) {
-                    $this.removeClass("select");
+                if ($this.hasClass("selected")) {
+                    $this.removeClass("selected");
                 } else {
-                    $this.addClass("select");
+                    $this.addClass("selected");
                 }
                 var v = [];
                 targetOpts.attr("selected", false); // すべての選択を解除
                 // selectクラスが付いているものに対応するoptionを選択する
-                $(".rcms_ui_device_selector_container .select").each(function() {
+                $(".rcms_ui_device_selector_container .selected").each(function() {
                     v.push($(this).attr("data-opt-val"));
+                });
+                $.each(v, function(i) {
+                    targetOpts.eq(v[i] - 1).attr("selected", "selected");
                 });
                 targetElm.val( v );  //multipleはvを配列で渡す
             }
@@ -94,13 +98,19 @@
             // 対象要素を隠す
             targetElm.hide();
 
+            // 読み込み時は何も選択しない
+            if (options.isNoSelect) {
+                targetOpts.removeAttr("selected");
+                toggleDevice();
+            }
+
             // セレクタを生成
             createSelector();
 
             // 最初に選択されている要素にselectクラスを追加
             targetElm.children(":selected").each(function() {
                 var data = $(this).val();
-                $("[data-opt-val=" + data +"]").addClass("select");
+                $("[data-opt-val=" + data +"]").addClass("selected");
             });
             // セレクタにイベントを登録
             $("li",selectorContainer).click(toggleDevice);

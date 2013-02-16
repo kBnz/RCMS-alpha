@@ -1,0 +1,55 @@
+<div class="setting_field">
+{if $ct eq "topics_group_edit" ||  $ct eq "topics_group_list"}
+
+{rcms_auth target="insert:/topics/group/"}
+<a href="/management/topics/topics_group_edit/" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/modules/topics/label/add_group_btn'|translate}{* 記事グループ追加 *}
+</a>
+{/rcms_auth}
+
+{elseif $ct eq "topics_category_edit" ||  $ct eq "topics_category_list"}
+
+{if $rauth->canInsert("/topics/category/[@topics_group_id=$topics_group_id]")}
+<a href="/management/topics/topics_category_edit/topics_group_id={$topics_group_id}" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/label/add_category_btn'|translate}{* カテゴリ追加 *}
+</a>
+{/if}
+
+{else}
+
+{rcms_auth target="insert:/topics/item/[@topics_group_id=$topics_group_id]"}
+<a href="/management/topics/topics_edit/?topics_group_id={$topics_group_id}" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/modules/topics/label/add_topic_btn'|translate}{*記事追加*}
+</a>
+{if $topics_id}
+<a href="/management/topics/topics_copy/?topics_id={$topics_id}" class="rcms_btn success"
+<span class="icon-add icon-white"></span>{'/label/copy_btn'|translate}{*コピーする*}
+</a>
+{/if}
+{/rcms_auth}
+{/if}
+
+{if $topics_group_id}
+    <div class="setting_dropdown">
+        <div class="rcms_ui_dropdown">
+            <button id="select_sc_list_cat_config" class="rcms_ui_select">
+                <span class="icon-wrench icon-white"></span>{'/label/setting'|translate}{*設定*}
+            </button>
+            <ul>
+                <li>
+                    <a href="/management/topics/topics_category_list/?topics_group_id={$topics_group_id}">
+                    {'/label/categorieslist'|translate}{*カテゴリ設定*}
+                    </a>
+                </li>
+{rcms_auth target="update:/topics/group/[@topics_group_id=$topics_group_id]"}
+                <li>
+                    <a href="/management/topics/topics_group_edit/?topics_group_id={$topics_group_id}">
+                    {'/modules/topics/label/topics_group_edit'|translate}
+                    </a>
+                </li>
+            </ul>
+{/rcms_auth}
+        </div>
+    </div>
+{/if}
+</div>

@@ -1,296 +1,638 @@
 {rcms_include file="management/header.html"}
-
-{*
 {rcms_include file="menu/admin/subnavi.html"}
-*}
 
-{rcms_include file="management/rcms_ui/rcms_ui.html"}
+{pankuzu}
+    <a href="/management/menu/design/">{'/label/menus/design'|translate}</a>
+    <a href="/management/page/page_list/">{'/modules/page/label/page_list'|translate}{* ページ一覧 *}</a>
+    {rcms_include file="page/admin/setting_field.html"}
+{/pankuzu}
 
-{headblock}
-<link rel="stylesheet" href="/css/management/modules/page2.css">
-{/headblock}
-
+<form action="/management/page/page_list/" method="get">
+    <div id="main_contents" class="page_list">
+        <div id="list_cell_handle"></div>
+        <div id="list_cell_listfield" class="horizontal_drawer_body">
+            {rcms_include file="management/messages_box.html" messages=$messages}
+            {rcms_include file="management/errors_box.html" errors=$errors}
+            <div class="list_search_form">
+                <input type="text" name="keyword" class="keyword" value="{$formData.keyword}">
+                <button type="button" id="list_search_btn" name="subflg">{'/label/search'|translate}{*検索*}</button>
+                <select id="list_device_selector" name="list_device_selector" multiple="multiple">
+                    {foreach from=$arrDeviceType key=key item=value}
+                        <option name="mobile_flg" class="icon-{if $key eq 1}pc{elseif $key eq 2}mob{elseif $key eq 3}sp{elseif $key eq 4}fb{elseif $key eq 5}app{/if}" value="{$key}"></option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="ajax_list_viewer">
+                <div class="wrapper_indicator" style="position:absolute; display:none; width:100%; height:100%;">
+                    <div class="loading_indicator"></div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                ページ名
+                            </th>
+                            <th class="toggle_element">
+                                URL
+                            </th>
+                            <th class="toggle_element">{'/label/update_time'|translate}{* 更新日時 *}</th>
+                            <th class="toggle_element">{'/label/language'|translate}{*言語*}</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div id="list_cell_tabfield" class="rcms_tabiframe_controller">
+            <div class="horizontal_drawer_switchbtn"></div>
+            <div id="tab_field" class="rcms_tabiframe_controller_tabfield">
+                <ul></ul>
+            </div>
+            <div id="iframe_field" class="rcms_tabiframe_controller_iframefield">
+                <div class="wrapper_indicator" style="position:absolute; display:none; width:100%; height:95%;">
+                    <div class="loading_indicator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 {literal}
-<!-- サンドボックス -->
-<script type="text/javascript">
-$(document).ready(function(){
 
-    $("#rcms_ui_page_list").rcmsPageSpotlight();
-    $("#main_container").rcmsResizableCells({cell1:"#list_col",cell2:"#edit_col",handle:"#handle_col",cell1MinWidth:250,position:"fixed",direction:"horizon"});
-    $("#list_col").rcmsResizableCells({cell1:"#rcms_ui_page_list",cell2:"#info_detail",handle:"#handle_row",cell1MinHeight:400,direction:"vertical"});
+<!-- リストを生成するテンプレート -->
+<script id="page_list_tmpl" type="text/x-jquery-tmpl">
+<tbody data-id="${page_id}">
+    <tr>
+        <td class="toggle_rowspan" data-id="${page_id}">
+            <span class="list_title">${page_nm}</span>
+            <div class="popup_btn_max"></div>
+        </td>
+        <td class="toggle_element">${page_sysnm}</td>
+        <td class="toggle_element">${update_ymdhi}</td>
+        <td class="toggle_element">
+            {{each language}}
+                <a class="rcms_label small ${status}" data-lang="${$value.lang}" data-id="${page_id}">${$value.lang}</a>
+            {{/each}}
+        </td>
+    </tr>
+</tbody>
+</script>
 
-});
+<!-- モジュールリストを生成するテンプレート -->
+<script id="module_selecter_tmpl" type="text/x-jquery-tmpl">
+    <option class="controller_list" data-name="${module_nm}" value="${module_nm}">${disp_nm}</option>
+</script>
 
-
-/**
-* ページリストの検索用プラグイン
-*@todo もう少しコードの抽象化が必要
-*/
-(function($){
-
-    jQuery.fn.rcmsPageSpotlight = function(options){
-
-        // 引数を用意
-        var options=jQuery.extend({
-            id          : "",
-            url         : "",
-            displayName : ""
-        },options);
-        
-        // 対象オブジェクト
-        var target  = this;
-        var textbox = jQuery(".rcms_ui_page_list_search_text",target);
-        var list    = jQuery(".content li",target);
-        var handle  = jQuery(".handle",target);
-        var col1    = jQuery(".col_1",target);
-        var col2    = jQuery(".col_2",target);
-
-        // 初期化
-        var init = function (){
-            textbox.bind("keyup", search);
-            textbox.bind("blur", search);
-            list.bind("mouseover",showDetail);
-            handle.draggable({axis:"x",drag:resizeTableCol,stop:onStopResizeTableCol});
-
-            list.click(function(){
-                console.log("hi!");
-                var id          = $(this).data("page-id");
-                var url         = "/management/page/page_edit/page_page_id="+id+"&iframe_mode=1";
-                var displayName = $(this).data("page-nm");
-                console.log("id:"+id);
-                console.log("url:"+url);
-                console.log("displayName:"+displayName);
-                $("#edit_col").rcmsIframe({"id":id,"url":url,"displayName":displayName});
-            });
-        };
-        
-        // テーブルのカラム幅を変更
-        var resizeTableCol = function(){
-            console.log("hoge");
-            var left = handle.position().left;
-            col2.css("left",left+5);
-        };
-        var onStopResizeTableCol = function(){
-            var left = handle.position().left;
-            col2.css("left",left+5);
-            col1.width(left-5);
-        };
-
-        
-        // 詳細の表示
-        var showDetail = function(){
-            var pageNm      = jQuery(this).attr("data-page-nm");
-            var pageUrl     = jQuery(this).attr("data-page-url");
-            var template    = jQuery(this).attr("data-template");
-            var sitemapFlg  = jQuery(this).attr("data-sitemap-flg");
-            var menuFlg     = jQuery(this).attr("data-menu-flg");
-            var openFlg     = jQuery(this).attr("data-open-flg");
-            var mobileFlg   = jQuery(this).attr("data-mobile-flg");
-            var sslFlg      = jQuery(this).attr("data-ssl-flg");
-            var pageRequire = jQuery(this).attr("data-page-require");
-            
-            jQuery("#info_page_nm").text(pageNm);
-            jQuery("#info_page_url").text(pageUrl);
-            jQuery("#info_template").text(template);
-            jQuery("#info_sitemap_flg").text(sitemapFlg);
-            jQuery("#info_menu_flg").text(menuFlg);
-            jQuery("#info_open_flg").text(openFlg);
-            jQuery("#info_mobile_flg").text(mobileFlg);
-            jQuery("#info_ssl_flg").text(sslFlg);
-            jQuery("#info_page_require").text(pageRequire);
-        };
-        
-        // 検索
-        var search = function(){
-            
-            var needle = textbox.val();
-            console.log(needle);
-            
-            if(needle){
-                list.hide();
-                var re = new RegExp(needle,"i");
-
-                list.each(function(){
-                    
-                    var pageSysnm = jQuery(this).attr("data-page-sysnm"); // 現状.data()より若干高速 今後のバージョンアップでは逆転の可能性あり
-                    var pageNm    = jQuery(this).attr("data-page-nm");
-                    
-                    if( pageSysnm.match(re) || pageNm.match(re)){
-                        var parentId = jQuery(this).show().attr("data-parent-page-id");
-                        while(parentId){
-                            parentId = jQuery(".content li[data-page-id='"+parentId+"']",target.parent()).show().attr("data-parent-page-id");
-                        }
-                    }
-                });
-            }else{
-                list.show();
-            }
-        };
-        
-        // メインシーケンス
-        return this.each(function(){
-            init();
-        });
-    };
-    
-})(jQuery);
-
+<!-- コントローラーリストを生成するテンプレート -->
+<script id="controller_selecter_tmpl" type="text/x-jquery-tmpl">
+    {{each controllers}}
+        <option class="controller_list" value="${$value.module_php_id}">${$value.module_php_nm}</option>
+    {{/each}}
 </script>
 
 
+<!-- iframeを生成するテンプレート -->
+<script id="rcms_tabiframe_controller_iframeformat_tmpl" type="text/x-jquery-tmpl">
+    <iframe class="editor_frame" id="editor_frame_${list_id}" data-id="${list_id}" src="${url}" >
+</script>
 
-<!-- サンドボックス -->
-<style type="text/css">
-
-.rcms_ui_loading{
-    background-color:#fff !important;
-    background-image: url("{/literal}{$smarty.const.ROOT_URL}{literal}/images/modules/social/loading_w.gif") !important;
-    background-position: center !important;
-    background-repeat:no-repeat !important;
-}
-
-#rcms_ui_page_list{
-    overflow: hidden;
-}
-
-#main_container{
-    position: absolute;
-    margin: 55px 10px 10px 60px;
-    padding:0;
-}
-
-#edit_col{
-    display: box;
-    -webkit-display: box;
-    -moz-display: box;
-}
-
-#edit_col iframe{
-    position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    width:100%;
-    height:100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    border: 0;
-}
+<!-- tabを生成するテンプレート -->
+<script id="rcms_tabiframe_controller_tabformat_tmpl" type="text/x-jquery-tmpl">
+    <li class="editor_tab" id="editor_tab_${list_id}" data-id="${list_id}" src="${url}">
+        <span class="${deviceType}"></span>
+        <span class="list_title">${title}</span>
+        <button type="button" class="tab_close_btn">x</button>
+    </li>
+</script>
 
 
-</style>
-{/literal}
+<script type="text/javascript">
+(function($) {
+    
+    var mcTree,                     // モジュールとコントローラの木構造オブジェクト
+        isInitAjax,
+        addedNewID = "newID", 
+        ListObject = new Object(),    // listObjArrayに格納していくオブジェクト
+        listObjArray = new Object(); // インスタンスを格納する配列
 
+    $(document).ready(function() {
+        
+        // 初期表示リストを取得
+        isInitAjax = true;
+        ajaxSearch();
+        
+        // イベントハンドラの登録
+        // セルのサイズ調整
+        $(window).on("load resize", cellSizeChange);
+        
+        // 新しいページを追加
+        $("#add_page").on("click", addNewContent);
+        
+        // popupモードで開く
+        $("div.ajax_list_viewer").on("click", "div.popup_btn_max, div.popup_btn_min", openPopupMode);
+        
+        // 言語をクリックしたとき
+        $("div.ajax_list_viewer").on("click", "a.rcms_label", openLanguage);
 
-<h3>{'/modules/page'|translate}{*ページ構成*}</h3>
-	
-{rcms_include file="management/messages_box.html" messages=$messages}
-{rcms_include file="management/errors_box.html" errors=$errors}
+        // タブをクリックしたときに切り替える
+        $("#tab_field").on("click", "li", toggleEditorTab);
 
-<div id="main_container">
-    <div id="handle_col"></div>
-    <div id="list_col">
-        <div class="rcms_ui_page_list" id="rcms_ui_page_list">
-            <input class="rcms_ui_page_list_search_text" id="search_text" type="text" placeholder="絞り込み" />
-            <div class="header">
-                <div class="col_1">ページ名</div>
-                <div class="handle"></div>
-                <div class="col_2">URL</div>
-            </div>
-            <div class="content">
-            <ul>
-                <li
-                data-page-id           = "{$page_top.page_id}"
-                data-page-nm           = "{'/modules/page/label/top_page'|translate}"
-                data-page-sysnm        = "{$page_top.page_sysnm}"
-                data-page-url          = "/"
-                data-parent-page-id    = "{$page_top.parent_page_id}"
-                data-template          = "{$page_top.template}"
-                data-sitemap-flg       = "{$page_top.sitemap_flg}"
-                data-menu-flg          = "{$page_top.menu_flg}"
-                data-menu-head-sub_flg = "{$page_top.menu_head_sub_flg}"
-                data-menu-footer-flg   = "{$page_top.menu_footer_flg}"
-                data-open-flg          = "{$page_top.open_flg}"
-                data-mobile-flg        = "{$page_top.mobile_flg}"
-                data-ssl-flg           = "{$page_top.ssl_flg}"
-                data-page-require      = "{$page_top.page_require}"
-                data-page-weight       = "{$page_top.page_weight}"
-                data-level             = "{$page_top.level}"
-                data-page-require      = "{$page_top.page_require}"
-                >
-                    <div class="nest_level_1 col_1">
-                        <span class="icon"></span>
-                        {'/modules/page/label/top_page'|translate}
-                    </div>
-                    <div class="col_2">
-                        <span>
-                            <a href="{$smarty.const.ROOT_URL}/" target="_blank">/</a>
-                        </span>
-                    </div>
-                </li>
+        // iframe内が更新されたらリストを読み直す
+        var $ajax_list_viewer = $("div.ajax_list_viewer");
+        $ajax_list_viewer.on("listIframeListener", function(event, id){
+            if (id) {
+                $("#tab_field li.selected").data("id", id);
+                listObjArray[id].id = id;
+                ajaxSearch(id);
+            }
+        });
+
+        // 削除後したらタブを閉じる
+        $ajax_list_viewer.on("listCloseTab",function(event,data){
+            // 選択されているタブを閉じる
+            $("#tab_field li.selected button.tab_close_btn").trigger("click");
+            ajaxSearch();
+        });
+
+        $ajax_list_viewer.on("listUpdate", function() {
+            $("#iframe_field div.wrapper_indicator").show();
+        });
+
+        // 読み込みが完了したらローディングインディケーターを隠す
+        $ajax_list_viewer.on("listHideIndicator", function() {
+            $("#iframe_field div.wrapper_indicator").hide();
+        });
+
+        $("#tab_field ul").sortable({
+            axis     : "x",
+            tolerance: "pointer",
+            distance : 1,
+            scroll   : false,
+            opacity  : 0.7
+        });
+
+        // rcmsResizableCellsの登録
+        $("#main_contents").rcmsResizableCells({
+            cell1: "#list_cell_listfield",
+            cell2: "#list_cell_tabfield",
+            handle: "#list_cell_handle",
+            cell1MinWidth: 200,
+            cell1MaxWidth: 600,
+            direction: "horizon",
+            position: "relative",
+            switchBtn: ".horizontal_drawer_switchbtn",
+            onMoving: changeTableContents
+        });
+
+        // rcmsDeviceSelectorの登録
+        $("#list_device_selector").rcmsDeviceSelector({
+            isMultiple: true,
+            isNoSelect: true
+        });
+
+        // rcmsListInterlockの登録
+        $(".ajax_list_viewer").rcmsListInterlock({
+            tabField      : "#tab_field",
+            iframeField   : "#iframe_field",
+            moduleType    : "page",
+            contentsType  : "page_edit",
+            idName        : "page_id",
+            onLoading     : function() {
+                $("#iframe_field div.wrapper_indicator").show();
+            }
+        });
+
+        // リストをajaxで取得する
+        $("#list_search_btn").on("click", function() {
+            // ローディングインディケーターの表示
+            $("div.ajax_list_viewer div.wrapper_indicator").show();
+            ajaxSearch();
+        });
+
+        // 検索のテキストボックス内でエンターを押したときの動作
+        $("input.keyword").on("keypress", function (e) {
+            var code = null;
+            code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) {
+                // エンターを押したらフォーカスアウトする
+                $("#list_search_btn").trigger("click");
+                return false;
+            }
+        });
+    });
+
+    // 各セルのサイズ定義(resizableCells対応)
+    function cellSizeChange() {
+        var contentsHeight = $(window).height() - ($("#content_head").height() + $("#top_fixed").height());
+        var listHeadHeight = $("div.list_search_form").height() + $("div.ajax_list_viewer_head").height() + 10;
+        $("#main_contents").height(contentsHeight);
+        $("div.ajax_list_viewer").height(contentsHeight - listHeadHeight);
+        $("#iframe_field").height(contentsHeight - $("#tab_field").height() - 5);
+    }
+
+    // ajaxでリストを取得
+    function ajaxSearch(id) {
+        // 選択されているデバイスの配列
+        var deviceVal = [];
+        $.each($("#list_device_selector option:selected"), function() {
+            deviceVal.push($(this).val());
+        });
+        // 引数が渡されていれば指定されたid、無ければ選択されているid
+        var selectedId;
+        if (typeof id == "number") {
+            selectedId = id;
+        } else {
+            selectedId = $("#tab_field li.selected").data("id");
+        }
+        // デバイスが選択されていなければ空にする
+        if (deviceVal == null) deviceVal = "";
+
+        // 送信用データ
+        var data;
+        if (isInitAjax) {
+            data = "";
+            isInitAjax = false;
+        } else {
+            data = {
+                //keyword: $("input.keyword").val(),
+                //device_type: deviceVal
+            };
+        }
+        
+        // ajaxで条件にあったリストの内容を取得
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/page/api_pagelist/tree=1",
+            data     : data,
+            dataType : "json",
+            success  : function(obj) {
+console.log(obj);
+                $("div.ajax_list_viewer div.wrapper_indicator").hide();
+                var $list = $("div.ajax_list_viewer tbody"),
+                    $listTarget = $("div.ajax_list_viewer tbody[data-id=" + selectedId + "]"),
+                    listArray = [];
+
+                if ($list.length) $list.remove();
+
+                // tmpl用の配列を生成
+                $.each(obj, function() {
+                    listArray.push(this);
+                    childSerch(this);
+                });
                 
-                {foreach item="page_data" from=$page_list}
-                    {rcms_include file="page/admin/page_list_child.html" page_data=$page_data nest=0}
-                    {if $page_data.child1}
-                        {foreach item="page_data1" from=$page_data.child}
-                            {rcms_include file="page/admin/page_list_child.html" page_data=$page_data1 nest=1}
-                            {if $page_data1.child2}
-                                {foreach item="page_data2" from=$page_data1.child}
-                                    {rcms_include file="page/admin/page_list_child.html" page_data=$page_data2 nest=2}
-                                    {if $page_data2.child3}
-                                        {foreach item="page_data3" from=$page_data2.child}
-                                            {rcms_include file="page/admin/page_list_child.html" page_data=$page_data3 nest=3}
-                                            {if $page_data3.child4}
-                                                {foreach item="page_data4" from=$page_data3.child}
-                                                    {rcms_include file="page/admin/page_list_child.html" page_data=$page_data4 nest=4}
-                                                    {if $page_data4.child5}
-                                                        {foreach item="page_data5" from=$page_data4.child}
-                                                            {rcms_include file="page/admin/page_list_child.html" page_data=$page_data5 nest=5}
-                                                        {/foreach}
-                                                    {/if}
-                                                {/foreach}
-                                            {/if}
-                                        {/foreach}
-                                    {/if}
-                                {/foreach}
-                            {/if}
-                        {/foreach}
-                    {/if}
-                {/foreach}
-            </ul>
-            </div>
-        </div><!- .rcms_ui_page_list ここまで ->
-        <div id="handle_row"></div>
-        <div id="info_detail">
-            <table>
-                <tr><th>ページ名</th>     <td id="info_page_nm"></td></tr>
-                <tr><th>URL</th>        <td id="info_page_url"></td></tr>
-                <tr><th>構造</th>        <td id="info_template"></td></tr>
-                <tr><th>サイトマップ</th>  <td id="info_sitemap_flg"></td></tr>
-                <tr><th>メニュー</th>     <td id="info_menu_flg"></td></tr>
-                <tr><th>公開状況</th>     <td id="info_open_flg"></td></tr>
-                <tr><th>携帯</th>        <td id="info_mobile_flg"></td></tr>
-                <tr><th>SSL</th>        <td id="info_ssl_flg"></td></tr>
-                <tr><th>閲覧制限</th>     <td id="info_page_require"></td></tr>
-            </table>
-        </div>
-    </div><!- #list_col ここまで ->
-    <div id="edit_col">
-        <iframe />
-    </div>
-</div>
+                // 子要素を配列に追加していくインナー関数
+                function childSerch(obj) {
+                    $.each(obj.child, function() {
+                        listArray.push(this);
+                        // 子要素を持っている場合は再帰的に呼び出す
+                        if (obj.child != "") {
+                            childSerch(this);
+                        }
+                    });
+                }
+                // 取得したデータをテーブルへ追加
+                $.tmpl($("#page_list_tmpl"), listArray).appendTo("div.ajax_list_viewer table");
+                // 言語ステータスのクラス名変更
+                $.each($("td a.rcms_label"), function() {
+                    var target = $(this);
+                    if (target.hasClass("0")) {
+                        target.removeClass("0");
+                    } else {
+                        target.addClass("success").removeClass("1");
+                    }
+                });
+                changeTableContents();
+                // 選択状態を引き継ぐ
+                $listTarget.parent().addClass("selected");
+                // リスト名とタブ名をリフレッシュ
+                if (listObjArray[selectedId] && $listTarget.size() > 0) listObjArray[selectedId].refreshTitle();
+            }
+        });
+    }
 
-{* 更新する
-{rcms_auth target="update:/page/item/"}
-<div class="buttonbox">
-	<ul id="buttonbox_ul">
-		<li id="edit_action_update_li">
-				<button type="submit">{'/label/update_btn'|translate}</button>
-		</li>
-	</ul>
-</div>
+    /**
+    * リストの表示サイズによって表示項目を切り替える
+    * @return void
+    */
+    function changeTableContents() {
+        // 400px以下の場合は表示項目をタイトルとデバイスだけにする
 
-{/rcms_auth}
-*}
-	</form>
+        if ($("#list_cell_listfield").width() <= 400) {
+            $(".ajax_list_viewer table .toggle_rowspan").attr("rowspan", "1");
+            $(".ajax_list_viewer table .toggle_element").hide();
+            $(".ajax_list_viewer table div.popup_btn_max").addClass("popup_btn_min").removeClass("popup_btn_max");
+        } else {
+            $(".ajax_list_viewer table .toggle_rowspan").attr("rowspan", "2");
+            $(".ajax_list_viewer table .toggle_element").show();
+            $(".ajax_list_viewer table div.popup_btn_min").addClass("popup_btn_max").removeClass("popup_btn_min");
+        }
+        $(".ajax_list_viewer table").width($("#list_cell_listfield").width());
+
+    }
+
+    // 新しいページを追加
+    function addNewContent() {
+        // 既に開いてある場合はフォーカスを当てる
+        if ($("#tab_field [data-id=" + addedNewID + "]").size() > 0) {
+            $.each(listObjArray, function(i) {
+                if (i == addedNewID) {
+                    listObjArray[i].focusTab();
+                    isOpened = true;
+                }
+            });
+        } else {
+            // まだ開いていない場合は新規作成
+            var newContent = new ListObject(addedNewID);
+            listObjArray[addedNewID] = newContent;
+            newContent.setTitle("新しいページ");
+        }
+    }
+
+    // popupで開く
+    function openPopupMode() {
+        var id = $(this).parent().data("id");
+        var link = "https://rcms2.dev.diverta.co.jp/management/page/page_edit/popup_mode=1";
+        link += "&page_id=" + id;
+        window.open(link);
+        return false;
+    }
+
+    // リストの言語から直接エディターを開く
+    function openLanguage() {
+        var id = $(this).data("id");
+        var lang = $(this).data("lang");
+        // 選択したもののidがまだ開かれていない時
+        if (!listObjArray[id]) {
+            listObjArray.push(new ListObject(id, lang));
+        } else {
+        // 既に開かれていた時
+            var langLink = [];
+            // iframe内の言語のリンクを全て取得し、配列に格納
+            $.each($("#iframe_field [data-id=" + id + "]").contents().find("#lang_selector").next().find("a"), function() {
+                langLink.push($(this).attr("href"));
+            });
+            // 言語にマッチするリンクを見つけたらiframeをそのリンクでreload
+            var word = new RegExp("_doc_lang=" + lang);
+            $.each(langLink, function(i) {
+                if (langLink[i].match(word)) {
+                    $("#iframe_field [data-id=" + id + "]").contents().get(addedNewID).location.href = langLink[i];
+                    $("#iframe_field div.wrapper_indicator").show();
+                }
+            });
+        }
+        return false;
+    }
+
+    // タブを切り替える
+    function toggleEditorTab() {
+        var id = $(this).data("id");
+        if (listObjArray[id]) listObjArray[id].focusTab();
+    }
+
+    /**
+    * リストと連動してタブの制御をするプラグイン
+    * リストのテーブルにアタッチする設計になっている。
+    *
+    * 展望: タブ制御のプラグインはリストからは独立させて、.rcms_tabiframe_controllerにアタッチするプラグインにする方が構造がすっきりすると思う。
+    *       併せて、ListObject と listObjArray は廃止する事がのぞましい。
+    *       新規タブの追加や、リストからの切り替え制御は、プラグインのメソッドとして実装する。実装方法は下記URLを参照
+    *       @see http://docs.jquery.com/Plugins/Authoring  -Method calling logic-
+    */
+
+    // 変数の宣言 
+    // 注意: 本来はプラグイン内で完結すべき変数。
+    //       ListObjectをプラグイン外でも使用しなければならないため、引きずられてこれらの変数もスコープを拡大せざるを得なくなっている。
+    var list, tab, iframe, tabField, iframeField, moduleType, contentsType, defaultURL, idName, options;
+
+    $.fn.rcmsListInterlock = function(opt){
+
+        // 引数を宣言
+        options=$.extend({
+            tabField      : "",
+            iframeField   : "",
+            moduleType    : "",
+            contentsType  : "",
+            idName        : "",
+            defaultURL    : "/management/",
+            onLoading     : function(){},
+            onLeave       : function(){}
+        },opt);
+
+        var target = $(this);
+
+        // 初期化
+        function init() {
+            list         = $("tbody", target);
+            tabField     = $(options.tabField);
+            tabList      = $("ul", tabField);
+            tab          = $("li", tabList);
+            iframeField  = $(options.iframeField);
+            iframe       = $("iframe", iframeField);
+            moduleType   = options.moduleType + "/";
+            contentsType = options.contentsType + "/";
+            defaultURL   = options.defaultURL;
+            idName       = options.idName;
+        }
+
+        // リスト取得
+        function refresh() {
+            list = $("tbody", target);
+            tab  = $("li", tabList);
+        }
+
+        // 既に生成済みでなければ新たにインスタンスを生成し、配列に登録
+        function open() {
+            var targetId   = $(this).data("id");
+            var isOpened = false;
+            // 既に開かれていればそれをフォーカス
+            if (listObjArray[targetId]) {
+                listObjArray[targetId].focusTab();
+                isOpened = true;
+            }
+            // 開かれていなければインスタンスを生成して登録
+            if (!isOpened){
+                listObjArray[targetId] = new ListObject(targetId);
+            }
+        }
+
+        // フォーカスするタブを切り替える
+        function focus() {
+            listObjArray[$(this).data("id")].focusTab();
+        }
+
+        // タブを閉じる
+        function close() {
+            var tabId = $(this).parent().data("id");
+            var tr = list.filter("[data-id=" + tabId + "]");
+            var iframeId;
+            var instance = listObjArray[tabId];
+            // 編集の有無をチェック
+            if ($("#editor_frame_" + tabId).size() > 0) {
+                iframeId = "editor_frame_" + tabId;
+            } else {
+                iframeId = "editor_frame_0";
+            }
+            window.eval(iframeId).jQuery("#smarty_codemirror").trigger("judgeEdited");
+            if (window.eval(iframeId).jQuery("#smarty_codemirror").data("ischanged")) {
+                var res = confirm("編集内容が破棄されます。ページを閉じますか？"); // @todo i18n
+                if (res == true) {
+                    close();
+                } else {
+                    return false;
+                }
+            } else {
+                closeTab();
+            }
+            function closeTab() {
+                // リストが選択されている時
+                if (tr.hasClass("selected")) {
+                    // 2つ以上開いている時
+                    if (tab.length > 1) {
+                        var num = tab.index(tab.filter("[data-id=" + tabId + "]"));
+                        if (num > 0) {
+                        // 左隣を選択状態にする
+                            listObjArray[tab.filter(":eq(" + --num + ")").data("id")].focusTab();
+                        } else {
+                        // 左端を閉じた場合は右隣を選択状態にする
+                            listObjArray[tab.filter(":eq(" + ++num + ")").data("id")].focusTab();
+                        }
+                    // 最後の一つを閉じた時
+                    } else {
+                        tr.removeClass("selected");
+                    }
+                }
+                // インスタンスを削除し、配列からも除去する
+                instance.removeInstance();
+                $("#iframe_field div.wrapper_indicator").hide();
+            }
+            return false;
+        }
+
+        function installEvents() {
+            // リストをリフレッシュ
+            target.on("click", refresh);
+            tabField.on("click", refresh);
+            
+            // エディターを開く
+            list.live("click", open);
+            
+            // フォーカスする
+            list.live("click", focus);
+            tab.live("click", focus);
+            
+            // タブを閉じる
+            $(".tab_close_btn", tab).live("click", close);
+        }
+
+        // メインシーケンス
+        return this.each(function(){
+            // 初期化
+            init();
+            
+            // イベントの登録
+            installEvents();
+        });
+    };
+
+    /**
+    * 開いているエディター情報を保持するオブジェクト
+    * @param id int
+    * @param isSelected bool
+    */
+    // 注意: このオブジェクトも本来はプラグイン内で完結することが望ましい。
+
+    ListObject = function(id, lang) {
+        // インスタンスが保持するフィールド
+        this.id = id;
+        this.isSelected = true;
+        this.lang = lang;
+
+        // インスタンスが使うリストを登録
+        this._list = list.filter("[data-id=" + id + "]");
+
+        // インスタンス生成時に新しくタブを開く
+        openEditorTab(this.id, this._list, this.lang);
+
+        // インスタンスが使うエディター、タブを指定
+        this._iframe    = $("iframe", iframeField).filter("[data-id=" + id + "]");
+        this._tab = $("li", tabField).filter("[data-id=" + id + "]");
+        
+        // タブを開く
+        function openEditorTab(id, list, lang) {
+            var deviceType,
+                title,
+                iframeMode = "iframe_mode=1",
+                langType   = "_doc_lang=" + lang;
+
+            if (list.html() != null) {
+                deviceType = list.find(".devices").attr("class");
+                title  = list.find(".list_title").text();
+            } else {
+                title = "";
+            }
+            // タブ用を生成
+            var tabData = {};
+            tabData.list_id = id;
+            tabData.deviceType  = deviceType;
+            tabData.title   = title;
+            $.tmpl($("#rcms_tabiframe_controller_tabformat_tmpl"), tabData).appendTo(tabList);
+            // iframe用を生成
+            var iframeData = {};
+            iframeData.list_id = id;
+            iframeData.url = defaultURL + moduleType + contentsType + iframeMode;
+            if (id >= 0) iframeData.url += "&" + idName + "=" + id;
+            if (lang)    iframeData.url += "&" + langType;
+            $.tmpl($("#rcms_tabiframe_controller_iframeformat_tmpl"), iframeData).appendTo(options.iframeField);
+            options.onLoading();
+        }
+        
+        this.focusTab = function() {
+            this._list = list.filter("[data-id=" + this.id + "]");
+            var allTab    = $("#tab_field ul li");
+            var allEditor = $("#iframe_field iframe");
+            // 他のselectedクラスを全て取り除き、インスタンスのフィールドの値を変更
+            $.each(listObjArray, function(i) {
+                this.isSelected = false;
+            });
+            list.removeClass("selected");
+            allTab.removeClass("selected");
+            allEditor.hide();
+            this.isSelected = true;
+            // selectedクラスを追加
+            this._list.addClass("selected");
+            this._tab.addClass("selected");
+            this._iframe.fadeIn(300);
+        }
+        
+        // インスタンスを削除する
+        this.removeInstance = function() {
+            this._list.parent().removeClass("selected");
+            this._tab.remove();
+            this._iframe.remove();
+            delete listObjArray[this.id];
+            delete this;
+        }
+        
+        // 初期化したらフォーカスする
+        this.focusTab();
+    }
+
+    // タブ名とリスト名に引数の名前をセットする
+    ListObject.prototype.setTitle = function(title) {
+        this._list.find("span.list_title").text(title);
+        this._tab.find("span.list_title").text(title);
+    }
+    // タブ名とリスト名を更新する
+    ListObject.prototype.refreshTitle = function() {
+        // インスタンスのリスト(新規作成時はリストがまだ無いため直接取得)
+        var list = $("div.ajax_list_viewer tbody[data-id=" + this.id + "]");
+        var device = list.find(".devices").clone();
+        var title = list.find(".list_title").clone();
+        // 既存の値をクリアし更新する
+        this._tab.empty();
+        this._tab.append(device).append(title).append('<button type="button" class="tab_close_btn">x</button>');
+    }
+
+})(jQuery);
+{/literal}
+</script>
+
+{rcms_include file="management/footer.html"}

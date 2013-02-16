@@ -19,23 +19,12 @@ function confirmDelete(f) {
 </script>
 {/literal}
 
-
-<div id="top_fixed">
-    <div id="content_head">
-        <div class="navigation">
-            <a class="navigation_node"><span class="contents_renewal"></span></a>
-            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents'|translate}{*自由HTML*}</a>
-            <a class="navigation_node">{'/label/categorieslist'|translate}{*カテゴリ設定*}</a>
-        </div>
-
-        <div class="setting_field">
-        {rcms_auth target="insert:/staticcontents/item/"}
-            <p id="add-new-button"><a href="/management/staticcontents/staticcontents_category_edit/" class="add-new">{'/label/add_category_btn'|translate}{*カテゴリ追加*}</a></p>
-    {/rcms_auth}
-        </div>
-    </div>
-</div>
-
+{pankuzu}
+<a href="/management/menu/contents/"><span class="contents_renewal"></span></a>
+<a href="/management/staticcontents/staticcontents_list/">{$module_nm}</a>
+<a>{'/label/categorieslist'|translate}{*カテゴリ設定*}</a>
+{rcms_include file="staticcontents/admin/setting_field.html"}
+{/pankuzu}
 
 
 <form method="POST" action="/management/staticcontents/staticcontents_category_list/">

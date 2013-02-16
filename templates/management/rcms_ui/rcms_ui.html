@@ -4,12 +4,10 @@
 * 全てのモジュールで必要とは限らないので、増えて来たら必要なプラグインだけ読み込むような分岐を実装
 *}
 
-{headblock}
 {* 必須ライブラリの読み込み *}
 <script type="text/javascript" src="/js/jqueryTemplate/jquery.tmpl.beta1.js"></script>{*jquery template*}
-<script type="text/javascript" src="/js/jqueryUi/jquery-ui.1.8.10.js"></script>{*jquery UI*}
-<script type="text/javascript" src="/js/bootstrap/js/bootstrap-affix.js"></script>{*bootstrap affix jquery plugin*}
 <script type="text/javascript" src="/js/jqueryCookie/jquery.cookie.js"></script>{*jquery cookie*}
+<script type="text/javascript" src="/js/jqueryUi/i18n/jquery.ui.datepicker-ja.min.js"></script>{*jquery datepicker*}
 
 {* 指定したページのみ適用する *}
 {if $docmeta.action->ct eq "staticcontents_category_edit"}{* ページを指定 *}
@@ -26,5 +24,4 @@
 {rcms_include file="management/rcms_ui/rcms_ui_rcmsAjaxSelector.html"}
 {rcms_include file="management/rcms_ui/rcms_ui_rcmsNotificationBox.html"}
 {rcms_include file="management/rcms_ui/rcms_ui_rcmsAnchor.html"}
-
-{/headblock}
+{rcms_include file="management/rcms_ui/rcms_ui_rcmsOptionEditor.html"}

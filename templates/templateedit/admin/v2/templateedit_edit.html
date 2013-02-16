@@ -1,0 +1,573 @@
+{rcms_include file="management/header.html"}
+
+{* codemirrorの読み込み *}
+{rcms_include file="management/v2/codemirror_loader.html"}
+
+{if $smarty.request.iframe_mode != 1}
+<div id="top_fixed">
+    <div id="content_head">
+        <div class="navigation">
+            <a class="navigation_node"><span class="contents_renewal"></span></a>
+            <a class="navigation_node">{'/modules/templateedit'|translate}{*テンプレート編集*}</a>
+            <a class="navigation_node" href="/management/templateedit/templateedit_list/">
+                {'/modules/templateedit/label/templateedit_list'|translate}{*テンプレート一覧*}
+            </a>
+            <a class="navigation_node">{if $formData.template_nm}{$formData.template_nm|escape}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
+        </div>
+    </div>
+</div>
+{/if}
+
+<form action="/management/templateedit/templateedit_edit/{if $smarty.request.iframe_mode}iframe_mode=1{elseif $smarty.request.popup_mode}popup_mode=1{/if}" method="post" name="static_edit" id="static_edit">
+    <input name="DG_CODE" type="hidden" value="{$DG_CODE}" />
+    <input name="MODE" type="hidden" />
+    <input type="hidden" name="_doc_lang" value="{$docmeta.lang}" />
+
+{rcms_include file="management/v2/notification_box.html" errors=$errors messages=$messages alerts=$alerts}
+
+{if $formData.templateedit_id}
+
+<div id="main_contents" class="templateedit_edit">
+    <input name="templateedit_id" type="hidden" value="{$formData.templateedit_id}" />
+   <!-- コンテンツ -->
+   {if $mode_nm_list|@count > 0}
+    <div id="contents_collection" class="contents" style="display:none">
+{*遷移画面が有る場合 ここから*}
+    {* 各入力画面ごとの値をhiddenで保持する *}
+    {foreach from=$mode_nm_list key=key item=value}
+        <textarea id="{$key}" class="contents" name="{$key}">{$formData.$key|escape}</textarea>
+    {/foreach}
+{*遷移画面が有る場合 ここまで*}
+    </div>
+    {/if}
+    <div id="tool_bar">
+        <ul class="menu_left">
+{*遷移画面が有る場合 ここから*}
+            {if $mode_nm_list}
+            <li>
+                <div class="rcms_ui_dropdown">
+                    <input type="hidden" id="template_text_type" name="template_text_type" value="1" />
+                    <button type="button" id="template_text_selector" data-id="1">
+                        <span class="icon-mode"></span>{$mode_nm_list.template_text01}
+                    </button>
+                    <ul>
+                        {foreach from=$mode_nm_list key=key item=value name=item_loop}
+                            <li data-id="{$smarty.foreach.item_loop.iteration}"><span class="icom-mode"></span>{$value}</li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </li>
+            {/if}
+{*遷移画面が有る場合 ここまで*}
+            <li>
+                {assign var="te_id" value=$formData.templateedit_id}
+                {lang_selector_v2_dropdown
+                    meta=$docmeta link="/management/templateedit/templateedit_edit/iframe_mode=1&templateedit_id=$te_id"
+                }
+            </li>
+        </ul>
+        <ul class="menu_right">
+            <li class="menu_right_list">
+                {rcms_include file="management/ajax_history_dropdown.html" mt=templateedit id=$formData.templateedit_id pk=templateedit_id}
+            </li>
+        </ul>
+    </div>
+    <div id="templateedit_cells">
+        <div id="templateedit_cell_handle"></div>
+        <div id="templateedit_cell_drawer" class="vertical_drawer_body">
+            <table class="basic_table">
+                <tr>
+                    <td class="template_item">{'/label/template_name'|translate}{* テンプレート名 *}</td>
+                    <td>
+                        <input style="width:300px;" name="template_nm" type="text" value="{$formData.template_nm|escape}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="template_item">
+                        {'/label/device'|translate}{*デバイス*}／
+                        {'/label/module'|translate}{*モジュール*}／
+                        {'/label/controller'|translate}{*コントローラ*}
+                    </td>
+                    <td>
+                        <span class="{if $formData.device_type eq 1}icon-pc{elseif $formData.device_type eq 2}icon-mob{elseif $formData.device_type eq 3}icon-sp{elseif $formData.device_type eq 4}icon-fb{elseif $formData.device_type eq 5}icon-app{/if}"></span>
+                        {$arrDeviceType[$formData.device_type]}／{$module}／{$controller_nm}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="templateedit_cell_body">
+            <div class="vertical_drawer_handle"></div>
+            <div id="edit_area_wrapper">
+                <div class="edit_area">
+                    <div id="smarty_codemirror">
+                        <div id="support_tool">
+                            <input type="text" id="query" placeholder="検索文字列">
+                            <input type="text" id="replace" placeholder="置換文字列">
+                            <button type="button" id="replace_btn">置換</button>
+                            <div class="rcms_ui_dropdown">
+                                <button type="button"><span class="icon-cog"></span></button>
+                                <ul>
+                                    <li id="reverse_color_btn"><span class="icon-adjust"></span>文字色を反転</li>
+                                    <li id="highlight_syntax_btn"><span class="icon-bookmark"></span>シンタックスをハイライト</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <textarea id="template_text"{if $mode_nm_list|@count > 0}>{$formData.template_text01|escape}{else}name="template_text">{$formData.template_text|escape}{/if}</textarea>
+                    </div>
+                </div>
+                <div id="side_menu_box" class="metasettings_container">
+                    {if $docmeta.is_primary}
+                        <div>{rcms_include file="management/v2/use_page.html" use_page=$formData.use_page}{* 使用ページ *}</div>
+                    {/if}
+                    <div>
+                        {rcms_include
+                            file="management/v2/update_comment.html"
+                            comment=$formData.update_comment
+                            mt=templateedit id=$formData.templateedit_id pk=templateedit_id
+                        }{* 更新コメント *}
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div><!-- #main_contents -->
+{else}
+
+<div id="main_contents">
+    <div class="initialize_form_field">
+        <h1 class="initialize_form_title"><span class="icon-new"></span>新しいテンプレートの作成</h1>
+        <table class="initialize_form_table">
+            <tr>
+                <td>{'/label/template_name'|translate}{*テンプレート名*}</td>
+                <td>
+                    <input type="text" name="template_nm" />
+                    <p class="initialize_text">管理画面で用いるテンプレートの名前です。後から変更出来ます。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>{'/label/module'|translate}／{'/label/controller'|translate}{*モジュール／コントローラー*}</td>
+                <td>
+                    <select id="new_module_list" name="module">
+                    </select>
+                    <select id="new_controller_list" name="controller_id">
+                    </select>
+                    <p class="initialize_text">対象とするモジュールとコントローラーを指定します。後から変更出来ません。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>初期テンプレート</td>
+                <td>
+                    <select id="new_template_list" name="module_tpl_id">
+                    </select>
+                    <p class="initialize_text">新規作成時にひな形とするテンプレートを指定します。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>{'/label/device'|translate}</td>
+                <td>
+                    <select id="new_device_type" name="device_type">
+                        {html_options options=$arrDeviceType selected=$formData.device_type}
+                    </select>
+                    <p class="initialize_text">対象とするデバイスを指定します。後から変更出来ません。</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+{/if}
+<div id="bottom_fixed">
+
+{editActionBox docmeta=$docmeta}{/editActionBox}
+</div>
+</form>
+
+{literal}
+<!-- モジュールリストを生成するテンプレート -->
+<script id="module_new_tmpl" type="text/x-jquery-tmpl">
+    <option class="module_list" data-id="${module_nm}" value="${module_nm}">${disp_nm}</option>
+</script>
+
+<!-- コントローラーリストを生成するテンプレート -->
+<script id="controller_new_tmpl" type="text/x-jquery-tmpl">
+    {{each controllers}}
+        <option class="controller_list" data-id="${module_php_id}" value="${module_php_id}">${$value.module_php_nm}</option>
+    {{/each}}
+</script>
+
+<!-- コントローラーリストを生成するテンプレート -->
+<script id="template_new_tmpl" type="text/x-jquery-tmpl">
+    {{each default_templates}}
+        <option class="template_list" data-id="${module_tpl_id}" value="${module_tpl_id}">${$value.module_tpl_nm}</option>
+    {{/each}}
+</script>
+
+<!-- サンドボックス -->
+<script type="text/javascript">
+(function($) {
+
+    $(document).ready(function(){
+
+    /***************** 初期設定 *****************/
+
+        // 検索のテキストボックス内でエンターを押したときの動作
+        $("input").on("keypress", function (e) {
+            var code = null;
+            code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) {
+                // エンターを押したらフォーカスアウトする
+                $(this).focusout();
+                return false;
+            }
+        });
+
+        var plainData = {/literal}{$module_controller_template_json}{literal};
+
+        // エディターのサイズを初期化
+        {/literal}
+            {if $formData.templateedit_id}
+                editAreaSizeChange();
+            {else}
+                refreshModule();
+                initDevice();
+            {/if}
+        {literal}
+
+    /**************** イベントの登録 ****************/
+
+        // 新規作成画面で項目が変更した時に値を更新する
+        $("#new_module_list").on("change", refreshController);
+        $("#new_controller_list").on("change", refreshTemplate);
+
+        // 入力画面を切り替え
+        $("#template_text_type").on("change", updateTemplateType);
+
+        // エディターのシンタックハイライトと文字色を反転するクリックイベント
+        $("#highlight_syntax_btn").on("click", switchCodeMirror);
+        $("#reverse_color_btn").on("click", switchTheme);
+
+        // 検索したときの動作
+        $("#query").on("focusout",CodeMirrorSearch);
+        $("#replace_btn").on("click", CodeMirrorReplace);
+
+        // ウィンドウサイズが変わったとき
+        $(window).on("resize", editAreaSizeChange);
+
+        // submit時に閉じているエディターの情報を削除する
+        $("#edit_action_update_li").on("click", submitUpdate);
+
+        // 親要素のイベントを実行
+        var $parentTarget = parent.$("div.ajax_list_viewer");
+        if ("{/literal}{$smarty.request.close_tab}{literal}" == 1) {
+            $parentTarget.trigger("listCloseTab","{/literal}{$formData.templateedit_id}{literal}");
+        } else {
+            $parentTarget.trigger("listIframeListener","{/literal}{$formData.templateedit_id}{literal}");
+        }
+        $parentTarget.trigger("listHideIndicator");
+
+        // 更新中に親要素でローディングインディケーターを出す
+        $("#edit_action_update_li").on("click", function() {
+            $parentTarget.trigger("listUpdate");
+        });
+        $("#lang_selector").next().children().children("a").on("click", function() {
+            $parentTarget.trigger("listUpdate");
+        });
+
+    /**************** プラグインの適用 ****************/
+
+
+        // rcmsResizableCellsを適用
+        var tableHeight = $("#templateedit_cell_drawer").outerHeight();
+        $("#templateedit_cells").rcmsResizableCells({
+            cell1         : "#templateedit_cell_drawer",
+            cell2         : "#templateedit_cell_body",
+            handle        : "#templateedit_cell_handle",
+            direction     : "vertical",
+            position      : "relative",
+            cell1MinHeight: 0,
+            cell1MaxHeight: tableHeight,
+            onMoving      : editAreaSizeChange,
+            switchBtn     : ".vertical_drawer_handle"
+        });
+
+
+    /**************** 関数の定義 ****************/
+
+        // 入力画面を切り替える前と後の番号
+        var beforeNum;
+        var currentNum = $("#template_text_type").val();
+
+        // currentNumを更新する
+        function updateTemplateType() {
+            // 入力画面の番号を更新
+            beforeNum = currentNum;
+            currentNum = $("#template_text_type").val();
+            
+            // これまで開いていたエディターの値を保存
+            $("#template_text0" + beforeNum).val(setAndGetCodeMirror());
+            $("#smarty_codemirror").hide();
+            
+            // 選択した値をエディターへ表示
+            setAndGetCodeMirror($("#template_text0" + currentNum).val());
+            $("#smarty_codemirror").fadeIn(300);
+            CodeMirrorRefresh();
+        }
+
+        // submit時に値を登録する
+        function submitUpdate() {
+            $("#template_text0" + beforeNum).val(setAndGetCodeMirror());
+        }
+
+        // モジュールとコントローラとテンプレートの連動
+        function refreshModule() {
+            // エラー時に引き継いだ値
+            var data = [];
+            $.each(plainData, function() {
+                data.push(this);
+            });
+            var moduleName = "{/literal}{$formData.module}{literal}";
+            $.tmpl($("#module_new_tmpl"), data).appendTo("#new_module_list");
+            // 引き継いだ値があればそれを選択
+            if (moduleName) {
+                $("#new_module_list").val(moduleName);
+                refreshController();
+            }
+        }
+        // コントローラーの連動
+        function refreshController() {
+            // モジュールを選択したことによってしぼられた配列
+            var moduleData = plainData[$("#new_module_list option:selected").data("id")];
+            // エラー時に引き継いだ値
+            var controllerId = "{/literal}{$formData.controller_id}{literal}";
+            $("#new_controller_list option").remove();
+            $.tmpl($("#controller_new_tmpl"), moduleData).appendTo("#new_controller_list");
+            // 引き継いだ値があり、かつ初期状態ならばそれを選択
+            if (controllerId) {
+                $("#new_controller_list").val(controllerId);
+            }
+            refreshTemplate();
+        }
+        // テンプレートの連動
+        function refreshTemplate() {
+            // コントローラーを選択したことによってしぼられた配列
+            var moduleData = plainData[$("#new_module_list option:selected").data("id")];
+            // エラー時に引き継いだ値
+            var templateId = "{/literal}{$formData.module_tpl_id}{literal}";
+            $("#new_template_list option").remove();
+            var controllerData = moduleData.controllers[$("#new_controller_list option:selected").data("id")];
+            $.tmpl($("#template_new_tmpl"), controllerData).appendTo("#new_template_list");
+            // 引き継いだ値があり、かつ初期状態ならばそれを選択
+            if (templateId) {
+                $("#new_template_list").val(templateId);
+            }
+        }
+
+        // エラー時に選択されていたデバイスを引き継ぐ
+        function initDevice() {
+            var deviceType = "{/literal}{$formData.device_type}{literal}";
+            if (deviceType) {
+                $("#new_device_type").val(deviceType);
+            }
+        }
+
+        // 包含するdiv要素の大きさの変化に合わせてエディターの大きさを変更
+        function editAreaSizeChange() {
+            // エディターの大きさを動的に設定
+            $("#templateedit_cells").height($(window).height() - 87);
+            $(".CodeMirror, .CodeMirror-scroll, .CodeMirror-gutter").height($("#smarty_codemirror").height() - 58);
+        }
+    
+    
+    /**************** 編集の有無のチェック ****************/
+    
+        // inputタグ内の編集の有無
+        $("#smarty_codemirror").data("ischanged", false);
+
+        // テキストボックスの編集チェック
+        $("div.vertical_drawer_body input").on("focus", function() {
+            $(this).keyup(function() {
+                $("#smarty_codemirror").data("ischanged", true);
+            });
+        });
+
+        // エディターの編集チェック
+        $("#smarty_codemirror").on("judgeEdited", function() {
+            var inited = $("#templateedit_cell_body").data("edit");
+                if (inited != setAndGetCodeMirror()) {
+                    $("#smarty_codemirror").data("ischanged", true);
+                }
+        });
+
+        // 最新のエディターのDOM要素と比較して変更があればアラートで確認
+        $(window).on("beforeunload", function() {
+            $("#smarty_codemirror").trigger("judgeEdited");
+            if ($("#smarty_codemirror").data("ischanged")) return "編集内容が破棄されます。ページを移動しますか？";
+        });
+
+        // submitではページ移動の確認をしない
+        $("form").on("submit",function(){
+            $(window).off('beforeunload');
+        });
+
+        function resetConfirm(f) {
+            var msg = "{/literal}{'/modules/templateedit/msg/reset_confirm'|translate}{* これまで編集した内容を破棄して、\nRCMSの初期テンプレートを読み込みます。\nよろしいですか？ *}{literal}";
+            if (confirm(msg)) {
+                f.MODE.value = "RESET";
+                f.submit();
+                f.MODE.value = "";
+            }
+        }
+        
+        function deleteConfirm(f) {
+            var msg = "{/literal}{'/modules/templateedit/msg/delete_confirm'|translate}{* 削除してもよろしいですか？ *}{literal}";
+            if (confirm(msg)) {
+                f.MODE.value = "DELETE";
+                f.submit();
+                f.MODE.value = "";
+            }
+        }
+    
+    
+    /**************** CodeMirrorの各種機能の定義 ****************/
+    
+        CodeMirror.defineMode("smarty", function(config, parserConfig) {
+            var smartyOverlay = {
+                token: function(stream, state) {
+                if (stream.match("{*")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "*" && stream.next() == "}") break;
+                    return "smarty-cmt";
+                }else if (stream.match("{$")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-val";
+                }else if (stream.match("{if")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-if";
+                }else if (stream.match("{/if")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-if";
+                }else if (stream.match("{else")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-if";
+                }else if (stream.match("{foreach")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-foreach";
+                }else if (stream.match("{/foreach")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty-foreach";
+                }else if (stream.match("{")) {
+                    while ((ch = stream.next()) != null)
+                        if (ch == "}") break;
+                    return "smarty";
+                }
+                while (stream.next() != null && !stream.match("{", false) && !stream.match("{*", false)) {}
+                return null;
+                }
+            };
+            return CodeMirror.overlayParser(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), smartyOverlay);
+        });
+        
+        // CodeMirrorのエディターオブジェクトを生成
+        var editor = CodeMirror.fromTextArea(
+            document.getElementById("template_text"),
+            {
+                mode           : "smarty",
+                indentUnit     : 4,
+                indentWithTabs : false,
+                tabMode        : "shift",
+                enterMode      : "keep",
+                electricChars  : false,
+                lineWrapping   : true,          // エディターサイズより長い行を折り返すかどうか
+                lineNumbers    : true,
+                firstLineNumber: 1,
+                gutter         : false,
+                fixedGutter    :false,
+                matchBrackets  : true
+            });
+        var lastPos   = null;       // 検索対象と一致した最後のワードの開始位置
+        var lastQuery = null;       // 検索対象の文字列
+        var marked    = [];         // 検索対象と一致した文字列に印をつける"markText()"で返ってくるオブジェクト群
+        
+        // CodeMirrorのエディターに値をセットして値を返す *引数が文字列でない場合は値のみを返す
+        function setAndGetCodeMirror(str) {
+            if (typeof str == "string") {
+                editor.setValue(str);
+            }
+            return editor.getValue();
+        }
+        
+        // markTextメソッドが返すオブジェクトのメソッド"clear()"で選択解除
+        function markedClear() {
+            for (var i = 0; i < marked.length; i++)
+            marked[i].clear();
+        }
+        
+        // 文字列を検索
+        function CodeMirrorSearch() {
+            markedClear();
+            var text = $("#query").val();
+            if (!text) return;
+            // getSerchCursorで検索文字列の位置を取得し、markTextで見つかった文字列のオブジェクトに"searched"クラスを付ける
+            for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+            marked.push(editor.markText(cursor.from(), cursor.to(), "searched"));
+            if (lastQuery != text) lastPos = null;
+            var cursor = editor.getSearchCursor(text, lastPos || editor.getCursor());
+            if (!cursor.findNext()) {
+                cursor = editor.getSearchCursor(text);
+                if (!cursor.findNext()) return;
+            }
+            // 検索ヒット文字列で洗濯中の文字列に色を付ける
+            editor.setSelection(cursor.from(), cursor.to());
+            lastQuery   = text;
+            lastPos   = cursor.to();
+        }
+        
+        // 検索ヒット文字列を全て置換
+        function CodeMirrorReplace() {
+            markedClear();
+            var text = document.getElementById("query").value,
+                replace = document.getElementById("replace").value;
+            if (!text) return;
+            for (var cursor = editor.getSearchCursor(text); cursor.findNext();)
+                cursor.replace(replace);
+        }
+    
+        // シンタックスハイライト
+        function switchCodeMirror(){
+            if(editor.getOption("mode")){
+                editor.setOption("mode", false);
+            }else{
+                editor.setOption("mode", "smarty");
+            }
+        }
+        
+        // 文字色を反転
+        function switchTheme(){
+            if(editor.getOption("theme")=="default"){
+                editor.setOption("theme", 'night');
+            }else{
+                editor.setOption("theme", 'default');
+            }
+        }
+    
+        // CodeMirrorの仕様エディターの変更内容がすぐには表示されないため、リフレッシュが必要
+        function CodeMirrorRefresh() {
+            setTimeout( editor.refresh, 0 );
+        }
+    
+        // 初期描画処理
+        updateTemplateType();
+        editAreaSizeChange();
+        
+        // 編集有無のチェックのためエディターの最初の状態を取得
+        $("#templateedit_cell_body").data("edit", setAndGetCodeMirror());
+    });
+})(jQuery);
+</script>
+{/literal}

@@ -1,0 +1,22 @@
+<div class="setting_field">
+{rcms_auth target="insert:/member/item/"}
+<a href="/management/member/member_edit/" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/modules/member/label/add_member'|translate}{*メンバー追加*}
+</a>
+{/rcms_auth}
+    <div class="setting_dropdown">
+        <div class="rcms_ui_dropdown">
+            <button id="select_sc_list_cat_config" class="rcms_ui_select">
+                <span class="icon-wrench icon-white"></span>{'/label/setting'|translate}{*設定*}
+            </button>
+            <ul>
+                <li>
+                    <a href="/management/staticcontents/staticcontents_category_list/" {if $page_type eq 'staticcontents_category_list' || $page_type eq 'staticcontents_category_edit'}class="active"{/if}>
+                    {'/label/categorieslist'|translate}{*カテゴリ設定*}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

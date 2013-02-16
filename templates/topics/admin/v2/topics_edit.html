@@ -2,23 +2,8 @@
 {rcms_include file="management/fileupload.html"}
 
 {headblock}
-<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css" />
-<link rel="stylesheet" href="/css/management/modules/templateedit.css"/>
-<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css" />
-<script src="/js/codemirror/lib/codemirror.js"></script>
-<script src="/js/codemirror/lib/searchcursor.js"></script>
-<script src="/js/codemirror/lib/overlay.js"></script>
-<script src="/js/codemirror/mode/xml/xml.js"></script>
-<script src="/js/codemirror/mode/javascript/javascript.js"></script>
-<script src="/js/codemirror/mode/css/css.js"></script>
-<link rel="stylesheet" href="/js/codemirror/theme/default.css">
-<link rel="stylesheet" href="/js/codemirror/theme/night.css">
-<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link rel="stylesheet" href="/css/management/v2/temp_edit.css">
-<script src="/js/management/v2/template_edit.js"></script>
-
-<script type="text/javascript">
 {literal}
+<script type="text/javascript">
 $(document).ready(function() {
 	// 繰返し項目の追加ボタン
 	$('.extension[ext_repeat_group][ext_repeat_no=0]').each(function() {
@@ -51,11 +36,8 @@ $(document).ready(function() {
 		$("conf_primary_btn").hide();
 	{/literal}{/if}{literal}
 
-});
-
-$(function() {  
 	{/literal}{if !$topics_group.no_use_ymd}{literal}
-		$("input#test_ymd").datepicker({regional: "ja", changeYear: true, changeMonth: true});
+		$("#ymd").datepicker({regional: "ja", changeYear: true, changeMonth: true});
 	{/literal}{/if}{literal}
 });
 
@@ -93,47 +75,34 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 }
 
 
-{/literal}
 </script>
-
+<style>
+#input-area th{width:150px;}
+#input-area,#edit-attachfile,#edit-other,#edit-sns,#edit-ogp
+{
+    margin-right: 160px;
+}
+</style>
+{/literal}
 {/headblock}
 
 {if $smarty.request.iframe_mode != 1}
-<div id="top_fixed">
-    <div id="content_head">
-        <div class="navigation">
-            <a class="navigation_node"><span class="contents_renewal"></span></a>
-            <a class="navigation_node" href="/management/topics/topics_list/">{'/modules/topics'|translate}</a>
-            <a class="navigation_node">{'/modules/topics/label/topics_list_of_the_group'|translate:$topics_group_nm}</a>
-            <a class="navigation_node">{if $topics_id}{$primaryRow.subject|escape}{if $formData.latest_flg eq '1'}{'/modules/topics/label/topics_is_latest'|translate}{elseif $formData.version_no}{'/modules/topics/label/topics_version_no'|translate:$formData.version_no}{/if}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
-        </div>
-    
-        <div class="setting_field">
-        {rcms_auth target="insert:/topics/item/[@topics_group_id=$topics_group_id]"}
-            <p id="add-new-button">
-                <a href="/management/topics/topics_edit/topics_group_id={$topics_group_id}" class="add-new">
-                    {'/modules/topics/label/add_topic_btn'|translate}{*記事追加*}
-                </a>
-            </p>
-            <p id="add-new-button">
-                <a href="/management/topics/topics_copy/topics_group_id={$topics_group_id}" class="add-new">
-                    {'/label/copy_btn'|translate}{*コピーする*}
-                </a>
-            </p>
-        {/rcms_auth}
+{pankuzu}
+<a href="/management/menu/contents/"><span class="contents_renewal"></span></a>
+<a href="/management/topics/topics_list/?topics_group_id={$topics_group_id}">{'/modules/topics'|translate}</a>
+<a href="/management/topics/topics_list/?topics_group_id={$topics_group_id}">{'/modules/topics/label/topics_list_of_the_group'|translate:$topics_group_nm}</a>
+<a>{if $topics_id}{$primaryRow.subject|escape}{if $formData.latest_flg eq '1'}{'/modules/topics/label/topics_is_latest'|translate}{elseif $formData.version_no}{'/modules/topics/label/topics_version_no'|translate:$formData.version_no}{/if}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
 
-        {rcms_include file="topics/admin/setting_dropdown.html"}
-
-        </div>
-    </div>
-</div>
+{rcms_include file="topics/admin/setting_field.html"}
+{/pankuzu}
 {/if}
 
-<div id="main_contents" class="main_contents">
+<form name="topics_edit" id="topics_edit" action="/management/topics/topics_edit/" method="POST" enctype="multipart/form-data">
+
+<div id="main_contents" class="topics_edit">
 
     {rcms_include file="management/v2/notification_box.html" errors=$errors messages=$messages alerts=$alerts}
 
-<form name="topics_edit" id="topics_edit" action="/management/topics/topics_edit/" method="POST" enctype="multipart/form-data">
 {if $topics_id}
 	<input type="hidden" name="topics_id" value="{$topics_id}" />
 {/if}
@@ -153,29 +122,24 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 	<input type="hidden" name="pno" value="{$pno}" />
 	<input type="hidden" name="search_param" value="{$search_param|escape}" />
 
-    <div id="tool_bar" class="rcms_ui_toolbar">
-		{if $latestRow.topics_id}
-        <ul>
+    <div id="tool_bar">
+        <ul class="menu_left">
             <li class="menu_left_list">
                 {lang_selector_v2_dropdown
-                    meta=$docmeta link="/management/topics/topics_edit/topics_id=$topics_id&popup_mode=1"
+                    meta=$docmeta link="/management/topics/topics_edit/topics_id=$topics_id"
                 }
             </li>
-            <li class="menu_right_list">
-                {rcms_include file="management/ajax_history_dropdown.html" mt=staticcontents id=$static_id pk=static_id}
+        </ul>
+        <ul class="menu_right">
+            <li>
+                {rcms_include file="management/ajax_history_dropdown.html" mt=topics id=$topics_id pk=topics_id}
             </li>
         </ul>
-		{/if}
     </div>
 
-    <div id="template_table_edit_wrapper">
-        <div id="template_handle"></div>
-        <div id="template_name_table">
-
-        <div id="editor_box_container">
-            <div class="table_knob up-icon"></div>
-            <div id="edit_area_wrapper">
-                <div class="edit_area">
+    <div id="edit_cells">
+        <div id="edit_cell_handle" class="vertical_drawer_handle"></div>{*rcmsResizableCellsの handle*}
+        <div id="edit_cell_drawer" class="vertical_drawer_body">{*rcmsResizableCellsの cell1*}
 
 		{if $topics_group.content_input_type eq '3'}
 			<ul class="topics_tab">
@@ -185,9 +149,7 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 			</ul>
 		{/if}
 
-		<div id="input-area" style="margin-right: 160px;">
-
-			<table class="title">
+			<table class="basic_table">
 				<tr>
 					<th>{'/label/title'|translate}{* タイトル 必須 *}
 					<span class="required">{'/label/required'|translate}</span></th>
@@ -197,17 +159,13 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 					<span class="step">{$primaryRow.subject|escape}</span>
 					</p>
 				{/if}
-				<input type="text" id="subject" name="subject" value="{$formData.subject|escape}" title="この記事のタイトルを入力してください。" class="input_l" />
-					</td>
-					<td class="only_title">
+				<input type="text" id="subject" name="subject" value="{$formData.subject|escape}" style="width:80%;" title="この記事のタイトルを入力してください。" />
 						<input type="checkbox" name="no_contents" id="no_contents" value="1" {if $formData.no_contents}checked="checked"{/if}/><label id="label_no_contents" for="no_contents">{'/label/title_only'|translate}</label>{* タイトルのみ *}
 					</td>
 				</tr>
-			</table>
 
-{if $data_limit ne 1}
-		<table class="type">
-	{if $topics_group.no_use_ymd}
+{if $topics_group.no_use_ymd}
+	{if $data_limit ne 1}
 			<tr id="topics_order_no">
 				<th>{'/label/order_no'|translate}</th>{* 並び順  *}
 				<td>
@@ -218,7 +176,8 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 					{/if}
 				</td>
 			</tr>
-	{else}
+	{/if}
+{else}
 			<tr id="topics_season">
 				<th>{'/label/season'|translate}<span class="required">{'/label/required'|translate}</span></th>{* シーズン 必須 *}
 				<td>
@@ -242,45 +201,45 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 					{/if}
 				</td>
 			</tr>
-	{/if}
-			<tr id="topics_contents_type">
-				<th>{'/label/category'|translate}<span class="required">{'/label/required'|translate}</span></th>{* カテゴリ 必須 *}
-				<td>
-					{if $docmeta.is_primary}
-						<select name="contents_type">{html_options options=$arrContents_type selected=$formData.contents_type}</select>
-					{else}
-						{$arrContents_type[$latestRow.contents_type]}
-					{/if}
-				</td>
-			</tr>
-
-			{if $topics_group.contents_type_cnt>1}{*カテゴリが2つ以上設定可能の場合*}
-			{section name=contents_type_adding loop=$topics_group.contents_type_cnt start="1"}
-			{assign var=contents_type_colnm value="contents_type_"|cat:$smarty.section.contents_type_adding.index+1}
-			<tr id="topics_{$contents_type_colnm}">
-				<th>{'/label/category'|translate}{$smarty.section.contents_type_adding.index+1}</th>
-				<td>
-					{if $docmeta.is_primary}
-						{assign var=contents_type_value value=$formData.$contents_type_colnm}
-						<select name="{$contents_type_colnm}"><option value=""></option>{html_options options=$arrContents_type selected=$contents_type_value}</select>
-					{else}
-						{assign var=contents_type_value value=$latestRow.$contents_type_colnm}
-						{$arrContents_type[$contents_type_value]}
-					{/if}
-				</td>
-			</tr>
-			{/section}
-			{/if}
-	</table>
 {/if}
+		<tr id="topics_contents_type">
+			<th>{'/label/category'|translate}<span class="required">{'/label/required'|translate}</span></th>{* カテゴリ 必須 *}
+			<td>
+				{if $docmeta.is_primary}
+					<select name="contents_type">{html_options options=$arrContents_type selected=$formData.contents_type}</select>
+				{else}
+					{$arrContents_type[$latestRow.contents_type]}
+				{/if}
+			</td>
+		</tr>
 
-
+		{if $topics_group.contents_type_cnt>1}{*カテゴリが2つ以上設定可能の場合*}
+		{section name=contents_type_adding loop=$topics_group.contents_type_cnt start="1"}
+		{assign var=contents_type_colnm value="contents_type_"|cat:$smarty.section.contents_type_adding.index+1}
+		<tr id="topics_{$contents_type_colnm}">
+			<th>{'/label/category'|translate}{$smarty.section.contents_type_adding.index+1}</th>
+			<td>
+				{if $docmeta.is_primary}
+					{assign var=contents_type_value value=$formData.$contents_type_colnm}
+					<select name="{$contents_type_colnm}"><option value=""></option>{html_options options=$arrContents_type selected=$contents_type_value}</select>
+				{else}
+					{assign var=contents_type_value value=$latestRow.$contents_type_colnm}
+					{$arrContents_type[$contents_type_value]}
+				{/if}
+			</td>
+		</tr>
+		{/section}
+		{/if}
+	</table>
+        </div>
+        <div id="edit_cell_body">{*rcmsResizableCellsの cell2*}
+            <div id="edit_cell_switchbtn" class="vertical_drawer_switchbtn"></div>{*rcmsResizableCellsの switchbtn*}
+            <div id="edit_area_wrapper">
+                <div class="edit_area">
+<table class="basic_table">
 {* 拡張項目 *}
+{if $ext_columns_disp.group|@count > 0}
 {foreach from=$ext_columns_disp.group key=cols_key item=cols name=ext_columns}
-
-	{if $smarty.foreach.ext_columns.first}
-		<table class="main">
-	{/if}
 
 	<tr class="extension" id="extension_{$cols_key}" {if $cols.0.ext_group_loop > 1 && $cols.0.repeatCnt > 0 && $cols|@isempty_extension}style="display:none;"{/if} {if $cols.0.ext_group_loop > 1}ext_repeat_group="{$cols.0.disp_group_order}" ext_repeat_no="{$cols.0.repeatCnt}"{/if}>
 		<th>
@@ -334,12 +293,9 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 		</td>
 	</tr>
 
-	{if $smarty.foreach.ext_columns.last}
-		</table>
-	{/if}
-
 {/foreach}
-
+{/if}
+</table>
 
 {* 拡張項目の入力形式 *}
 {foreach from=$ext_columns_conf item=conf}
@@ -352,7 +308,6 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 	<div style="display:none;" class="primary_contents">
 		<p class="btn"><input style="display:none;" type="button" class="close_preview_btn" value="{'/label/close'|translate}" onClick="$('.primary_contents').hide().fadeTo(0, 0.5).fadeTo(300, 1.0);$('.conf_primary_btn').show().fadeTo(0, 0.5).fadeTo(300, 1.0);$(this).hide();" ></p>
 		<div>{$primaryRow.contents}</div>
-
 	</div>
 </div>
 {/if}
@@ -381,7 +336,7 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 					</div>
 				{/if}
 				{rcms_include file="common/editor_info.html"}
-				<div id="input-bodytext-area">
+				<div id="html_ckeditor">
 					{$sw_html}
 				</div>
 
@@ -389,13 +344,10 @@ function swapSiblingTopicsExt(d, ext_no, repeat_no){
 {/if}
 </div><!--/id="write_text"-->
 
-</div><!--/id="input-area"-->
 
 
 		{if $rauth->unlimitedUpdate("/topics/item/$topics_id", $docmeta.lang)}
-
-
-			<div id="edit-attachfile" class="entry-option" {if $formData.files|@count>0 || $formData.swf_url ne ''}style="display:none;"{/if}>
+			<div id="edit-attachfile" class="entry-option" style="{if $formData.files|@count>0 || $formData.swf_url ne ''}display:none;{/if}">
 			<dl>
 				<dt class="entry-option-title">
 					<h4>{'/label/attach_files'|translate}</h4>{* ファイルを添付する *}
@@ -461,7 +413,7 @@ so.write("swf{$formData.topics_id}");
 //-->
 </script>
 				{/if}
-					<table width="100%">
+					<table class="basic_table">
 						<tr>
 							<td>
 								<input type="file" name="swf" />{if $formData.swf_url}<input type="checkbox" name="del_swf" id="del_swf" {if $formData.del_swf}checked="checked"{/if}/><label for="del_swf">{'/label/delete_flash'|translate}</label>{/if}{* FLASHファイル削除 *}
@@ -470,12 +422,10 @@ so.write("swf{$formData.topics_id}");
 					</table>
 					<p class="hint">{'/msg/use_pp'|translate}</p>{* PowerPointファイルをアップすると自動的にFLASHファイルに変換されて保存されます。 *}
 			{/if}
-
 				</dd>
 			</dl>
 		</div>
-
-		{/if}
+{/if}
 
 		<!-- //内容をテキストで書く -->
 
@@ -491,7 +441,7 @@ so.write("swf{$formData.topics_id}");
 			<div class="kiji_hensyu_center">
 				<p class="hint">{'/msg/use_text_and_pdf'|translate}</p>{* テキストとPDFを共存させたい場合は「内容をテキストで書く」を選択して、その下でPDFをアップしてください。 *}
 				<p class="hint">{'/msg/use_wd_ex_pp'|translate}</p>{* MS-Word/MS-Excel/PowerPointファイルをアップすると自動的にPDFに変換されて保存されます *}
-				<table width="650" border="0">
+				<table class="basic_table">
 					<tr>
 						<td>{'/label/link'|translate}</td>{* リンク *}
 						<td><input type="text" name="link_url" value="{$formData.link_url}" style="width:400px;"/></td>
@@ -515,8 +465,7 @@ so.write("swf{$formData.topics_id}");
 					<p class="switch">▼</p>
 				</dt>
 				<dd class="entry-option-content">
-					<table>
-
+					<table class="basic_table">
 					<tr>
 						<th>{'/label/display_in_list'|translate}<span class="required">{'/label/required'|translate}</span></th>{* 一覧に表示する 必須 *}
 						<td><select name="topics_flg">{html_options options=$arrTpFlg selected=$formData.topics_flg}</select></td>
@@ -567,12 +516,11 @@ so.write("swf{$formData.topics_id}");
 
 				</dd>
 			</dl>
-			
 		</div>
 
 
-		{* SNSへの投稿設定 *}
-		{if $module_installed.api_twitter || $module_installed.api_facebook}
+{* SNSへの投稿設定 *}
+{if $module_installed.api_twitter || $module_installed.api_facebook}
 
 		<div id="edit-sns" class="entry-option">
 			<dl>
@@ -610,7 +558,7 @@ so.write("swf{$formData.topics_id}");
 			
 		</div>
 
-		{/if}
+{/if}
 
 		{* OGP関連の設定 *}
 		<!--OGP関連の設定-->
@@ -649,36 +597,30 @@ so.write("swf{$formData.topics_id}");
 
 </div><!-- class="edit_area" -->
 
-
 <div id="side_menu_box" class="metasettings_container">
     {if $docmeta.is_primary}
         <div>{rcms_include file="management/v2/use_page.html" use_page=$formData.use_page}{* 仕様ページ *}</div>
         <div>{rcms_include file="management/v2/permission_box.html" arrAdmin=$arrAdmin formData=$formData}{* 閲覧編集制限 *}</div>
         <div>{rcms_include file="management/v2/relation_edit.html"}{* 関連するコンテンツ *}</div>
-        <div>{rcms_include file="management/v2/open_date_box.html" id=$staic_id data=$formData}{* 公開設定 *}</div>
+        <div>{rcms_include file="management/v2/open_date_box.html" id=$topics_id data=$formData}{* 公開設定 *}</div>
     {/if}
     <div>
         {rcms_include
             file="management/v2/workflow_box.html"
-            isUnlimited=$rauth->unlimitedUpdate("/staticcontents/item/$static_id", $docmeta.lang)
+            isUnlimited=$rauth->unlimitedUpdate("/topics/item/$topics_id", $docmeta.lang)
         }{* ワークフロー設定 *}
     </div>
     <div>
         {rcms_include
             file="management/v2/update_comment.html"
             comment=$formData.update_comment
-            mt=staticcontents id=$static_id pk=static_id
+            mt=topics id=$topics_id pk=topics_id
         }{* 更新コメント *}
     </div>
-</div>
-
-            </div><!-- #edit_area_wrapper -->
-        </div><!-- #editor_box_container -->
-    </div><!-- #template_name_table -->
-</div><!-- #template_table_edit_wrapper -->
-
-</form>
-
+                </div>
+            </div>
+        </div>    
+    </div>
 </div><!-- #main_contents -->
 
 <div id="bottom_fixed">
@@ -690,40 +632,7 @@ so.write("swf{$formData.topics_id}");
     {editActionBox docmeta=$docmeta}{/editActionBox}
 </div>
 
-<script type="text/javascript">
-<!--
-{literal}
-(function($) {
-
-    $(document).ready(function(){
-
-    /**************** プラグインの適用 ****************/
-
-        // ドロップダウンメニューを作成
-        $("#setup_dropdown_btn").rcmsDropdown();
-        $("#history_selector").rcmsDropdown({isSelectbox:true});
-        $("#lang_selector").rcmsDropdown({isSelectbox:true});
-        $("#editstatus_selector").rcmsDropdown({isSelectbox:true});
-
-        // rcmsResizableCellsを適用
-        var tableHeight = $("#template_name_table").outerHeight();
-        $("#template_table_edit_wrapper").rcmsResizableCells({
-            cell1         : "#template_name_table",
-            cell2         : "#editor_box_container",
-            handle        : "#template_handle",
-            direction     : "vertical",
-            position      : "relative",
-            cell1MinHeight: $("#template_name_table tr:eq(0)").height(),
-            cell1MaxHeight: tableHeight + 12,
-            onMoving      : editAreaSizeChange,
-            switchBtn     : ".table_knob"
-        });
-
-});});
-{/literal}
-//-->
-</script>
-
+</form>
 
 {if $sw_html ne ''}
 <script type="text/javascript">
@@ -913,4 +822,4 @@ function ogpSetImage(){
 //-->
 </script>
 {/if}
-{rcms_include file="management/rcms_ui/rcms_ui.html"}
+{rcms_include file="management/footer.html"}

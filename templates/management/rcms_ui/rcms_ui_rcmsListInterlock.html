@@ -1,0 +1,299 @@
+{literal}
+<script type="text/javascript">
+
+/**
+* リスト-エディタの制御
+*
+*
+* @param @require   cell1           String    cell1の対象となる要素へのセレクタ
+* @param @require   cell2           String    cell2の対象となる要素へのセレクタ
+* @param @require   handle          String    ハンドルの対象となる要素へのセレクタ
+* @param            cell1MinWidth   Int       セル1の最小幅
+* @param            cell1MinHeight  Int       セル1の最小高さ
+* @param            cell1MaxWidth   Int       セル1の最大幅
+* @param            cell1MaxHeight  Int       セル1の最大高さ
+* @param            cell2MinWidth   Int       セル2の最小幅
+* @param            cell2MinHeight  Int       セル2の最小高さ
+* @param            cell2MaxWidth   Int       セル2の最大幅
+* @param            cell2MaxHeight  Int       セル2の最大高さ
+* @param            position        String    親要素のposition指定
+* @param            direction       String    セルの方向  horizon or vertical
+* @param            mouseDown       function  ハンドルをクリックしたときに呼び出される関数
+* @param            onMoving        function  ハンドルをドラッグしているときに呼び出される関数
+* @param            mouseUp         function  ハンドルを離したときに呼び出される関数
+* @param            switchBtn       String    ここで登録された要素はセルの最大最小を切り替えるスイッチになる
+* @param            duration        Int       switchBtnをクリックしたときのアニメーションの完了するまでの時間
+*
+* @対象要素 <div>タグ *全体を包含するクラス"#wrapper"は必ず大きさを指定すること
+* @使用例
+* <div id="wrapper">
+*     <div id="handler"></div>                          <!--ハンドルの中身は不要-->
+*     <div id="header"><span>header</span></div>
+*     <div id="container"><span>footer</span></div>
+* </div>
+*
+* $("#wrapper").rcmsResizableCells({
+*     cell1          : "#header",
+*     cell2          : "#container",
+*     handle         : "#handler",
+*     direction      : "vertical",
+*     cell1MinHeight : 170,
+*     cell1MaxHeight : 250,
+*     mouseDown      : function(){},
+*     onMoving       : function(){},
+*     mouseUp        : function(){},
+*     switchBtn      : "#mySwitch",
+*     duration       : 500
+* });
+*
+**/
+var ListObject;
+
+    $.fn.rcmsListInterlock = function(options){
+
+        // 引数を宣言
+        var options=$.extend({
+            tabField      : "",
+            iframeField   : "",
+            moduleType    : "",
+            contentsType  : "",
+            idName        : "",
+            defaultURL    : "https://rcms2.dev.diverta.co.jp/management/",
+            onLoading     : function(){},
+            onLeave       : function(){}
+        },options);
+
+        // 変数の宣言
+        var list, tab, iframe, tabField, iframeField, moduleType, contentsType, defaultURL, idName;
+        var target = $(this);
+
+        // インスタンスを格納する配列
+        var listObjArray = new Array();
+
+        // 初期化
+        function init() {
+            list         = $("tbody", target);
+            tabField     = $(options.tabField);
+            tabList      = $("ul", tabField);
+            tab          = $("li", tabList);
+            iframeField  = $(options.iframeField);
+            iframe       = $("iframe", iframeField);
+            moduleType   = options.moduleType + "/";
+            contentsType = options.contentsType + "/";
+            defaultURL   = options.defaultURL;
+            idName       = options.idName;
+        }
+
+        // リスト取得
+        function refresh() {
+            list = $("tbody", target);
+            tab  = $("li", tabList);
+        }
+
+        // 既に生成済みでなければ新たにインスタンスを生成し、配列に登録
+        function open() {
+            var targetId   = $(this).data("id");
+            var isOpened = false;
+            // 既に開かれていればそれをフォーカス
+            if (listObjArray[targetId]) {
+                listObjArray[targetId].focusTab();
+                isOpened = true;
+            }
+            // 開かれていなければインスタンスを生成して登録
+            if (!isOpened){
+                listObjArray[targetId] = new ListObject(targetId);
+            }
+        }
+
+        // フォーカスするタブを切り替える
+        function focus() {
+            listObjArray[$(this).data("id")].focusTab();
+        }
+
+        // タブを閉じる
+        function close() {
+            var tabId = $(this).parent().data("id");
+            var tr = list.filter("[data-id=" + tabId + "]");
+            var iframeId;
+            var instance = listObjArray[tabId];
+            // 編集の有無をチェック
+            if ($("#editor_frame_" + tabId).size() > 0) {
+                iframeId = "editor_frame_" + tabId;
+            } else {
+                iframeId = "editor_frame_0";
+            }
+            window.eval(iframeId).jQuery("#smarty_codemirror").trigger("judgeEdited");
+            if (window.eval(iframeId).jQuery("#smarty_codemirror").data("ischanged")) {
+                var res = confirm("編集内容が破棄されます。ページを閉じますか？");
+                if (res == true) {
+                    close();
+                } else {
+                    return false;
+                }
+            } else {
+                closeTab();
+            }
+            function closeTab() {
+                // リストが選択されている時
+                if (tr.hasClass("selected")) {
+                    // 2つ以上開いている時
+                    if (tab.length > 1) {
+                        var num = tab.index(tab.filter("[data-id=" + tabId + "]"));
+                        if (num > 0) {
+                        // 左隣を選択状態にする
+                            listObjArray[tab.filter(":eq(" + --num + ")").data("id")].focusTab();
+                        } else {
+                        // 左端を閉じた場合は右隣を選択状態にする
+                            listObjArray[tab.filter(":eq(" + ++num + ")").data("id")].focusTab();
+                        }
+                    // 最後の一つを閉じた時
+                    } else {
+                        tr.removeClass("selected");
+                    }
+                }
+                // インスタンスを削除し、配列からも除去する
+                instance.removeInstance();
+                $("#iframe_field div.wrapper_indicator").hide();
+            }
+            return false;
+        }
+
+
+        /**
+        * 開いているエディター情報を保持するオブジェクト
+        * @param id int
+        * @param isSelected bool
+        */
+        ListObject = function(id, lang) {
+            // インスタンスが保持するフィールド
+            this.id = id;
+            this.isSelected = true;
+            this.lang = lang;
+
+            // インスタンスが使うリストを登録
+            this._list = list.filter("[data-id=" + id + "]");
+
+            // インスタンス生成時に新しくタブを開く
+            openEditorTab(this.id, this._list, this.lang);
+
+            // インスタンスが使うエディター、タブを指定
+            this._iframe    = $("iframe", iframeField).filter("[data-id=" + id + "]");
+            this._tab = $("li", tabField).filter("[data-id=" + id + "]");
+            
+            // タブを開く
+            function openEditorTab(id, list, lang) {
+                var deviceType;
+                var title;
+                var iframeMode = "iframe_mode=1";
+                var langType   = "_doc_lang=" + lang;
+                if (list.html() != null) {
+                    deviceType = list.find(".devices").attr("class");
+                    title  = list.find(".list_title").text();
+                } else {
+                    title = "";
+                }
+                // タブ用のテンプレートを生成
+                var tabData = {};
+                tabData.list_id = id;
+                tabData.deviceType  = deviceType;
+                tabData.title   = title;
+                $.tmpl($("#tabformat_tmpl"), tabData).appendTo(tabList);
+                // iframe用のテンプレートを生成
+                var iframeData = {};
+                iframeData.list_id = id;
+                iframeData.url = defaultURL + moduleType + contentsType + iframeMode;
+                if (id >= 0) iframeData.url += "&" + idName + "=" + id;
+                if (lang)    iframeData.url += "&" + langType;
+                $.tmpl($("#iframeformat_tmpl"), iframeData).appendTo(options.iframeField);
+                options.onLoading();
+            }
+            
+            this.focusTab = function() {
+                this._list = list.filter("[data-id=" + this.id + "]");
+                var allTab    = $("#tab_field ul li");
+                var allEditor = $("#iframe_field iframe");
+                // 他のselectedクラスを全て取り除き、インスタンスのフィールドの値を変更
+                $.each(listObjArray, function(i) {
+                    this.isSelected = false;
+                });
+                list.removeClass("selected");
+                allTab.removeClass("selected");
+                allEditor.hide();
+                this.isSelected = true;
+                // selectedクラスを追加
+                this._list.addClass("selected");
+                this._tab.addClass("selected");
+                this._iframe.fadeIn(300);
+            }
+            
+            // インスタンスを削除する
+            this.removeInstance = function() {
+                this._list.parent().removeClass("selected");
+                this._tab.remove();
+                this._iframe.remove();
+                delete listObjArray[this.id];
+                delete this;
+            }
+            
+            // 初期化したらフォーカスする
+            this.focusTab();
+        }
+
+        // タブ名とリスト名に引数の名前をセットする
+        ListObject.prototype.setTitle = function(title) {
+            this._list.find("span.list_title").text(title);
+            this._tab.find("span.list_title").text(title);
+        }
+        // タブ名とリスト名を更新する
+        ListObject.prototype.refreshTitle = function() {
+            // インスタンスのリスト(新規作成時はリストがまだ無いため直接取得)
+            var list = $("div.template_search_body table[data-id=" + this.id + "]");
+            var device = list.find(".devices").clone();
+            var title = list.find(".list_title").clone();
+            // 既存の値をクリアし更新する
+            this._tab.empty();
+            this._tab.append(device).append(title).append('<button type="button" class="tab_close_btn">x</button>');
+        }
+
+        function installEvents() {
+            // リストをリフレッシュ
+            target.on("click", refresh);
+            tabField.on("click", refresh);
+            
+            // エディターを開く
+            list.live("click", open);
+            
+            // フォーカスする
+            list.live("click", focus);
+            tab.live("click", focus);
+            
+            // タブを閉じる
+            $(".tab_close_btn", tab).live("click", close);
+        }
+
+        // メインシーケンス
+        return this.each(function(){
+            // 初期化
+            init();
+            
+            // イベントの登録
+            installEvents();
+        });
+    };
+
+</script>
+<!-- iframeを生成するテンプレート -->
+<script id="iframeformat_tmpl" type="text/x-jquery-tmpl">
+    <iframe class="editor_frame" id="editor_frame_${list_id}" data-id="${list_id}" src="${url}" >
+</script>
+
+<!-- tabを生成するテンプレート -->
+<script id="tabformat_tmpl" type="text/x-jquery-tmpl">
+    <li class="editor_tab" id="editor_tab_${list_id}" data-id="${list_id}" src="${url}">
+        <span class="${deviceType}"></span>
+        <span class="list_title">${title}</span>
+        <button type="button" class="tab_close_btn">x</button>
+    </li>
+</script>
+
+{/literal}

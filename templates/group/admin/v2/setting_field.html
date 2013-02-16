@@ -1,0 +1,18 @@
+<div class="setting_field">
+{rcms_auth target="insert:/group/item/"}
+<a href="/management/group/group_edit/" class="rcms_btn success">
+<span class="icon-add icon-white"></span>{'/label/create_new_group_btn'|translate}{*グループ追加*}
+</a>
+{/rcms_auth}
+    <div class="setting_dropdown">
+        <div class="rcms_ui_dropdown">
+            <button id="select_sc_list_cat_config" class="rcms_ui_select">
+                <span class="icon-wrench icon-white"></span>{'/label/setting'|translate}{*設定*}
+            </button>
+            <ul>
+                <li><a href="/management/group/group_default_edit/">{'/modules/group/label/group_default_edit'|translate}{*初期グループ設定*}</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+

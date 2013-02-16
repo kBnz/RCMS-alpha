@@ -60,6 +60,7 @@
         // 通知を隠す
         function boxHide() {
             $.data(targetElm.get(0), "box").animate({top: - (targetElm.height() + 30)}, options.duration);
+            return false;
         }
 
         // メインシーケンス
@@ -70,47 +71,4 @@
     }
 })(jQuery);
 </script>
-<style type="text/less">
-/* 変数定義 */
-@width : 400px;
-
-/* 関数定義 */
-.border-radius-bottom-left(@radius: 3px) {
-    -moz-border-bottom-left-radius: @radius;
-    -webkit-border-bottom-left-radius: @radius;
-    -o-border-bottom-left-radius: @radius;
-    -ms-border-bottom-left-radius: @radius;
-}
-.border-radius-bottom-right(@radius: 3px) {
-    -moz-border-bottom-right-radius: @radius;
-    -webkit-border-bottom-right-radius: @radius;
-    -o-border-bottom-right-radius: @radius;
-    -ms-border-bottom-right-radius: @radius;
-}
-.box-shadow(@side_round: 3px, @bottom_round: 3px, @round: 10px, @shadow: 0.2) {
--moz-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
--webkit-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
--o-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
--ms-box-shadow: @side_round @bottom_round @round rgba(0,0,0,@shadow);
-} 
-
-/* 通知ボックスのスタイル指定 */
-.rcms_ui_notification_box_container {
-    width: @width;
-    background-color: white;
-    .border-radius-bottom-left();
-    .border-radius-bottom-right();
-    .box-shadow();
-    position: absolute;
-    z-index: 9999;
-    left: 50%;
-    margin-left: -@width / 2;
-    padding: 10px;
-    border-width: 0 1px 1px 1px;
-    border-style: solid;
-    border-color: #cccccc;
-}
-
-
-</style>
 {/literal}

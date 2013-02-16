@@ -31,9 +31,11 @@
         }else{
             var results = $.parseJSON(response);
         }
-        lastData = results[0];
-        $("#updatecomment_settings p.status_msg").text(lastData.update_comment);
-        $("#updatecomment_settings p.update_info").text(lastData.admin_nm + " " + lastData.change_ymdhi);
+        if(results[0]){
+            lastData = results[0];
+            $("#updatecomment_settings p.status_msg").text(lastData.update_comment);
+            $("#updatecomment_settings p.update_info").text(lastData.admin_nm + " " + lastData.change_ymdhi);
+        }
     }
 })(jQuery);
 

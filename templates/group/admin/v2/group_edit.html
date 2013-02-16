@@ -1,0 +1,224 @@
+{rcms_include file="management/header.html"}
+<script type="text/javascript">
+<!--
+{literal}
+function confirmDelete(f) {
+  // 削除してもよろしいですか？
+  if(confirm('{/literal}{'/msg/confirm_del'|translate}{literal}')){
+    f.MODE.value='DELETE';
+    f.submit();
+  }
+}
+
+function switchOnOff(b, type) {
+    for (var i in modules) {
+        var obj = document.getElementById(modules[i] + '[' + type + ']');
+        if (obj) {
+            obj.checked = b;
+        }
+    }
+}
+{/literal}
+
+var modules = [];
+{foreach key=key item=category from=$dispGroupList}
+  {foreach item=module_key from=$category.modules}
+modules.push('{$module_key|escape:'javascript'}');
+  {/foreach}
+{/foreach}
+
+-->
+</script>
+<style>
+{literal}
+td.category_nm {
+  font-weight: bold;
+}
+th.module_nm span {
+  margin-left: 15px;
+}
+{/literal}
+</style>
+
+{pankuzu}
+<a href="/management/menu/member/"><span class="member_renewal"></span></a>
+<a href="/management/member/member_list/">{$module_nm}</a>
+<a href="/management/member/group_list/">{'/modules/group/label/group_list'|translate}{*グループ一覧*}</a>
+{'/modules/group/label/group_edit'|translate}
+{rcms_include file="group/admin/setting_field.html"}
+{/pankuzu}
+{*【パンくず】 メンバー管理 >> グループ >> グループ一覧 >> グループ基本設定*}
+
+<form name="group_edit" id="group_edit" action="/management/group/group_edit/" method="POST">
+<div id="main_contents" class="staticcontents_edit">
+
+    {rcms_include file="management/v2/notification_box.html" errors=$errors messages=$messages alerts=$alerts}
+
+<h3 class="title">{if $groupInfo.group_nm}{$groupInfo.group_nm|escape}{else} {'/label/create_new'|translate}{*新規作成*}{/if}</h3>
+<ul class="minitabs">
+  {if $groupInfo.group_id}
+    <li><a href="/management/group/group_edit/group_id={$groupInfo.group_id}" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><a href="/management/group/group_member/group_id={$groupInfo.group_id}">{'/label/menber_registration'|translate}{*メンバー登録*}</a></li>
+    <li><a href="/management/group/group_secure_member/group_id={$groupInfo.group_id}">{'/label/viewing_limit'|translate}{*閲覧制限*}</a></li>
+  {else}
+    {* 新規作成のときはリンクを無効にする *}
+    <li><a href="/management/group/group_edit/" class="active">{'/label/basic_settings'|translate}{*基本設定*}</a></li>
+    <li><span>{'/label/menber_registration'|translate}{*メンバー登録*}</span></li>
+    <li><span>{'/label/viewing_limit'|translate}{*閲覧制限*}</span></li>
+  {/if}
+</ul>
+
+
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+    <input type="hidden" name="group_id" value="{$group_id}" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input type="hidden" name="MODE" value="UPDATE" />
+    <table class="basic_table">
+      <tr>
+        <th>{'/label/group_name'|translate}{*グループ名*}</th>
+        <td>
+            <input type="text" name="group_nm" size="25" value="{$data.group_nm}">
+            {if $group_id eq 1}
+                <input type="hidden" name="enableflg" value="1" />
+            {else}
+                <input type="checkbox" name="enableflg" value="1" {if $data.enableflg}checked{/if}>{'/msg/enable'|translate}{*有効にする*}
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/label/user_type'|translate}{*ユーザー種別*}</th>
+        <td>
+            {if $group_id eq 1}
+                {'/label/super_user'|translate}{*スーパーユーザー*}　※{'/label/cant_edit'|translate}{*変更不可*}
+                <input type="hidden" name="super_flg" value="1" />
+            {else}
+            <input type="radio" name="super_flg" value="-1"  onclick="display('group_edit_list', 'none');" {if $data.super_flg eq '-1'}checked{/if}>{'/label/login_user'|translate}{*ログインユーザー*}
+            <input type="radio" name="super_flg" value="0"  onclick="display('group_edit_list', '');" {if $data.super_flg ne '1' && $data.super_flg ne '-1'}checked{/if}>{'/label/contents_edit_user'|translate}{*コンテンツ編集ユーザー*}
+            <input type="radio" name="super_flg" value="1"  onclick="display('group_edit_list', 'none');" {if $data.super_flg eq '1'}checked{/if}>{'/label/super_user'|translate}{*スーパーユーザー*}
+            <br>
+            <span class="hint">{'/modules/group/msg/explanation_about_login_user'|translate}{*ログインユーザーはログインのみで管理画面の閲覧やコンテンツの編集ができません。*}</span><br>
+            <span class="hint">{'/modules/group/msg/explanation_about_contents_edit_user'|translate}{*コンテンツ編集ユーザーは管理画面の閲覧やコンテンツの編集を行います。また、詳細な権限を設定できます。*}</span><br>
+            <span class="hint">{'/modules/group/msg/explanation_about_super_user'|translate}{*スーパーユーザーは全ての権限が使用できます。*}</span><br>
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/group/label/admin_version'|translate}{*管理画面*}</th>
+        <td>
+            {if $group_id eq 1}
+                {'/label/regular_version'|translate}{*通常版*}({'/label/high_spec'|translate}{*高機能*})　※{'/label/cant_edit'|translate}{*変更不可*}
+            {else}
+                <input type="radio" name="admin_disp_type" value="0" {if $data.admin_disp_type ne '1'}checked{/if}>{'/label/regular_version'|translate}{*通常版*}({'/label/high_spec'|translate}{*高機能*})
+                <input type="radio" name="admin_disp_type" value="1" {if $data.admin_disp_type eq '1'}checked{/if}>{'/label/simple_version'|translate}{*簡易版*}
+                <br><span class="hint">{'/modules/group/msg/explanation_about_simple_version'|translate}{*簡易版はコンテンツの更新のみで、デザインやサイト構成を操作させたくないユーザー向けの画面です。*}</span>
+            {/if}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/group/label/user_img_flg'|translate}{*ユーザー別フォルダ利用*}</th>
+        <td>
+            <input type="radio" name="user_img_flg" value="0" {if $data.user_img_flg ne 1 && $data.user_img_flg ne 2}checked{/if}>{'/modules/group/label/user_img_flg_0'|translate}{*利用しない（共通フォルダを利用する）*}
+            <input type="radio" name="user_img_flg" value="1" {if $data.user_img_flg eq 1}checked{/if}>{'/modules/group/label/user_img_flg_1'|translate}{*利用する*}
+            <input type="radio" name="user_img_flg" value="2" {if $data.user_img_flg eq 2}checked{/if}>{'/modules/group/label/user_img_flg_2'|translate}{*ユーザーにファイルのアップを許可しない*}
+            <p class="hint">{'/modules/group/msg/user_img_flg'|translate}</p>{* サイト共通の画像置き場ではなく、ブログ毎に設定したい場合にチェックを入れてください。 *}
+        </td>
+      </tr>
+  {if $module_installed.membermail }
+      <tr>
+        <th>{'/modules/group/label/member_mail_admin_flg'|translate}{*メンバーメール管理*}</th>
+        <td>
+            <input type="checkbox" name="member_mail_admin_flg" value="1" {if $data.member_mail_admin_flg}checked{/if}>{'/msg/enable'|translate}{*有効にする*}
+            <p class="hint">{'/modules/group/msg/member_mail_admin_flg'|translate}</p>{* 各メンバーのWEBメールを閲覧することができます。 *}
+        </td>
+      </tr>
+      <tr>
+        <th>{'/modules/group/label/member_mail_flg'|translate}{*メンバーメールを利用する*}</th>
+        <td>
+            <input type="checkbox" name="member_mail_flg" value="1" {if $data.member_mail_flg}checked{/if}>{'/msg/enable'|translate}{*有効にする*}
+            <p class="hint">{'/modules/group/msg/member_mail_flg'|translate}</p>{* 各メンバーとWEBメールのやり取りができるようになります。 *}
+        </td>
+      </tr>
+  {else}
+  <input type="hidden" name="member_mail_admin_flg" value="{if $data.member_mail_admin_flg}1{else}0{/if}">
+  <input type="hidden" name="member_mail_flg" value="{if $data.member_mail_flg}1{else}0{/if}">
+  {/if}
+
+  {if $module_installed.blog }
+      <tr>
+        <th>{'/modules/group/label/blog_create_flg'|translate}{*ブログ追加*}</th>
+        <td>
+            <input type="checkbox" name="blog_create_flg" value="1" {if $data.blog_create_flg}checked{/if}>{'/msg/enable'|translate}{*有効にする*}
+            <p class="hint">{'/modules/group/msg/blog_create_flg'|translate}</p>{* メンバー情報の作成時、そのユーザ用のブログも一緒に作成します。 *}
+        </td>
+      </tr>
+  {else}
+        <input type="hidden" name="blog_create_flg" value="{if $data.blog_create_flg}1{else}0{/if}">
+  {/if}
+      <tr>
+        <th>{'/modules/group/label/use_simple_member_edit'|translate}{*簡易メンバー情報編集画面を利用する*}</th>
+        <td>
+            <input type="checkbox" name="use_simple_member_edit" value="1" {if $data.use_simple_member_edit}checked{/if}>{'/msg/enable'|translate}{*有効にする*}
+        </td>
+      </tr>
+
+    </table>
+
+    {if $group_id ne 1}
+    <h3>{'/label/authority_settings'|translate}{*権限設定*}</h3>
+    {/if}
+
+    <div id="group_edit_list" style="{if $data.super_flg eq '1' || $data.super_flg eq '-1'}display:none{/if}">
+    <div class="hint">
+      {'/modules/group/msg/explanation_about_new_member_regist_limited'|translate}
+      {*ページ設定で設定できるメンバーモジュールの「メンバー登録」はここで新規追加の制限をしても登録できてしまいます。<br>
+        メンバー情報更新も同様です。お気をつけください。*}
+    </div>
+
+    <div style="text-align:right;">
+      {'/label/all_check'|translate}{*一括チェック*}
+      <input type="checkbox" id="switchOnOff_s" onclick="switchOnOff(this.checked, 'select')" /><label for="switchOnOff_s">{'/label/auth_view'|translate}{*閲覧*}</label>
+      <input type="checkbox" id="switchOnOff_i" onclick="switchOnOff(this.checked, 'insert')" /><label for="switchOnOff_i">{'/label/auth_insert'|translate}{*新規追加*}</label>
+      <input type="checkbox" id="switchOnOff_u" onclick="switchOnOff(this.checked, 'update')" /><label for="switchOnOff_u">{'/label/auth_update'|translate}{*更新*}</label>
+      <input type="checkbox" id="switchOnOff_d" onclick="switchOnOff(this.checked, 'delete')" /><label for="switchOnOff_d">{'/label/auth_delete'|translate}{*削除*}</label>
+    </div>
+    <table class="basic_table">
+    {foreach key=key item=category from=$dispGroupList}
+      <tr>
+        <td colspan="3" class="category_nm">{$category.name}</td>
+      </tr>
+      {foreach item=module_key from=$category.modules}
+        {if $admAr.$module_key}
+          <tr>
+            <th class="module_nm"><span>{$contName.$module_key}</span></th>
+            <td>
+          {foreach from=$arrOpt key=authKey item=authName}
+            <input type="checkbox" name="{$module_key}[{$authKey}]" id="{$module_key}[{$authKey}]" value="1" {if $admAr.$module_key.$authKey}checked="checked"{/if} /><label for="{$module_key}[{$authKey}]">{$authName}</label>
+          {/foreach}
+            </td>
+            <td>
+            {if $approveModule[$module_key] && ($key == 'contents' || $key == 'communication')}
+              <input type="checkbox" name="limited[{$module_key}]" id="{$module_key}['limited']" value="1" {if $data.limited.$module_key}checked="checked"{/if} /><label for="{$module_key}['limited']">{'/modules/group/label/limited'|translate}{*要承認*}</label>
+            {/if}
+            </td>
+          </tr>
+        {/if}
+      {/foreach}
+    {/foreach}
+    </table>
+    </div>
+
+</div><!-- #main_contents -->
+
+<div id="bottom_fixed">
+    {rcms_include
+            file="common/admin/v2/shonin_message.html"
+            docmeta=$docmeta
+            link="/management/group/group_edit/popup_mode=1&group_id=$group_id"
+    }
+    {editActionBox docmeta=$docmeta}{/editActionBox}
+</div>
+</form>
+
+{rcms_include file="management/footer.html"}

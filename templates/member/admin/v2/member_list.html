@@ -1,0 +1,188 @@
+{rcms_include file="management/header.html"}
+
+<script type="text/javascript">
+{literal}
+function confirmDelete(f) {
+    // 選択された項目を削除します。\nよろしいですか？
+    if (confirm('{/literal}{'/msg/confirm_del_selected_items'|translate}{literal}')) {
+        f.MODE.value = 'delete';
+        f.submit();
+    }
+}
+{/literal}
+</script>
+
+{pankuzu}
+<a href="/management/menu/member/"><span class="member_renewal"></span></a>
+<a href="/management/member/member_list/">{$module_nm}</a>
+<a href="/management/member/member_list/">{'/modules/member/label/member_list'|translate}{*メンバー一覧*}</a>
+{rcms_include file="member/admin/setting_field.html"}
+{/pankuzu}
+
+<form name="member_list_form" method="POST" action="/management/member/member_list/">
+
+    <div id="main_contents" class="member_list">
+    
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+    
+        <!-- 承認待ち自由HTML一覧 -->
+        {rcms_include file="common/admin/shonin_list.html"} 
+    
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" />
+            <input type="hidden" name="pageID" value="{$currentPageID}" />
+
+            {pager info=$pageInfo}
+                <div class="search_box">
+    <fieldset class="search_box">
+    {if $searchItems.group}
+      {'/modules/member/label/group'|translate}{*グループ*}：
+      <select name="s_group">{html_options options=$searchGroup selected=$s_group}</select>
+    {/if}
+
+    {if $module_installed.memberrugby }
+        {if $searchItems.season}
+          {'/modules/member/label/year'|translate}：
+          {rcms_seasonOptions name="s_season" selected=$s_season firstOption="true"}
+        {/if}
+        {if $searchItems.grade}
+          {'/label/grade'|translate}：
+          <select name="s_grade">{html_options options=$searchGrade selected=$s_grade}</select>
+        {/if}
+    {/if}
+    {if $searchItems.name}
+      <input type="text" name="s_name" value="{$s_name}" placeholder="{'/label/name_email'|translate}{*名前/メールアドレス*}" />
+    {/if}
+    {if $searchItems.login_ok_date}
+        {'/label/permission_for_login_expire date'|translate}:
+            <input type="text" name="s_login_ok_st_date" id="login_ok_st_date" value="{$smarty.request.s_login_ok_st_date|escape}" autocomplete="off" size="11" />
+            <button type="button" id="login_ok_st_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="login_ok_st_date-pop"></div>～
+            <input type="text" name="s_login_ok_ed_date" id="login_ok_ed_date" value="{$smarty.request.s_login_ok_ed_date|escape}" autocomplete="off" size="11" />
+            <button type="button" id="login_ok_ed_date-btn"><img src="{'/images/management/calendar_week.png'|lang_img_path}"></button>
+            <div class="pop_calendar" id="login_ok_ed_date-pop"></div>
+            <span class="hint">{'/label/date_example'|translate}</span>{* 日付例 *}
+{head_include file="common/calendar_scripts.html"}
+<script type="text/javascript">
+{literal}
+<!--
+Event.observe(window, 'load', function() {
+        DUI.calendar.PopupWindow({title:"日付", textId: 'login_ok_st_date', btnId: 'login_ok_st_date-btn', boxId: 'login_ok_st_date-pop', tableId: 'login_ok_st_date-table'});
+});
+Event.observe(window, 'load', function() {
+        DUI.calendar.PopupWindow({title:"日付", textId: 'login_ok_ed_date', btnId: 'login_ok_ed_date-btn', boxId: 'login_ok_ed_date-pop', tableId: 'login_ok_ed_date-table'});
+});
+//-->
+{/literal}
+</script>
+    {/if}
+
+{if $ext_search|@count > 0}
+<br>
+{/if}
+
+{foreach from=$ext_search item=item}
+    {$item.disp_name}：
+    {if $item.type == "text"}<input type="text" name="s_{$item.key_name}" value="{$item.value}" size="20" />
+    {elseif $item.type == "int"}<input type="text" name="s_{$item.key_name}" value="{$item.value}" size="20" />
+    {elseif $item.type == "date"}<input type="text" name="s_{$item.key_name}" value="{$item.value}" size="20" />
+    {elseif $item.type == "option" || $item.type == "checkbox"}<select name="s_{$item.key_name}"><option value="">-----</option>{html_options options=$item.options selected=$item.value}</select>{/if}
+
+    {if $item.key_name eq 'position' && $item.type == "text"}
+    <a href="javascript:void(0);" onclick="positionInput()">{'/label/select_btn'|translate}{*選択する*}</a>
+    {/if}
+
+{/foreach}
+
+    <input type="submit" name="subflg" value="{'/label/search'|translate}{*検索*}" />
+    </fieldset>
+                </div>
+                <table class="list-table" cellspacing="0">
+                    <thead>
+      <tr>
+{if $auth.member.update || $auth.member.delete}
+        <th><input type="checkbox" onclick="AllChecked(this.checked, this.form, 'member_id[]')" /></th>
+{/if}
+        <th>{'/label/publish'|translate}{*公開*}</th>
+        <th>{'/label/login'|translate}{*ログイン*}</th>
+        <th>{'/label/name'|translate}{*名前*}</th>
+        <th>{'/label/member_group'|translate}{*所属グループ*}</th>
+{foreach from=$displayItems item=item}
+        <th>{$item.disp_name}</th>
+{/foreach}
+        <th>{'/label/view'|translate}</th>
+        <th>{'/label/update_time'|translate}{*更新日時*}</th>
+      </tr>
+                    </thead>
+      {section name="i" loop=$member_list}
+      <tbody>
+      <tr class="row{$smarty.section.i.iteration%2}">
+{if $auth.member.update || $auth.member.delete}
+        <td><input type="checkbox" name="member_id[]" value="{$member_list[i].member_id}" /></td>
+{/if}
+        <td>{$member_list[i].open_flg|rcms_publicimg}</td>
+        <td>{$member_list[i].login_ok_flg|rcms_publicimg}</td>
+        <td><a href="/management/member/member_edit/member_id={$member_list[i].member_id}{if $searchParams != ""}&{$searchParams}{/if}">
+        {if $member_list[i].disp_name}
+          {$member_list[i].disp_name}
+          {if $member_list[i].nickname && ($member_list[i].name1 || $member_list[i].name2)}
+          ({$member_list[i].name1}{$member_list[i].name2})
+          {/if}
+        {else}
+        ({'/label/no_name'|translate}{*名前なし*})
+        {/if}
+        </a></td>
+        <td>{$member_list[i].group_nm}</td>
+{foreach from=$displayItems item=item}
+  {assign var=key_name value=$item.key_name}
+        {if $key_name == "sex"}
+        <td>{if $member_list[i].$key_name=='m'}{'/label/man'|translate}{*男性*}{elseif $member_list[i].$key_name=='f'}{'/label/woman'|translate}{*女性*}{else}{'/label/no_select'|translate}{*選択なし*}{/if}</td>
+        {elseif $key_name == "birth"}
+        <td>{$member_list[i].$key_name|pg_dateformat:"%Y/%m/%d"}</td>
+        {elseif $key_name == "tdfk_cd"}
+        {assign var=tdfk_cd value=$member_list[i].$key_name}
+        <td>{$arrTdfk[$tdfk_cd]}</td>
+        {else}
+        <td>
+        {if is_array($member_list[i].$key_name) }
+        {foreach from=$member_list[i].$key_name item=ext_item}
+        {$ext_item}<br />
+        {/foreach}
+        {else}
+        {$member_list[i].$key_name}
+        {/if}
+        </td>
+        {/if}
+{/foreach}
+        <td>{$member_list[i].access_cnt}pv</td>
+        <td>{$member_list[i].update_ymdhi|pg_dateformat:"%Y/%m/%d(%%w%%) %H:%M:%S"}</td>
+      </tr>
+      <tbody>
+      {/section}
+    </table>
+    {pager info=$pageInfo}
+
+    </div><!-- #main_contents -->
+    
+    <div id="bottom_fixed">
+        <div class="buttonbox">
+            <ul>
+                <p>{'/label/withselected'|translate}</p>{* 選択した項目を一括で *}
+                <li class="list_action_open_li">
+                    <button class="rcms_btn primary large" type="submit" onclick="this.form.MODE.value='PUBLIC'"><span class="icon-checked icon-white"></span>{'/label/publish_btn'|translate}{*公開にする*}</button>
+                </li>
+                <li class="list_action_delete_li">
+                    <button class="rcms_btn danger large" type="button" onclick="confirmDelete(this.form)"><span class="icon-trash icon-white"></span>{'/label/delete_btn'|translate}{*削除する*}</button>
+                </li>
+                <li class="list_action_close_li">
+                    <button class="rcms_btn large" type="submit" onclick="this.form.MODE.value='PRIVATE'"><span class="icon-unchecked"></span>{'/label/unpublish_btn'|translate}{*非公開にする*}</button>
+                </li>
+            </ul>
+        </div>
+    </div><!-- #bottom_fixed -->
+
+</form>
+
+
+{rcms_include file="management/footer.html"}

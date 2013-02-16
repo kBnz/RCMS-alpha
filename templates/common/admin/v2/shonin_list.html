@@ -1,38 +1,27 @@
 {if $unauthorizedList}
   <div class="waiting_auth_list">
-    <h3>{'/msg/data_approval_waiting'|translate}{* 承認待ちのデータがあります。 *}</h3>
+    <h3><span class="icon-legal icon-alerts"></span>{'/msg/data_approval_waiting'|translate}{* 承認待ちのデータがあります。 *}</h3>
     <table width="100%" border="0" cellspacing="2" cellpadding="0" class="gray_list">
       <tr>
-        <th>{'/modules/menu/label/updated_date'|translate}</th>
+        <th class="lastupdate">{'/modules/menu/label/updated_date'|translate}</th>
         <th>{'/modules/menu/label/update_by'|translate}</th>
-        <th>{'/label/title'|translate}</th>
+        <th class="title">{'/label/title'|translate}</th>
+        {if $smarty.const.USE_MULTILANG}<th class="language">{'/label/language'|translate}</th>{/if}
       </tr>
       {foreach from=$unauthorizedList item=row}
-        {* 自由HTMLはpopup_mode=1で開く @要検討 *}
-        {if $mt == 'staticcontents'}
-            <tr class="rcms_anchor" data-target="_blank" data-href="{$row.link.link}&popup_mode=1">
-        {else}
-            <tr class="rcms_anchor" data-href="{$row.link.link}">
-        {/if}
-          <td>{$row.update_ymdhi|pg_dateformat}</td>
+          <tr class="rcms_anchor" data-href="{$row.link.link}">
+          <td class="lastupdate">{$row.update_ymdhi|pg_dateformat}</td>
           <td>{$row.admin_nm|escape}</td>
-          <td>
-            {* 自由HTMLはpopup_mode=1で開く @要検討 *}
-            {if $mt == 'staticcontents'}
-                <a href="{$row.link.link}&popup_mode=1">
-            {else}
-                <a href="{$row.link.link}">
-            {/if}
+          <td class="title">
+            <a href="{$row.link.link}">
             {if $row.unauth_title}
                 {if $row.link.title ne $row.unauth_title}{$row.unauth_title}({$row.link.title}){else}{$row.unauth_title}{/if}
             {else}
                 {if $row.link.title}{$row.link.title}{else}{'/label/new_article'|translate}{/if}
             {/if}
             </a>
-            {if $smarty.const.USE_MULTILANG}
-            <p>({'/label/language'|translate}:{$row.lang})</p>
-            {/if}
           </td>
+          {if $smarty.const.USE_MULTILANG}<td class="language">{$row.lang}</td>{/if}
         </tr>
       {/foreach}
     </table>

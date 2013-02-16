@@ -1,3 +1,4 @@
+{* rcms_ui_rcmsDropdownはこのファイルと置き換えるが、まだ影響範囲が特定出来ていないため暫定的にこのファイル名 *}
 {literal}
 <script type="text/javascript">
 
@@ -7,44 +8,87 @@
     * ドロップダウンボタンを実装するプラグイン
     *
     * @対象要素  <button>タグ
-    * @param   isSelectbox   bool        プルダウンとして使いたい場合はtrue
-    * @param   syncValueAt   selector    data-idの属性値をvalue属性値として反映させる要素(hidden等)へのセレクタ
+    * @使用方法  下記の実装例の構成で外側のdivに"rcms_ui_dropdown"クラスを付与する
     * @実装例
-    *        <input type="hidden" id="hoge" name="hoge" value="2" />
-    *        <button id="hoge_selector" class="rcms_ui_select" data-id="2">bar</button>
-    *        <ul>
-    *            <li data-id="1">hoge</li>
-    *            <li data-id="2">bar</li>
-    *            <li data-id="3">foo</li>
-    *        </ul>
+    *        <div class="rcms_ui_dropdown" data-isselectbox="true" data-usemodal="true">
+    *            <input type="hidden" value="1">
+    *            <button type="button" data-id="1">項目１</button>
+    *            <ul>
+    *                <li data-id="1">
+    *                    項目１
+    *                </li>
+    *                <li data-id="2">
+    *                    項目２
+    *                </li>
+    *                <li data-id="3">
+    *                    項目３
+    *                </li>
+    *            </ul>
+    *        </div>
     *
     *        ulタグ内がドロップダウンメニューになる。
     *
-    *       $("#hoge_selector").rcmsDropdown({isSelectbox:true,syncValueAt:"#hoge"});
     */
-    $.fn.rcmsDropdown = function(options){
+    $(document).ready(function() {
 
-        // 引数を用意
-        var options=$.extend({
-            isSelectbox : false,
-            syncValueAt : "",
-            onChange    : function(){},
-            useModal    : false,
-        },options);
-        
-        // 対象オブジェクト
-        var target, menu, list, modal, syncAt;
-        
-        // 初期化
+        var targetElm = $(".rcms_ui_dropdown");
+
+        // このプラグインを使用する全ての要素に行う共通の処理
         function init(){
-            menu   = target.next();
-            list   = $("li",menu);
-            syncAt = $(options.syncValueAt);
+            var target = targetElm;
+            var button = target.children("button");
+            var menu   = button.next();
+            var list   = $("li",menu);
+
             menu.hide();
-            target.on("click.rcmsDropdown",toggleMenu);
-            
-            // モーダル領域を使用する場合
-            if(options.useModal){
+
+            // ボタンにクリックイベントをバインド
+            button.on("click.rcmsDropdown", toggleMenu);
+
+            menu.css("z-index","101"); // メニューのzindexを調整
+            list.css("z-index","200"); // リストのzindexを調整
+        }
+
+        // リスト選択時
+        function pickItem(){
+            var target = $(this).parents(".rcms_ui_dropdown");
+            var button = $("button", target);
+            var syncAt = $("input", target);
+            var menu   = button.next();
+            var list   = $(this);
+
+            // data-idを取得
+            var dataId = $(this).data("id");
+
+            // 現在の値と違っていたら値を変更し、onChangeを実行
+            if( dataId != button.data("id") ){
+                button.data("id",dataId);
+
+                // リスト内の内容をボタンへ渡す
+                button.html($(this).html());
+
+                // valueの同期先が指定されていたら値を設定
+                if(syncAt.size()>0){
+                    syncAt.val(dataId);
+                }
+                syncAt.trigger("change");
+            }
+
+            // メニューを隠す
+            hideMenu();
+            // 選択されたリストへクラスを付ける
+            if (list.hasClass("selected")) $("li.selected", menu).removeClass("selected");
+            $("li[data-id=" + dataId + "]", menu).addClass("selected");
+        }
+
+        // トグる (ターゲットクリック時)
+        function toggleMenu(e){
+            var target = $(this).parent();
+            var menu   = $("button", target).next();
+            var list   = $("li", menu);
+            var isSelectbox = target.data("isselectbox");
+            var useModal = target.data("usemodal");
+            if(useModal){
                 menu.after("<div class='modal' style='background:#000;opacity:0.1;width:100%;height:100%;position:fixed;top:0;left:0;z-index:100;'/>"); // モーダル領域を生成
                 modal = menu.next();
                 modal.hide();// モーダル領域を非表示
@@ -53,73 +97,35 @@
                 $("body").on("click.rcmsDropdown",hideMenu);
             }
 
-            menu.css("z-index","101"); // メニューのzindexを調整
-            list.css("z-index","200"); // メニューのzindexを調整
-            
-            if(options.isSelectbox){
+            if(isSelectbox){
                 // selectbox指定されていた時
                 list.click(pickItem);
             }else{
                 menu.click(hideMenu);
-
             }
 
-        }
-        
-        // リスト選択時
-        function pickItem(){
-
-            // data-idを取得
-            var dataId = $(this).data("id");
-
-            // 現在の値と違っていたら値を変更し、onChangeを実行
-            if( dataId != target.data("id") ){
-                target.data("id",dataId);
-
-                // テキストを変更 *アイコンが指定されていれば保持
-/*                 var html   = $("span",target).size() > 0 ? $("<div>").append($("span",target).clone()).html() + $(this).text() : $(this).text(); */
-                // span判定せずに選択した要素を丸ごと渡すように変更
-                target.html($(this).html());
-
-                // valueの同期先が指定されていたら値を設定
-                if(syncAt.size()>0){
-                    syncAt.val(dataId);
-                }
-
-                options.onChange(dataId);
-            }
-            
-            // メニューを隠す
-            hideMenu();
-        }
-        
-        // トグる (ターゲットクリック時)
-        function toggleMenu(e){
-            if(options.useModal){
-                menu.toggle();
-                modal.toggle();
-            }else{
+            // まだ開かれていなければ開く
+            if (menu.css("display") == "none") {
                 $("body").trigger("click.rcmsDropdown");
-                menu.toggle();
-                e.stopImmediatePropagation();
+                if(useModal) modal.show();
+                menu.show();
+            } else {
+            // 既に開かれている場合は閉じる
+                hideMenu();
             }
+            e.stopImmediatePropagation();
         }
-        
+
         // 隠す (modalクリック時)
         function hideMenu(){
+            var menu = $("button", targetElm).next();
             menu.hide();
-            if(options.useModal){
-                modal.hide();
+            if($(this).parent().data("usemodal")){
+                $(".modal").remove();
             }
         }
-        
-        
-        // メインシーケンス
-        return this.each(function(){
-            target = $(this);
-            init();
-        });
-    };
+        init();
+    });
     
 })(jQuery);
 

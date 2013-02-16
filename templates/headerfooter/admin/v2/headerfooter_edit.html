@@ -1,29 +1,7 @@
 {rcms_include file="management/header.html"}
-{rcms_include file="menu/admin/subnavi.html"}
 
-{headblock}
-{literal}
-
-
-<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css">
-
-<link rel="stylesheet" href="/css/management/modules/templateedit.css"/>
-<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css">
-<script src="/js/codemirror/lib/codemirror.js"></script>
-<script src="/js/codemirror/lib/overlay.js"></script>
-<script src="/js/codemirror/mode/xml/xml.js"></script>
-<script src="/js/codemirror/mode/javascript/javascript.js"></script>
-<script src="/js/codemirror/mode/css/css.js"></script>
-<link rel="stylesheet" href="/js/codemirror/theme/default.css">
-<link rel="stylesheet" href="/js/codemirror/theme/night.css">
-<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-
-<link rel="stylesheet" href="/css/management/v2/temp_edit.css">
-<script src="/js/management/v2/template_edit.js"></script>
-
-<link rel="stylesheet/less" type="text/css" href="/css/management/v2/headerfooter/headerfooter_edit.less">
-{/literal}
-{/headblock}
+{* codemirrorの読み込み *}
+{rcms_include file="management/v2/codemirror_loader.html"}
 
 {*
 {assign var=templateedit_id value=$formData.templateedit_id}
@@ -108,15 +86,15 @@
             <ul>
                 <li>
                     <select name="device_selector" id="device_selector">
-                        <option class="devices dev-icon-pc" value="pc"></option>
-                        <option class="devices dev-icon-mob" value="mobile"></option>
-                        <option class="devices dev-icon-sp" value="smartphone"></option>
-                        <option class="devices dev-icon-fb" value="facebook"></option>
-                        <option class="devices dev-icon-app" value="application"></option>
+                        <option class="devices icon-pc" value="pc"></option>
+                        <option class="devices icon-mob" value="mobile"></option>
+                        <option class="devices icon-sp" value="smartphone"></option>
+                        <option class="devices icon-fb" value="facebook"></option>
+                        <option class="devices icon-app" value="application"></option>
                     </select>
                 </li>
                 <li class="menu_right_list">
-                    <button id="editstatus_selector" class="rcms_ui_select"><span class="icon-file"></span>入力画面</button>
+                    <button id="editstatus_selector"><span class="icon-file"></span>入力画面</button>
                     <ul>
                         {foreach from=$child_template_list item=edit_page}
                             <li>{$edit_page}</li>
@@ -124,7 +102,7 @@
                     </ul>
                 </li>
                 <li class="menu_right_list">
-                    <button id="history_selector" class="rcms_ui_select"><span class="icon-time"></span>第10版</button>
+                    <button id="history_selector"><span class="icon-time"></span>第10版</button>
                     <ul>
                         {foreach from=$history_list item=history}
                             <li>{$history}</li>
@@ -132,7 +110,7 @@
                     </ul>
                 </li>
                 <li class="menu_right_list">
-                    <button id="lang_selector" class="rcms_ui_select"><span class="icon-lang"></span>日本語</button>
+                    <button id="lang_selector"><span class="icon-lang"></span>日本語</button>
                     <ul>
                         <li>日本語</li>
                         <li>英語</li>
@@ -156,7 +134,7 @@
                     <input type="text" id="query" placeholder="検索文字列">
                     <input type="text" id="replace" placeholder="置換文字列">
                     <button type="button" id="replace_btn" onclick="CodeMirrorReplace()">置換</button>
-                    <button id="setup_dropdown_btn" class="rcms_ui_dropdown"><span class="icon-cog"></span></button>
+                    <button id="setup_dropdown_btn"><span class="icon-cog"></span></button>
                     <ul>
                         <li id="reverse_color_btn"><span class="icon-adjust"></span>文字色を反転</li>
                         <li id="highlight_syntax_btn"><span class="icon-bookmark"></span>シンタックスをハイライト</li>

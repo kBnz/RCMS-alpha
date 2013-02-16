@@ -1,34 +1,12 @@
 {rcms_include file="management/header.html"}
 
-{headblock}
-{literal}
-<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css" />
-{/literal}
-{/headblock}
-
-{literal}
-<script type="text/javascript">
-(function($) {
-    $(function() {
-
-        $("#select_sc_list_cat_config").rcmsDropdown();
-        $("#lang_selector").rcmsDropdown({isSelectbox:true});
-
-    });
-})(jQuery);
-</script>
-{/literal}
-<div id="top_fixed">
-    <div id="content_head">
-        <div class="navigation">
-            <a class="navigation_node"><span class="contents_renewal"></span></a>
-            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">自由HTML</a>
-            <a class="navigation_node" href="/management/staticcontents/staticcontents_category_list/">カテゴリ設定</a>
-            <a class="navigation_node" >{$formData.category_nm|escape}</a>
-        </div>
-    </div>
-</div>
-
+{pankuzu}
+<a href="/management/menu/contents/"><span class="contents_renewal"></span></a>
+<a href="/management/staticcontents/staticcontents_list/">{$module_nm}</a>
+<a href="/management/staticcontents/staticcontents_category_list/">{'/label/categorieslist'|translate}{*カテゴリ設定*}</a>
+<a>{if $formData.static_category_id}{$formData.category_nm|escape}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
+{rcms_include file="staticcontents/admin/setting_field.html"}
+{/pankuzu}
 
 <form action="/management/staticcontents/staticcontents_category_edit/" method="post">
     <div id="main_contents">
@@ -40,19 +18,6 @@
 
 {rcms_include file="management/messages_box.html" messages=$messages}
 {rcms_include file="management/errors_box.html" errors=$errors}
-
-        <div id="tool_bar" class="rcms_ui_toolbar">
-            <ul>
-                <li class="menu_left_list">
-                    {if $static_category_id}
-                        {lang_selector_v2_dropdown
-                            meta=$docmeta link="/management/staticcontents/staticcontents_category_edit/static_category_id=$static_category_i"
-                        }
-                    {/if}
-                </li>
-            </ul>
-        </div>
-
 
         <table class="edit_table">
             <tr>

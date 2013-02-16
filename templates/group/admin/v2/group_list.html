@@ -1,0 +1,58 @@
+{rcms_include file="management/header.html"}
+
+{pankuzu}
+<a href="/management/menu/member/"><span class="member_renewal"></span></a>
+<a href="/management/member/member_list/">{$module_nm}</a>
+<a href="/management/member/group_list/">{'/modules/group/label/group_list'|translate}{*グループ一覧*}</a>
+{rcms_include file="group/admin/setting_field.html"}
+{/pankuzu}
+
+<form name="group_list_form" method="POST" action="/management/group/group_list/">
+
+    <div id="main_contents" class="group_list">
+    
+        {rcms_include file="management/messages_box.html" messages=$messages}
+        {rcms_include file="management/errors_box.html" errors=$errors}
+    
+        <!-- 承認待ち自由HTML一覧 -->
+        {rcms_include file="common/admin/shonin_list.html"} 
+
+
+            <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+            <input type="hidden" name="MODE" />
+
+            {pager info=$pageInfo}
+            
+<table class="list-table" cellspacing="0">
+<thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>{'/label/group_name'|translate}{*グループ名*}</th>
+        <th>{'/label/basic_settings'|translate}{*基本設定*}</th>
+        <th>{'/label/member_management'|translate}{*メンバー管理*}</th>
+        <th>{'/label/user_type'|translate}{*ユーザー種別*}</th>
+        <th>{'/modules/group/label/admin_version'|translate}{*管理画面*}</th>
+        <th>{'/label/member_information'|translate}{*メンバー情報*}<br />{'/label/viewing_limit'|translate}{*閲覧制限*}</th>
+      </tr>
+</thead>
+      {foreach item="group_data" from=$group_list name="row"}
+      <tbody>
+      <tr>
+        <td>{$group_data.enableflg|rcms_publicimg}</td>
+        <td>{$group_data.group_id}</td>
+        <td>{$group_data.group_nm}</td>
+        <td><a href="/management/group/group_edit/group_id={$group_data.group_id}">{'/label/basic_settings'|translate}{*基本設定*}</a></td>
+        <td><a href="/management/group/group_member/group_id={$group_data.group_id}">{'/label/member_management'|translate}{*メンバー管理*}</a>({$group_data.cnt})</td>
+        <td>{if $group_data.super_flg eq 1}{'/label/super_user'|translate}{*スーパーユーザー*}{elseif  $group_data.super_flg eq -1}{'/label/login_user'|translate}{*ログインユーザー*}{else}{'/label/contents_edit_user'|translate}{*コンテンツ編集ユーザー*}{/if}</td>
+        <td>{if $group_data.admin_disp_type ne '1'}{'/label/regular_version'|translate}{*通常版*}({'/label/high_spec'|translate}{*高機能*}){else}{'/label/simple_version'|translate}{*簡易版*}{/if}</td>
+        <td><a href="/management/group/group_secure_member/group_id={$group_data.group_id}">{if $group_data.secure_policy == $smarty.const.GROUP_POLICY_ALLOW}{'/label/no_limit'|translate}{*制限しない*}{else}{'/label/limited'|translate}{*制限あり*}{if $group_data.secure_special}({'/modules/group/label/part_permit'|translate}{*一部可*}){/if}{/if}</a></td>
+      </tr>
+      </tbody>
+      {/foreach}
+    </table>
+    {pager info=$pageInfo}
+
+    </div><!-- #main_contents -->
+</form>
+{rcms_include file="management/footer.html"}

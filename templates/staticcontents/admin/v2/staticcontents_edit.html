@@ -1,44 +1,22 @@
 {rcms_include file="management/header.html"}
 
-{headblock}
-{literal}
-
-<link rel="stylesheet" href="/css/management/rcms_ui/rcms_ui.css" />
-
-<link rel="stylesheet" href="/css/management/modules/templateedit.css"/>
-<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css" />
-<script src="/js/codemirror/lib/codemirror.js"></script>
-<script src="/js/codemirror/lib/searchcursor.js"></script>
-<script src="/js/codemirror/lib/overlay.js"></script>
-<script src="/js/codemirror/mode/xml/xml.js"></script>
-<script src="/js/codemirror/mode/javascript/javascript.js"></script>
-<script src="/js/codemirror/mode/css/css.js"></script>
-<link rel="stylesheet" href="/js/codemirror/theme/default.css">
-<link rel="stylesheet" href="/js/codemirror/theme/night.css">
-<script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link rel="stylesheet" href="/css/management/v2/temp_edit.css">
-<script src="/js/management/v2/template_edit.js"></script>
-{/literal}
-{/headblock}
-
+{* codemirrorの読み込み *}
+{rcms_include file="management/v2/codemirror_loader.html"}
 
 {if $smarty.request.iframe_mode != 1}
-<div id="top_fixed">
-    <div id="content_head">
-        <div class="navigation">
-            <a class="navigation_node"><span class="contents_renewal"></span></a>
-            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents'|translate}{*自由HTML*}</a>
-            <a class="navigation_node" href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents/label/staticcontents_list'|translate}{*自由HTML一覧*}</a>
-            {if $formData.static_category_id}<a class="navigation_node" href="/management/staticcontents/staticcontents_list/?s_category={$formData.static_category_id}">{$arrCategoryId[$formData.static_category_id]|escape}</a>{/if}
-            <a class="navigation_node">{if $formData.static_id}{$formData.subject|escape}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
-        </div>
-    </div>
-</div>
+{pankuzu}
+<a href="/management/menu/contents/"><span class="contents_renewal"></span></a>
+<a href="/management/staticcontents/staticcontents_list/">{$module_nm}</a>
+<a href="/management/staticcontents/staticcontents_list/">{'/modules/staticcontents/label/staticcontents_list'|translate}</a>
+{if $formData.static_category_id}<a class="navigation_node" href="/management/staticcontents/staticcontents_list/?s_category={$formData.static_category_id}">{$arrCategoryId[$formData.static_category_id]|escape}</a>{/if}
+<a>{if $formData.static_id}{$formData.subject|escape}{else}{'/label/add_new'|translate}{*新規追加*}{/if}</a>
+{rcms_include file="staticcontents/admin/setting_field.html"}
+{/pankuzu}
 {/if}
 
 <form action="/management/staticcontents/staticcontents_edit/{if $smarty.request.iframe_mode}iframe_mode=1{elseif $smarty.request.popup_mode}popup_mode=1{/if}" method="post" name="static_edit" id="static_edit">
 
-<div id="main_contents">
+<div id="main_contents" class="staticcontents_edit">
 
     {rcms_include file="management/v2/notification_box.html" errors=$errors messages=$messages alerts=$alerts}
 
@@ -58,50 +36,51 @@
         <textarea id="device_5_contents" class="contents" name="device_5_contents">{$formData.device_5_contents}</textarea>
     </div>
 
-    <div id="tool_bar" class="rcms_ui_toolbar">
-        <ul>
-            <li class="menu_left_list">
-                <input type="hidden" id="device_type" name="device_type" value="1" />
-                <button type="button" id="device_selector" class="rcms_ui_select" data-id="{$smarty.request.device_type}">
-                    {if $smarty.request.device_type == 2}
-                        <span class="devices dev-icon-mob"></span>携帯版
-                    {elseif $smarty.request.device_type == 3}
-                        <span class="devices dev-icon-sp"></span>スマートフォン版
-                    {elseif $smarty.request.device_type == 4}
-                        <span class="devices dev-icon-fb"></span>Facebook版
-                    {elseif $smarty.request.device_type == 5}
-                        <span class="devices dev-icon-app"></span>スマートフォンアプリ版
-                    {else}
-                        <span class="devices dev-icon-pc"></span>PC版
-                    {/if}
-                </button>
-                <ul>
-                    <li data-id="1"><span class="devices dev-icon-pc "></span>PC版</li>
-                    <li data-id="2"><span class="devices dev-icon-mob"></span>携帯版</li>
-                    <li data-id="3"><span class="devices dev-icon-sp "></span>スマートフォン版</li>
-                    <li data-id="4"><span class="devices dev-icon-fb "></span>Facebook版</li>
-                    <li data-id="5"><span class="devices dev-icon-app"></span>スマートフォンアプリ版</li>
-                </ul>
-
+    <div id="tool_bar">
+        <ul class="menu_left">
+            <li>
+                <div class="rcms_ui_dropdown" data-isselectbox="true">
+                    <input type="hidden" id="device_type" name="device_type" value="1" />
+                    <button type="button" id="device_selector" data-id="{$smarty.request.device_type}">
+                        {if $smarty.request.device_type == 2}
+                            <span class="devices icon-mob"></span>携帯版
+                        {elseif $smarty.request.device_type == 3}
+                            <span class="devices icon-sp"></span>スマートフォン版
+                        {elseif $smarty.request.device_type == 4}
+                            <span class="devices icon-fb"></span>Facebook版
+                        {elseif $smarty.request.device_type == 5}
+                            <span class="devices icon-app"></span>スマートフォンアプリ版
+                        {else}
+                            <span class="devices icon-pc"></span>PC版
+                        {/if}
+                    </button>
+                    <ul>
+                        <li data-id="1"><span class="devices icon-pc "></span>PC版</li>
+                        <li data-id="2"><span class="devices icon-mob"></span>携帯版</li>
+                        <li data-id="3"><span class="devices icon-sp "></span>スマートフォン版</li>
+                        <li data-id="4"><span class="devices icon-fb "></span>Facebook版</li>
+                        <li data-id="5"><span class="devices icon-app"></span>スマートフォンアプリ版</li>
+                    </ul>
+                </div>
             </li>
-                {if $latestRow.static_id}
-            <li class="menu_left_list">
+            <li>
                 {lang_selector_v2_dropdown
                     meta=$docmeta link="/management/staticcontents/staticcontents_edit/static_id=$static_id&popup_mode=1"
                 }
             </li>
-            <li class="menu_right_list">
+        </ul>
+        <ul class="menu_right">
+            <li>
                 {rcms_include file="management/ajax_history_dropdown.html" mt=staticcontents id=$static_id pk=static_id}
             </li>
-                {/if}
         </ul>
     </div>
-    <div id="template_table_edit_wrapper">
-        <div id="template_handle"></div>
-        <div id="template_name_table">
-            <table>
+    <div id="edit_cells">{*rcmsResizableCellsのルート*}
+        <div id="edit_cell_handle" class="vertical_drawer_handle"></div>{*rcmsResizableCellsの handle*}
+        <div id="edit_cell_drawer" class="vertical_drawer_body">{*rcmsResizableCellsの cell1*}
+            <table class="basic_table">
                 <tr>
-                    <td class="template_item">{'/label/title'|translate}{* タイトル *} / {'/label/category'|translate}{* カテゴリ *}</td>
+                    <th>{'/label/title'|translate}{* タイトル *} / {'/label/category'|translate}{* カテゴリ *}</th>
                     <td>
                         <input style="width:300px;" name="subject" type="text" value="{$formData.subject|escape}" /> / 
                         {if $docmeta.is_primary}
@@ -118,8 +97,8 @@
                         </p>
                     </td>
                 </tr>
-                <tr class="usingpage">
-                    <td class="template_item">モード{* モード *}</td>
+                <tr>
+                    <th>モード{* モード *}</th>
                     <td>
                         <span id="smarty_flg_collection" class="hidden_contents">
                             {foreach from=$arrStaticContentsLinkedDeviceTypeOptions key=device_type item=value}
@@ -144,8 +123,8 @@
                         </span>
                     </td>
                 </tr>
-                <tr class="usingpage">
-                    <td class="template_item">テンプレートの転用</td>
+                <tr>
+                    <th class="staticcontents_item">テンプレートの転用</th>
                     <td>
                         <span id="linked_device_type_collection" class="hidden_contents">
                             {foreach from=$arrStaticContentsLinkedDeviceTypeOptions key=parent_device_type item=value}
@@ -166,29 +145,31 @@
                 </tr>
             </table>
         </div>
-        <div id="editor_box_container">
-            <div class="table_knob up-icon"></div>
-            <div id="edit_area_wrapper">
+        <div id="edit_cell_body">{*rcmsResizableCellsの cell2*}
+            <div id="edit_cell_switchbtn" class="vertical_drawer_switchbtn"></div>{*rcmsResizableCellsの switchbtn*}
+            <div id="edit_area_wrapper" class="vertical_drawer_edit_area">
                 <div class="edit_area">
                     <div id="smarty_codemirror">
                         <div id="support_tool">
                             <input type="text" id="query" placeholder="検索文字列">
                             <input type="text" id="replace" placeholder="置換文字列">
                             <button type="button" id="replace_btn">置換</button>
-                            <button type="button" id="setup_dropdown_btn" class="rcms_ui_dropdown"><span class="icon-cog"></span></button>
-                            <ul>
-                                <li id="reverse_color_btn"><span class="icon-adjust"></span>文字色を反転</li>
-                                <li id="highlight_syntax_btn"><span class="icon-bookmark"></span>シンタックスをハイライト</li>
-                            </ul>
+                            <div class="rcms_ui_dropdown">
+                                <button type="button" id="setup_dropdown_btn"><span class="icon-cog"></span></button>
+                                <ul>
+                                    <li id="reverse_color_btn"><span class="icon-adjust"></span>文字色を反転</li>
+                                    <li id="highlight_syntax_btn"><span class="icon-bookmark"></span>シンタックスをハイライト</li>
+                                </ul>
+                            </div>
                         </div>
-                        <textarea id="template_text"></textarea>
+                        <textarea id="codemirror_object"></textarea>
                     </div>
                     <div id="html_ckeditor">{$sw_html}</div>
                 </div>
                 <div id="side_menu_box" class="metasettings_container">
                     {if $docmeta.is_primary}
                         <div>{rcms_include file="management/v2/use_page.html" use_page=$formData.use_page}{* 仕様ページ *}</div>
-                        <div>{rcms_include file="management/v2/permission_box.html" arrAdmin=$arrAdmin formData=$formData}{* 閲覧編集制限 *}</div>
+                        <div>{rcms_include file="management/v2/permission_box.html" arrAdmin=$arrAdmin formData=$formData canUpdate=$auth.staticcontents_admin.update}{* 閲覧編集制限 *}</div>
                         <div>{rcms_include file="management/v2/relation_edit.html"}{* 関連するコンテンツ *}</div>
                         <div>{rcms_include file="management/v2/open_date_box.html" id=$staic_id data=$formData}{* 公開設定 *}</div>
                     {/if}
@@ -222,10 +203,9 @@
 </form>
 
 {literal}
-
-
 <!-- サンドボックス -->
 <script type="text/javascript">
+// @todo  このページだけで使うJSとcodeMirror関係の共有するJSを分ける(別々にカプセル化、出来ない所は要相談)
 (function($) {
 
     $(document).ready(function(){
@@ -238,6 +218,9 @@
         // デバイスを切り替える前と後のデバイス番号
         var beforeDevice;
         var currentDevice = $("#device_type").val();
+
+        // テーブルの高さ
+        var tableHeight = $("div.vertical_drawer_body table").outerHeight();
 
         // 表示しない項目を非表示にする
         $("#smarty_codemirror").hide();
@@ -299,31 +282,17 @@
 
     /**************** プラグインの適用 ****************/
 
-        // ドロップダウンメニューを作成
-        $("#setup_dropdown_btn").rcmsDropdown();
-        $("#history_selector").rcmsDropdown({isSelectbox:true});
-        $("#lang_selector").rcmsDropdown({isSelectbox:true});
-        $("#editstatus_selector").rcmsDropdown({isSelectbox:true});
-
-        // デバイスセレクターを作成
-        $("#device_selector").rcmsDropdown({
-            isSelectbox: true,
-            syncValueAt: "#device_type",
-            onChange   : function() {$("#device_type").trigger("change");}
-        });
-
         // rcmsResizableCellsを適用
-        var tableHeight = $("#template_name_table").outerHeight();
-        $("#template_table_edit_wrapper").rcmsResizableCells({
-            cell1         : "#template_name_table",
-            cell2         : "#editor_box_container",
-            handle        : "#template_handle",
+        $("#edit_cells").rcmsResizableCells({
+            cell1         : "#edit_cell_drawer",
+            cell2         : "#edit_cell_body",
+            handle        : "#edit_cell_handle",
             direction     : "vertical",
             position      : "relative",
-            cell1MinHeight: $("#template_name_table tr:eq(0)").height(),
-            cell1MaxHeight: tableHeight + 12,
+            cell1MinHeight: $("div.vertical_drawer_body tr:eq(0)").outerHeight() + 2,
+            cell1MaxHeight: tableHeight + 1,
             onMoving      : editAreaSizeChange,
-            switchBtn     : ".table_knob"
+            switchBtn     : "#edit_cell_switchbtn"
         });
 
 
@@ -368,13 +337,13 @@
         // モードの選択に合わせてエディターの表示を変える
         function changeEditor() {
             if ($("#device_" + currentDevice + "_smarty_flg").val() == 0) {
-                $("#editor_box_container").data("edit", setAndGetCodeMirror());
-                setAndGetCKEditor($("#editor_box_container").data("edit"));
+                $("#edit_cell_body").data("edit", setAndGetCodeMirror());
+                setAndGetCKEditor($("#edit_cell_body").data("edit"));
                 $("#smarty_codemirror").hide();
                 $("#html_ckeditor").show();
             } else {
-                $("#editor_box_container").data("edit", setAndGetCKEditor());
-                setAndGetCodeMirror($("#editor_box_container").data("edit"));
+                $("#edit_cell_body").data("edit", setAndGetCKEditor());
+                setAndGetCodeMirror($("#edit_cell_body").data("edit"));
                 CodeMirrorRefresh();
                 $("#html_ckeditor").hide();
                 $("#smarty_codemirror").show();
@@ -465,18 +434,12 @@
 
         // 包含するdiv要素の大きさの変化に合わせてエディターの大きさを変更
         function editAreaSizeChange() {
-            var knob = $("div.table_knob");
-            var ckeHeight = $("#html_ckeditor");
+            var topHeight = $("#content_head").height() + $("#tool_bar").height();
+            var bottomHeight = $("#bottom_fixed").height();
             // エディターの大きさを動的に設定
-            $("#template_table_edit_wrapper").height($(window).height() - 147);
+            $("#edit_cells").height($(window).height() - (topHeight + bottomHeight));
             $(".CodeMirror, .CodeMirror-scroll, .CodeMirror-gutter").height($("#smarty_codemirror").height() - 58);
-            $("#cke_contents_contents").height(ckeHeight.height() - $("#cke_top_contents").height() - 107);
-            // テーブルの折りたたみ時のアイコンの切り替え
-            if ($("#editor_box_container").position().top > tableHeight) {
-                knob.removeClass("down-icon").addClass("up-icon");
-            } else {
-                knob.removeClass("up-icon").addClass("down-icon");
-            }
+            $("#cke_contents_contents").height($("#html_ckeditor").height() - $("#cke_top_contents").height() - 107);
         }
     
     
@@ -502,7 +465,7 @@
     
         // 最新のエディターのDOM要素と比較して変更があればアラートで確認
         $(window).on("beforeunload", function() {
-            var inited = $("#editor_box_container").data("edit");
+            var inited = $("#edit_cell_body").data("edit");
             var edited;
             if ($("#smarty_flg").val() == 1) {
                 edited = setAndGetCodeMirror();
@@ -525,26 +488,8 @@
             $("#smarty_codemirror").remove();
             $("#html_ckeditor").remove();
         });
-    
-        function resetConfirm(f) {
-            var msg = "{/literal}{'/modules/templateedit/msg/reset_confirm'|translate}{* これまで編集した内容を破棄して、\nRCMSの初期テンプレートを読み込みます。\nよろしいですか？ *}{literal}";
-            if (confirm(msg)) {
-                f.MODE.value = "RESET";
-                f.submit();
-                f.MODE.value = "";
-            }
-        }
-        
-        function deleteConfirm(f) {
-            var msg = "{/literal}{'/modules/templateedit/msg/delete_confirm'|translate}{* 削除してもよろしいですか？ *}{literal}";
-            if (confirm(msg)) {
-                f.MODE.value = "DELETE";
-                f.submit();
-                f.MODE.value = "";
-            }
-        }
-    
-    
+
+
     /**************** CodeMirrorの各種機能の定義 ****************/
     
         CodeMirror.defineMode("smarty", function(config, parserConfig) {
@@ -592,7 +537,7 @@
         
         // CodeMirrorのエディターオブジェクトを生成
         var editor = CodeMirror.fromTextArea(
-            document.getElementById("template_text"),
+            document.getElementById("codemirror_object"),
             {
                 mode           : "smarty",
                 indentUnit     : 4,
@@ -713,11 +658,10 @@
 </script>
 <script id="rcms_common_all_device_tmpl" type="text/x-jquery-tmpl">
     <div id="common_all_message">
-        <img src="../../../images/modules/staticcontents/all_device.png" />
+        <img src="/images/modules/staticcontents/all_device.png" />
     <div id="common_all_message_text">全デバイス共通のHTMLを利用しています。<br />デバイス別にHTMLを設定するには、全デバイス共通のチェックボックスをOFFにしてください。</div>
 </div>
 
 </script>
 {/literal}
-
-{rcms_include file="management/rcms_ui/rcms_ui.html"}
+{rcms_include file="management/footer.html"}

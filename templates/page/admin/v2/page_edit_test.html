@@ -1,0 +1,1626 @@
+{rcms_include file="management/header.html"}
+
+{headblock}
+{literal}
+<style type="text/css">
+/* 「ドラッグしてモジュールをを配置」の文字列の多言語対応 */
+.layout_table .target:before{
+    content: "{/literal}{'/modules/page/label/drag_and_place_module'|translate}{*ドラッグしてモジュールを配置*}{literal}" !important;
+}
+</style>
+{/literal}
+{/headblock}
+
+{if $pageForm.page_id == ""}{* 新規作成画面 *}
+
+{* 新規作成画面はテストコードが多い。リファクタリング中 *}
+<form action="/management/page/page_edit/" method="post" name="page_data_form" id="page_data_form">
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    <input id="json_by_modules" name="json_by_modules" type="hidden" value='{$json_by_modules}' />
+
+    {rcms_include file="management/messages_box.html" messages=$messages}
+    {rcms_include file="management/errors_box.html" errors=$errors}
+
+    <div id="main_contents">
+        <div class="initialize_form_field"  style="margin-top:100px;{*試験用*}">
+            <h1 class="initialize_form_title"><span class="icon-new"></span>新しいページの作成</h1>
+            <table class="initialize_form_table">
+                <tbody>
+                    <tr>
+                        <th>{'/label/page_name'|translate}{*ページ名*}</th>
+                        <td>
+                            <input id="page_nm" name="page_nm" type="text" value="{$pageForm.page_nm}" />
+                            <input id="open_flg" name="open_flg" type="checkbox" value="1" {if $pageForm.open_flg}checked="checked"{/if}/><label for="open_flg">このページを表示する</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>URL</th>
+                        <td>{$smarty.const.ROOT_URL} / <input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm2}" /></td>
+                    </tr>
+                    <tr>
+                        <th>{'/label/parent_page'|translate}{*親ページ*}</th>
+                        <td><select id="parent_page_sysnm" name="parent_page_sysnm">{html_options options=$arrPage selected=$pageForm.parent_page_sysnm}</select></td>
+                    </tr>
+                    <tr>
+                        <th>{'/label/module'|translate}{*モジュール*}／{'/label/controller'|translate}{*コントローラー*}</th>
+                        <td>
+                            <select id="module_contents"><option value="">- {'/label/module'|translate}{*モジュール*} -</option></select>
+                            <select id="controller_contents"><option value="">- {'/label/controller'|translate}{*コントローラー*} -</option></select>
+                        </td>
+                    </tr>
+                    <tr style="display:none;">
+                        <th>{'/label/template_katakana'|translate}{*テンプレート*}</th>
+                        <td><select id="template_contents"></select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="bottom_fixed">
+    
+    {*テストコードここから*}
+        <div class="buttonbox">
+            <ul id="buttonbox_ul">
+                <li id="edit_action_update_li">
+                    <button type="submit" onclick="this.form.MODE.value='INSERT';">追加する</button>
+                </li>
+            </ul>
+        </div>
+    {*テストコードここまで*}
+    </div>
+</form>
+{* 新規画面用javascript *}
+{literal}
+<script type="text/javascript">
+(function($) {
+    $(function() {
+        // 要素の定義
+        var MODULE_CTL_TMPL;
+        var $moduleContents     = $("#module_contents");
+        var $controllerContents = $("#controller_contents");
+        var $templateContents   = $("#template_contents");
+        var newId               = "new_0";
+
+        var JSON_BY_MODULES = {/literal}{$json_by_modules}{literal};
+
+        // ajaxでモジュール、コントローラー、テンプレートのリストを取得
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/page/api_module_controller_template/topics_group_flg=1&page_edit_flg=1",
+            dataType : "json",
+            success  : function(obj) {
+                MODULE_CTL_TMPL = obj;
+                if (typeof(JSON_BY_MODULES[newId]) != "undefined") {
+                    var content = JSON_BY_MODULES[newId];
+                    interlockModuleController(content.module_type, content.contents_type, content.device_type[1].module_template_id);
+                } else {
+                    interlockModuleController();
+                }
+            }
+        });
+
+        // イベントの登録
+        
+        $moduleContents.on("change", interlockModuleController);
+        $controllerContents.on("change", interlockTemplate);
+        $("form").on("submit", registerJSON);
+        
+        function registerJSON() {
+            var json = {};
+            json["new_0"] = {
+                admin_order_no : null,
+                contents_id    : "new_0",
+                contents_title : null,
+                contents_type  : $controllerContents.val(),
+                device_type    : {
+                    1 : {
+                        module_template_id : $templateContents.val(),
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    2 : {
+                        module_template_id : $templateContents.val(),
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    3 : {
+                        module_template_id : $templateContents.val(),
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    4 : {
+                        module_template_id : $templateContents.val(),
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    5 : {
+                        module_template_id : $templateContents.val(),
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    }
+                },
+                is_main_flg             : true,
+                module_nm_disp_flg : null,
+                module_type        : $moduleContents.val(),
+                param              : ""
+            };
+            $("#json_by_modules").val(JSON.stringify(json));
+        }
+
+        // モジュール設定画面のモジュールセレクタとコントローラセレクタの連動
+        function interlockModuleController(moduleValue, controllerValue, templateValue) {
+            // 各テンプレート
+            var moduleTmpl     = $("#module_selecter_tmpl");
+            var controllerTmpl = $("#controller_selecter_tmpl");
+            
+            // テンプレート用にデータを加工
+            var data = [];
+            $.each(MODULE_CTL_TMPL, function(key) {
+                MODULE_CTL_TMPL[key].module_nm = key;
+                data.push(this);
+            });
+            // モジュールが選択されていなければ初期化
+            if (!$moduleContents.val()) {
+                $moduleContents.find("option.module_option_list").remove();
+                $controllerContents.find("option.controller_option_list").remove();
+                $templateContents.find("option.template_option_list").remove();
+                $.tmpl(moduleTmpl, data).appendTo($moduleContents);
+            }
+            if (typeof(moduleValue) == "string") $moduleContents.val(moduleValue);
+            
+            // モジュールが選択されていればコントローラーが選択可能
+            if ($moduleContents.val()) {
+                $controllerContents.find("option.controller_option_list").remove();
+                $.tmpl(controllerTmpl, MODULE_CTL_TMPL[$moduleContents.val()]).appendTo($controllerContents);
+                if (typeof(controllerValue) == "number" || typeof(controllerValue) == "string") $controllerContents.val(controllerValue);
+                interlockTemplate(templateValue);
+            }
+        }
+    
+        // テンプレートを連動
+        function interlockTemplate(templateValue) {
+            var templateTmpl = $("#template_selecter_tmpl");
+            // コントローラーが選択されていればテンプレートが選択可能
+            $templateContents.find("option.template_option_list").remove();
+            $.tmpl(templateTmpl, MODULE_CTL_TMPL[$moduleContents.val()].controllers[$controllerContents.val()]).appendTo($templateContents);
+            if (typeof(templateValue) == "number" || typeof(templateValue) == "string") $templateContents.val(templateValue);
+        }
+    });
+})(jQuery);
+</script>
+<!-- モジュールリストを生成するテンプレート -->
+<script id="module_selecter_tmpl" type="text/x-jquery-tmpl">
+    <option class="module_option_list" value="${module_nm}">${disp_nm}</option>
+</script>
+
+<!-- コントローラーリストを生成するテンプレート -->
+<script id="controller_selecter_tmpl" type="text/x-jquery-tmpl">
+    {{each controllers}}
+        <option class="controller_option_list" value="${$value.module_php_id}">${$value.module_php_nm}</option>
+    {{/each}}
+</script>
+
+<!-- テンプレートを生成するテンプレート -->
+<script id="template_selecter_tmpl" type="text/x-jquery-tmpl">
+    {{each default_templates}}
+        <option class="template_option_list" value="${$value.module_tpl_id}">${$value.module_tpl_nm}</option>
+    {{/each}}
+</script>
+
+{/literal}
+{else}{* 編集画面 *}
+
+<div id="top_fixed">
+    <div id="tool_bar">
+        <ul class="menu_left">
+            <li>
+                <div class="rcms_ui_dropdown" data-isselectbox="true">
+                    <input type="hidden" id="device_type" name="device_type" value="1" />
+                    <button type="button" id="device_selector" data-id="{$smarty.request.device_type}">
+                        {if $smarty.request.device_type == 2}
+                            <span class="devices icon-mob"></span>携帯版
+                        {elseif $smarty.request.device_type == 3}
+                            <span class="devices icon-sp"></span>スマートフォン版
+                        {elseif $smarty.request.device_type == 4}
+                            <span class="devices icon-fb"></span>Facebook版
+                        {elseif $smarty.request.device_type == 5}
+                            <span class="devices icon-app"></span>スマートフォンアプリ版
+                        {else}
+                            <span class="devices icon-pc"></span>PC版
+                        {/if}
+                    </button>
+                    <ul>
+                        <li data-id="1"><span class="devices icon-pc "></span>PC版</li>
+                        <li data-id="2"><span class="devices icon-mob"></span>携帯版</li>
+                        <li data-id="3"><span class="devices icon-sp "></span>スマートフォン版</li>
+                        <li data-id="4"><span class="devices icon-fb "></span>Facebook版</li>
+                        <li data-id="5"><span class="devices icon-app"></span>スマートフォンアプリ版</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                {lang_selector_v2_dropdown
+                    meta=$docmeta link="/management/page/page_edit/page_id=$page_id&popup_mode=1"
+                }
+            </li>
+        </ul>
+        <ul class="menu_right">
+            <li>
+                <div class="rcms_ui_dropdown">
+                    <button id="read_restriction"><span class="icon-lock"></span>閲覧制限なし</button>
+                    <ul>
+                        <li>閲覧制限なし</li>
+                        <li>閲覧制限あり</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="rcms_ui_dropdown">
+                    <button id="etc_setting"><span class="icon-wrench"></span>その他の設定</button>
+                    <ul>
+                        <li id="cssinfo_config">CSS編集</li>
+                        <li id="metainfo_config">メタ情報設定</li>
+                        <li>このページをコピー</li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div><!-- /#tool_bar -->
+</div><!-- /#top_fixed -->
+
+<form action="/management/page/page_edit/" method="post" name="page_data_form" id="page_data_form">
+{rcms_include file="management/messages_box.html" messages=$messages}
+{rcms_include file="management/errors_box.html" errors=$errors}
+
+<div id="main_contents" class="page_edit">
+{* hiddenで値を保持する *}
+<div class="hidden_area" style="display:nane">
+    {* メタ情報 *}
+    <input id="meta_title_hidden" name="title" type="hidden" value="{$pageForm.title}" />
+    <input id="meta_description_hidden" name="description" type="hidden" value="{$pageForm.description}" />
+    <input id="meta_keywords_hidden" name="keywords" type="hidden" value="{$pageForm.keywords}" />
+    
+    {* CSS編集 *}
+    <input id="css_edit_hidden" name="user_css" type="hidden" value="{$pageForm.user_css}" />
+    
+    <input id="layout_template" type="hidden" name="template" value="" />
+    <input id="layout_mobile_template" type="hidden" name="mobile_template" value="" />
+    <input id="layout_smartphone_template" type="hidden" name="smartphone_template" value="" />
+    <input id="layout_social_template" type="hidden" name="social_template" value="" />
+    <input id="layout_mobileapp_template" type="hidden" name="mobileapp_template" value="" />
+    
+    
+    <input id="json_by_modules" name="json_by_modules" type="hidden" value='{$json_by_modules}' />
+    <input type="hidden" name="MODE" value="" />
+    <input type="hidden" name="DG_CODE" value="{$DG_CODE}" />
+    {if $latestRow.page_id != ""}
+      <input type="hidden" name="page_page_id" value="{$latestRow.page_id}" />
+    {/if}
+</div>
+{* hiddenここまで *}
+    {* IEでbox要素が使えないためdivで囲んでネガティブマージンで対応 *}
+    <div id="layout_cells_ie_suport_wrapper">
+        <div id="layout_cells">
+            <div id="layout_cell_drawer" class="vertical_drawer_body">{* cell1 *}
+                <table class="basic_table">
+                    <tr>
+                        <th>{'/label/page_name'|translate}{*ページ名*}</th>
+                        <td>
+                            <input id="page_nm" name="page_nm" type="text" value="{$pageForm.page_nm}" />
+                            <input id="open_flg" name="open_flg" type="checkbox" value="1" {if $pageForm.open_flg}checked="checked"{/if}/><label for="open_flg">このページを表示する</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>URL／SSL</th>
+                        <td>
+                            {if $pageForm.page_id == ""}
+                                {$smarty.const.ROOT_URL} / <input id="page_sysnm" name="page_sysnm" type="text" value="{$pageForm.page_sysnm2}" />
+                            {else}
+                                <input id="page_sysnm" name="page_sysnm" type="hidden" value="{$pageForm.page_sysnm2}"/>
+                                <span style="font-size:130%;font-weight:bold;">{if $pageForm.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{if $pageForm.page_id ne 1}{$pageForm.page_sysnm2}/{/if}</span>
+                            {/if}
+                            {if $smarty.const.ROOT_SSL_URL|substr:0:8 eq 'https://'}
+                              <input id="ssl_flg" name="ssl_flg" type="checkbox" value="1" {if $pageForm.ssl_flg}checked="checked"{/if}/><label for="ssl_flg">SSLを使う</label>
+                            {else}
+                              <input id="ssl_flg" name="ssl_flg" type="hidden" value="0"/>
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>エイリアス</th>
+                        <td>
+                            {if $docmeta.is_primary}
+                              {if $pageForm.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if} / <input name="page_sysnm_alias" type="text" value="{$pageForm.page_sysnm_alias}" placeholder="エイリアスは４階層まで設定出来ます" />
+                            {else}
+                              <input id="page_sysnm_alias" name="page_sysnm_alias" type="hidden" value="{$pageForm.page_sysnm_alias}" placeholder="エイリアスは４階層まで設定出来ます" />
+                              {if $pageForm.ssl_flg}{$smarty.const.ROOT_SSL_URL}{else}{$smarty.const.ROOT_URL}{/if}/{$pageForm.page_sysnm_alias}/
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{'/label/page_forward_url'|translate}{*転送先URL*}</th>
+                        <td>
+                            <input id="page_forward_url" name="page_forward_url" type="text" value="{$pageForm.page_forward_url}" placeholder="{'/modules/page/msg/explain_page_forward_url'|translate}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>表示プション</th>
+                        <td>
+                        {if $pageForm.page_id eq '1'}
+                          <input id="sitemap_flg" name="sitemap_flg" type="hidden" value="1" />
+                          <input id="menu_flg" name="menu_flg" type="hidden" value="1" />
+                          <input id="menu_head_sub_flg" name="menu_head_sub_flg" type="checkbox" value="1" {if $pageForm.menu_head_sub_flg}checked="checked"{/if}/>
+                          <label for="menu_head_sub_flg">{'/label/menu_head_sub'|translate}{*ヘッダサブメニュー*}</label>
+                          <input id="menu_footer_flg" name="menu_footer_flg" type="checkbox" value="1" {if $pageForm.menu_footer_flg}checked="checked"{/if}/>
+                          <label for="menu_footer_flg">{'/label/menu_footer'|translate}{*フッタメニュー*}</label>
+                          <input id="open_flg" name="open_flg" type="hidden" value="1"/>
+                          <input id="mobile_flg" name="mobile_flg" type="hidden" value="1"/>
+                          <input id="smartphone_flg" name="smartphone_flg" type="hidden" value="1"/>
+                          <input id="social_flg" name="social_flg" type="hidden" value="1"/>
+                          <input id="mobileapp_flg" name="mobileapp_flg" type="hidden" value="1"/>
+                        {else}
+                          <input id="sitemap_flg" name="sitemap_flg" type="checkbox" value="1" {if $pageForm.sitemap_flg}checked="checked"{/if} />
+                          <label for="sitemap_flg">{'/label/site_map'|translate}{*サイトマップ*}</label>
+                          <input id="menu_flg" name="menu_flg" type="checkbox" value="1" {if $pageForm.menu_flg}checked="checked"{/if}/>
+                          <label for="menu_flg">{'/label/menu'|translate}{*メニュー*}</label>
+                          <input id="menu_head_sub_flg" name="menu_head_sub_flg" type="checkbox" value="1" {if $pageForm.menu_head_sub_flg}checked="checked"{/if}/>
+                          <label for="menu_head_sub_flg">{'/label/menu_head_sub'|translate}{*ヘッダサブメニュー*}</label>
+                          <input id="menu_footer_flg" name="menu_footer_flg" type="checkbox" value="1" {if $pageForm.menu_footer_flg}checked="checked"{/if}/>
+                          <label for="menu_footer_flg">{'/label/menu_footer'|translate}{*フッタメニュー*}</label>
+                        {/if}
+                          <input id="not_hf_flg" name="not_hf_flg" type="checkbox" value="1" {if $pageForm.not_hf_flg}checked="checked"{/if}/>
+                          <label for="not_hf_flg">{'/label/not_hf_flg'|translate}{*ヘッダフッタ非表示*}</label>
+                          <input id="sitemap_all_list_flg" name="sitemap_all_list_flg" type="checkbox" value="1" {if $pageForm.sitemap_all_list_flg}checked="checked"{/if}/>
+                          <label for="sitemap_all_list_flg">{'/modules/page/label/sitemap_all_list_flg'|translate}{*ヘッダフッタ非表示*}</label>
+                        </td>
+                    </tr>
+                </table>
+            </div><!-- /#layout_cell_drawer -->
+
+            <div id="layout_cell_handle"></div>{* handle *}
+
+            <div id="layout_cell_body">{* cell2 *}
+                <div class="vertical_drawer_switchbtn"></div>
+                <div class="layout_settings_container">
+                    {* pc用*}
+                    <div class="layout_settings_field toggleelements_by_devicetype" data-dev="1">
+                        <div class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" class="device_1_linked_devicetype" />
+                            <button type="button" data-id="1">オリジナルを作成</button>
+                            <ul>
+                                <li data-id="">オリジナルを作成</li>
+                                <li data-id="2">携帯版を使用</li>
+                                <li data-id="3">スマートフォン版を使用</li>
+                                <li data-id="4">facebook版を使用</li>
+                                <li data-id="5">アプリ版を使用</li>
+                            </ul>
+                        </div>
+                        <div class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" name="page_template" class="layout_template_selector" value="{if $pageForm.page_template}{$pageForm.page_template}{else}1{/if}" data-dev="1" /><!--name暫定対応-->
+                            <button type="button" data-id="1">{$arrTemplateType[$pageForm.page_template]}</button>
+                            <ul>
+                                {foreach from=$arrTemplateType key=key item=value}
+                                <li data-id="{if $key >= 100}1{else}{$key}{/if}">{$value}</li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div><!-- .layout_settings_field -->
+                    
+                    {* mobile用 *}
+                    <div class="layout_settings_field toggleelements_by_devicetype" data-dev="2">
+                        <div class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" class="device_2_linked_devicetype" />
+                            <button type="button" data-id="1">オリジナルを作成</button>
+                            <ul>
+                                <li data-id="">オリジナルを作成</li>
+                                <li data-id="1">PC版を使用</li>
+                                <li data-id="3">スマートフォン版を使用</li>
+                                <li data-id="4">facebook版を使用</li>
+                                <li data-id="5">アプリ版を使用</li>
+                            </ul>
+                        </div>
+                        <div name="page_template" class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" name="mobile_template" class="layout_template_selector" value="1" data-dev="2" /><!--name暫定対応-->
+                            <button type="button" data-id="1">1段組</button>
+                            <ul>
+                                <li data-id="1">1段組</li>
+                            </ul>
+                        </div>
+                    </div><!-- .layout_settings_field -->
+                    
+                    {* smartphone用 *}
+                    <div class="layout_settings_field toggleelements_by_devicetype" data-dev="3">
+                        <div class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" class="device_3_linked_devicetype" />
+                            <button type="button" data-id="1">オリジナルを作成</button>
+                            <ul>
+                                <li data-id="">オリジナルを作成</li>
+                                <li data-id="1">PC版を使用</li>
+                                <li data-id="2">携帯版を使用</li>
+                                <li data-id="4">facebook版を使用</li>
+                                <li data-id="5">アプリ版を使用</li>
+                            </ul>
+                        </div>
+                        <div name="page_template" class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" name="smartphone_template" class="layout_template_selector" value="1" data-dev="3" /><!--name暫定対応-->
+                            <button type="button" data-id="1">1段組</button>
+                            <ul>
+                                <li data-id="1">1段組</li>
+                            </ul>
+                        </div>
+                    </div><!-- .layout_settings_field -->
+                    
+                    {* facebook用 *}
+                    <div class="layout_settings_field toggleelements_by_devicetype" data-dev="4">
+                        <div class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" class="device_4_linked_devicetype" />
+                            <button type="button" data-id="1">オリジナルを作成</button>
+                            <ul>
+                                <li data-id="">オリジナルを作成</li>
+                                <li data-id="1">PC版を使用</li>
+                                <li data-id="2">携帯版を使用</li>
+                                <li data-id="3">スマートフォン版を使用</li>
+                                <li data-id="5">アプリ版を使用</li>
+                            </ul>
+                        </div>
+                        <div name="page_template" class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" name="social_template" class="layout_template_selector" value="{if $pageForm.social_template}{$pageForm.social_template}{else}1{/if}" data-dev="4" /><!--name暫定対応-->
+                            <button type="button" data-id="1">{$arrTemplateType[$pageForm.social_template]}</button>
+                            <ul>
+                                {foreach from=$arrTemplateType key=key item=value}
+                                <li data-id="{if $key >= 100}1{else}{$key}{/if}">{$value}</li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div><!-- .layout_settings_field -->
+                    
+                    {* app用 *}
+                    <div class="layout_settings_field toggleelements_by_devicetype" data-dev="5">
+                        <div class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" class="device_5_linked_devicetype" />
+                            <button type="button" data-id="1">オリジナルを作成</button>
+                            <ul>
+                                <li data-id="">オリジナルを作成</li>
+                                <li data-id="1">PC版を使用</li>
+                                <li data-id="2">携帯版を使用</li>
+                                <li data-id="3">スマートフォン版を使用</li>
+                                <li data-id="4">facebook版を使用</li>
+                            </ul>
+                        </div>
+                        <div name="page_template" class="rcms_ui_dropdown" data-isselectbox="true">
+                            <input type="hidden" name="mobileapp_template" class="layout_template_selector" value="{if $pageForm.mobileapp_template}{$pageForm.mobileapp_template}{else}1{/if}" data-dev="5" /><!--name暫定対応-->
+                            <button type="button" data-id="1">{$arrTemplateType[$pageForm.mobileapp_template]}</button>
+                            <ul>
+                                {foreach from=$arrTemplateType key=key item=value}
+                                <li data-id="{if $key >= 100}1{else}{$key}{/if}">{$value}</li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div><!-- .layout_settings_field -->
+                </div><!-- .layout_settings_container -->
+
+                <div class="layout_container">
+                    <!-- PC用レイアウト -->
+                    <div class="layout_field toggleelements_by_devicetype" data-dev="1"></div>
+                    
+                    <!-- mobile用レイアウト -->
+                    <div class="layout_field toggleelements_by_devicetype" data-dev="2"></div>
+                    
+                    <!-- smartphone用レイアウト -->
+                    <div class="layout_field toggleelements_by_devicetype" data-dev="3"></div>
+                    
+                    <!-- facebook用レイアウト -->
+                    <div class="layout_field toggleelements_by_devicetype" data-dev="4"></div>
+                    
+                    <!-- app用レイアウト -->
+                    <div class="layout_field toggleelements_by_devicetype" data-dev="5"></div>
+                </div><!-- .layout_container -->
+            </div><!-- /#layout_cell_body -->
+        </div><!-- /#layout_cells -->
+    </div><!-- /#layout_cells_ie_suport_wrapper -->
+    <div id="module_list">
+        <div id="module_head">
+            {'/modules/vote/label/vote_module_list'|translate}{*モジュール一覧*}
+            <div id="add_module_btn"></div>
+        </div>
+        <div id="module_body">
+            <button type="button" id="add_module_btn_2" class="btn_small btn_default"><span class="icon-add"></span>モジュールを追加</button>
+        </div><!-- /#module_body -->
+    </div><!-- /#module_list -->
+</div><!-- /#main_contents -->
+
+<div id="bottom_fixed">
+
+{*テストコードここから*}
+    <div class="buttonbox">
+        <ul id="buttonbox_ul">
+            <li id="edit_action_update_li">
+                <button type="submit" onclick="this.form.MODE.value='UPDATE';">更新する</button>
+            </li>
+            <li id="edit_action_delete_li">
+                <button type="button" onclick="confirmDelete(this.form)">削除する</button>
+            </li>
+        </ul>
+    </div>
+{*
+    <div class="clear"></div>
+*}
+{*テストコードここまで*}
+{*
+{editActionBox docmeta=$docmeta}{/editActionBox}
+*}
+</div>
+
+<div class="hidden_dialogs" style="display:none">{*名前は暫定*}
+{* メタ情報設定用ダイアログ *}
+    <div id="metainfo_config_edit_field">
+        <table>
+            <tr>
+                <th>{'/label/title'|translate}{*タイトル*}</th>
+                <td>
+                    <input id="meta_title_text" type="text" placeholder="ページの名前" /><br />
+                    <span>&lt;title&gt;タグに指定するタイトルです。ブラウザのタブ等に利用されます。</span>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/overview'|translate}{*概要*}</th>
+                <td>
+                    <input id="meta_description_text" type="text" placeholder="このページはサンプルです" /><br />
+                    <span>&lt;meta name="discription"&gt;タグに指定する概要文です。検索エンジン等に利用されます。</span>
+                </td>
+            </tr>
+            <tr>
+                <th>{'/label/keyword'|translate}{*キーワード*}</th>
+                <td>
+                    <input id="meta_keywords_text" type="text" placeholder="ページの名前" /><br />
+                    <span>&lt;meta name="keywords"&gt;タグに指定するキーワードです。検索エンジン等に利用されます。</span>
+                </td>
+            </tr>
+        </table>
+    </div><!-- /#metainfo_config_edit_field -->
+{* メタ情報設定用ダイアログここまで *}
+{* CSS編集用ダイアログ *}
+    <div id="css_edit_field">
+        <textarea id="css_edit_textarea"></textarea>
+    </div><!-- /#css_edit_field -->
+{* CSS編集用ダイアログここまで *}
+
+<!-- モジュールエディタ -->
+<div id="module_editor">
+    <div id="module_name_area">
+        モジュールタイトル
+        <input class="contents_title" type="text" />
+        <label><input id="module_nm_disp_flg" type="checkbox" />ページに表示する</label>
+    </div>
+    <table class="vertical_division_table">{*暫定的に命名*}
+        <tr>
+            <th>
+                <span class="icon-module"></span>
+                {'/label/module'|translate}／{'/label/controller'|translate}{*モジュール／コントローラー*}
+            </th>
+            <td>
+                <select id="module_contents">
+                    <option value="">- {'/label/module'|translate}{*モジュール*} -</option>
+                </select>
+                <select id="controller_contents">
+                    <option value="">- {'/label/controller'|translate}{*コントローラー*} -</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <span class="icon-controller"></span>
+                {'/label/contents'|translate}{*コンテンツ*}
+            </th>
+            <td>
+                <select id="contents_contents">
+                    <option value="">- {'/label/contents'|translate}{*コンテンツ*} -</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th rowspan="5">
+                <span class="icon-template"></span>
+                {'/label/template_katakana'|translate}{*テンプレート*}
+            </th>
+            <td>
+                <span class="icon-pc"></span>
+                <select id="template_contents">
+                    <option value="">- {'/label/template_katakana'|translate}{*テンプレート*} -</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="icon-mob"></span>
+                <select id="mob_template_contents">
+                    <option value="">- {'/label/template_katakana'|translate}{*テンプレート*} -</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="icon-sp"></span>
+                <select id="sp_template_contents">
+                    <option value="">- {'/label/template_katakana'|translate}{*テンプレート*} -</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="icon-app"></span>
+                <select id="app_template_contents">
+                    <option value="">- {'/label/template_katakana'|translate}{*テンプレート*} -</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="icon-fb"></span>
+                <select id="fb_template_contents">
+                    <option value="">- {'/label/template_katakana'|translate}{*テンプレート*} -</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <div class="module_container">
+        <div class="preview_container">
+            <div class="tape"></div>
+            <div class="preview_content"></div>
+        </div>
+    </div>
+    <input type="text" id="preview_parameter" value="key[]=value" />
+</div>
+<!-- モジュールエディタここまで -->
+
+</div><!-- /.hidden_dialogs -->
+
+</form>
+
+
+{literal}
+
+<script type="text/javascript">
+
+(function($){
+
+    // グローバル定数の設定 (IE,Operaではconstが使えないからvarを使う)
+    var LAYOUT_TABLES = {
+        1:{
+            {/literal}{foreach from=$arrTemplateType key=key item=row name=loop}
+            '{if $key >= 100}{assign var="key" value="1"}{$key}{else}{$key}{/if}' : '{rcms_includelayout no=$key}'{if $smarty.foreach.loop.last}{else},{/if}
+            {/foreach}{literal}
+        },
+        2:{
+            '1' : '<table class="layout_table"><tr><td><div class="target place_main_module" data-place="main_module"></div></td></tr></table>'
+        },
+        3:{
+            '1' : '<table class="layout_table"><tr><td><div class="target place_main_module" data-place="main_module"></div></td></tr></table>'
+        },
+        4:{
+            {/literal}{foreach from=$arrTemplateType key=key item=row name=loop}
+            '{if $key >= 100}{assign var="key" value="1"}{$key}{else}{$key}{/if}' : '{rcms_includelayout no=$key}'{if $smarty.foreach.loop.last}{else},{/if}
+            {/foreach}{literal}
+        },
+        5:{
+            {/literal}{foreach from=$arrTemplateType key=key item=row name=loop}
+            '{if $key >= 100}{assign var="key" value="1"}{$key}{else}{$key}{/if}' : '{rcms_includelayout no=$key}'{if $smarty.foreach.loop.last}{else},{/if}
+            {/foreach}{literal}
+        }
+    };
+    var MODULES = {/literal}{$moduleInfo|@json_encode}{literal};
+    var PLACES  = {
+        1:['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}],
+        2:['main_module'],
+        3:['main_module'],
+        4:['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}],
+        5:['main_module', {/literal}'{$arrSub_module|@array_keys|@join:"','"}'{literal}]
+    };
+
+    // jQueryオブジェクト用のローカル変数を宣言
+    var $devSelector,
+        $mainContainer,
+        $layoutContainers,
+        $layoutFields,
+        $layoutTemplateSelectors,
+        $moduleContents,
+        $controllerContents,
+        $contentsContents,
+        $templateContents,
+        $previewParameter,
+        $moduleList,
+        moduleListTmpl,
+        parameterTmpl;
+    
+    var pageLayoutNodeTmpl;
+    
+    function targetByDev(dev){
+        dev = dev ? dev : $devSelector.val();
+        return $( ".target", $layoutFields.filter("[data-dev="+dev+"]") );
+    }
+    
+    // 要素のjQueryオブジェクトを準備
+    function installElements(){
+        // デバイス切り替え系
+        $devSelector             = $("#device_type");
+        $mainContainer           = $("#layout_cell_body");
+        $layoutContainers        = $(".toggleelements_by_devicetype",$mainContainer);
+        $layoutFields            = $(".layout_field",$mainContainer);
+        $layoutTemplateSelectors = $(".layout_template_selector",$mainContainer);
+        $moduleList              = $("#module_list");
+        
+        // モジュール設定
+        $moduleContents          = $("#module_contents");
+        $controllerContents      = $("#controller_contents");
+        $contentsContents        = $("#contents_contents");
+        $templateContents        = $("#template_contents");
+        $previewParameter        = $("#preview_parameter");
+        
+        // レイアウト系
+        pageLayoutNodeTmpl      = $("#page_layout_node_tmpl");
+        moduleListTmpl          = $("#module_list_tmpl");
+        parameterTmpl           = $("#parameter_tmpl");
+        
+    }
+
+
+    // モジュールの内容のjson
+    var JSON_BY_MODULES = {/literal}{$json_by_modules}{literal};
+    
+    // モジュール、コントローラー、テンプレートのjsonを格納する定数
+    var MODULE_CTL_TMPL;
+    
+    // displayname
+    var MODULE_NAME          = {/literal}{$module_nm_list|@json_encode}{literal};
+    var CONTROLLER_NAME      = {/literal}{$controller_list|@json_encode}{literal};
+    var MODULE_TEMPLATE_NAME = {/literal}{$module_template_list|@json_encode}{literal};
+    var TEMPLATEEDIT_NAME    = {/literal}{$templateedit_list|@json_encode}{literal};
+
+    $(function() {
+
+console.log(JSON_BY_MODULES);
+console.log(MODULE_NAME);
+
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/page/api_module_controller_template/topics_group_flg=1&page_edit_flg=1",
+            dataType : "json",
+            success  : function(obj) {
+console.log(obj);
+                MODULE_CTL_TMPL = obj;
+                interlockModuleController();
+            }
+        });
+
+
+/****************** 初期化処理 ******************/
+
+        // 初期化処理
+        installElements();
+        installEvents();
+        toggleLayoutContainer();
+        sizeChange();
+        
+        // モジュール設定
+        getContents();
+        getTemplates();
+        getMetainfo();
+        drawLayoutTable();
+        initModule();
+
+
+        // モジュールリストの項目を隠す
+        $("#module_list .module_body").hide();
+
+        initModuleList();
+
+
+/****************** プラグインの読み込み ******************/
+
+        // rcmsResizableCellsを適用
+        $("#layout_cells").rcmsResizableCells({
+            cell1         : "#layout_cell_drawer",
+            cell2         : "#layout_cell_body",
+            handle        : "#layout_cell_handle",
+            direction     : "vertical",
+            position      : "relative",
+            cell1MinHeight: $("div.vertical_drawer_body tr:eq(0)").outerHeight() + 1,
+            cell1MaxHeight: $("table.basic_table").height() + 2,
+            switchBtn     : ".vertical_drawer_switchbtn"
+        });
+        
+        // メタ情報設定ダイアログの設定
+        $("#metainfo_config_edit_field").dialog({
+            title     : "{/literal}{'/label/meta_data'|translate}{'/label/setting'|translate}{*メタ情報設定*}{literal}",
+            autoOpen  : false,
+            resizable : true,
+            height    : 300,
+            width     : 500,
+            modal     : true,
+            buttons: {
+                "OK" : function() {
+                    $( this ).dialog( "close" );
+                    // hiddenに値を埋め込む
+                    setMetainfo();
+                },
+                "Cancel" : function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+
+        // CSS編集ダイアログの設定
+        $("#css_edit_field").dialog({
+            title     : "CSS編集",
+            autoOpen  : false,
+            resizable : true,
+            height    : 300,
+            width     : 500,
+            modal     : true,
+            buttons: {
+                "OK" : function() {
+                    $( this ).dialog( "close" );
+                    // hiddenに値を埋め込む
+                    setEditedCSS();
+                },
+                "Cancel" : function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+
+        // rcmsOptionEditorの適用
+        $("#preview_parameter").rcmsOptionEditor({
+            key   : "{/literal}{'/label/parameters'|translate}{literal}",
+            value : "値"
+        });
+
+
+/****************** イベントの登録 ******************/
+
+        // セルの高さを調整
+        $(window).on("resize", sizeChange);
+
+        // モジュール設定の連動
+        $("#module_contents").on("change", interlockModuleController);
+        $("#controller_contents").on("change", interlockTemplate);
+
+        // リストをhoverで光らせる
+        $("#module_list .module").live("hover", putonGlow);
+        $("#module_list .module").live("mouseout", putoutGlow);
+
+        // 開閉アイコンクリックで項目表示
+        $("div.module_head span").live("click", togglemoduleContents);
+
+        // メタ情報ダイアログのポップアップ
+        $("#metainfo_config").on("click",showEditField);
+        $("#cssinfo_config").on("click", showCssEditField);
+
+        // モジュールを追加
+        $("#add_module_btn, #add_module_btn_2").on("click", addModule);
+
+        // モジュールをレイアウトテーブルから除去
+        $(".btn_close").live("click", removeFromLayout);
+
+        // モジュールの編集
+        $(".edit_content_btn").live("click", openModuleEdit);
+        $(".edit_content_btn").live("click", showModuleEditor);
+
+        // デバイスの転用
+        $(".layout_settings_field input").on("change", divertDevice);
+        $("#device_type").on("change", divertDevice);
+
+        // サブミット時に更新したJSONを登録
+        $("form").on("submit", function() {
+            $("#json_by_modules").val(JSON.stringify(JSON_BY_MODULES));
+        });
+    });
+
+
+/****************** 関数の定義 ******************/
+
+    // resizableCellsの外枠の高さ設定
+    function sizeChange() {
+        var cellHeight = $(window).height() - $("#bottom_fixed").height();
+        $("#layout_cells, #module_list").height(cellHeight);
+    }
+
+
+/* --------------- リスト系 --------------- */
+
+    // モジュールリストの初期化（draggable）
+    function initModuleList(){
+        $("#module_body .module").draggable({
+            connectToSortable    : ".target",
+            helper               : "clone",
+            revert               : "invalid",
+            placeholder          : "module_placeholder",
+            forcePlaceholderSize : true
+        });
+    }
+
+    // リストの表示非表示切り替え
+    function togglemoduleContents(event) {
+        // 上の階層からのバブリングによる呼び出しを回避
+        if ($(event.toElement).is($(".icon-opened")) || $(event.toElement).is($(".icon-closed"))) {
+            var body = $(this).parent().next();
+            // アイコンの切り替え
+            if(body.is(":hidden")) {
+                $(this).addClass("icon-opened").removeClass("icon-closed");
+            } else {
+                $(this).addClass("icon-closed").removeClass("icon-opened");
+            }
+            // 内容の表示切り替え
+            body.slideToggle("fast");
+        }
+    }
+
+    // リストをhoverでレイアウト済みの物が光る
+    function putonGlow() {
+        $(".layout_field .module").filter("[data-contents-id=" + $(this).data("contents-id") +"]").addClass("glow selected");
+        $(this).find(".module_head").addClass("selected");
+    }
+
+    // mouseoutで光ったのを消す
+    function putoutGlow() {
+        $(this).find(".module_head").removeClass("selected");
+        $(".layout_field .module").removeClass("glow selected");
+    }
+
+/* --------------- モジュール設定系 --------------- */
+
+    // モジュール設定画面のモジュールセレクタとコントローラセレクタの連動
+    function interlockModuleController(moduleValue, controllerValue, templateValue) {
+        // 各テンプレート
+        var moduleTmpl     = $("#module_selecter_tmpl");
+        var controllerTmpl = $("#controller_selecter_tmpl");
+        
+        // テンプレート用にデータを加工
+        var data = [];
+        $.each(MODULE_CTL_TMPL, function(key) {
+            MODULE_CTL_TMPL[key].module_nm = key;
+            data.push(this);
+        });
+        // モジュールが選択されていなければ初期化
+        if (!$moduleContents.val()) {
+            $moduleContents.find("option.module_option_list").remove();
+            $controllerContents.find("option.controller_option_list").remove();
+            $templateContents.find("option.template_option_list").remove();
+            $.tmpl(moduleTmpl, data).appendTo($moduleContents);
+        }
+        // 引数にモジュールが指定されていればその値を選択済みにする
+        if (typeof(moduleValue) == "string") $moduleContents.val(moduleValue);
+        
+        // ext_paramがある場合は表示
+        if ($moduleContents.val() != "" && MODULE_CTL_TMPL[$moduleContents.val()].module_nm.match(/topics/)) {
+            if ($previewParameter.val() != "") {
+                $previewParameter.val($previewParameter.val() + "&");
+            }
+            $previewParameter.val($previewParameter.val() + MODULE_CTL_TMPL[$moduleContents.val()].ext_param);
+        }
+        
+        // モジュールが選択されていればコントローラーが選択可能
+        if ($moduleContents.val()) {
+            // コンテンツの表示切り替え
+            var contents = $contentsContents.parents("tr");
+            if ($moduleContents.val().match(/topics/)) {
+                contents.show();
+            } else {
+                contents.hide();
+            }
+            $controllerContents.find("option.controller_option_list").remove();
+            $.tmpl(controllerTmpl, MODULE_CTL_TMPL[$moduleContents.val()]).appendTo($controllerContents);
+            if (typeof(controllerValue) == "number" || typeof(controllerValue) == "string") $controllerContents.val(controllerValue);
+            interlockTemplate(templateValue);
+        }
+    }
+
+    // テンプレートを連動
+    function interlockTemplate(templateValue) {
+        var templateTmpl = $("#template_selecter_tmpl");
+        // コントローラーが選択されていればテンプレートが選択可能
+        $templateContents.find("option.template_option_list").remove();
+        $.tmpl(templateTmpl, MODULE_CTL_TMPL[$moduleContents.val()].controllers[$controllerContents.val()]).appendTo($templateContents);
+        if (typeof(templateValue) == "number" || typeof(templateValue) == "string") $templateContents.val(templateValue);
+    }
+
+    // モジュール設定画面のコンテンツ取得
+    function getContents() {
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/topics/admin_contents_selector/",
+            dataType : "json",
+            data     : "request_node_key=1&topics_group_id=1",
+            success  : function(obj) {
+                console.log(obj);
+            }
+        });
+    }
+
+    // モジュール設定画面のテンプレート取得
+    function getTemplates() {
+        $.ajax({
+            type     : "POST",
+            url      : "/direct/templateedit/api_templateedit_list/all_template_flg=1",
+            dataType : "json",
+            success  : function(obj) {
+                console.log(obj);
+            }
+        });
+    }
+
+    // パラメータをテーブルに表示
+    function parameterToTable(contentsId) {
+        var keyValues = [];
+        var params    = JSON_BY_MODULES[contentsId].param.split("&");
+        // 各要素をハッシュ化
+        $.each(params, function() {
+            var tmpArray = this.split("=");
+            keyValues.push({key : tmpArray[0].replace("[]", ""), value : tmpArray[1]});
+        });
+        return parameterTmpl.tmpl(keyValues);
+    }
+
+    // モジュール、コントローラー、テンプレートを表示
+    function updateModuleCtlTmpl(contentsId, moduleVal, controllerVal, templateVal) {
+        // 挿入するためのリストの要素を用意
+        var module     = $moduleList.find(".module[data-contents-id=" + contentsId + "]").find(".module_nm");
+        var controller = $moduleList.find(".module[data-contents-id=" + contentsId + "]").find(".controller_nm");
+        var template   = $moduleList.find(".module[data-contents-id=" + contentsId + "]").find(".template_nm");
+        // displaynameを取得してtextを更新
+        module.text(MODULE_NAME[moduleVal]);
+        controller.text(CONTROLLER_NAME[controllerVal]);
+        template.text(MODULE_TEMPLATE_NAME[templateVal]);
+    }
+
+/* --------------- 設定系 --------------- */
+
+    // メタ情報設定をhiddenからダイアログへセットする
+    function getMetainfo() {
+        var title       = $("#meta_title_hidden").val();
+        var description = $("#meta_description_hidden").val();
+        var keywords    = $("#meta_keywords_hidden").val();
+        $("#meta_title_text").val(title);
+        $("#meta_description_text").val(description);
+        $("#meta_keywords_text").val(keywords);
+    }
+
+    // メタ情報設定をダイアログからhiddenへセットする
+    function setMetainfo() {
+        var title       = $("#meta_title_text").val();
+        var description = $("#meta_description_text").val();
+        var keywords    = $("#meta_keywords_text").val();
+        $("#meta_title_hidden").val(title);
+        $("#meta_description_hidden").val(description);
+        $("#meta_keywords_hidden").val(keywords);
+    }
+
+    // メタ情報設定ダイアログを表示
+    function showEditField(){
+        getMetainfo();
+        $("#metainfo_config_edit_field").dialog("open");
+    }
+
+    // CSS編集内容をダイアログへセットする
+    function getEditedCSS() {
+        var hiddenVal = $("#css_edit_hidden").val();
+        $("#css_edit_textarea").val(hiddenVal);
+    }
+
+    // CSS編集内容をダイアログからhiddenへセットする
+    function setEditedCSS() {
+        var dialogVal = $("#css_edit_textarea").val();
+        $("#css_edit_hidden").val(dialogVal);
+    }
+
+    // CSS編集ダイアログを表示
+    function showCssEditField() {
+        getEditedCSS();
+        $("#css_edit_field").dialog("open");
+    }
+
+/* --------------- モジュールの追加削除系 --------------- */
+
+    var newModuleCount = 0;
+
+    // 既にあるモジュールを描画
+    function initModule() {
+        var dev = $devSelector.val();
+        $.each(JSON_BY_MODULES, function() {
+            // displaynameを登録
+            this["module_nm"]       = MODULE_NAME[this.module_type];
+            this["controller_nm"]   = CONTROLLER_NAME[this.contents_type];
+
+            // tenplateedit_idを優先してなければmodule_tenplate_id
+            var templateeditId = TEMPLATEEDIT_NAME[this.device_type[dev].templateedit_id];
+            var moduleTemplId  = MODULE_TEMPLATE_NAME[this.device_type[dev].module_template_id];
+            this["template"]   = (templateeditId) ? templateeditId : moduleTemplId;
+
+            // テンプレートを用意
+            var html = moduleListTmpl.tmpl(this);
+            var param = parameterToTable(this.contents_id);
+            // パラメータを追加して詳細を隠す
+            html.find(".parameter").append(param);
+            html.find(".module_body").hide();
+            
+            $("#add_module_btn_2").before(html);
+            showPlacedDevices();
+        });
+    }
+
+    // 新規モジュールを追加
+    function addModule() {
+        var newId = "new_" + newModuleCount;
+        // JSON_BY_MODULESに既に存在している場合はインクリメント
+        if (JSON_BY_MODULES[newId]) {
+            newModuleCount++;
+            addModule();
+        } else {
+            // リストにモジュールの要素を追加
+            var newContents = {contents_id: newId};
+            var html = moduleListTmpl.tmpl(newContents);
+            html.find(".module_body").hide();
+            $("#add_module_btn_2").before(html);
+            
+            // JSONに要素を追加
+            JSON_BY_MODULES[newId] = {
+                admin_order_no : null,
+                contents_id    : newId,
+                contents_title : null,
+                contents_type  : null,
+                device_type    : {
+                    1 : {
+                        module_template_id : null,
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    2 : {
+                        module_template_id : null,
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    3 : {
+                        module_template_id : null,
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    4 : {
+                        module_template_id : null,
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    },
+                    5 : {
+                        module_template_id : null,
+                        place              : null,
+                        templateedit_id    : null,
+                        weight             : null
+                    }
+                },
+                is_main_flg             : false,
+                module_nm_disp_flg : null,
+                module_type        : "",
+                param              : ""
+            };
+            newModuleCount++;
+        }
+        initModuleList();
+    }
+
+    // モジュールをレイアウトテーブルから除去
+    function removeFromLayout() {
+        var dev = $devSelector.val();
+        var target = $(this).parents(".module");
+        var id     = target.data("contents-id");
+        // jsonのplaceとweightをnullにする
+        JSON_BY_MODULES[id].device_type[dev].place  = null;
+        JSON_BY_MODULES[id].device_type[dev].weight = null;
+        target.fadeOut(drawLayoutTable);
+    }
+
+    // モジュールを削除
+    function removeModule(contentsId) {
+        delete JSON_BY_MODULES[contentsId];
+        $moduleList.find(".module[data-contents-id=" + contentsId + "]").remove();
+        drawLayoutTable();
+    }
+
+    // 配置済みのデバイスをリストに表示
+    function showPlacedDevices() {
+        $moduleList.find(".placed").remove();
+        $.each(JSON_BY_MODULES, function(id) {
+            var icons  = [];
+            var target = $moduleList.find(".module[data-contents-id=" + id + "] .module_head");
+            // 配置済みのデバイスアイコンを配列に登録
+            if (this.device_type[1].place) {
+                icons.push($('<span class="placed icon-pc" />'));
+            }
+            if (this.device_type[2].place) {
+                icons.push($('<span class="placed icon-mob" />'));
+            }
+            if (this.device_type[3].place) {
+                icons.push($('<span class="placed icon-sp" />'));
+            }
+            if (this.device_type[4].place) {
+                icons.push($('<span class="placed icon-fb" />'));
+            }
+            if (this.device_type[5].place) {
+                icons.push($('<span class="placed icon-app" />'));
+            }
+            // デバイスアイコンを表示
+            $.each(icons, function() {
+                target.append(this);
+            });
+        });
+    }
+
+
+    // テンプレートの転用の選択に合わせてアイコン画像を表示する
+    function divertDevice() {
+        // 転用するデバイス番号を定義
+        var currentNum = $("#device_type").val();
+        var anotherNum = $(".device_" + currentNum + "_linked_devicetype").val();
+        
+        $("#common_all_message").remove();
+        if (anotherNum == "") {
+            $(".layout_table").show();
+            $(".layout_template_selector").parent().show();
+        } else {
+            $(".layout_table").hide();
+            $(".layout_template_selector").parent().hide();
+            // テンプレートの定義
+            var data = {
+                currentNum: currentNum,
+                anotherNum: anotherNum,
+                currentDeviceName: deviceName(currentNum),
+                anotherDeviceName: deviceName(anotherNum)
+            };
+            var anotherDeviceImage = $("#rcms_common_another_device_tmpl").tmpl(data);
+
+            // valueの値を表示用文字列に変換するインナー関数
+            function deviceName(num) {
+                switch (num) {
+                    case "1" : return "PC";
+                    case "2" : return "モバイル";
+                    case "3" : return "スマートフォン";
+                    case "4" : return "facebook";
+                    case "5" : return "App";
+                }
+            }
+            var html = $("#rcms_common_another_device_tmpl").tmpl(data);
+            $(".layout_container").append(html);
+        }
+    }
+
+
+/************************** 既存コード ********************************/
+
+    
+    // イベントの登録
+    function installEvents(){
+        
+        // デバイスの切り替え
+        $devSelector.change(toggleLayoutContainer);
+        $layoutTemplateSelectors.change(drawLayoutTable);
+    }
+
+    // モジュールエディタの表示
+    function showModuleEditor(){
+        // メインモジュールのときは削除ボタンを表示しない
+        if (JSON_BY_MODULES[$(this).parents(".module").data("contents-id")].is_main_flg) {
+            $( "#module_editor" ).dialog({
+                title     : "モジュール設定",
+                resizable : true,
+                height    : 500,
+                width     : 600,
+                modal     : true,
+                buttons: {
+                    Ok : function() {
+                        $( this ).dialog( "close" );
+                        editModule($(this).data("contents-id"));
+                    },
+                    Cancel: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        } else {
+            $( "#module_editor" ).dialog({
+                title     : "モジュール設定",
+                resizable : true,
+                height    : 500,
+                width     : 600,
+                modal     : true,
+                buttons: {
+                    "削除" : function() { //@todo i18n
+                        if(window.confirm("このモジュールを削除すると、すべてのデバイスで表示されなくなります。削除しますか？")){ //@todo i18n
+                            $( this ).dialog( "close" );
+                            removeModule($(this).data("contents-id"));
+                        }else{
+                            
+                        }
+                    },
+                    Ok : function() {
+                        $( this ).dialog( "close" );
+                        editModule($(this).data("contents-id"));
+                    },
+                    Cancel: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        }
+    }
+ 
+    // モジュール設定を開くときに選択したモジュールの設定内容を表示する
+    function openModuleEdit() {
+        var contentsId  = $(this).parents(".module").data("contents-id");
+        
+        // 選択したidの要素をJSONから取得し登録
+        $("#module_editor").data("contents-id", contentsId);
+        $("#module_editor .contents_title").val(JSON_BY_MODULES[contentsId].contents_title);
+        $previewParameter.val(JSON_BY_MODULES[contentsId].param).trigger("change");
+        
+        if (JSON_BY_MODULES[contentsId].module_nm_disp_flg) {
+            $("#module_nm_disp_flg").attr("checked", "checked");
+        } else {
+            $("#module_nm_disp_flg").removeAttr("checked", "checked");
+        }
+        
+        // モジュールとコントローラーの連携
+        var obj = JSON_BY_MODULES[contentsId];
+        interlockModuleController(obj.module_type, obj.contents_type, obj.device_type[$devSelector.val()].module_template_id);
+        
+        // コンテンツの表示切り替え
+        var contents = $contentsContents.parents("tr");
+        if (JSON_BY_MODULES[contentsId].module_type.match(/topics/)) {
+            contents.show();
+        } else {
+            contents.hide();
+        }
+    }
+    
+    // モジュール設定の編集内容をJSONに登録
+    function editModule(contentsId) {
+        var targetModule = $("div[data-contents-id=" + contentsId + "]");
+        // タイトルを登録
+        var title = $("#module_editor .contents_title").val();
+        JSON_BY_MODULES[contentsId]["contents_title"] = title;
+        targetModule.find(".contents_title").text(title);
+        
+        // ページに表示or非表示
+        if ($("#module_nm_disp_flg").is(":checked")) {
+            JSON_BY_MODULES[contentsId].module_nm_disp_flg = 1;
+        } else {
+            JSON_BY_MODULES[contentsId].module_nm_disp_flg = 0;
+        }
+        
+        // モジュール、コントローラー、テンプレートを登録
+        var mVal = $moduleContents.val();
+        var cVal = $controllerContents.val();
+        var tVal = $templateContents.val();
+        JSON_BY_MODULES[contentsId].module_type = mVal;
+        JSON_BY_MODULES[contentsId].contents_type = cVal;
+        JSON_BY_MODULES[contentsId].device_type[$devSelector.val()].module_template_id = tVal;
+        updateModuleCtlTmpl(contentsId, mVal, cVal, tVal);
+        
+        // パラメータを登録
+        JSON_BY_MODULES[contentsId].param = $("#preview_parameter").val();
+        targetModule.find(".parameter").empty().append(parameterToTable(contentsId));
+        
+        drawLayoutTable();
+    }
+    
+    // LayoutContainerの切り替え
+    function toggleLayoutContainer(){
+        var dev = $devSelector.val();
+        $layoutContainers.hide();
+        $layoutContainers.filter("[data-dev="+dev+"]").show();
+        drawLayoutTable();
+    }
+    
+    // レイアウトテーブルを描画
+    function drawLayoutTable(){
+    
+        var dev      = $devSelector.val();
+        var layoutId = $layoutTemplateSelectors.filter("[data-dev="+dev+"]").val();
+
+        // テーブルの枠組みを描画
+        $layoutFields.filter("[data-dev="+dev+"]").empty().html(LAYOUT_TABLES[dev][layoutId]);
+        
+        // JSONのplace情報をもとに描画
+        var places =  {};
+
+        // placeをキーとしたオブジェクトを生成
+        $.each(JSON_BY_MODULES, function() {
+            places[this.device_type[dev].place] = [];
+        });
+
+        // place毎にweightとDOM要素を登録
+        $.each(JSON_BY_MODULES,function(){
+            // displaynameを登録
+            this["module_nm"]       = MODULE_NAME[this.module_type];
+            this["controller_nm"]   = CONTROLLER_NAME[this.contents_type];
+
+            // tenplateedit_idを優先してなければmodule_tenplate_id
+            var templateeditId = TEMPLATEEDIT_NAME[this.device_type[dev].templateedit_id];
+            var moduleTemplId  = MODULE_TEMPLATE_NAME[this.device_type[dev].module_template_id];
+            this["template"] = (templateeditId) ? templateeditId : moduleTemplId;
+
+            var html = pageLayoutNodeTmpl.tmpl(this);
+            places[this.device_type[dev].place][this.device_type[dev].weight] = html;
+        });
+        // モジュールをレイアウトテーブルに配置
+        $.each(places,function(place){
+            // weightでソート
+            places[place] = keySort(this);
+            // eachで回すと値の入っていないplaces[place][0]まで走査してしまうためforを使用
+            for (var weight in places[place]) {
+                $( ".place_" + place , $layoutFields.filter("[data-dev="+dev+"]") ).prepend(this[weight]);
+            }
+        });
+        
+        // renumberWeightの中でdrawLayoutTableを呼ぶとレンダリング処理の違いによりIEでうまく描画されないため、stopで再描画
+        $(".layout_table .target").sortable({
+            connectWith          : ".target",
+            update               : renumberWeight,
+            stop                 : drawLayoutTable,
+            placeholder          : "content_node_placeholder",
+            forcePlaceholderSize : true
+        });
+        // 配置済みのデバイスアイコンを表示
+        showPlacedDevices();
+    }
+    
+    function renumberWeight() {
+
+        var dev = $devSelector.val();
+        
+        // placeごとのループ
+        var place    = $(this).data("place");
+        var contents = $(this).find(".module");
+
+        var n = contents.size();
+        $.each(contents, function(){
+            // place内でのループ
+            var id = $(this).data("contents-id");
+            JSON_BY_MODULES[id].device_type[dev].place = place;
+            JSON_BY_MODULES[id].device_type[dev].weight = n;
+            n--;
+        });
+    }
+    
+    // keyでソートする
+    function keySort(hash,sort){
+        var sortFunc = sort || "sort";
+        var keys = [];
+        var newHash = {};
+        for (var k in hash) keys.push(k);
+        keys[sortFunc]();
+        var length = keys.length;
+        for(var i = 0; i < length; i++){
+            newHash[keys[i]] = hash[keys[i]];
+        }
+        return newHash;	
+    }
+
+})(jQuery);
+</script>
+
+<!-- テンプレートの定義   rcms_ui_customizable_template_picker_tmpl-->
+<script id="page_layout_node_tmpl" type="text/x-jquery-tmpl">
+    <div class="module" data-contents-id="${contents_id}" >
+        <div class="module_head">
+            {{if is_main_flg}}
+                <span class="rcms_label warning small">メイン</span>
+            {{/if}}
+            <span class="contents_title">${contents_title}</span>
+            <button type="button" class="btn_close"></button>
+        </div>
+        <div class="module_body">
+            <ul>
+                <li><span class="module_nm">${module_nm}</span>／<span class="controller_nm">${controller_nm}</span></li>
+                <li><span class="template_nm">${template}</span></li>
+            </ul>
+            <button type="button" class="btn_small btn_default edit_content_btn"><span class="icon-setting"></span>{/literal}{'/label/edit'|translate}{*編集*}{literal}</button>
+        </div>
+    </div>
+</script>
+
+<script id="module_list_tmpl" type="text/x-jquery-tmpl">
+    <div class="module" data-contents-id="${contents_id}">
+        <div class="module_head">
+            <span class="icon-closed"></span>
+            {{if is_main_flg}}
+                <span class="rcms_label warning">メイン</span>
+            {{/if}}
+            <span class="contents_title">${contents_title}</span>
+            <button type="button" class="btn_small btn_default edit_content_btn">
+                <span class="icon-setting"></span>{/literal}{'/label/edit'|translate}{*編集*}{literal}
+            </button>
+        </div>
+        <div class="module_body">
+            <table class="basic_table_small">
+                <thead>
+                    <th colspan="2">基本情報</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>{/literal}{'/label/module'|translate}{*モジュール*}{literal}</th>
+                        <td class="module_nm">${module_nm}</td>
+                    </tr>
+                    <tr>
+                        <th>{/literal}{'/label/controller'|translate}{*コントローラー*}{literal}</th>
+                        <td class="controller_nm">${controller_nm}</td>
+                    </tr>
+                    <tr>
+                        <th>{/literal}{'/label/template_katakana'|translate}{*テンプレート*}{literal}</th>
+                        <td class="template_nm">${template}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="basic_table_small">
+                <thead>
+                    <th colspan="4">パラメータ</th>
+                </thead>
+                <tbody class="parameter"></tbody>
+            </table>
+        </div>
+    </div>
+</script>
+
+<!-- パラメータの転用テンプレート -->
+<script id="parameter_tmpl" type="text/x-jquery-tmpl">
+    <tr>
+        <th>${key}</th>
+        <td>${value}</td>
+    </tr>
+</script>
+
+<!-- デバイスの転用テンプレート -->
+<script id="rcms_common_another_device_tmpl" type="text/x-jquery-tmpl">
+<div id="common_all_message">
+    <div id="common_images">
+        <div id="common_this_device" class="large_${currentNum}"></div>
+        <div id="common_arrow" class="large_arrow"></div>
+        <div id="common_target_device" class="large_${anotherNum}"></div>
+    </div>
+    <div id="common_message_text">
+        <span class="common_device_font">${currentDeviceName}版</span>では
+        <span class="common_device_font">${anotherDeviceName}版</span>を使用します
+    </div>
+</div>
+</script>
+
+<!-- モジュールリストを生成するテンプレート -->
+<script id="module_selecter_tmpl" type="text/x-jquery-tmpl">
+    <option class="module_option_list" value="${module_nm}">${disp_nm}</option>
+</script>
+
+<!-- コントローラーリストを生成するテンプレート -->
+<script id="controller_selecter_tmpl" type="text/x-jquery-tmpl">
+    {{each controllers}}
+        <option class="controller_option_list" value="${$value.module_php_id}">${$value.module_php_nm}</option>
+    {{/each}}
+</script>
+
+<!-- テンプレートを生成するテンプレート -->
+<script id="template_selecter_tmpl" type="text/x-jquery-tmpl">
+    {{each default_templates}}
+        <option class="template_option_list" value="${$value.module_tpl_id}">${$value.module_tpl_nm}</option>
+    {{/each}}
+</script>
+
+{/literal}
+
+{/if}{* 編集画面ここまで *}

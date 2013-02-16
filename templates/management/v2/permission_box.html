@@ -80,14 +80,17 @@
     */
     function setStatusMsg(){
 
-        var msg = "";
+        var msg         = "";
+        var msg_toolbar = "";
         var secure_flg   = $("#permission_settings_edit_field [name^='secure_flg']:checked").val();
         var editable_flg = $("#permission_settings_edit_field [name^='editable_flg']:checked").val();
         
         if(secure_flg == 'on'){
-            msg = "{/literal}{'/label/limited'|translate}{*制限有り*}{literal}";
+            msg         = "{/literal}{'/label/limited'|translate}{*制限有り*}{literal}";
+            msg_toolbar = "<span class=\"icon-lock\"></span>閲覧制限あり";
         }else{
-            msg = "{/literal}{'/label/unlimited'|translate}{*制限無し*}{literal}";
+            msg         = "{/literal}{'/label/unlimited'|translate}{*制限無し*}{literal}";
+            msg_toolbar = "<span class=\"icon-lock\"></span>閲覧制限なし";
         }
 
         msg += " / ";
@@ -99,6 +102,7 @@
         }
 
         $("#permission_settings .status_msg").html(msg);
+        $("#permission_settings .toolbar_status_msg").html(msg_toolbar);
     }
 
     /**
@@ -133,9 +137,19 @@
 
 {/literal}
 
+{if $type == "tool_bar"}
+{*ツールバー用インターフェイス*}
+<div id="permission_settings" class="rcms_ui_dropdown">
+    <button type="button" class="toolbar_status_msg"><span class="icon-lock"></span>閲覧制限なし</button>
+    <ul>
+        <li>閲覧制限を設定</li>
+    </ul>
+{else}
+{*メタセッティング用インターフェイス*}
 <div id="permission_settings" class="metasettings">
     <h1 class="title">{'/label/view_edit_limit'|translate}{*閲覧・編集制限*}</h1>
     <p class="status_msg">status message here.</p>
+{/if}
 
     {* 送信用データ *}
     <div id="permission_settings_form_field" style="display:none;">
@@ -149,8 +163,6 @@
             <input type="hidden" name="editable_flg" value="{if $formData.editable_flg != 'on'}off{else}on{/if}"/>
             <select name="editable_group[]" size="8" style="width: 150px" multiple="multiple">{html_options options=$arrAdmin selected=$formData.editable_group}</select>
         {/if}
-
-
     </div>
 
     {* 編集画面 *}
@@ -197,7 +209,7 @@
             </div>
           </td>
         </tr>
-{if $auth.staticcontents_admin.update}
+{if $canUpdate}
         <tr>
           <th>{'/label/editing_limit'|translate}</th>{*編集制限*}
           <td>
@@ -219,6 +231,7 @@
           </td>
         </tr>
 {/if}
+
       </table>
     </div>
 </div>
