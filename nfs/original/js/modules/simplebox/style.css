@@ -1,0 +1,118 @@
+#Simplebox { position: absolute; left: 0px; top: 0px; width: 0px; height: 0px; }
+
+#Simplebox_Menu, #Simplebox_Editor {
+	position: absolute; left: 300px; top: 50px;
+	z-index: 100;
+}
+
+#Simplebox .item {
+	position: absolute;
+	width: 150px;
+	cursor: move;
+	margin: 0px;
+}
+
+#Simplebox .item textarea { width: 99%; }
+
+.SB_Style01 {
+	background-image: url(/images/modules/simplebox/01bg.gif);
+	padding:8px 5px 8px 7px;
+	text-align: left;
+	font-size: 14px;
+	color:#999;
+	border:1px solid #ccc;
+}
+
+.SB_Style02 {
+	background-color:#000;
+	padding:8px 5px 8px 7px;
+	text-align: left;
+	font-size: 14px;
+	color:#FFF;
+	border:1px dotted #FFF;
+}
+
+.SB_Style03 {
+	background-image: url(/images/modules/simplebox/03bg.gif);
+	padding:9px 5px 9px 7px;
+	text-align: left;
+	font-size: 14px;
+	color:#C60;
+	border-right:1px solid #F93;
+	border-bottom:1px solid #F93;
+}
+
+.SB_Style04 {
+	background-image: url(/images/modules/simplebox/04bg.gif);
+	padding:10px 5px 10px 5px;
+	text-align: left;
+	font-size: 14px;
+	color:#999;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+}
+
+.SB_Style05 {
+	background-image: url(/images/modules/simplebox/05bg.gif);
+	padding:10px 5px 10px 5px;
+	text-align: left;
+	font-size: 14px;
+	color:#963;
+	border-right:1px solid #963;
+	border-bottom:1px solid #963;
+}
+
+.SB_Style06 {
+	background-image: url(/images/modules/simplebox/06bg.gif);
+	padding:10px 5px 10px 5px;
+	text-align: left;
+	font-size: 14px;
+	color:#069;
+	border-right:1px solid #39C;
+	border-bottom:1px solid #39C;
+}
+
+.SB_Style07 {
+	background-image: url(/images/modules/simplebox/07bg.gif);
+	background-repeat: repeat-x;
+	background-color:#fff; 
+	text-align: left;
+	font-size: 14px;
+	color:#069;
+	padding:10px 5px 10px 5px;
+	border-right:1px solid #9cc;
+	border-bottom:1px solid #9cc;
+}
+
+.SB_Style08 {
+	background-image: url(/images/modules/simplebox/08bg.gif);
+	background-color:#fff; 
+	text-align: left;
+	font-size: 14px;
+	color:#966;
+	padding:10px 5px 10px 5px;
+	border:1px solid #fcc;
+}
+
+.SB_Style09 {
+	background-image: url(/images/modules/simplebox/09bg.gif);
+	background-color:#fff; 
+	text-align: left;
+	font-size: 14px;
+	color:#FFC;
+	padding:10px 5px 10px 5px;
+	border-right:1px solid #600;
+	border-bottom:1px solid #600;
+}
+
+.SB_Style10 {
+	background-image: url(/images/modules/simplebox/10bg.gif);
+	background-repeat: repeat-x;
+	background-color:#1F73B9; 
+	text-align: left;
+	font-size: 14px;
+	color:#fff;
+	padding:10px 5px 10px 5px;
+	border-right:1px solid #036;
+	border-bottom:1px solid #036;
+}

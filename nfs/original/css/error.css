@@ -1,0 +1,14 @@
+body { color:#777; line-height:20px; }
+#site { width:600px; margin:0 auto; }
+
+h2 { font-size:100%; color:#900; background:url(/images/common/caution.jpg) no-repeat; padding:15px 0 10px 60px; margin:0 0 0 12px; height:20px; }
+
+#list { font-size: 80%; }
+#list-header { background:url(/images/common/top.gif) no-repeat; height:23px; }
+#list-conetnts { background:url(/images/common/center.gif) repeat-y; padding:0 10px; }
+p.des { margin:15px 10px; }
+ul { margin-bottom:0; }
+
+
+#list-footer { background:url(/images/common/bottom.gif) no-repeat; height:23px; }
+

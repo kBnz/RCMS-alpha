@@ -1,0 +1,331 @@
+<HTML
+><HEAD
+><TITLE
+>命名規約</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><LINK
+REL="PREVIOUS"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><LINK
+REL="NEXT"
+TITLE="プラグインの記述"
+HREF="plugins.writing.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="plugins.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 16章プラグインによる Smarty の拡張</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.writing.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="plugins.naming.conventions"
+></A
+>命名規約</H1
+><P
+>&#13;     プラグインファイルとその関数が Smarty
+     によって認識されるためには特有の命名規約に従わなければなりません。
+    </P
+><P
+>&#13;     <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>プラグインファイル</B
+></SPAN
+> は次のように指定します。
+     <A
+NAME="AEN7206"
+></A
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+>&#13;       <TT
+CLASS="filename"
+>&#13;        <TT
+CLASS="replaceable"
+><I
+>type</I
+></TT
+>.<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+>.php
+       </TT
+>
+      </P
+></BLOCKQUOTE
+>
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;     <TT
+CLASS="literal"
+>type</TT
+> は次のプラグインタイプのうちのいずれか１つです。
+     <P
+></P
+><UL
+COMPACT="COMPACT"
+><LI
+><SPAN
+>function</SPAN
+></LI
+><LI
+><SPAN
+>modifier</SPAN
+></LI
+><LI
+><SPAN
+>block</SPAN
+></LI
+><LI
+><SPAN
+>compiler</SPAN
+></LI
+><LI
+><SPAN
+>prefilter</SPAN
+></LI
+><LI
+><SPAN
+>postfilter</SPAN
+></LI
+><LI
+><SPAN
+>outputfilter</SPAN
+></LI
+><LI
+><SPAN
+>resource</SPAN
+></LI
+><LI
+><SPAN
+>insert</SPAN
+></LI
+></UL
+>
+    </P
+></LI
+><LI
+><P
+>&#13;     <TT
+CLASS="literal"
+>name</TT
+> には英数字とアンダースコアのみ使用できます。
+     <A
+HREF="http://php.net/language.variables"
+TARGET="_top"
+>PHP の変数</A
+>
+     を参照してください。
+    </P
+></LI
+><LI
+><P
+>&#13;     例: <TT
+CLASS="filename"
+>function.html_select_date.php</TT
+>、
+     <TT
+CLASS="filename"
+>resource.db.php</TT
+>、
+     <TT
+CLASS="filename"
+>modifier.spacify.php</TT
+>。
+    </P
+></LI
+></UL
+><P
+>&#13;     PHP ファイル内で定義する <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>プラグイン関数</B
+></SPAN
+>
+     は次のように指定します。
+     <A
+NAME="AEN7245"
+></A
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+>&#13;       <B
+CLASS="function"
+>smarty_<TT
+CLASS="replaceable"
+><I
+>type</I
+></TT
+>_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+>()</B
+>
+      </P
+></BLOCKQUOTE
+>
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;     <TT
+CLASS="literal"
+>type</TT
+> および <TT
+CLASS="literal"
+>name</TT
+>
+     の意味は前述したものと同じです。
+    </P
+></LI
+><LI
+><P
+>&#13;     たとえば <TT
+CLASS="varname"
+>foo</TT
+> という名前の修飾子の場合は、
+     <TT
+CLASS="literal"
+>function smarty_modifier_foo()</TT
+> となります。
+    </P
+></LI
+></UL
+><P
+>&#13;     必要なプラグインファイルが見当たらないか、
+     ファイル名又はプラグイン関数名が不正な場合 Smarty は適切なエラーメッセージを出力します。
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.writing.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>プラグインによる Smarty の拡張</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>プラグインの記述</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

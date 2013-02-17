@@ -1,0 +1,187 @@
+@charset "UTF-8";
+
+
+/********************************
+Layout
+*********************************/
+
+body{
+background:#fff;
+color:#444444;
+text-align:center;
+line-height:0;
+font-size:0;
+}
+
+
+#Contents{
+width:500px;
+text-align:left;
+margin:0 auto;
+background:url(/images/partner/green/fraside_layout.png) repeat-y 10px 0;
+}
+
+
+/********************************
+Link
+*********************************/
+a,
+a:link,
+a:visited {
+color:#0033CC;
+text-decoration:none;
+}
+
+a:hover,
+a:active {
+color:#0033CC;
+text-decoration:underline;
+}
+
+#Contents #botbox p a{
+color:#fff;
+text-decoration:underline;
+}
+
+#Contents #botbox p a:hover{
+color:#fff;
+text-decoration:none;
+}
+
+
+/********************************
+CONTENTS
+*********************************/
+
+#Contents #bgbox{
+width:500px;
+background:url(/images/partner/green/bg_layout.png) no-repeat 50% 0;
+}
+
+#Contents #topbox{
+text-align:center;
+padding:8px 0 31px 0
+}
+
+#Contents #topbox dl dt{
+padding:15px 0 15px 0
+}
+
+#Contents #cenbox{
+padding:0 0 5px 40px;
+}
+
+#Contents #cenbox dl{
+width:420px;
+}
+
+#Contents #cenbox dl dt{
+float:left;
+width:105px;
+padding:0 0 7px 0;
+}
+
+#Contents #cenbox dl dd{
+float:left;
+width:315px;
+font-size:12px;
+line-height:1.4em;
+padding:0 0 7px 0;
+}
+
+#Contents #cenbox dl dd span{
+color:#167C3B;
+padding:0 10px 0 0;
+}
+
+#Contents #cenbox ul{
+text-align:right;
+padding:5px 26px 0 0
+}
+
+#Contents #cenbox ul li{
+float:right;
+padding:0 0 0 20px;
+}
+
+#Contents #cenbox ul .raul{
+float:right;
+padding:22px 0 0 0;
+}
+
+
+#Contents #botbox{
+background:#289410;
+margin:0 0 0 14px;
+padding:10px;
+width:452px;
+}
+
+#Contents #botbox p{
+font-size:12px;
+line-height:1.4em;
+color:#fff;
+}
+
+#Contents #botbox dl{
+width:452px;
+padding:10px 0 0 0;
+}
+
+#Contents #botbox dl dt{
+float:left;
+padding:14px 0 0 0;
+}
+
+#Contents #botbox dl dd{
+float:right;
+}
+
+
+
+/********************************
+license_error
+*********************************/
+
+#Contents #topbox.error dl dd.error_txt{
+font-size:14px;
+line-height:1.4em;
+text-align:left;
+color:#cc0000;
+padding:0 0 0 35px;
+font-weight:bold;
+}
+
+#Contents #topbox.error{
+padding:8px 0 10px 0
+}
+
+#Contents #errorbox{
+padding:0 40px 5px 40px;
+font-size:12px;
+line-height:1.4em;
+}
+
+#Contents #errorbox ul{
+border:1px solid #289410;
+padding:15px 20px 5px 20px;
+margin-bottom:15px;
+}
+
+#Contents #errorbox ul li{
+list-style-type:disc;
+margin:0 0 10px 30px;
+}
+
+#Contents #errorbox .infobox{
+border:1px solid #289410;
+padding:15px 30px;
+background-color:#ffffcc;
+margin:5px 0;
+}
+
+#Contents #errorbox .infobox table td{
+padding:0 7px;
+}
+
+

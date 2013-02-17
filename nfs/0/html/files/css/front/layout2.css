@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+------------------------------------------------------------ */
+#container {
+ width:100%;
+ text-align:left;
+}
+
+#header {
+}
+
+#navi {
+}
+
+#footpath {
+}
+
+#contents {
+}
+
+#top_contents {
+}
+
+#main_contents {
+ width:100%;
+ float:left;
+ margin-right:-235px; 
+}
+
+#sub_module3,
+#main_module,
+#sub_module4 {
+ margin-right:250px;
+}
+
+#side_contents_right {
+ width:235px;
+ float:left;
+}
+
+#bottom_contents {
+ width:100%;
+ clear:left;
+}
+
+#footer {
+ width:100%;
+ clear:left;
+}

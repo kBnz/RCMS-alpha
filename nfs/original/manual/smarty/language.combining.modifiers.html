@@ -1,0 +1,223 @@
+<HTML
+><HEAD
+><TITLE
+>修飾子の連結</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><LINK
+REL="PREVIOUS"
+TITLE="wordwrap"
+HREF="language.modifier.wordwrap.html"><LINK
+REL="NEXT"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.modifier.wordwrap.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="language.combining.modifiers"
+></A
+>第 6章修飾子の連結</H1
+><P
+>&#13;  変数には複数の修飾子を適用できます。
+  それらは左から右に連結された順に適用されます。 
+  各修飾子は、<TT
+CLASS="literal"
+>|</TT
+> (パイプ) キャラクタで連結しなければなりません。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN1551"
+></A
+><P
+><B
+>例 6-1. 修飾子の連結</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'articleTitle'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Smokers&nbsp;are&nbsp;Productive,&nbsp;but&nbsp;Death&nbsp;Cuts&nbsp;Efficiency.'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;テンプレート
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{$articleTitle}
+{$articleTitle|upper|spacify}
+{$articleTitle|lower|spacify|truncate}
+{$articleTitle|lower|truncate:30|spacify}
+{$articleTitle|lower|spacify|truncate:30:". . ."}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;  出力
+ </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Smokers are Productive, but Death Cuts Efficiency.
+S M O K E R S   A R ....snip....  H   C U T S   E F F I C I E N C Y .
+s m o k e r s   a r ....snip....  b u t   d e a t h   c u t s...
+s m o k e r s   a r e   p r o d u c t i v e ,   b u t . . .
+s m o k e r s   a r e   p. . .</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.modifier.wordwrap.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>wordwrap</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>組み込み関数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

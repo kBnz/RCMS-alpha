@@ -1,0 +1,380 @@
+<HTML
+><HEAD
+><TITLE
+>リソースプラグイン</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><LINK
+REL="PREVIOUS"
+TITLE="アウトプットフィルタプラグイン"
+HREF="plugins.outputfilters.html"><LINK
+REL="NEXT"
+TITLE="インサートプラグイン"
+HREF="plugins.inserts.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="plugins.outputfilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 16章プラグインによる Smarty の拡張</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.inserts.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="plugins.resources"
+></A
+>リソースプラグイン</H1
+><P
+>&#13;     リソースプラグインは、テンプレートソースやPHPスクリプトのコンポーネントを
+     Smarty に提供する一般的な方法と意図されています
+     （例： データベース, LDAP, 共有メモリ, ソケット等）。
+    </P
+><P
+>&#13;     各種リソースのために４つの関数を登録する必要があります。
+     これらの関数の最初のパラメータには要求されたリソースが渡され、
+     最後のパラメータには Smarty のオブジェクトが渡されます。
+     残りのパラメータは関数によって異なります。
+    </P
+><DIV
+CLASS="funcsynopsis"
+><A
+NAME="AEN7483"
+></A
+><P
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>bool <B
+CLASS="function"
+>smarty_resource_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+>_source</B
+></CODE
+> (string $rsrc_name, string &#38;$source, object &#38;$smarty)</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>bool <B
+CLASS="function"
+>smarty_resource_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+>_timestamp</B
+></CODE
+> (string $rsrc_name, int &#38;$timestamp, object &#38;$smarty)</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>bool <B
+CLASS="function"
+>smarty_resource_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+>_secure</B
+></CODE
+> (string $rsrc_name, object &#38;$smarty)</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>bool <B
+CLASS="function"
+>smarty_resource_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+>_trusted</B
+></CODE
+> (string $rsrc_name, object &#38;$smarty)</CODE
+></P
+><P
+></P
+></DIV
+><P
+></P
+><UL
+><LI
+><P
+>&#13;     １つめの関数 <TT
+CLASS="literal"
+>source()</TT
+> ではリソースを取得します。
+     第２パラメータ <TT
+CLASS="parameter"
+><I
+>$source</I
+></TT
+>
+     は参照で渡され、ここに結果が格納されます。
+     戻り値は、リソースの取得に成功すれば <TT
+CLASS="constant"
+>TRUE</TT
+>、
+     それ以外は <TT
+CLASS="constant"
+>FALSE</TT
+> となります。
+    </P
+></LI
+><LI
+><P
+>&#13;     ２つめの関数 <TT
+CLASS="literal"
+>timestamp()</TT
+> は、
+     要求されたリソースが最後に修正された時間(UNIXタイムスタンプ)を取得します。
+     第２パラメータ <TT
+CLASS="parameter"
+><I
+>$timestamp</I
+></TT
+> は参照で渡され、
+     ここにタイムスタンプが格納されます。タイムスタンプが取得できれば
+     <TT
+CLASS="constant"
+>TRUE</TT
+>、それ以外は <TT
+CLASS="constant"
+>FALSE</TT
+> を返します。
+    </P
+></LI
+><LI
+><P
+>&#13;     ３つめの関数 <TT
+CLASS="literal"
+>secure()</TT
+> は、
+     要求されたリソースがセキュアであるかどうかに応じて <TT
+CLASS="constant"
+>TRUE</TT
+> 又は <TT
+CLASS="constant"
+>FALSE</TT
+> を返します。
+     この関数はテンプレートリソースのためにだけ用いられますが、定義する必要があります。
+    </P
+></LI
+><LI
+><P
+>&#13;     ４つめの関数 <TT
+CLASS="literal"
+>trusted()</TT
+> は、
+     要求されたリソースが信用できるかどうかに応じて <TT
+CLASS="constant"
+>TRUE</TT
+> 又は <TT
+CLASS="constant"
+>FALSE</TT
+> を返します。
+     この関数を使用するのは、<A
+HREF="language.function.include.php.html"
+>&#13;     <TT
+CLASS="varname"
+>{include_php}</TT
+></A
+> タグあるいは
+     <A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>
+     タグで <TT
+CLASS="parameter"
+><I
+>src</I
+></TT
+> 属性によって要求された PHP
+     スクリプトコンポーネントのみです。
+     しかし、テンプレートリソースであっても定義する必要があります。
+    </P
+></LI
+></UL
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7548"
+></A
+><P
+><B
+>例 16-10. リソースプラグイン</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">/*<br />&nbsp;*&nbsp;Smarty&nbsp;plugin<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*&nbsp;File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resource.db.php<br />&nbsp;*&nbsp;Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resource<br />&nbsp;*&nbsp;Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db<br />&nbsp;*&nbsp;Purpose:&nbsp;&nbsp;データベースからテンプレートを取得する<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*/<br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">smarty_resource_db_source</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$tpl_source</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;ここでデータベースを呼び出し、<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;$tpl_source&nbsp;に代入します<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SQL</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">query</span><span style="color: #007700">(</span><span style="color: #DD0000">"select&nbsp;tpl_source<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;my_table<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;tpl_name='$tpl_name'"</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">num_rows</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tpl_source&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">record</span><span style="color: #007700">[</span><span style="color: #DD0000">'tpl_source'</span><span style="color: #007700">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">smarty_resource_db_timestamp</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$tpl_timestamp</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;ここでデータベースを呼び出し、$tpl_timestampに代入します<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SQL</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">query</span><span style="color: #007700">(</span><span style="color: #DD0000">"select&nbsp;tpl_timestamp<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;my_table<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;tpl_name='$tpl_name'"</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">num_rows</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tpl_timestamp&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">record</span><span style="color: #007700">[</span><span style="color: #DD0000">'tpl_timestamp'</span><span style="color: #007700">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">smarty_resource_db_secure</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;全てのテンプレートがセキュアであるとみなします<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">smarty_resource_db_trusted</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;テンプレートでは使用しません<br /></span><span style="color: #007700">}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13; <A
+HREF="api.register.resource.html"
+><TT
+CLASS="varname"
+>register_resource()</TT
+></A
+>
+ および
+ <A
+HREF="api.unregister.resource.html"
+><TT
+CLASS="varname"
+>unregister_resource()</TT
+></A
+>
+ も参照してください。
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plugins.outputfilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.inserts.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>アウトプットフィルタプラグイン</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>インサートプラグイン</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,320 @@
+@charset "UTF-8";
+
+/*----------------------------------------
+  レイアウト
+------------------------------------------*/
+#easy_wrap {
+	width: 955px;
+	margin: 0 auto;
+	background: url(/images/management/blue/bg_easy_navi.gif) repeat-y;
+}
+#easy_wrap #easy_navi {
+	width: 155px;
+	float: left;
+	margin: 15px 20px 15px 0;
+	border-top: 4px solid #3DA7C5;
+	font-size: 13px;
+}
+#easy_wrap #content {
+	padding-top: 10px;
+	margin: 0 0 50px 0;
+	float: left;
+}
+div#header {
+	width: 955px;
+}
+
+/*----------------------------------------
+  メニュー
+------------------------------------------*/
+#topnav_001 a {
+	display: block;
+	padding: 10px 10px 10px 38px;
+	width: 107px;
+}
+#topnav_001 a:hover,
+#topnav_001.topnav_001_cur a {
+	background-position: -251px -554px;
+}
+#topnav_002 a {
+	display: block;
+	height: 34px;
+}
+#topnav_003 a {
+	display: block;
+	height: 34px;
+}
+#topnav_004 a {
+	display: block;
+	height: 34px;
+}
+#topnav_005 a {
+	display: block;
+	height: 34px;
+}
+#topnav_006 a {
+	display: block;
+	height: 34px;
+}
+
+#easy_navi a:link,
+#easy_navi a:visited {
+	color: #333;
+}
+#easy_navi a:hover,
+#easy_navi dd.cur a:link,
+#easy_navi dd.cur a:visited,
+#topnav_001.topnav_001_cur a:link,
+#topnav_001.topnav_001_cur a:visited {
+	color: #0084B4;
+}
+#easy_navi dt,
+#easy_navi dd {
+	margin-bottom: 1px;
+	width: 155px;
+}
+#easy_navi dd.menu_dd {
+	border-bottom: 1px solid #ccc;
+}
+#easy_navi dd.menu_dd a {
+	background: url(/images/management/blue/bg_rcms.gif) -630px -27px;
+	display: block;
+	padding: 0 10px 0 0;
+	width: 145px;
+	word-break: break-all;
+}
+#easy_navi dd.menu_dd a:hover,
+#easy_navi dd.cur a {
+	background-position: -630px -120px;
+}
+#easy_navi dd.menu_dd a span {
+	display: block;
+	padding: 10px 0 10px 48px;
+}
+#easy_navi ul {
+	margin-top: 15px;
+}
+#easy_navi li {
+	width: 130px;
+	height: 30px;
+	margin: 0 auto 5px auto;
+}
+
+.host {
+	height: 33px;
+	margin: 5px 0px 0px 0px;
+	border-bottom: none;
+	background: url(/images/management/blue/bg_rcms.gif) 0px -630px no-repeat;
+}
+.host h2 {
+	background: none;
+	padding: 7px 5px 0px 60px;
+	margin-right: 0;
+	width: 700px;
+	float: none;
+}
+
+.easy_menu_img {
+	margin-bottom: 30px;
+}
+.easy_menu_img p {
+	margin-bottom: 10px;
+}
+.easy_menu_img p.hint {
+	margin-bottom: 2px;
+}
+
+/*----------------------------------------
+  メニュー画像
+------------------------------------------*/
+#easy_navi dd.menu_dd a span {
+		background: url(/images/management/easy_menu_icon.gif) no-repeat;
+		background-position: 9999px 0 ;
+}
+
+#easy_navi dd.accesscount a span {background-position: 8px 0 ;}
+#easy_navi dd.bbs a span {background-position: 6px -35px ;}
+#easy_navi dd.blog a span,
+#easy_navi dd.listenerblog a span {background-position: 6px -70px ;}
+#easy_navi dd.calendar a span {background-position: 6px -104px ;}
+#easy_navi dd.comment a span {background-position: 7px -140px ;}
+#easy_navi dd.gamerugby a span,
+#easy_navi dd.leaguerugby a span {background-position: 6px -174px ;}
+#easy_navi dd.gameamefoot a span {background-position: 6px -209px ;}
+#easy_navi dd.gamebaseball a span,
+#easy_navi dd.leaguebaseball a span {background-position: 6px -246px ;}
+#easy_navi dd.gamesoccer a span {background-position: 6px -280px ;}
+#easy_navi dd.gamebasket a span {background-position: 6px -315px ;}
+#easy_navi dd.gamefutsal a span {background-position: 6px -350px ;}
+#easy_navi dd.gamemlacrosse a span {background-position: 6px -385px ;}
+#easy_navi dd.gameflacrosse a span {background-position: 6px -449px ;}
+#easy_navi dd.gamevolley a span {background-position: 6px -515px ;}
+#easy_navi dd.gamesimple a span,
+#easy_navi dd.convention a span  {background-position: 7px -581px ;}
+#easy_navi dd.gametennis a span {background-position: 6px -616px ;}
+#easy_navi dd.gamejyudou a span {background-position: 6px -650px ;}
+#easy_navi dd.gametabletennis a span {background-position: 6px -717px ;}
+#easy_navi dd.inquiry a span {background-position: 6px -752px ;}
+#easy_navi dd.keyword a span {background-position: 6px -784px ;}
+#easy_navi dd.link a span {background-position: 7px -821px ;}
+#easy_navi dd.liveinfo a span {background-position: 7px -856px ;}
+#easy_navi dd.location a span {background-position: 6px -889px;}
+#easy_navi dd.login_history a span {background-position: 6px -925px ;}
+#easy_navi dd.community a span {background-position: 6px -960px ;}
+#easy_navi dd.magazine a span {background-position: 6px -995px ;}
+#easy_navi dd.master a span {background-position: 7px -1030px ;}
+#easy_navi dd.music a span {background-position: 7px -1065px ;}
+#easy_navi dd.movie a span {background-position: 6px -1100px ;}
+#easy_navi dd.musicartist a span {background-position: 6px -1135px ;}
+#easy_navi dd.musicshop a span {background-position: 6px -1170px ;}
+#easy_navi dd.member a span {background-position: 6px -1205px ;}
+#easy_navi dd.ml a span,
+#easy_navi dd.mail a span {background-position: 6px -1240px ;}
+#easy_navi dd.page a span {background-position: 6px -1276px ;}
+#easy_navi dd.photo a span {background-position: 6px -1310px ;}
+#easy_navi dd.rss a span {background-position: 6px -1345px;}
+#easy_navi dd.season a span {background-position: 6px -1379px ;}
+#easy_navi dd.staticcontents a span {background-position: 6px -3866px;}
+#easy_navi dd.staticpage a span {background-position: 7px -1450px ;}
+#easy_navi dd.survey a span {background-position: 6px -1485px ;}
+#easy_navi dd.tb a span {background-position: 7px -1520px ;}
+#easy_navi dd.teamrugby a span,
+#easy_navi dd.teamamefoot a span,
+#easy_navi dd.teamsoccer a span,
+#easy_navi dd.teambaseball a span,
+#easy_navi dd.teambasket a span,
+#easy_navi dd.teamfutsal a span,
+#easy_navi dd.teammlacrosse a span,
+#easy_navi dd.teamflacrosse a span,
+#easy_navi dd.teamvolley a span,
+#easy_navi dd.teamjyudou a span,
+#easy_navi dd.teamtennis a span {background-position: 6px -1555px;}
+#easy_navi dd.topics a span {background-position: 6px -3739px ;}
+#easy_navi dd.site a span {background-position: 6px -1620px ;}
+#easy_navi dd.design a span,
+#easy_navi dd.moduleedit a span  {background-position: 7px -1655px ;}
+#easy_navi dd.tasklist a span {background-position: 6px -1688px; ;}
+#easy_navi dd.group a span {background-position: 6px -1725px ;}
+#easy_navi dd.headerfooter a span {background-position: 6px -1760px ;}
+#easy_navi dd.memberregist a span {background-position: 6px -1795px ;}
+#easy_navi dd.updatehistory a span {background-position: 6px -1830px ;}
+#easy_navi dd.layout a span {background-position: 6px -1865px ;}
+#easy_navi dd.fileserver a span {background-position: 6px -1900px ;}
+#easy_navi dd.jobs a span,
+#easy_navi dd.irj_jobs a span {background-position: 7px -1936px ;}
+#easy_navi dd.program a span {background-position: 6px -1970px ;}
+#easy_navi dd.companyinfo a span,
+#easy_navi dd.companyhistory a span {background-position: 7px -2006px;}
+#easy_navi dd.seminar a span {background-position: 6px -2041px ;}
+#easy_navi dd.reserve a span {background-position: 6px -2075px;}
+
+#easy_navi dd.parts a span {background-position: 6px -2111px ;}
+#easy_navi dd.intro a span {background-position: 6px -2145px ;}
+#easy_navi dd.charge a span {background-position: 6px -2180px ;}
+#easy_navi dd.banner a span {background-position: 7px -2215px ;}
+#easy_navi dd.help a span {background-position: 6px -2250px ;}
+#easy_navi dd.templateedit a span,
+#easy_navi dd.mailtemplateedit a span {background-position: 6px -2284px ;}
+#easy_navi dd.seo a span {background-position: 6px -2350px ;}
+#easy_navi dd.menu a span {background-position: 6px -2385px ;}
+#easy_navi dd.sns a span {background-position: 6px -2420px ;}
+#easy_navi dd.catalog a span {background-position: 6px -3623px ;}
+#easy_navi dd.develop a span {background-position: 6px -2455px ;}
+#easy_navi dd.supportforum a span {background-position: 6px -2490px ;}
+#easy_navi dd.api_hotpepper a span,
+#easy_navi dd.api_gnavi a span {background-position: 6px -2526px ;}
+#easy_navi dd.api_photozou a span {background-position: 6px -2561px ;}
+#easy_navi dd.mobile a span {background-position: 6px -2596px ;}
+#easy_navi dd.package a span {background-position: 6px -2629px ;}
+#easy_navi dd.rcms a span {background-position: 6px -2665px ;}
+#easy_navi dd.oemadmin a span {background-position: 6px -2699px ;}
+#easy_navi dd.simplebox a span {background-position: 7px -2735px ;}
+#easy_navi dd.cart a span,
+#easy_navi dd.shopping a span {background-position: 6px -2770px ;}
+#easy_navi dd.simple_file a span {background-position: 6px -2808px ;}
+#easy_navi dd.output a span {background-position: 6px -2870px ;}
+#easy_navi dd.realestate a span {background-position: 6px -2906px ;}
+#easy_navi dd.api_general a span {background-position: 6px -2940px ;}
+#easy_navi dd.api_nicovideo a span {background-position: 6px -2974px ;}
+#easy_navi dd.api_youtube a span {background-position: 6px -3009px ;}
+#easy_navi dd.navigation a span {background-position: 6px -3044px ;}
+#easy_navi dd.mixi a span {background-position: 6px -3080px ;}
+#easy_navi dd.lpo a span {background-position: 6px -3115px ;}
+#easy_navi dd.restaurant a span {background-position: 6px -3151px ;}
+#easy_navi dd.restaurant_menu a span {background-position: 6px -3186px ;}
+#easy_navi dd.coupon a span {background-position: 6px -3220px ;}
+#easy_navi dd.csvtable a span {background-position: 6px -3255px ;}
+#easy_navi dd.qrcode a span {background-position: 6px -3290px ;}
+#easy_navi dd.socialbookmark a span {background-position: 6px -3325px ;}
+#easy_navi dd.onetime a span {background-position: 6px -3390px ;}
+#easy_navi dd.approvalflow a span {background-position: 6px -3425px ;}
+#easy_navi dd.multilang a span {background-position: 6px -3491px ;}
+#easy_navi dd.api_yahoo a span {background-position: 6px -3522px ;}
+#easy_navi dd.api_twitter a span {background-position: 6px -3557px ;}
+#easy_navi dd.manual a span {background-position: 6px -3591px ;}
+#easy_navi dd.pageredirect a span {background-position: 6px -3772px ;}
+#easy_navi dd.tag a span {background-position: 6px -4104px ;}
+#easy_navi dd.social a span {background-position: 6px -3805px ;}
+#easy_navi dd.api_facebook a span {background-position: 6px -4068px ;}
+#easy_navi dd.pageredirect a span {background-position: 6px -3990px ;}
+#easy_navi dd.a span {background-position: 6px -515px ;}
+
+
+/*----------------------------------------
+  TOP ショートカットメニュー
+------------------------------------------*/
+.shortcut {
+	margin-bottom: 15px;
+}
+.shortcut h3,
+.sitemap_easy h3 {
+	background: url(/images/management/blue/bg_rcms.gif) 0 -660px no-repeat;
+	padding: 4px 0 4px 10px;
+	color: #fff;
+	font-size: 100% !important;
+	font-weight: bold;
+	margin-bottom:15px;
+}
+
+.shortcut ul.dropdown li.topics a {
+	background: url(/images/management/icon_s/topics_s.gif) no-repeat center top;
+}
+.shortcut ul.dropdown li.blog a {
+	background: url(/images/management/icon_s/blog_s.gif) no-repeat center top;
+}
+.shortcut ul.dropdown li.page a {
+	background: url(/images/management/icon_s/page_s.gif) no-repeat center top;
+}
+.shortcut ul.dropdown li.moduleedit a {
+	background: url(/images/management/icon_s/moduleedit_s.gif) no-repeat center top;
+}
+
+ul.dropdown li {
+	float: left;
+	zoom: 1;
+}
+ul.dropdown li a {
+	width: 70px;
+	display: block;
+	float: left;
+	margin-right: 15px;
+	text-align: center;
+	padding-top: 38px;
+	height: 25px;
+	line-height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

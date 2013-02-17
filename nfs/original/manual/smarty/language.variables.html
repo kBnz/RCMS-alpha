@@ -1,0 +1,596 @@
+<HTML
+><HEAD
+><TITLE
+>変数</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><LINK
+REL="PREVIOUS"
+TITLE="Smarty の構文解析を回避する"
+HREF="language.escaping.html"><LINK
+REL="NEXT"
+TITLE="設定ファイルから読み込まれた変数"
+HREF="language.config.variables.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.escaping.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.config.variables.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="language.variables"
+></A
+>第 4章変数</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="language.variables.html#language.assigned.variables"
+>PHP から割り当てられた変数</A
+></DT
+><DT
+><A
+HREF="language.config.variables.html"
+>設定ファイルから読み込まれた変数</A
+></DT
+><DT
+><A
+HREF="language.variables.smarty.html"
+>予約変数 {$smarty}</A
+></DT
+></DL
+></DIV
+><P
+>&#13;  Smarty は色々な種類の変数を持っています。変数の種類は接頭辞の記号によって決まります
+  (記号によって囲まれる場合もあります)。
+ </P
+><P
+>&#13;  Smarty 変数は、その値を直接表示したり
+  <A
+HREF="language.syntax.functions.html"
+>関数</A
+> の引数や
+  <A
+HREF="language.syntax.attributes.html"
+>属性</A
+>、
+  <A
+HREF="language.modifiers.html"
+>修飾子</A
+>、
+  そして条件式の内部などで使用されたりします。
+  変数の値を表示するには、それを単純に
+  <A
+HREF="variable.left.delimiter.html"
+>デリミタ</A
+>
+  で囲み、デリミタ内に変数のみが含まれるようにします。
+<TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN452"
+></A
+><P
+><B
+>例 4-1. 変数の例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{$Name}
+
+{$product.part_no} &#60;b&#62;{$product.description}&#60;/b&#62;
+
+{$Contacts[row].Phone}
+
+&#60;body bgcolor="{#bgcolor#}"&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+>
+<DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>ヒント: </B
+>Smarty 変数の値を手っ取り早く調べるには、
+<A
+HREF="chapter.debugging.console.html"
+>デバッギングコンソール</A
+> を使用するとよいでしょう。
+</P
+></BLOCKQUOTE
+></DIV
+>
+ </P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.assigned.variables"
+></A
+>PHP から割り当てられた変数</H1
+><P
+>&#13;  PHP から <A
+HREF="api.assign.html"
+>割り当てられた</A
+> 変数は、
+  (php と同様に) 先頭にドル記号 (<TT
+CLASS="literal"
+>$</TT
+>) をつける事で参照できます。
+  テンプレート内で
+  <A
+HREF="language.custom.functions.html#language.function.assign"
+><TT
+CLASS="varname"
+>{assign}</TT
+></A
+>
+  関数を用いて割り当てられた変数もこの方法で表示されます。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN466"
+></A
+><P
+><B
+>例 4-2. 割り当てられた変数</B
+></P
+><P
+> php script</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br />$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">();<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'firstname'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Doug'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'lastname'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Evans'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'meetingPlace'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'New&nbsp;York'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;      一方、<TT
+CLASS="filename"
+>index.tpl</TT
+> の内容はこのようになります。
+     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>Hello {$firstname} {$lastname}, glad to see you can make it.
+&#60;br /&#62;
+{* これは動作しません。変数名は大文字小文字を区別するからです。 *}
+This weeks meeting is in {$meetingplace}.
+{* こちらは動作します *}
+This weeks meeting is in {$meetingPlace}.</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   出力は次のようになります。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Hello Doug Evans, glad to see you can make it.
+&#60;br /&#62;
+This weeks meeting is in .
+This weeks meeting is in New York.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.assoc.arrays"
+></A
+>連想配列</H2
+><P
+>&#13;   PHP から割り当てられた連想配列を参照することもできます。
+   この場合は、'.' (ピリオド) 記号の後にキーを指定します。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN478"
+></A
+><P
+><B
+>例 4-3. 連想配列の値にアクセスする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'Contacts'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;array(</span><span style="color: #DD0000">'fax'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'555-222-9876'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'email'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'zaphod@slartibartfast.example.com'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'phone'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;array(</span><span style="color: #DD0000">'home'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'555-444-3333'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cell'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'555-111-1234'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;    一方、<TT
+CLASS="filename"
+>index.tpl</TT
+> の内容はこのようになります。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{$Contacts.fax}&#60;br /&#62;
+{$Contacts.email}&#60;br /&#62;
+{* you can print arrays of arrays as well *}
+{$Contacts.phone.home}&#60;br /&#62;
+{$Contacts.phone.cell}&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    出力は次のようになります。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>555-222-9876&#60;br /&#62;
+zaphod@slartibartfast.example.com&#60;br /&#62;
+555-444-3333&#60;br /&#62;
+555-111-1234&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.array.indexes"
+></A
+>配列のインデックス</H2
+><P
+>&#13;   配列に対してインデックスでアクセスすることもできます。
+   これは PHP 本来の構文と同じです。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN489"
+></A
+><P
+><B
+>例 4-4. インデックスによって配列にアクセスする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'Contacts'</span><span style="color: #007700">,&nbsp;array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'555-222-9876'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'zaphod@slartibartfast.example.com'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(</span><span style="color: #DD0000">'555-444-3333'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'555-111-1234'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;));<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;    一方、<TT
+CLASS="filename"
+>index.tpl</TT
+> の内容はこのようになります。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{$Contacts[0]}&#60;br /&#62;
+{$Contacts[1]}&#60;br /&#62;
+{* you can print arrays of arrays as well *}
+{$Contacts[2][0]}&#60;br /&#62;
+{$Contacts[2][1]}&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    出力は次のようになります。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>555-222-9876&#60;br /&#62;
+zaphod@slartibartfast.example.com&#60;br /&#62;
+555-444-3333&#60;br /&#62;
+555-111-1234&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.objects"
+></A
+>オブジェクト</H2
+><P
+>&#13;   PHP から割り当てられた <A
+HREF="advanced.features.html#advanced.features.objects"
+>オブジェクト</A
+>
+   のプロパティにアクセスするには、<TT
+CLASS="literal"
+>-&#62;</TT
+>
+   記号の後にプロパティ名を指定します。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN502"
+></A
+><P
+><B
+>例 4-5. オブジェクトのプロパティにアクセスする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>name:  {$person-&#62;name}&#60;br /&#62;
+email: {$person-&#62;email}&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    出力は次のようになります。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>name:  Zaphod Beeblebrox&#60;br /&#62;
+email: zaphod@slartibartfast.example.com&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.escaping.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.config.variables.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Smarty の構文解析を回避する</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>設定ファイルから読み込まれた変数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

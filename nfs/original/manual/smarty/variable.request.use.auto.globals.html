@@ -1,0 +1,204 @@
+<HTML
+><HEAD
+><TITLE
+>$request_use_auto_globals</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$request_vars_order"
+HREF="variable.request.vars.order.html"><LINK
+REL="NEXT"
+TITLE="$error_reporting"
+HREF="variable.error.reporting.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.request.vars.order.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.error.reporting.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.request.use.auto.globals"
+></A
+>$request_use_auto_globals</H1
+><P
+>&#13;   Smarty が、PHP の <TT
+CLASS="literal"
+>$HTTP_*_VARS[]</TT
+>
+   を使用するのか (<TT
+CLASS="constant"
+>FALSE</TT
+> の場合) あるいは <TT
+CLASS="literal"
+>$_*[]</TT
+>
+   を使用するのか (<TT
+CLASS="constant"
+>TRUE</TT
+> の場合) を指定します。デフォルトでは
+   <TT
+CLASS="literal"
+>$_*[]</TT
+> を使用します。これは、テンプレートで
+   <A
+HREF="language.variables.smarty.html"
+>&#13;   <TT
+CLASS="literal"
+>{$smarty.request.*}, {$smarty.get.*}</TT
+></A
+>
+   などを使用する際に影響します。
+      </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+       <TT
+CLASS="literal"
+>$request_use_auto_globals を true</TT
+>
+       に設定すると
+       <A
+HREF="variable.request.vars.order.html"
+>&#13;       <TT
+CLASS="parameter"
+><I
+>$request_vars_order</I
+></TT
+></A
+>
+       はこうかを及ぼさず、PHP の設定値
+       <TT
+CLASS="literal"
+>gpc_order</TT
+> を使用します。
+   </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.request.vars.order.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.error.reporting.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$request_vars_order</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$error_reporting</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

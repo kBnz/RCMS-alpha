@@ -1,0 +1,274 @@
+<HTML
+><HEAD
+><TITLE
+>$security_settings</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$secure_dir"
+HREF="variable.secure.dir.html"><LINK
+REL="NEXT"
+TITLE="$trusted_dir"
+HREF="variable.trusted.dir.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.secure.dir.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.trusted.dir.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.security.settings"
+></A
+>$security_settings</H1
+><P
+>&#13;<A
+HREF="variable.security.html"
+><TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+></A
+>
+       が有効な場合に、これらを使用してセキュリティ設定の指定やオーバーライドを行います。
+       以下のような設定があります。
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;  <TT
+CLASS="constant"
+>PHP_HANDLING</TT
+> - boolean。<TT
+CLASS="constant"
+>TRUE</TT
+> の場合は、セキュリティのための
+  <A
+HREF="variable.php.handling.html"
+><TT
+CLASS="parameter"
+><I
+>$php_handling</I
+></TT
+></A
+>
+  のチェックを行いません。
+ </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="constant"
+>IF_FUNCS</TT
+> - 配列。
+  <A
+HREF="language.function.if.html"
+><TT
+CLASS="varname"
+>{if}</TT
+></A
+>
+  ステートメントで使用できる PHP 関数の名前を指定します。
+ </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="constant"
+>INCLUDE_ANY</TT
+> - boolean。<TT
+CLASS="constant"
+>TRUE</TT
+> の場合は
+  <A
+HREF="variable.secure.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$secure_dir</I
+></TT
+></A
+>
+         のリストの内容にかかわらず、ファイルシステムからテンプレートを
+         <A
+HREF="language.function.include.html"
+>インクルード</A
+> できます。
+ </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="constant"
+>PHP_TAGS</TT
+> - boolean。<TT
+CLASS="constant"
+>TRUE</TT
+> の場合は、
+  テンプレート内で
+  <A
+HREF="language.function.php.html"
+><TT
+CLASS="varname"
+>{php}{/php}</TT
+></A
+>
+  タグが使用できるようになります。
+ </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="constant"
+>MODIFIER_FUNCS</TT
+> - 配列。
+  変数の修飾子として使用できる PHP 関数の名前を指定します。
+ </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="constant"
+>ALLOW_CONSTANTS</TT
+> - boolean。<TT
+CLASS="constant"
+>TRUE</TT
+> の場合は、テンプレート内で
+  <A
+HREF="language.variables.smarty.html#language.variables.smarty.const"
+><TT
+CLASS="parameter"
+><I
+>{$smarty.const.FOO}</I
+></TT
+></A
+>
+  のようにして定数を使用することができます。
+ </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.secure.dir.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.trusted.dir.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$secure_dir</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$trusted_dir</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

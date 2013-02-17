@@ -1,0 +1,921 @@
+<HTML
+><HEAD
+><TITLE
+>基本的なインストール</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="インストール"
+HREF="installation.html"><LINK
+REL="PREVIOUS"
+TITLE="インストール"
+HREF="installation.html"><LINK
+REL="NEXT"
+TITLE="拡張セットアップ"
+HREF="installing.smarty.extended.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="installation.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 2章インストール</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="installing.smarty.extended.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="installing.smarty.basic"
+></A
+>基本的なインストール</H1
+><P
+>&#13;    Smarty のライブラリファイルを、ディストリビューションの
+    <TT
+CLASS="filename"
+>/libs/</TT
+> サブディレクトリにインストールしてください。
+    これらの <TT
+CLASS="filename"
+>.php</TT
+> を編集してはいけません。
+    これらはすべてのアプリケーションで共有するものであり、
+    Smarty を新しいバージョンにアップグレードする際にのみ更新します。
+   </P
+><P
+>以下の例で、Smarty の tarball の展開先は次のようになります。
+   <P
+></P
+><UL
+><LI
+><P
+>*nix の場合は
+   <TT
+CLASS="filename"
+>/usr/local/lib/Smarty-v.e.r/</TT
+>
+   </P
+></LI
+><LI
+><P
+>Windows 環境の場合は
+   <TT
+CLASS="filename"
+>c:\webroot\libs\Smarty-v.e.r\</TT
+>
+   </P
+></LI
+></UL
+>
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN146"
+></A
+><P
+><B
+>例 2-1. 必要な Smarty ライブラリファイル群</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Smarty-v.e.r/
+   libs/
+      Smarty.class.php
+      Smarty_Compiler.class.php
+      Config_File.class.php
+      debug.tpl
+      internals/*.php  (これら全て)
+      plugins/*.php    (これら全て)</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    Smarty は、<A
+HREF="smarty.constants.html#constant.smarty.dir"
+><TT
+CLASS="constant"
+>SMARTY_DIR</TT
+></A
+>
+    という名前の PHP の <A
+HREF="http://php.net/define"
+TARGET="_top"
+>定数</A
+>
+    を使用します。これは、Smarty の <TT
+CLASS="filename"
+>libs/</TT
+> ディレクトリへの
+    <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>絶対パス</B
+></SPAN
+> を表します。
+    基本的にあなたのアプリケーションが <TT
+CLASS="filename"
+>Smarty.class.php</TT
+>
+    ファイルを見つける事が出来るなら
+    <A
+HREF="smarty.constants.html#constant.smarty.dir"
+><TT
+CLASS="constant"
+>SMARTY_DIR</TT
+></A
+>
+    を定義する必要はありません。Smarty は自分でそれを考えます。
+    したがって、もし <TT
+CLASS="filename"
+>Smarty.class.php</TT
+> が
+    <A
+HREF="http://php.net/ini.core.php#ini.include-path"
+TARGET="_top"
+>include_path</A
+>
+    にないか、あなたのアプリケーションにてそれらへの絶対パスが指定されていないなら、
+    手動で <TT
+CLASS="constant"
+>SMARTY_DIR</TT
+> を定義する必要があります。
+    <TT
+CLASS="constant"
+>SMARTY_DIR</TT
+> は、<SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>&#13;    最後にスラッシュ / を含めなければなりません</B
+></SPAN
+>。
+   </P
+><DIV
+CLASS="informalexample"
+><A
+NAME="AEN163"
+></A
+><P
+></P
+><P
+>&#13;    次の例では、PHP スクリプト内での Smarty インスタンスの作成方法を示します。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;注:&nbsp;Smarty&nbsp;の&nbsp;'S'&nbsp;は大文字です<br /></span><span style="color: #007700">require_once(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><P
+>&#13;    上のスクリプトを実行してみてください。
+    <TT
+CLASS="filename"
+>Smarty.class.php</TT
+> ファイルが見つからないというエラーが出た場合は、
+    以下のいずれかを行う必要があります。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN168"
+></A
+><P
+><B
+>例 2-2. 手動で SMARTY_DIR 定数を定義する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;*nix&nbsp;スタイル&nbsp;(大文字の&nbsp;'S'&nbsp;に注意)<br /></span><span style="color: #0000BB">define</span><span style="color: #007700">(</span><span style="color: #DD0000">'SMARTY_DIR'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'/usr/local/lib/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;windows&nbsp;スタイル<br /></span><span style="color: #0000BB">define</span><span style="color: #007700">(</span><span style="color: #DD0000">'SMARTY_DIR'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'c:/webroot/libs/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;*nixとwindowsで共通なハックバージョンの例<br />//&nbsp;Smarty&nbsp;は現在のスクリプトが&nbsp;'includes/'&nbsp;ディレクトリの下にあると仮定します。<br /></span><span style="color: #0000BB">define</span><span style="color: #007700">(</span><span style="color: #DD0000">'SMARTY_DIR'</span><span style="color: #007700">,</span><span style="color: #0000BB">str_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">"\\"</span><span style="color: #007700">,</span><span style="color: #DD0000">"/"</span><span style="color: #007700">,</span><span style="color: #0000BB">getcwd</span><span style="color: #007700">()).</span><span style="color: #DD0000">'/includes/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /><br />require_once(</span><span style="color: #0000BB">SMARTY_DIR&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN171"
+></A
+><P
+><B
+>例 2-3. ライブラリファイルの絶対パスを指定する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;*nix&nbsp;スタイル&nbsp;(大文字の&nbsp;'S'&nbsp;に注意)<br /></span><span style="color: #007700">require_once(</span><span style="color: #DD0000">'/usr/local/lib/Smarty-v.e.r/libs/Smarty.class.php'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;windows&nbsp;スタイル<br /></span><span style="color: #007700">require_once(</span><span style="color: #DD0000">'c:/webroot/libs/Smarty-v.e.r/libs/Smarty.class.php'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN174"
+></A
+><P
+><B
+>例 2-4. <TT
+CLASS="filename"
+>php.ini</TT
+> ファイルにライブラリへのパスを追加する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+;;;;;;;;;;;;;;;;;;;;;;;;;<br />;&nbsp;Paths&nbsp;and&nbsp;Directories&nbsp;;<br />;;;;;;;;;;;;;;;;;;;;;;;;;<br /><br />;&nbsp;*nix:&nbsp;"/path1:/path2"<br />include_path&nbsp;=&nbsp;".:/usr/share/php:/usr/local/lib/Smarty-v.e.r/libs/"<br /><br />;&nbsp;Windows:&nbsp;"\path1;\path2"<br />include_path&nbsp;=&nbsp;".;c:\php\includes;c:\webroot\libs\Smarty-v.e.r\libs\"</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN178"
+></A
+><P
+><B
+>例 2-5. PHP スクリプト内での <TT
+CLASS="literal"
+><A
+HREF="http://eaccelerator.net/"
+TARGET="_top"
+>ini_set()</A
+></TT
+>
+     によるインクルードパスの追加</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;*nix<br /></span><span style="color: #0000BB">ini_set</span><span style="color: #007700">(</span><span style="color: #DD0000">'include_path'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">ini_get</span><span style="color: #007700">(</span><span style="color: #DD0000">'include_path'</span><span style="color: #007700">).</span><span style="color: #0000BB">PATH_SEPARATOR</span><span style="color: #007700">.</span><span style="color: #DD0000">'/usr/local/lib/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;windows<br /></span><span style="color: #0000BB">ini_set</span><span style="color: #007700">(</span><span style="color: #DD0000">'include_path'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">ini_get</span><span style="color: #007700">(</span><span style="color: #DD0000">'include_path'</span><span style="color: #007700">).</span><span style="color: #0000BB">PATH_SEPARATOR</span><span style="color: #007700">.</span><span style="color: #DD0000">'c:/webroot/lib/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    これでライブラリファイルは正常に設置できたので、
+    今度はあなたのアプリケーション内に Smarty 用のディレクトリを セットアップしましょう。
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;    Smarty は、デフォルトで
+    <TT
+CLASS="filename"
+>templates/</TT
+>、
+    <TT
+CLASS="filename"
+>templates_c/</TT
+>、<TT
+CLASS="filename"
+>configs/</TT
+> および <TT
+CLASS="filename"
+>cache/</TT
+>
+    と名づけられた４つのディレクトリが必要です。
+    </P
+></LI
+><LI
+><P
+>これらの名前は、それぞれ
+    Smarty クラスのプロパティ
+    <A
+HREF="api.variables.html#variable.template.dir"
+>&#13;    <TT
+CLASS="varname"
+>$template_dir</TT
+></A
+>、
+    <A
+HREF="variable.compile.dir.html"
+>&#13;    <TT
+CLASS="varname"
+>$compile_dir</TT
+></A
+>、
+    <A
+HREF="variable.config.dir.html"
+>&#13;    <TT
+CLASS="varname"
+>$config_dir</TT
+></A
+> および
+    <A
+HREF="variable.cache.dir.html"
+>&#13;    <TT
+CLASS="varname"
+>$cache_dir</TT
+></A
+> で定義することができます。
+    </P
+></LI
+><LI
+><P
+>&#13;    Smarty を使用する各アプリケーションにおいて、
+    これらのディレクトリを個別に設置する事を強く推奨します。
+   </P
+></LI
+></UL
+><P
+>&#13;    インストール例として、ゲストブックアプリケーションの
+    Smarty 環境をセットアップしてみます。 
+    私達はディレクトリの命名規約の目的についてのみ取り上げました。
+    例のアプリケーション名を <TT
+CLASS="literal"
+>guestbook/</TT
+>
+    からあなたのアプリケーション名に置き換えれば、同様の環境を使用できます。 
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN205"
+></A
+><P
+><B
+>例 2-6. ファイル構造</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>/usr/local/lib/Smarty-v.e.r/libs/
+        Smarty.class.php
+        Smarty_Compiler.class.php
+        Config_File.class.php
+        debug.tpl
+        internals/*.php
+        plugins/*.php
+
+/web/www.example.com/
+        guestbook/
+                templates/
+                    index.tpl
+                templates_c/
+                configs/
+                cache/
+                htdocs/
+                    index.php</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    あなたは web サーバのドキュメントルートの位置を知っている必要があります。
+    例ではドキュメントルートは <TT
+CLASS="filename"
+>/web/www.example.com/guestbook/htdocs/</TT
+>
+    とします。Smarty ディレクトリは Smarty ライブラリによってのみアクセスされ、
+    web ブラウザから直接アクセスされる事はありません。
+    したがってセキュリティの心配を避けるために、
+    これらのディレクトリをドキュメントルートの <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>外部</I
+></SPAN
+>
+    に配置する事を推奨します (ただし必須ではありません)。
+   </P
+><P
+>&#13;    ドキュメントルート下には最低１つのファイルが必要であり、
+    それは web ブラウザによってアクセスされるスクリプトです。
+    この例ではドキュメントルート <TT
+CLASS="filename"
+>/htdocs/</TT
+>
+    の下にサブディレクトリを作成し、その中に <TT
+CLASS="filename"
+>index.php</TT
+>
+    を配置します。
+   </P
+><P
+>&#13;    Smarty は
+    <A
+HREF="variable.compile.dir.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$compile_dir</I
+></TT
+></A
+> と
+    <A
+HREF="variable.cache.dir.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$cache_dir</I
+></TT
+></A
+>
+    (<TT
+CLASS="filename"
+>templates_c/</TT
+> と
+    <TT
+CLASS="filename"
+>cache/</TT
+>) に
+    <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>書き込み権限</B
+></SPAN
+> でアクセスする必要があるので、
+    web サーバのユーザがこれらに書き込める必要があります
+    (windows ユーザはこの話を無視してください)。
+
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>通常は、このユーザは <SPAN
+CLASS="QUOTE"
+>"nobody"</SPAN
+> でグループは
+    <SPAN
+CLASS="QUOTE"
+>"nobody"</SPAN
+> です。OS X ユーザの場合は、デフォルトのユーザは
+    <SPAN
+CLASS="QUOTE"
+>"www"</SPAN
+> でグループは <SPAN
+CLASS="QUOTE"
+>"www"</SPAN
+> です。
+    もし Apache を使用しているなら、<TT
+CLASS="filename"
+>httpd.conf</TT
+>
+    ファイルを見ればユーザ名とグループ名がわかります。</P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN229"
+></A
+><P
+><B
+>例 2-7. パーミッションおよびディレクトリへの書き込み権限の付与</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="shell"
+>chown nobody:nobody /web/www.example.com/guestbook/templates_c/
+chmod 770 /web/www.example.com/guestbook/templates_c/
+
+chown nobody:nobody /web/www.example.com/guestbook/cache/
+chmod 770 /web/www.example.com/guestbook/cache/</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+     <TT
+CLASS="literal"
+>chmod 770</TT
+> は強固なセキュリティです。
+     これは、ユーザ <SPAN
+CLASS="QUOTE"
+>"nobody"</SPAN
+> とグループ <SPAN
+CLASS="QUOTE"
+>"nobody"</SPAN
+>
+     のみにディレクトリのリード/ライトアクセスを許可します。
+     もし誰にでもリードアクセスを可能にしたい場合
+     (大抵はあなた自身がファイルを見るための利便性から)
+     は、代わりに <TT
+CLASS="literal"
+>775</TT
+> を使う事が出来ます。
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    次に、Smarty が表示するファイル <TT
+CLASS="filename"
+>index.tpl</TT
+>
+    を作成する必要があります。これは、<A
+HREF="api.variables.html#variable.template.dir"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+> の中に配置しなければなりません。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN243"
+></A
+><P
+><B
+>例 2-8. /web/www.example.com/guestbook/templates/index.tpl</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>{* Smarty *}
+
+こんにちは、{$name}。ようこそ Smarty へ!</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+     <TT
+CLASS="literal"
+>{* Smarty *}</TT
+> はテンプレートの
+     <A
+HREF="language.basic.syntax.html#language.syntax.comments"
+>コメント</A
+> です。
+     これは必須ではありませんが、全てのテンプレートファイルのはじめに
+     コメントを書くのは良い習慣です。
+     これは、ファイルの拡張子に関わらずファイルを認識する事を簡単にします。
+     例えば、テキストエディタはファイルを認識して特有のシンタックスハイライトを有効にするでしょう。
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    では、<TT
+CLASS="filename"
+>index.php</TT
+> を編集しましょう。
+    Smarty のインスタンスを作成し、テンプレート変数を割り当て
+    (<A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>)、
+    <TT
+CLASS="filename"
+>index.tpl</TT
+> ファイルを表示
+    (<A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>)
+    します。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN258"
+></A
+><P
+><B
+>例 2-9. /web/www.example.com/docs/guestbook/index.php の編集</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #007700">require_once(</span><span style="color: #0000BB">SMARTY_DIR&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">();<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">template_dir&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/templates/'</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">compile_dir&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/templates_c/'</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">config_dir&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/configs/'</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">cache_dir&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/cache/'</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Ned'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//**&nbsp;次の行のコメントをはずすと、デバッギングコンソールを表示します<br />//$smarty-&gt;debugging&nbsp;=&nbsp;true;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+     この例では、Smartyのディレクトリすべてを絶対パスで設定しています。
+     もし <TT
+CLASS="filename"
+>/web/www.example.com/guestbook/</TT
+>
+     が PHP の include_path にあるのなら、これらの設定は必要ありません。
+     けれどもこれらを絶対パスで指定する方が より効率的で、(経験上)エラーが少なくなります。
+     そうすれば、Smarty はあなたが意図したディレクトリからファイルを確実に取得できます。 
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    では、web ブラウザから <TT
+CLASS="filename"
+>index.php</TT
+> ファイルを読み込んでみましょう。
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>"こんにちは、Ned。ようこそ Smarty へ!"</I
+></SPAN
+> と表示されるはずです。
+   </P
+><P
+>&#13;    これで Smarty の基本的なセットアップは完了しました！
+   </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="installing.smarty.extended.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>インストール</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>拡張セットアップ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

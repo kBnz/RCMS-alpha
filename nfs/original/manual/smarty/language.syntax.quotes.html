@@ -1,0 +1,286 @@
+<HTML
+><HEAD
+><TITLE
+>ダブルクォート内に埋め込まれた変数</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="基本構文"
+HREF="language.basic.syntax.html"><LINK
+REL="PREVIOUS"
+TITLE="属性"
+HREF="language.syntax.attributes.html"><LINK
+REL="NEXT"
+TITLE="演算子"
+HREF="language.math.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.syntax.attributes.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 3章基本構文</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.math.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.syntax.quotes"
+></A
+>ダブルクォート内に埋め込まれた変数</H1
+><P
+></P
+><UL
+><LI
+><P
+>&#13;  Smarty が "ダブルクォート" で囲まれた内容の中から <A
+HREF="api.assign.html"
+>割り当てられた</A
+>
+  <A
+HREF="language.syntax.variables.html"
+>変数</A
+>
+  として認識するのは、変数名が数字・文字・_（アンダースコア）・[]（ブラケット）
+  のみで構成されているもののみです。詳細は
+  <A
+HREF="http://php.net/language.variables"
+TARGET="_top"
+>名前の付けかた</A
+>
+  を参照ください。
+  </P
+></LI
+><LI
+><P
+>&#13;  その他の文字、たとえば .（ピリオド）や
+  <TT
+CLASS="literal"
+>$object&#62;reference</TT
+>（オブジェクト参照）を含む場合は、
+  その変数を <TT
+CLASS="literal"
+>`バッククォート`</TT
+> で囲む必要があります。
+  </P
+></LI
+><LI
+><P
+>&#13;  <A
+HREF="language.modifiers.html"
+>修飾子</A
+> を埋め込むことはできず、
+  常にクォートの外で適用する必要があります。
+ </P
+></LI
+></UL
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN400"
+></A
+><P
+><B
+>例 3-5. 構文の例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{func var="test $foo test"}       &#60;-- $foo を参照します
+{func var="test $foo_bar test"}   &#60;-- $foo_bar を参照します
+{func var="test $foo[0] test"}    &#60;-- $foo[0] を参照します
+{func var="test $foo[bar] test"}  &#60;-- $foo[bar] を参照します
+{func var="test $foo.bar test"}   &#60;-- $foo (not $foo.bar) を参照します
+{func var="test `$foo.bar` test"} &#60;-- $foo.bar を参照します
+{func var="test `$foo.bar` test"|escape} &#60;-- 修飾子はクォートの外で！</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN403"
+></A
+><P
+><B
+>例 3-6. 実用例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* $tpl_name を値で置き換えます *}
+{include file="subdir/$tpl_name.tpl"}
+
+{* $tpl_name を置き換えません *}
+{include file='subdir/$tpl_name.tpl'} &#60;--
+
+{* . を含むのでバッククォートで囲む必要があります *}
+{cycle values="one,two,`$smarty.config.myval`"}
+
+{* php スクリプトでの $module['contact'].'.tpl' と同じです
+{include file="`$module.contact`.tpl"}
+
+{* php スクリプトでの $module[$view].'.tpl' と同じです
+{include file="$module.$view.tpl"}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.modifier.escape.html"
+><TT
+CLASS="varname"
+>escape</TT
+></A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.syntax.attributes.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.math.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>属性</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.basic.syntax.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>演算子</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

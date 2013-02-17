@@ -1,0 +1,2386 @@
+@charset "UTF-8";
+
+* {
+        margin:0;
+        padding:0;
+        text-decoration:none;
+        font-weight: normal;
+}
+
+/* floatを解除するために使います */
+
+.clearFloat {
+        clear: both;
+        height: 1px;
+}
+.clearFloat br {
+        font-size: 1px;
+        line-height: 1px;
+}
+ul, ol {
+        list-style-type: none;
+}
+
+img {
+        border: none;
+}
+
+body {
+        background: #fff;
+        text-align: center;
+        color: #333333;
+        font: 12px/120%
+        "メイリオ", Meiryo,
+        "ヒラギノ角ゴ Pro W3",
+        "HIragino Kaku Gothic Pro W3",
+        "HIragino Kaku Gothic Pro",
+        Osaka,
+        "ＭＳ Ｐゴシック", "MS P Gothic",
+        sans-serif;
+}
+
+body.modify_mode0 {
+        background: url(/images/management/bg_header.gif) repeat-x;
+}
+
+body.task {
+        background: url(/images/management/bg_header_task.gif) repeat-x;
+}
+
+div#header h1,
+div#header_login h1,
+a span,
+hr {
+    display:none;
+}
+.cke_toolbox a span{
+    display:inline;
+}
+
+.clear {clear:both;}
+
+
+/* リンク設定
+---------------------------------------------------------------- */
+a:link,
+a:visited {
+        color: #0033CC;
+}
+a:hover {
+        color: #FF3300;
+}
+
+
+/* 基本レイアウト設定
+---------------------------------------------------------------- */
+div#layout {
+        width: 100%;
+        text-align: left;
+}
+
+div#wrap_content {
+        background-color: #fff;
+}
+div#wrap_content:after {
+        content:".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+}
+div#content {
+        width: 780px;
+        margin: 0 auto 50px auto;
+}
+.main_contents {
+        width: 750px;
+        margin: 0 auto;
+}
+
+
+
+/* ヘッダ設定部分
+---------------------------------------------------------------- */
+div#header_login {
+        background: url(/images/management/bg_rcms.gif) 0px -691px no-repeat;
+        height: 59px;
+        width: 800px;
+        margin: 0 auto;
+}
+div#header {
+        width: 780px;
+        margin: 0 auto;
+        height: 83px;
+}
+.task div#header {
+        height: 91px;
+}
+div#header .logo,
+div#header_login .logo {
+        position: absolute;
+        top: 16px;
+}
+div.languageSwitcherBox {
+        float: right;
+        padding-top: 17px;
+}
+div.languageSwitcherBox select{
+        width: 110px;
+}
+div.manageSwitcherBox {
+        float: right;
+        padding: 17px 5px 0 5px;
+}
+p.simplebox {
+        float: right;
+        padding: 17px 5px 0 5px;
+}
+div.languageSwitcherBox select,
+div.manageSwitcherBox select {
+        font-size: 12px;
+}
+div#header .site_nm,
+div#header_login .site_nm {
+        text-align: right;
+        font-size: 12px;
+        padding: 19px 0px 5px 0px;
+        height:15px;
+}
+div#header .support {
+        float: right;
+        padding: 5px 0px 5px 10px;
+}
+div#header p.button {
+        background: url(/images/management/btn_view.gif) no-repeat;
+        float: right;
+        width: 132px;
+        height: 30px;
+        margin: 5px -2px 0px 1px;
+}
+div#header p.button a {
+        display: block;
+        width: 132px;
+        height: 30px;
+        font-size: 10px;
+        line-height: 30px;
+        color: #FFFFFF;
+        text-indent: 25px;
+}
+div#header p.button a:link,div#header p.button a:visited{
+        color: #FFFFFF;
+}
+div#header p.button a:hover,div#header p.button a:active{
+        color: #b3dfed;
+}
+
+div#header div.login {
+        float: right;
+        height: 30px;
+        font-size: 10px;
+        width: 455px;
+        margin: 5px 0px 0px 0px;
+        background: url(/images/management/bg_login.gif);
+        background-repeat: no-repeat;
+}
+div#header div.login p {
+        float: left;
+        height: 30px;
+        margin: 0px;
+        padding: 0px 0px 0px 10px;
+        line-height: 30px;
+        font-weight: bold;
+}
+
+div#header div.login a {
+        display: block;
+        float: right;
+        height: 30px;
+        width: 92px;
+        background: url(/images/management/login_bt.gif) no-repeat right top;
+        color: #FFFFFF;
+        line-height: 30px;
+        text-indent: 25px;
+}
+
+div#header div.login a:hover {
+        color: #666666;
+}
+div#header div.login a span {
+        display: block;
+}
+
+
+/* ナビ設定（高機能版）
+---------------------------------------------------------------- */
+div#main_navi {
+        width: 782px;
+        margin: 0 auto;
+        height: 67px;
+        position: relative;
+        z-index: 110;
+        background-image: url(/images/management/bg_gnavi.gif);
+        background-repeat: no-repeat;
+        background-position: top left;
+}
+div#main_navi .navi_contents {
+        position: absolute;
+        top:0px;
+        left: 1px;
+        width:780px;
+        height: 54px;
+        margin: 0;
+        clear: both;
+}
+div#main_navi #gnaviEnd{
+        width: 128px;
+}
+
+div#main_navi dl {
+        display: inline;
+        float: left;
+        width: 129px;
+        margin: 0px 0px 0px 1px;
+        padding: 0px;
+        overflow: hidden;
+}
+div#main_navi dt{
+        width: 129px;
+        height: 54px;
+}
+div#main_navi dt a {
+        display: block;
+        width: 129px;
+        height: 54px;
+        text-indent: -9999px;
+        overflow: hidden;
+}
+div#main_navi dt a span {
+        display: none;
+}
+div#main_navi dd {
+        display: none;
+        border-left: 1px solid #cccccc;
+        border-right: 1px solid #cccccc;
+        border-bottom: 1px solid #cccccc;
+        background-color: #FFFFFF;
+        background-image: url(/images/management/bg_gnavipop.gif);
+        background-repeat: repeat-x;
+        background-position: bottom left;
+}
+div#main_navi dl:hover dd {
+        display: block;
+}
+div#main_navi dd a {
+        display: block;
+        overflow:hidden;
+        padding: 5px 0px 5px 12px;
+        background-image: url(/images/management/bg_gnavipop_arrow.gif);
+        background-repeat: no-repeat;
+        background-position: 3px center;
+}
+div#main_navi dd a span {
+        display: block;
+        padding: 2px 0px 0px 0px;
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 1.0em;
+        overflow: hidden;
+}
+
+div#main_navi dd a:link,div#main_navi dd a:visited{
+        color: #007297;
+        background-image: url(/images/management/bg_gnavipop_arrow.gif);
+}
+
+div#main_navi dd a:hover,div#main_navi dd a:active{
+        color: #FF0000;
+        background-image: url(/images/management/bg_gnavipop_arrow_o.gif);
+}
+
+div#main_navi dl dt#topnav_001 a:hover,
+div#main_navi dl dt#topnav_002 a:hover,
+div#main_navi dl dt#topnav_003 a:hover,
+div#main_navi dl dt#topnav_004 a:hover,
+div#main_navi dl dt#topnav_005 a:hover,
+div#main_navi dl dt#topnav_006 a:hover {
+        background-position:0 -54px;
+}
+
+body#ct_menu div#main_navi dl dt#topnav_001 a,
+body#ct_mypage div#main_navi dl dt#topnav_001 a,
+body#ct_contents div#main_navi dl dt#topnav_002 a,
+body#ct_communication div#main_navi dl dt#topnav_003 a,
+body#ct_design div#main_navi dl dt#topnav_004 a,
+body#ct_setup div#main_navi dl dt#topnav_005 a,
+body#ct_member div#main_navi dl dt#topnav_006 a {
+        background-position:0 -108px;
+}
+
+
+
+
+
+
+/* フッター
+---------------------------------------------------------------- */
+#footer {
+        height: 39px;
+        text-align: center;
+        background: url(/images/management/address.gif) repeat-x;
+        margin-top:30px;
+}
+address {
+        font: normal 12px Verdana;
+        padding: 12px 0px;
+}
+
+
+
+
+
+/*
+                用途はコンテンツのタイトル名の表示です。
+                例）メルマガモジュールでのメルマガタイトル、アンケートの調査名など
+*/
+
+div#content h3.title {
+                background: #eee;
+                border: 1px solid #ccc;
+                font-size: 14px;
+                letter-spacing: 0.1em;
+                padding: 3px 3px 3px 5px;
+                margin: 5px 0;
+}
+
+div#content h3 {font-size: 14px;}
+
+div#content h3#menu_title {
+                background: url(/images/management/bg_rcms.gif) 0 -779px no-repeat;
+                padding: 7px 0px 9px 20px;
+                margin: 5px 0px 8px;
+}
+
+
+
+/* 通常のh3部分（右にボタンを含む）
+-------------------------------------------------------------- */
+div.list_right_bt {
+                background: url(/images/management/h3back_normal.gif) no-repeat left bottom;
+                height: 40px;
+                width: 780px;
+                margin: 0px 0px 4px;
+}
+div.list_right_bt h2 {
+                padding:19px 0 0 48px;
+                float:left;
+                font-size: 14px;
+                height: 20px;
+                margin-left: 10px;
+}
+div.list_right_bt ul {
+                padding-top:16px;
+                padding-right:10px;
+                float:right;
+}
+div.list_right_bt ul li{
+                height: 21px;
+                width: 105px;
+                margin-left: 5px;
+                float: left;
+                display : block ;
+}
+
+div.list_right_bt ul li a {
+                height: 21px;
+                width: 105px;
+                margin-left: 5px;
+                display : block ;
+}
+div.list_right_bt ul li.normal a {
+                background: url(/images/management/bt_back2.gif) no-repeat;
+}
+div.list_right_bt ul li.add a {
+                background: url(/images/management/bt_back_add.gif) no-repeat;
+}
+div.list_right_bt ul li.view a {
+                background: url(/images/management/bt_back_view.gif) no-repeat;
+}
+div.list_right_bt ul li a span {
+                display: block;
+                padding-top: 3px;
+                text-shadow:1px 1px white;
+}
+div.list_right_bt ul li.normal a span {
+                padding-left: 21px;
+                color: #000000;
+}
+div.list_right_bt ul li.add a span {
+                padding-left: 21px;
+                color: #000000;
+}
+div.list_right_bt ul li.view a span {
+                padding-left: 15px;
+                color: #123466;
+}
+div.list_right_bt ul li a.big1 {
+                background: url(/images/management/bt_back_big1.gif) no-repeat;
+                display: block;
+                height: 19px;
+                width: 139px;
+                float: left;
+}
+div.list_right_bt ul li a:hover {
+                background-position:center bottom;
+}
+
+
+/* ポップアップ用
+------------------------------------------------------------- */
+#content_pop {
+                width: 560px;
+                border: 1px solid #CC3300;
+                margin: 5px 0 5px 5px;
+                padding: 5px;
+}
+#content_pop div.list_right_bt {
+                background: url(/images/management/h3back_mini.gif) no-repeat left bottom;
+                width: 560px;
+                height: 27px;
+}
+#content_pop div.list_right_bt h2 {
+                padding:6px 0 0 10px;
+}
+#content_pop div.list_right_bt ul {
+                padding-top: 3px;
+}
+#content_pop div.list_main {
+                margin-bottom: 0px;
+}
+
+/* タブ
+------------------------------------------------------------- */
+ul.minitabs {
+                margin: 10px 0px;
+                height: 23px;
+                border-bottom: 2px solid #FF6600;
+}
+ul.minitabs li {
+                margin: 0;
+                padding: 0;
+                display: inline;
+                list-style-type: none;
+}
+ul.minitabs a, ul.minitabs a:visited, ul.minitabs li span{
+                float: left;
+                font-size: 13px;
+                font-weight: bold;
+                width: 110px;
+                height: 20px;
+                text-align: center;
+                margin-right: 3px;
+                padding-top: 3px;
+                text-decoration: none;
+                color: #666;
+}
+
+ul.minitabs a.active, ul.minitabs a:hover {
+                color: #fff !important;
+                background: url(/images/management/tab_on.gif) no-repeat bottom center;
+}
+ul.minitabs a {
+                background: url(/images/management/tab.gif) no-repeat bottom center;
+}
+
+
+/* メニューアイコン
+-------------------------------------------------------------*/
+div#content ul#mainnav {
+                margin: 5px 0 0 0;
+}
+div#content ul#mainnav li {
+                margin: 5px 5px 25px 5px;
+                float: left;
+                display: inline;
+}
+div#content ul#mainnav li a {
+                display: block;
+                width:95px;
+                height: 14px;
+                padding-top: 50px;
+                color: #0033FF;
+}
+div#content ul#mainnav li a span {
+                display: block;
+                background: url(/images/management/mainnav_back.gif) no-repeat center;
+                text-align: center;
+                cursor: pointer;
+}
+
+div#content li.mainnav_accesscount a {background: url(/images/management/icon/accesscount.gif) no-repeat center top;}
+div#content li.mainnav_mail a {background: url(/images/management/icon/) no-repeat center top;}
+div#content li.mainnav_bbs a {background: url(/images/management/icon/bbs.gif) no-repeat center top;}
+div#content li.mainnav_blog a {background: url(/images/management/icon/blog.gif) no-repeat center top;}
+div#content li.mainnav_calendar a {background: url(/images/management/icon/calendar.gif) no-repeat center top;}
+div#content li.mainnav_comment a {background: url(/images/management/icon/comment.gif) no-repeat center top;}
+div#content li.mainnav_gamerugby a {background: url(/images/management/icon/gamerugby.gif) no-repeat center top;}
+div#content li.mainnav_gameamefoot a {background: url(/images/management/icon/gameamefoot.gif) no-repeat center top;}
+div#content li.mainnav_gamebaseball a {background: url(/images/management/icon/gamebaseball.gif) no-repeat center top;}
+div#content li.mainnav_gamesoccer a {background: url(/images/management/icon/gamesoccer.gif) no-repeat center top;}
+div#content li.mainnav_gamebasket a {background: url(/images/management/icon/gamebasket.gif) no-repeat center top;}
+div#content li.mainnav_gamefutsal a {background: url(/images/management/icon/gamefutsal.gif) no-repeat center top;}
+div#content li.mainnav_gamemlacrosse a {background: url(/images/management/icon/gamemlacrosse.gif) no-repeat center top;}
+div#content li.mainnav_gameflacrosse a {background: url(/images/management/icon/gameflacrosse.gif) no-repeat center top;}
+div#content li.mainnav_gamevolley a {background: url(/images/management/icon/gamevolley.gif) no-repeat center top;}
+div#content li.mainnav_gamesimple a {background: url(/images/management/icon/gamesimple.gif) no-repeat center top;}
+div#content li.mainnav_gametennis a {background: url(/images/management/icon/gametennis.gif) no-repeat center top;}
+div#content li.mainnav_gamejyudou a {background: url(/images/management/icon/gamejyudou.gif) no-repeat center top;}
+div#content li.mainnav_gametabletennis a {background: url(/images/management/icon/gametabletennis.gif) no-repeat center top;}
+div#content li.mainnav_convention a {background: url(/images/management/icon/convention.gif) no-repeat center top;}
+div#content li.mainnav_inquiry a {background: url(/images/management/icon/inquiry.gif) no-repeat center top;}
+div#content li.mainnav_keyword a {background: url(/images/management/icon/keyword.gif) no-repeat center top;}
+div#content li.mainnav_link a {background: url(/images/management/icon/link.gif) no-repeat center top;}
+div#content li.mainnav_liveinfo a {background: url(/images/management/icon/liveinfo.gif) no-repeat center top;}
+div#content li.mainnav_location a {background: url(/images/management/icon/location.gif) no-repeat center top;}
+div#content li.mainnav_login_history a {background: url(/images/management/icon/login_history.gif) no-repeat center top;}
+div#content li.mainnav_community a {background: url(/images/management/icon/community.gif) no-repeat center top;}
+div#content li.mainnav_magazine a {background: url(/images/management/icon/magazine.gif) no-repeat center top;}
+div#content li.mainnav_master a {background: url(/images/management/icon/master.gif) no-repeat center top;}
+div#content li.mainnav_music a {background: url(/images/management/icon/music.gif) no-repeat center top;}
+div#content li.mainnav_movie a {background: url(/images/management/icon/movie.gif) no-repeat center top;}
+div#content li.mainnav_musicartist a {background: url(/images/management/icon/musicartist.gif) no-repeat center top;}
+div#content li.mainnav_musicshop a {background: url(/images/management/icon/musicshop.gif) no-repeat center top;}
+div#content li.mainnav_member a {background: url(/images/management/icon/member.gif) no-repeat center top;}
+div#content li.mainnav_ml a {background: url(/images/management/icon/ml.gif) no-repeat center top;}
+div#content li.mainnav_page a {background: url(/images/management/icon/page.gif) no-repeat center top;}
+div#content li.mainnav_photo a {background: url(/images/management/icon/photo.gif) no-repeat center top;}
+div#content li.mainnav_rss a {background: url(/images/management/icon/rss.gif) no-repeat center top;}
+div#content li.mainnav_season a {background: url(/images/management/icon/season.gif) no-repeat center top;}
+div#content li.mainnav_staticcontents a {background: url(/images/management/icon/staticcontents.gif) no-repeat center top;}
+div#content li.mainnav_staticpage a {background: url(/images/management/icon/staticpage.gif) no-repeat center top;}
+div#content li.mainnav_survey a {background: url(/images/management/icon/survey.gif) no-repeat center top;}
+div#content li.mainnav_tb a {background: url(/images/management/icon/tb.gif) no-repeat center top;}
+div#content li.mainnav_teamrugby a {background: url(/images/management/icon/teamrugby.gif) no-repeat center top;}
+div#content li.mainnav_teamamefoot a {background: url(/images/management/icon/teamamefoot.gif) no-repeat center top;}
+div#content li.mainnav_teamsoccer a {background: url(/images/management/icon/teamsoccer.gif) no-repeat center top;}
+div#content li.mainnav_teambaseball a {background: url(/images/management/icon/teambaseball.gif) no-repeat center top;}
+div#content li.mainnav_teambasket a {background: url(/images/management/icon/teambasket.gif) no-repeat center top;}
+div#content li.mainnav_teamfutsal a {background: url(/images/management/icon/teamfutsal.gif) no-repeat center top;}
+div#content li.mainnav_teammlacrosse a {background: url(/images/management/icon/teammlacrosse.gif) no-repeat center top;}
+div#content li.mainnav_teamflacrosse a {background: url(/images/management/icon/teamflacrosse.gif) no-repeat center top;}
+div#content li.mainnav_teamvolley a {background: url(/images/management/icon/teamvolley.gif) no-repeat center top;}
+div#content li.mainnav_teamjyudou a {background: url(/images/management/icon/teamjyudou.gif) no-repeat center top;}
+div#content li.mainnav_teamtennis a {background: url(/images/management/icon/teamtennis.gif) no-repeat center top;}
+div#content li.mainnav_topics a {background: url(/images/management/icon/topics.gif) no-repeat center top;}
+div#content li.mainnav_site a {background: url(/images/management/icon/site.gif) no-repeat center top;}
+div#content li.mainnav_design a {background: url(/images/management/icon/design.gif) no-repeat center top;}
+div#content li.mainnav_tasklist a {background: url(/images/management/icon/tasklist.gif) no-repeat center top;}
+div#content li.mainnav_group a {background: url(/images/management/icon/group.gif) no-repeat center top;}
+div#content li.mainnav_headerfooter a {background: url(/images/management/icon/headerfooter.gif) no-repeat center top;}
+div#content li.mainnav_memberregist a {background: url(/images/management/icon/memberregist.gif) no-repeat center top;}
+div#content li.mainnav_updatehistory a {background: url(/images/management/icon/updatehistory.gif) no-repeat center top;}
+div#content li.mainnav_layout a {background: url(/images/management/icon/layout.gif) no-repeat center top;}
+div#content li.mainnav_fileserver a {background: url(/images/management/icon/fileserver.gif) no-repeat center top;}
+div#content li.mainnav_jobs a {background: url(/images/management/icon/jobs.gif) no-repeat center top;}
+div#content li.mainnav_program a {background: url(/images/management/icon/program.gif) no-repeat center top;}
+div#content li.mainnav_companyinfo a {background: url(/images/management/icon/companyinfo.gif) no-repeat center top;}
+div#content li.mainnav_seminar a {background: url(/images/management/icon/seminar.gif) no-repeat center top;}
+div#content li.mainnav_kasou_program a {background: url(/images/management/icon/kasou_program.gif) no-repeat center top;}
+div#content li.mainnav_reserve a {background: url(/images/management/icon/reserve.gif) no-repeat center top;}
+div#content li.mainnav_mail a {background: url(/images/management/icon/mail.gif) no-repeat center top;}
+div#content li.mainnav_moduleedit a {background: url(/images/management/icon/moduleedit.gif) no-repeat center top;}
+div#content li.mainnav_parts a {background: url(/images/management/icon/parts.gif) no-repeat center top;}
+div#content li.mainnav_intro a {background: url(/images/management/icon/intro.gif) no-repeat center top;}
+div#content li.mainnav_charge a {background: url(/images/management/icon/charge.gif) no-repeat center top;}
+div#content li.mainnav_banner a {background: url(/images/management/icon/banner.gif) no-repeat center top;}
+div#content li.mainnav_help a {background: url(/images/management/icon/help.gif) no-repeat center top;}
+div#content li.mainnav_listenerblog a {background: url(/images/management/icon/listenerblog.gif) no-repeat center top;}
+div#content li.mainnav_templateedit a {background: url(/images/management/icon/templateedit.gif) no-repeat center top;}
+div#content li.mainnav_mailtemplateedit a {background: url(/images/management/icon/mailtemplateedit.gif) no-repeat center top;}
+div#content li.mainnav_seo a {background: url(/images/management/icon/seo.gif) no-repeat center top;}
+div#content li.mainnav_menu a {background: url(/images/management/icon/menu.gif) no-repeat center top;}
+div#content li.mainnav_sns a {background: url(/images/management/icon/sns.gif) no-repeat center top;}
+div#content li.mainnav_catalog a {background: url(/images/management/icon/catalog.gif) no-repeat center top;}
+div#content li.mainnav_develop a {background: url(/images/management/icon/develop.gif) no-repeat center top;}
+div#content li.mainnav_supportforum a {background: url(/images/management/icon/supportforum.gif) no-repeat center top;}
+div#content li.mainnav_api_hotpepper a {background: url(/images/management/icon/api_hotpepper.gif) no-repeat center top;}
+div#content li.mainnav_api_gnavi a {background: url(/images/management/icon/api_gnavi.gif) no-repeat center top;}
+div#content li.mainnav_api_photozou a {background: url(/images/management/icon/api_photozou.gif) no-repeat center top;}
+div#content li.mainnav_leaguerugby a {background: url(/images/management/icon/leaguerugby.gif) no-repeat center top;}
+div#content li.mainnav_leaguebaseball a {background: url(/images/management/icon/leaguebaseball.gif) no-repeat center top;}
+div#content li.mainnav_companyhistory a {background: url(/images/management/icon/companyhistory.gif) no-repeat center top;}
+div#content li.mainnav_mobile a {background: url(/images/management/icon/mobile.gif) no-repeat center top;}
+div#content li.mainnav_package a {background: url(/images/management/icon/packagelist.gif) no-repeat center top;}
+div#content li.mainnav_rcms a {background: url(/images/management/icon/rcms_list.gif) no-repeat center top;}
+div#content li.mainnav_oemadmin a {background: url(/images/management/icon/oemadmin.gif) no-repeat center top;}
+div#content li.mainnav_simplebox a {background: url(/images/management/icon/simplebox.gif) no-repeat center top;}
+div#content li.mainnav_cart a {background: url(/images/management/icon/cart.gif) no-repeat center top;}
+div#content li.mainnav_shopping a {background: url(/images/management/icon/cart.gif) no-repeat center top;}
+div#content li.mainnav_simple_file a {background: url(/images/management/icon/simple_file.gif) no-repeat center top;}
+div#content li.mainnav_irj_jobs a {background: url(/images/management/icon/irj_jobs.gif) no-repeat center top;}
+div#content li.mainnav_output a {background: url(/images/management/icon/output.gif) no-repeat center top;}
+div#content li.mainnav_realestate a {background: url(/images/management/icon/realestate.gif) no-repeat center top;}
+div#content li.mainnav_api_general a {background: url(/images/management/icon/api_general.gif) no-repeat center top;}
+div#content li.mainnav_api_nicovideo a {background: url(/images/management/icon/api_nicovideo.gif) no-repeat center top;}
+div#content li.mainnav_api_youtube a {background: url(/images/management/icon/api_youtube.gif) no-repeat center top;}
+div#content li.mainnav_navigation a {background: url(/images/management/icon/navigation.gif) no-repeat center top;}
+div#content li.mainnav_mixi a {background: url(/images/management/icon/mixi.gif) no-repeat center top;}
+div#content li.mainnav_lpo a {background: url(/images/management/icon/lpo.gif) no-repeat center top;}
+div#content li.mainnav_restaurant a {background: url(/images/management/icon/restaurant.gif) no-repeat center top;}
+div#content li.mainnav_restaurant_menu a {background: url(/images/management/icon/restaurant_menu.gif) no-repeat center top;}
+div#content li.mainnav_coupon a {background: url(/images/management/icon/coupon.gif) no-repeat center top;}
+div#content li.mainnav_csvtable a {background: url(/images/management/icon/csvtable.gif) no-repeat center top;}
+div#content li.mainnav_qrcode a {background: url(/images/management/icon/qrcode.gif) no-repeat center top;}
+div#content li.mainnav_socialbookmark a {background: url(/images/management/icon/socialbookmark.gif) no-repeat center top;}
+div#content li.mainnav_onetime a {background: url(/images/management/icon/onetime.gif) no-repeat center top;}
+div#content li.mainnav_approvalflow a {background: url(/images/management/icon/approvalflow.gif) no-repeat center top;}
+div#content li.mainnav_multilang a {background: url(/images/management/icon/multilang.gif) no-repeat center top;}
+div#content li.mainnav_api_yahoo a {background: url(/images/management/icon/api_yahoo.gif) no-repeat center top;}
+div#content li.mainnav_api_twitter a {background: url(/images/management/icon/api_twitter.gif) no-repeat center top;}
+div#content li.mainnav_manual a {background: url(/images/management/icon/manual.gif) no-repeat center top;}
+div#content li.mainnav_seminar a {background: url(/images/management/icon/seminar.gif) no-repeat center top;}
+div#content li.mainnav_rent a {background: url(/images/management/icon/rent.gif) no-repeat center top;}
+div#content li.mainnav_vleague_dataroom a {background: url(/images/management/icon/vleague_dataroom.gif) no-repeat center top;}
+div#content li.mainnav_vleague_team a {background: url(/images/management/icon/vleague_team.gif) no-repeat center top;}
+div#content li.mainnav_vleague_player a {background: url(/images/management/icon/vleague_player.gif) no-repeat center top;}
+div#content li.mainnav_vleague_tv a {background: url(/images/management/icon/vleague_tv.gif) no-repeat center top;}
+div#content li.mainnav_api_googleanalytics a {background: url(/images/management/icon/api_googleanalytics.gif) no-repeat center top;}
+div#content li.mainnav_pageredirect a {background: url(/images/management/icon/pageredirect.gif) no-repeat center top;}
+div#content li.mainnav_tag a {background: url(/images/management/icon/tag.gif) no-repeat center top;}
+div#content li.mainnav_social a {background: url(/images/management/icon/social.gif) no-repeat center top;}
+
+
+div#content ul#subnav li,div#content ul#subnav li a{height: 20px;}
+
+
+div#content ul#subnav {margin: 5px 0px 0px;}
+div#content ul#subnav li {margin: 5px 5px;display: inline;}
+div#content ul#subnav li a {width: 78px;display: block;float: left;margin-right: 10px;text-align: center;padding-top: 50px;color: #0033FF;}
+div#content ul#subnav li a span {display: block;background: url(/images/management/mainnav_back.gif) no-repeat center;width: 78px;cursor: pointer;}
+
+
+/* パンくず
+-------------------------------------------------------------*/
+ul.pankuzu {
+                font-size: 11px;
+                float: left;
+}
+ul.pankuzu li {
+                display: inline;
+}
+ul.pankuzu li.separate {
+                margin-left: 4px;
+                margin-right: 4px;
+}
+
+p.page_info {
+                font-size: 11px;
+                float: right;
+                margin-bottom:5px;
+}
+
+/* ----- ３カラムレイアウト ----- */
+div#box {width:560px;float:left;}
+div.center_box {width:420px;float:right;}
+div.left_box {float: left;width: 128px;}
+div.right_box {float: right;width: 125px;}
+/* ----- ３カラムレイアウト ----- */
+
+
+
+li.err_msg{
+                color : red;
+                font-weight:bold;
+}
+
+
+
+
+
+
+/* ----- テーブル設定 ----- */
+table.gray_list {
+                font-size: 11px;
+                margin: 0px 0px 5px;
+}
+table.gray_list th {
+                background: #ddd;
+                padding: 2px;
+                text-align: center;
+}
+table.gray_list td {
+                border-bottom: 1px dotted #888;
+                padding: 2px 2px 2px 4px;
+}
+tr.gray_cell td {background: #ccc;}
+/* ----- テーブル設定 ----- */
+/* ----- トップページ中央 ----- */
+
+
+
+
+
+/* ----- トップページ左側 ----- */
+
+
+
+
+p.new_message {
+                background: #66CC00 url(/images/management/mail.gif) no-repeat 3px 4px;
+                font-size: 10px;
+                padding: 2px 2px 2px 20px;
+                color: #0033FF;
+                margin-top: 8px;
+                margin-right: 0px;
+                margin-bottom: 8px;
+}
+p.login_acc_txt {
+                font-size: 11px;
+                margin-bottom: 5px;
+}
+
+/* ----- トップページ左側 ----- */
+
+
+
+
+
+/* ----- トップページ右側 ----- */
+
+div.list_main {
+                margin-bottom:30px;
+}
+div.list_main h3, h3.list_main_tit, div.list_main h3.big, h3.list_main_tit_big{
+    background: url(/images/management/bg_rcms.gif) 0 -660px no-repeat;
+                font-size: 13px !important;
+                font-weight: bold;
+                color: #FFFFFF;
+                padding: 4px 0px 0px 10px;
+                margin: 10px 0px;
+                height: 22px;
+                clear: both;
+}
+div.list_main .close{ margin-top:8px;}
+div.list_main h3.big, h3.list_main_tit_big{ /* 上記h3の大きい版 */
+    background: url(/images/management/bg_rcms.gif) 0 -660px no-repeat;
+}
+
+
+div.list_main h3 span.link_button{font-weight: bold;float: left} /* 追加設定 */
+div.list_main h3 a{float: right; margin-top: -5px; padding-right: 5px; } /* 追加設定 */
+
+div.list_main h4.basic {
+        font-weight: bold;
+        font-size: 100%;
+        background: url(/images/management/icon_h4.gif) no-repeat 5px;
+        background-color: #FFEFCE;
+        padding: 5px 0 4px 15px;
+        margin: 20px 0 5px;
+}
+
+
+/* タブの下メニュー
+--------------------------------------------------- */
+ul.sub_tab {
+                margin: 10px 0 0 0;
+                background: url(/images/management/tab/tab_line.gif) repeat-y top right;
+                height:21px;
+}
+.member_edit ul.sub_tab {
+                width: 637px;
+}
+.member_detail ul.sub_tab {
+                width: 170px;
+}
+.member_lump ul.sub_tab {
+                width: 310px;
+}
+ul.sub_tab li {
+display:inline;
+}
+ul.sub_tab li a {
+                float: left;
+                padding: 3px 8px 3px 28px;
+                height:15px;
+                display: block;
+                background: url(/images/management/tab/tab_bg.gif) no-repeat;
+}
+ul.sub_tab li#here a {
+                background-position: left bottom;
+}
+
+
+
+ul.tabnavi {
+                margin: 10px 0px;
+                background: url(/images/management/tab/back.gif) no-repeat left bottom;
+                height: 29px;
+}
+ul.tabnavi li {display:inline;}
+ul.tabnavi li a {
+                display: block;
+                float: left;
+                height: 22px
+}
+ul.tabnavi li a div {
+                color: #666;
+                font-weight: bold;
+                padding-top: 5px;
+                padding-left: 30px;
+}
+ul.tabnavi li.regist_001 a {background: url(/images/management/tab/bt_001.gif) no-repeat;width: 80px;}
+ul.tabnavi li.regist_002 a {background: url(/images/management/tab/bt_002.gif) no-repeat;width: 80px;}
+ul.tabnavi li.regist_003 a {background: url(/images/management/tab/bt_003.gif) no-repeat;width: 123px;}
+ul.tabnavi li.regist_004 a {background: url(/images/management/tab/bt_004.gif) no-repeat;width: 89px;}
+ul.tabnavi li.regist_005 a {background: url(/images/management/tab/bt_005.gif) no-repeat;width: 77px;}
+ul.tabnavi li.regist_006 a {background: url(/images/management/tab/bt_006.gif) no-repeat;width: 57px;}
+ul.tabnavi li.regist_007 a {background: url(/images/management/tab/bt_007.gif) no-repeat;width: 103px;}
+ul.tabnavi li.regist_008 a {background: url(/images/management/tab/bt_008.gif) no-repeat;width: 57px;}
+ul.tabnavi li.regist_009 a {background: url(/images/management/tab/bt_009.gif) no-repeat;width: 57px;}
+ul.tabnavi li.regist_009 a {background: url(/images/management/tab/bt_010.gif) no-repeat;width: 57px;}
+ul.tabnavi li.regist_011 a {background: url(/images/management/tab/bt_011.gif) no-repeat;width: 57px;}
+ul.tabnavi li.regist_012 a {background: url(/images/management/tab/bt_012.gif) no-repeat;width: 57px;}
+ul.tabnavi li.regist_000 a {background: url(/images/management/tab/bt_000.gif) no-repeat;width: 123px;}
+
+ul.tabnavi li.regist_001 a:hover,
+ul.tabnavi li.regist_002 a:hover,
+ul.tabnavi li.regist_003 a:hover,
+ul.tabnavi li.regist_004 a:hover,
+ul.tabnavi li.regist_005 a:hover,
+ul.tabnavi li.regist_006 a:hover,
+ul.tabnavi li.regist_007 a:hover,
+ul.tabnavi li.regist_008 a:hover,
+ul.tabnavi li.regist_009 a:hover,
+ul.tabnavi li.regist_010 a:hover,
+ul.tabnavi li.regist_011 a:hover,
+ul.tabnavi li.regist_012 a:hover,
+ul.tabnavi li.regist_000 a:hover,
+ul.tabnavi li#here a {background-position:center bottom;}
+
+img.member_photo {
+                background: #E1E1E1;
+                padding: 10px;
+                margin: 0px 10px 0px 0px;
+                vertical-align: -20%;
+}
+
+div.list_main table {
+                margin-bottom: 10px;
+}
+div.list_main table.not_list_main {
+                margin-bottom: 0px;
+}
+div.list_main table td input,
+div.member_regist table td select,
+div.member_regist table td textarea,
+input.custombtn1 { /* border: 1px solid #FF6600; */}
+
+div.list_main table th {
+                background: #ddd;
+                padding: 5px;
+                text-align: left;
+                font-weight:bold;
+                color:#555;
+}
+div.list_main table th.sub {
+                border-bottom:1px dotted #dedccc;
+}
+div.list_main table.not_list_main th{ /*上記を打消し入れ子tableに使用*/
+                background:none;
+                padding: 0px;
+                text-align: left!important;
+}
+
+div.list_main table td {padding: 5px;background: #f3f3f3;}
+div.list_main table td.pv {
+    text-align: right;
+}
+div.list_main table.not_list_main td{padding: 0px;background:none;} /*上記打消し入れ子tableに使用*/
+
+.red {font-weight: bold;color: #FF0000;}
+td.gray, tr.gray td {background: #D5D5D5!important;}
+td.light_gray, tr.light_gray td{background: #f3f3f3;}
+
+div.list_main span.contents_open{color: #00FF00;}
+div.list_main span.contents_close{color: #FF0000;}
+div.list_main span.contents_group{color: #FF00FF;}
+
+.form_width_100 {width: 100%;}
+.form_width_50 {width: 50%;}
+.form_width_40 {width: 40%;}
+.form_width_25 {width: 25%;}
+
+p.bt_orange a {
+                background: url(/images/management/bt_orange.gif) no-repeat bottom;
+                height: 22px;
+                width: 101px;
+                display: block;
+                color: #000000;
+}
+p.bt_green a {
+                background: url(/images/management/bt_green.gif) no-repeat bottom;
+                height: 22px;
+                width: 101px;
+                display: block;
+                color: #000000;
+}
+p.bt_blue {
+                background: url(/images/management/bt_blue.gif) no-repeat bottom;
+                height: 17px;
+                width: 120px;
+                padding: 2px 0 0 20px;
+}
+
+p.bt_orange a span,
+p.bt_green a span {
+                display: block;
+                padding-top: 4px;
+                padding-left: 27px;
+}
+p.bt_orange a:hover,
+p.bt_green a:hover {
+                background-position:center top;
+}
+p.back {float: right;font: 10px Verdana;}
+p.back a {
+                background: url(/images/management/arrow_top.gif) no-repeat left center;
+                display: block;
+                padding: 0px 0px 0px 15px;
+}
+form.list_form input, form.list_form select {/*font-size: 14px; border: 1px solid #FF6600;*/}
+
+ul.report {margin: 5px 0px 3px;}
+ul.report li {display:inline;}
+
+ul.report li a {
+                color: #000000;
+                background: url(/images/management/report_back.gif) no-repeat center center;
+                display: block;
+                width: 123px;
+                padding: 2px 0px 3px;
+                margin-right: 10px;
+                font-size: 10px;
+                text-align: center;
+                float: left;
+}
+
+/* ----- ページ遷移リンク部分 -----*/
+p.page_links {
+                clear: both;
+                line-height: 20px;
+                font-size: 12px;
+}
+
+
+
+
+/* 記事編集ページ
+---------------------------------------------- */
+
+/* 改ページ */
+.page_change {
+        position: relative;
+        background-color: #EEEEEE;
+        padding: 10px 15px 0 15px;
+}
+.page_change .caption {
+        width: 350px;
+}
+.page_change .delete_page {
+        position: absolute;
+        right: 15px;
+}
+
+/* テキスト・ファイル切り替えタブ*/
+ul.topics_tab,
+ul.topics_tab2 {
+        height: 22px;
+        border-bottom: 2px solid #FFA91A;
+}
+ul.topics_tab li,
+ul.topics_tab2 li {
+        float: left;
+        font-size: 12px;
+}
+ul.topics_tab li.text {
+        height: 18px;
+        width: 125px;
+        margin-right: 10px;
+        color: #fff;
+        font-weight: bold;
+        padding: 4px 0 0 35px;
+        background: url(/images/management/tab_text_on.gif) no-repeat;
+}
+ul.topics_tab2 li.text a {
+        display: block;
+        height: 18px;
+        width: 125px;
+        margin-right: 10px;
+        color: #666;
+        font-weight: bold;
+        padding: 4px 0 0 35px;
+        background: url(/images/management/tab_text.gif) no-repeat;
+}
+ul.topics_tab2 li.text a:hover {
+        background: url(/images/management/tab_text_on.gif) no-repeat;
+        color: #fff;
+}
+ul.topics_tab li.pdf a {
+        display: block;
+        height: 18px;
+        width: 133px;
+        padding: 4px 0 0 27px;
+        background: url(/images/management/tab_pdf.gif) no-repeat;
+        color: #666;
+        font-weight: bold;
+}
+ul.topics_tab2 li.pdf {
+        height: 18px;
+        width: 133px;
+        padding: 4px 0 0 27px;
+        background: url(/images/management/tab_pdf_on.gif) no-repeat;
+        color: #fff;
+        font-weight: bold;
+}
+ul.topics_tab li.pdf a:hover {
+        background: url(/images/management/tab_pdf_on.gif) no-repeat;
+        color: #fff;
+}
+ul.topics_tab li.extends a {
+        display: block;
+        height: 18px;
+        width: 133px;
+        padding: 4px 0 0 27px;
+        background: url(/images/management/tab_pdf.gif) no-repeat;
+        color: #666;
+        font-weight: bold;
+}
+ul.topics_tab2 li.extends {
+        height: 18px;
+        width: 133px;
+        padding: 4px 0 0 27px;
+        background: url(/images/management/tab_pdf_on.gif) no-repeat;
+        color: #fff;
+        font-weight: bold;
+}
+ul.topics_tab li.extends a:hover {
+        background: url(/images/management/tab_pdf_on.gif) no-repeat;
+        color: #fff;
+}
+
+form#kiji_itiran th, form#kiji_itiran td {text-align:center;}
+
+div.kiji_hensyu_top, div.kiji_hensyu_bottom {background: #eee;padding: 10px;}
+div.kiji_hensyu_top td {padding: 5px;}
+
+div.kiji_hensyu_center {background: #eee;padding: 10px;margin-bottom: 20px;}
+div.kiji_hensyu_center h3 {clear:both;}
+div.kiji_hensyu_center h3 span, div.kiji_hensyu_bottom h3 span {display:none;}
+div.kiji_hensyu_center h3 a, div.kiji_hensyu_bottom h3 a {text-align: right;display: block;font-size: 11px;margin: 2px 13px 0px 0px;}
+div.kiji_hensyu_center h3.hensyu_01 {background: url(/images/management/title_hensyu_01.gif) no-repeat;height: 31px;}
+div.kiji_hensyu_bottom h3.hensyu_02 {background: url(/images/management/title_hensyu_02.gif) no-repeat;height: 31px;}
+div.hensyu_form {text-align:center;}
+div.hensyu_form textarea {width:660px;height:400px;margin:5px 0;border: 1px solid #FF3300;}
+
+div.kiji_hensyu_bottom h4 {background: #FEDF6A;padding: 3px 0px 3px 20px;}
+div.kiji_hensyu_bottom ul{background: #FFFFFF;}
+div.kiji_hensyu_bottom ul li {float: left;width: 140px;margin: 5px 0px 5px 20px;}
+div.kiji_hensyu_bottom ul li a {
+                background: url(/images/management/bt_sakujo.gif) no-repeat;
+                width: 49px;
+                height: 19px;
+                display: block;
+                margin-left: auto;
+}
+div.kiji_hensyu_bottom ul li a:hover {background-position:center bottom;}
+div.kiji_hensyu_bottom ul li a span {
+                font-size: 10px;
+                display: block;
+                padding: 2px 0px 0px 18px;
+                color: #000000;
+}
+div.kiji_hensyu_bottom div {
+                background-color:#FFFFFF;
+}
+div.kiji_hensyu_bottom table{
+                margin:10px;
+}
+div.kiji_hensyu_bottom td{}
+
+ul.bt_orange,
+ul.bt_orange_big {
+                display:inline;
+}
+ul.bt_orange li,
+ul.bt_orange_big li {
+                display:inline;
+}
+ul.bt_orange li a {
+                background: url(/images/management/bt_orange.gif) no-repeat bottom;
+                height: 22px;
+                width: 101px;
+                display: block;
+                color: #000000;
+                float: left;
+                margin: 0px 0px 0px 5px;
+}
+div.bt_orange_std a {
+                background: url(/images/management/bt_orange.gif) no-repeat bottom;
+                height: 22px;
+                width: 101px;
+                display: inline;
+                color: #000000;
+                margin: 0px 0px 0px 5px;
+}
+
+ul.bt_orange li#bt_orange_big a,
+ul.bt_orange_big li a {
+                background: url(/images/management/bt_orange_big.gif);
+                height: 22px;
+                width: 159px;
+                display: block;
+                color: #000000;
+                float: left;
+                margin: 0px 0px 0px 5px;
+}
+
+ul.bt_orange li#bt_orange_big2 a {
+                background: url(/images/management/bt_orange_big2.gif);
+                height: 22px;
+                width: 199px;
+                display: block;
+                float: left;
+}
+
+ul.bt_orange li#bt_orange_big a:hover,
+ul.bt_orange_big li a:hover {
+                background-position:center bottom;
+}
+ul.bt_orange li a span,
+ul.bt_orange_big li a span {
+                display: block;
+                padding-top: 4px;
+                padding-left: 27px;
+}
+ul.bt_orange a:hover,
+ul.bt_orange_big a:hover {
+                background-position:center top;
+}
+
+div.kiji_hensyu_bottom2 {margin: 20px;}
+div.kiji_hensyu_bottom2 table th {background: #FEDF6A;padding: 8px;text-align: right;}
+div.kiji_hensyu_bottom2 table td {padding: 8px;}
+div.kiji_hensyu_bottom2 table.innner_table{}
+div.kiji_hensyu_bottom2 table.innner_table td{padding:0px;}
+/* ----- 記事編集ページ ----- */
+
+/* ------メッセージ表示部分------ */
+.msgtable {margin: 5px 0 5px 0;background-color: #DDDDFF; border: solid 2px #3333FF;}
+.errtable {margin: 5px 0 5px 0;background-color: #FFDDDD; border: solid 2px #FF3333;}
+.errmsg {color: #CC0000;}
+.alerttable {background-color: #FFFFCC; border: solid 2px #FFFF00;}
+.wizardtable {margin: 5px 0 5px 0;background-color: #90EE90; border: solid 2px #228B22;}
+.step {font-weight: bold; color: #228B22;}
+/* ------メッセージ表示部分------ */
+
+/* ------更新/削除等　ボタン配置部分------ */
+div.btn_box_bottom {padding-top:5px; margin-top:10px; margin-bottom: 10px; border-top:solid #EC661B 1px;}
+/* ------更新/削除等　ボタン配置部分------ */
+
+/* ------得点表------ */
+table.tokuten{
+                background-color: #CCCCCC;
+}
+table.tokuten td{
+                border: solid #FFFFFF 1px;
+                background: #D5D5D5;
+}
+/* ------得点表------ */
+
+.required {
+ color: #FF0000;
+ font-size: 0.875em;
+ margin-left: 5px;
+}
+
+
+span.relationItem {
+                margin: 3px 5px 3px 5px;
+                padding: 4px;
+}
+
+/* ------ファイル管理------ */
+#fileserver_list a span, #fileserver_file_move_sel a span {
+                display: inline;
+                margin-left: 5px;
+}
+
+/* フォルダツリーで選択されているフォルダ */
+#fileserver_list div.focus_folder span {
+                font-weight: bold;
+                color: #000;
+}
+
+#fileserver_list span.focus_folder {
+                font-size:1.2em;
+                font-weight: bold;
+}
+#fileserver_list span.auth_able, #fileserver_folder_edit span.auth_able {
+                color: #333;
+                font-weight:bold;
+}
+#fileserver_list span.auth_disable, #fileserver_folder_edit span.auth_disable {
+                color: #ccc;
+                font-weight:bold;
+}
+/* ------//ファイル管理------ */
+
+/* ------カレンダー------ */
+/* カレンダー移動ナビ */
+div.calendar_list table.navi {
+                width: 100%;
+}
+div.calendar_list table.navi .header th {
+                text-align: center;
+}
+div.calendar_list table.navi .header th span {
+                font-size:120%;font-weight:bold;
+}
+div.calendar_list table.navi .month td {
+                text-align: center;
+}
+div.calendar_list table.navi .month td span {
+                font-weight: bold;
+}
+div.calendar_list table.navi .jump td {
+                text-align: center;
+}
+div.calendar_list table.navi .jump td select {
+                margin-right: 3px;
+}
+
+/* 月間カレンダー */
+div.calendar_list .monthCal {
+                width: 100%;
+                padding: 0;
+                border: 0;
+                margin: 3px;
+                color: inherit;
+                background-color: #CCD5DD;
+}
+div.calendar_list .monthCal tr.header th {text-align:center;margin:3px 0;font-size:1.5em;}
+div.calendar_list .monthCal tr.header .pre  {}
+div.calendar_list .monthCal tr.header .this {margin-left:20px;margin-right:20px; font-weight:bold;}
+div.calendar_list .monthCal tr.header .next {}
+div.calendar_list .monthCal tr.daysHeader td {
+                padding:5px;
+                margin:1px;
+/*  background-color:#ddE5ee; */
+                background-color:#ddeeee;
+                font-size:80%;
+                font-weight:bold;
+                text-align:center;
+                width: 14%;
+                border-top: 1px solid #fff;
+                border-left: 1px solid #fff;
+}
+div.calendar_list .monthCal tr.days td {
+                width:14%;
+                padding:1px;
+                margin:1px;
+                text-align:left;
+                vertical-align: top;
+                height:100px;
+}
+div.calendar_list .monthCal tr.days td div.head {margin-bottom:4px;}
+div.calendar_list .monthCal tr.days td div.head span{float: left;font-weight: bold;font-size: 110%;}
+div.calendar_list .monthCal tr.days td div.head a{float: right;font-size: 80%;}
+
+div.calendar_list .monthCal tr.days td li {
+                list-style-type:none;
+                border-bottom: 1px dashed #ccc;
+                margin-bottom: 3px;
+}
+div.calendar_list .monthCal tr.days td.Sun {color:red;   background-color: #FFEEEE;}
+div.calendar_list .monthCal tr.days td.Mon {color:black; background-color: #FFFFFF;}
+div.calendar_list .monthCal tr.days td.Tue {color:black; background-color: #FFFFFF;}
+div.calendar_list .monthCal tr.days td.Wed {color:black; background-color: #FFFFFF;}
+div.calendar_list .monthCal tr.days td.Thu {color:black; background-color: #FFFFFF;}
+div.calendar_list .monthCal tr.days td.Fri {color:black; background-color: #FFFFFF;}
+div.calendar_list .monthCal tr.days td.Sat {color:black; background-color: #DDE5FF;}
+div.calendar_list .monthCal tr.days td.Hol {color:red;   background-color: #FFEEEE;}
+div.calendar_list .monthCal tr.days td.Out {color:gray;  background-color: #EEEEEE;}
+div.calendar_list .monthCal tr.days td.Tod {color:black; background-color: #ccffcc !important;}
+/* ------//カレンダー------ */
+
+/* ------アンケート------ */
+td a.allow-first, td a.allow-down {display: block;margin-bottom: 3px;}
+td a.allow-up, td a.allow-last {display: block;}
+/* ------//アンケート------ */
+
+/* ------ tasklist------ */
+table.tasklist_list .deadline {color: #FF0000;}
+table.tasklist_list .serious1 {}
+table.tasklist_list .serious2 {background: #ffcc66;}
+table.tasklist_list .serious3 {background: #ff8800;}
+table.tasklist_list .serious4 {background: #ff0000;}
+table.tasklist_list .priority1 {}
+table.tasklist_list .priority2 {background: #ffcc66;}
+table.tasklist_list .priority3 {background: #ff8800;}
+table.tasklist_list .priority4 {background: #ff0000;}
+/* ------// tasklist------ */
+
+
+
+/* ------ page_links ------ */
+.page_links {margin-top:4px;margin-bottom:1px;}
+.page_links span {margin: 0 2px;font-size: 13px;}
+.page_links .allCnt {}
+.page_links .range {margin-left: 5px;}
+.page_links a.first {margin-left: 3px;}
+.page_links a.back  {margin-left: 3px;margin-right:3px;}
+.page_links a.next  {margin-left: 3px;margin-right:3px;}
+.page_links a.last  {}
+.page_links a span {display: inline;}
+.page_links a.first span {padding-left: 16px;background: url(/images/management/page_l2.gif) no-repeat center left; width: 15px;height:12px;}
+.page_links a.back  span {padding-left:  11px;background: url(/images/management/page_l.gif) no-repeat center left; width: 10px;height:12px;}
+.page_links a.next  span {padding-right: 11px;background: url(/images/management/page_r.gif) no-repeat center right; width: 10px;height:12px;}
+.page_links a.last  span {padding-right: 16px;background: url(/images/management/page_r2.gif) no-repeat center right; width: 15px;height:12px;}
+.page_links a.page, .page_links span.current {margin:0 2px;}
+.page_links span.current {
+                font-weight: bold;
+                font-size: 15px;
+}
+/* ------ page_links ------ */
+
+/* ------ search_box ------ */
+div.search_box {
+                background-color:#EEE;
+                border:solid #D5D5D5 1px;
+                padding: 4px 5px 4px 5px;
+                margin-bottom: 10px;
+}
+div.search_box table {}
+div.search_box table th {background-color: #EEE;}
+div.search_box table td {background-color: #f3f3f3 ;}
+fieldset.search_box {
+                background-color:#EEE;
+                border: solid #D5D5D5 1px;
+                padding: 4px 5px 4px 5px;
+}
+
+/* ------ search_box ------ */
+
+/* ------ mail ------ */
+table.mail_send_list td span.more {
+                display: block;
+                text-align: right;
+                margin: 0 5px 0 0;
+                font-size: 0.9em;
+}
+/* ------ mail ------ */
+
+#relationArea {
+                background-color: #F9F7F4;
+                width:180px;
+                height:100px;
+                border: 1px solid;
+}
+.relation_box {
+padding: 2px;
+background-color: #ffffff;
+border: 1px solid #cccccc;
+height: 310px;
+margin-bottom: 20px;
+}
+
+/* ------ inquiry ------ */
+#user_profile_table th {
+                text-align: center;
+                width: 50px;
+                border-bottom: 1px solid #999;
+}
+#user_profile_table td.btn {
+                text-align: center;
+}
+
+/* staticcontents 閲覧制限 */
+ul.secure_level_list                {
+                line-height: 1.4em;
+                border: 1px solid #ccf;
+                padding: 5px;
+                margin-right: 20px;
+}
+ul.secure_level_list ul {
+                margin-left: 20px;
+}
+ul.secure_level_list label {
+                padding-left: 5px;
+}
+
+/* サポートフォーラム
+------------------------------------------------------------------- */
+.btn_ask {
+                text-align: right;
+                margin-top: 10px;
+}
+
+/* 質問詳細 */
+.supportforum_detail .asking h3 {
+                background: none;
+                padding: 5px 0 0 10px;
+                margin:0px;
+                height: 20px;
+                color: #333333;
+                background-color: #DFEFFF;
+                font-size: 14px !important;
+}
+.supportforum_detail p.dateArea {
+                float: left;
+                padding: 5px;
+}
+.supportforum_detail p.dateArea img {
+                margin-right: 5px;
+                vertical-align: bottom;
+}
+.supportforum_detail p.dateArea .name {
+                margin: 0px 10px;
+}
+.supportforum_detail p.dateArea .site{
+                margin-right: 10px;
+}
+.supportforum_detail p.help {
+                color: #CC0000;
+                text-align: right;
+                padding: 3px 5px 5px 5px;
+}
+.supportforum_detail p.help img {
+                vertical-align: middle;
+                margin-right: 10px;
+}
+.asking p.writing {
+                padding: 10px;
+                border-bottom: 1px dotted #999999;
+}
+.asking p.buttonArea {
+                text-align: right;
+                padding: 5px 5px 0px 0px;
+}
+.supportforum_detail h4 {
+                color: #006699;
+                font-weight: bold;
+                margin: 20px 0px 5px 10px;
+                font-size: 12px;
+}
+.supportforum_detail .answer_list {
+                padding-top: 3px;
+                margin-bottom: 15px;
+                border-top: 1px dotted #999999;
+}
+.answer_list p.buttonArea {
+                text-align: right;
+                margin-bottom: 3px;
+}
+.answer_list .answerDate {
+                padding: 1px 0;
+                background-color: #efefef;
+}
+.answer_list .answer {
+                clear: both;
+                margin: 5px;
+}
+
+/* 入力画面 */
+.supportforum_input {
+                width: 465px;
+                padding: 10px;
+                text-align: left;
+}
+.forum_header {
+                background: url(/images/management/forum/h1_back.gif) no-repeat;
+                text-align: left;
+                margin-bottom: 10px;
+                height: 21px;
+}
+.forum_header h2 {
+                color: #0066CC;
+                font-size: 14px;
+                font-weight: bold;
+                padding: 4px 0px 0px 30px;
+                float: left;
+}
+.forum_header div {
+                text-align: right;
+                padding: 3px 10px 0px 0px;
+}
+.forum_iuputArea {
+                border: 1px solid #ababab;
+                width: 465px;
+                margin: 0px 0px 10px 0px;
+}
+.forum_iuputArea table th {
+                padding: 5px 8px 5px 8px;
+                background-color: #DFEFFF;
+                width: 100px;
+}
+.forum_iuputArea table td {
+                padding: 5px 10px;
+}
+.forum_inputButton {
+                text-align: center;
+}
+
+
+#forum_footpath {
+                font-size: 10px;
+                margin-bottom: 15px;
+}
+#forum_h2 {
+                border-bottom: 1px dotted #EC661B;
+                margin-bottom: 15px;
+                padding: 0px 5px;
+                height: 23px;
+}
+#forum_h2 h2 {
+                background: url(/images/management/forum/icon_h2.gif) no-repeat 0px 5px;
+                font-size: 14px;
+                padding: 5px 0px 0px 18px;
+                float: left;
+                font-weight: bold;
+}
+#forum_h2 .buttonArea {
+                text-align: right;
+}
+#forum_h2 .buttonArea p {
+                float: right;
+                margin-left: 5px;
+}
+
+
+/*  囲み枠の指定                */
+.forum_contentsBox {
+                border: 1px solid #ababab;
+                background-color: #efefef;
+                padding: 3px;
+}
+.forum_contentsBox2 {
+                background-color: #ffffff;
+                padding: 3px;
+}
+
+/*  サポートTOP         */
+.qa_link {
+                text-align: right;
+}
+.qa_link p {
+                margin-bottom: 5px;
+}
+.support_qa {
+                margin: 5px 0 15px 0;
+}
+.support_qa h3 {
+                font-size: 12px;
+                color: #006699;
+                font-weight: bold;
+                background-color: #D9EBFF;
+                padding: 3px 0 3px 10px;
+                margin-bottom: 10px;
+}
+dl.qa_list dt.question {
+                font-weight: bold;
+                color: #189D32;
+                float: left;
+                margin: 0 5px 0 5px;
+}
+dl.qa_list dt.answer{
+                font-weight: bold;
+                color: #cc0000;
+                float: left;
+                margin: 5px 0 0 5px;
+}
+dl.qa_list dd.answer{
+                font-size: 10px;
+                margin: 3px 5px 0 25px;
+}
+dl.qa_count {
+                font-size: 10px;
+                text-align: right;
+                margin: 0 5px 10px 5px;
+                padding: 0 5px 5px 0;
+                border-bottom: 1px dotted #999999;
+}
+dl.qa_count dt,
+dl.qa_count dd {
+                display: inline;
+}
+.new_entry_list h3 {
+                color: #006699;
+                border-bottom: 1px dotted #999999;
+                padding: 0px 0px 5px 5px;
+                font-size: 12px;
+                font-weight: bold;
+}
+.new_entry_list ul li {
+                border-bottom: 1px dotted #999999;
+                padding: 5px;
+}
+.new_entry_list ul li p.question img.q_icon {
+                margin-right: 5px;
+}
+.new_entry_list ul li p.question_detail {
+                font-size: 10px;
+                margin: 2px 0 5px 0;
+}
+.new_entry_list ul li p.date {
+                float: left;
+}
+.new_entry_list ul dl {
+                float: right;
+                text-align: right;
+}
+.new_entry_list ul dt,
+.new_entry_list ul dd {
+                display: inline;
+}
+.new_entry_list ul li:after{
+                content: ".";
+                display: block;
+                height: 0;
+                clear: both;
+                visibility: hidden;
+}
+.support_qa p.nothing,
+.new_entry_list p.nothing {
+                margin: 10px;
+}
+
+/* Q&A作成 */
+.supportforum_detail .qa_edit {
+                margin-bottom: 40px;
+}
+.supportforum_detail .qa_edit p {
+                margin-top: 5px;
+}
+
+/* 付箋
+------------------------------------------------------------------- */
+#sticky {
+                width: 383px;
+                margin: 10px 0px 0px 10px;
+}
+.sticky_header {
+                background: url(/images/management/sticky_header.gif) no-repeat;
+                text-align: left;
+                padding-top: 4px;
+                height: 21px;
+}
+.sticky_header h1 {
+                color: #0066CC;
+                font-size: 14px;
+                float: left;
+                margin-left: 10px;
+}
+.sticky_header p {
+                text-align: right;
+                margin-right: 10px;
+}
+#sticky table {
+                margin: 10px 0;
+                border: 1px solid #dddddd;
+}
+#sticky table th {
+                background-color: #DFEFFF;
+                padding: 0 5px;
+                width: 80px;
+                font-size: 12px;
+}
+#sticky table td {
+                text-align: left;
+                padding: 5px;
+                font-size: 12px;
+}
+#sticky table td li.group_list {
+                float: left;
+                width: 135px;
+}
+
+/* 補足説明部分
+------------------------------------------------------------------- */
+#add {
+                background-color: #efefef;
+                margin: 0 15px;
+                padding: 10px;
+}
+#add dt {
+                font-weight: bold;
+                margin: 8px 0 3px 0;
+}
+#add dd {
+                text-indent: 1em;
+                margin-bottom: 8px;
+}
+
+/* 豆電球アイコン
+------------------------------------------------------------------- */
+.hint {
+                color: #008000;
+                font-size: 0.875em;
+                background: url(/images/management/icon_mame.gif) no-repeat 0 1px;
+                padding-left: 20px;
+                margin: 3px 0;
+}
+.hint2 {
+                color: #008000;
+                font-size: 0.875em;
+                margin-left: 5px;
+}
+.hint3 {
+                color: #008000;
+                background: url(/images/management/icon_mame.gif) no-repeat 0 1px;
+                padding-left: 20px;
+                margin: 3px 0;
+}
+.hint3 a {
+                text-decoration: underline;
+}
+.lead {
+                margin-bottom: 10px;
+}
+
+/* デザインテンプレート
+------------------------------------------------------------------- */
+table.template_category ul li{
+                float: left;
+                margin: 2px 7px 2px 7px;
+}
+table.design_list td {
+                vertical-align: top;
+}
+.design_list .design_sample {
+                text-align: center;
+                margin: 5px 0;
+}
+.design_list .design_name {
+                background-color: #FFF4D0;
+                padding: 3px;
+}
+.design_list .design_name span {
+                color: #ff0000;
+}
+
+/* ヘッダー画像変更
+------------------------------------------------------------------- */
+.header_change {
+                margin : 10px;
+                background: #E7E7E7;
+                text-align: left;
+}
+.header_change h1 {
+                font-size: 12px;
+                margin-bottom: 10px;
+}
+.header_change dl {
+                margin: 10px 0;
+}
+.header_change dt {
+                margin-bottom: 5px;
+}
+.header_change dd {
+                margin-bottom: 10px;
+}
+.header_change .close {
+                margin-top: 20px;
+                text-align: center;
+}
+.header_change .bt {
+                color: #000000;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                font-weight: bold;
+                border : 1px solid #b2b2b2;
+                background: #D7D7D7;
+}
+
+/* 上部　よく使う機能
+------------------------------------------------------------ */
+.subBox_contents {
+                border: 1px solid #ababab;
+                background-color: #efefef;
+                padding: 3px;
+                margin-bottom: 10px;
+
+}
+.subBox_contents p.close {
+                background-color: #ffffff;
+                padding: 2px 2px 0 0;
+                text-align: right;
+}
+.subBox_contents .often_use {
+                padding: 0 8px 5px 8px;
+                background-color: #ffffff;
+line-height: 120%;
+}
+
+.subBox_contents h3 {
+                text-align: center;
+                width: 100px;
+                height: 17px;
+                margin: 15px 10px 0 0;
+                padding-top: 3px;
+                color: #fff;
+                font-size: 12px !important;
+                font-weight: bold;
+                float: left;
+                background: url(/images/management/bg_oftenUse.gif) no-repeat;
+}
+.subBox_contents div:after{
+                content: ".";
+                display: block;
+                height: 0;
+                clear: both;
+                visibility: hidden;
+}
+
+div#content ul.subnav2 li {
+                float: left;
+                zoom: 1;
+                display: inline;
+                font-size: 10px;
+}
+
+div#content ul.subnav2 li a {
+                width: 50px;
+                display: block;
+                float: left;
+                margin-right: 15px;
+                text-align: center;
+                padding-top: 38px;
+                color: #0033FF;
+                line-height: 100%;
+}
+div#content ul.subnav2 li a span {
+                display: block;
+                background: url(/images/management/mainnav_back_s.gif) no-repeat center;
+                width: 50px;
+                cursor: pointer;
+}
+.often_use ul.link {
+                font-size: 10px;
+                text-align: right;
+                padding-top: 30px;
+}
+*html .often_use ul.link li {
+                padding-top: 3px;
+}
+.often_use ul.link img {
+                margin-right: 3px;
+}
+
+ul.favorite_edit li {
+                margin: 3px 7px 0 0;
+                text-align: right;
+}
+ul.favorite_edit li img {
+                margin-right: 3px;
+}
+/*  簡易版ショートカットメニューと共通  */
+ul.dropdown {
+    position: relative;
+    z-index: 100;
+}
+.shortcut ul.dropdown li a span {
+    display: block;
+    font-size: 10px;
+}
+ul.dropdown li a:hover {
+    filter: Alpha(opacity=50);
+    opacity:0.5;
+}
+ul.dropdown li:hover {
+    position: relative;
+}
+ul.dropdown ul {
+    visibility:hidden;
+    width: 320px;
+    position: absolute;
+    top: 100%; left: 0;
+    background:#f1f1f1;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+ul.dropdown ul li {
+    float: none;
+}
+ul.dropdown ul li a {
+    width: 300px !important;
+    background: none !important;
+    float: none !important;
+    text-align: left !important;
+    padding: 7px 10px !important;
+    height: 15px;
+    font-size: 13px;
+}
+ul.dropdown ul li a:hover {
+    filter: Alpha(opacity=100);
+    opacity:1;
+    background-color: #FFDF9D !important;
+}
+*:first-child+html ul.dropdown ul li {
+    display: inline;
+    width: 100%;
+}
+
+
+/* 右部サポートフォーラム
+------------------------------------------------------------ */
+#sideBar2{
+        position: absolute;
+        width: auto;
+        height: auto;
+        top: 0px;
+        right:0px;
+        z-index: 150;
+}
+
+#sideBarTab2{
+        float:left;
+        height:200px;
+        width:25px;
+}
+
+#sideBarContents2{
+        float:left;
+        overflow:hidden !important;
+        width:450px;
+        //height:164px;
+        height:500px;
+        background-color:#ffffff;
+        text-align:left;
+        padding:5px;
+        border-left: 1px solid #4E91F5;
+        border-bottom: 1px solid #4E91F5;
+}
+
+
+
+/* 送信ボタン
+------------------------------------------------------------ */
+.buttonbox {
+        border-top: solid #ec661b 1px;
+        margin-top: 10px;
+        padding: 5px 10px 30px;
+        clear: both;
+}
+.buttonbox p {
+        float: left;
+        line-height: 22px;
+        margin: 0 5px 0 0;
+}
+.buttonbox li {
+        float: left;
+        margin-right: 3px;
+        height: 27px;
+        text-align: center;
+        background: url(/images/management/bt_orange_l.gif);
+}
+.buttonbox li button {
+        cursor: pointer;
+        display: block;
+        height: 27px;
+        border: none;
+        background: url(/images/management/bt_orange_r.gif) top right no-repeat !important;
+        padding: 0 20px 2px 32px;
+        font-size: 120%;
+        font-weight: bold;
+        color: #555;
+}
+*html .buttonbox li button {
+        padding: 0 0 0 10px;
+}
+.buttonbox li:hover {
+        background: url(/images/management/bt_orange_l.gif) bottom left;
+}
+.buttonbox li:hover button {
+        background: url(/images/management/bt_orange_r.gif) bottom right no-repeat !important;
+}
+
+
+/* 更新コメント
+------------------------------------------------------------ */
+.update_comment table {
+        width: 100%;
+        margin-top: 20px;
+}
+.update_comment th {
+        width: 150px;
+}
+.update_comment textarea {
+        width: 98%;
+        height: 80px;
+}
+
+
+/* ポップアップカレンダー
+------------------------------------------------------------ */
+div.pop_calendar {
+        display:none;
+        position:absolute;
+        z-index: 100;
+}
+div.pop_calendar a span {
+        display: inline;
+}
+
+/* メルマガ
+------------------------------------------------------------ */
+td.magazine_target .reader {
+        margin-bottom: 5px;
+        border-bottom: 1px solid #aaaaaa;
+        padding: 0 0 3px 5px;
+}
+td.magazine_target ul {
+        margin-top: 5px;
+        height: 21px;
+        border-bottom: 3px solid #FFA91A;
+}
+td.magazine_target li {
+        width: 115px;
+        height: 17px;
+        text-align: center;
+        display: block;
+        float: left;
+        padding: 4px 5px 0px 5px;
+        margin-right: 5px;
+}
+td.magazine_target li.on {
+        background: url(/images/management/tab_s_on.gif) no-repeat;
+        font-weight: bold;
+        color: #fff;
+}
+td.magazine_target li.off {
+        background: url(/images/management/tab_s.gif) no-repeat;
+}
+td.magazine_target .new_group,
+td.magazine_target .group {
+        background: #fff;
+        padding: 5px;
+        margin-bottom: 5px;
+        clear: both;
+}
+td.magazine_target .new_group p {
+        text-align: right;
+}
+
+/* 承認機能
+------------------------------------------------------------ */
+div.waiting_auth {
+    border: solid 1px orange;
+    margin: 20px 40px;
+    padding: 10px;
+    text-align: center;
+}
+div.waiting_auth p {
+    margin-top: 10px;
+}
+div.waiting_auth .subject {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+/* 承認機能 言語別ステータス
+------------------------------------------------------------ */
+div.doc_lang_status_box {
+    margin: 10px 0;
+}
+div.doc_lang_status_box li {
+    display: inline;
+    margin-right: 10px;
+    padding-left: 8px;
+    background: url(/images/management/icon_menu.gif) no-repeat left center;
+}
+div.doc_lang_status_box li span {
+    margin-left: 4px;
+}
+div.doc_lang_status_box li.current {
+    border-bottom: 2px solid #f00;
+}
+
+/* 未作成 */
+.doc_lang_status .none, .doc_lang_status .none a, .doc_lang_status .none span {
+    display: inline;
+    color: #666;
+}
+/* 主言語の後に更新 */
+.doc_lang_status .latest,
+.doc_lang_status .latest a,
+.doc_lang_status .latest span {
+    display: inline;
+    color: #090;
+}
+/* 主言語の前に更新 */
+.doc_lang_status .not_latest,
+.doc_lang_status .not_latest a,
+.doc_lang_status .not_latest span {
+    display: inline;
+    color: #F00;
+}
+/* 承認待ち */
+.doc_lang_status .waiting,
+.doc_lang_status .waiting a,
+.doc_lang_status .waiting span {
+    display: inline;
+    color: #996633;
+}
+
+/* 承認機能 一覧画面用 言語別ステータス
+------------------------------------------------------------ */
+.doc_lang_status_simple {
+    margin: 15px 0 0 0;
+    text-align: right;
+}
+.doc_lang_status_simple li {
+    display: inline;
+    margin-left: 10px;
+}
+
+/* ワンタイムメンバーが操作できるリンク一覧
+------------------------------------------------------------ */
+div.onetime_link_list ul li{
+    display: inline;
+    margin-right: 10px;
+}
+
+.wysiwyg_area{
+    padding-left:10px;
+}
+
+
+/* 編集開くボタン
+--------------------------------------------------- */
+.edit_close {
+                width: 746px;
+                margin: 10px 0 5px 0 !important;
+                clear: both;
+}
+.edit_open {
+                width: 746px;
+                clear: both;
+                position: relative;
+}
+.edit_contents {
+                clear: both;
+                position:relative;
+}
+.edit_close:after{
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+}
+div.list_main .edit_close h3 {
+        background: url(/images/management/bg_rcms.gif) 0 -275px no-repeat;
+                color: #EC661B;
+                padding: 3px 0px 0px 33px;
+                margin: 0 15px 0 0;
+                float: left;
+                clear: both;
+                width: 202px;
+}
+.edit_close p a {
+                margin-top: 1px;
+                float: left;
+                display:block;
+                width: 72px;
+                height: 19px;
+                background: url(/images/management/btn_set_on.gif) no-repeat;
+}
+.edit_close p a:hover,
+.edit_open p.close a:hover {
+        background-color: #ffffff;
+}
+.edit_close p a:hover img,
+.edit_open p.close a:hover img{
+                visibility:hidden;
+}
+.edit_open p.close {
+                position: absolute;
+                top:-7px;
+                left: 678px;
+}
+.edit_open p.close a {
+                display:block;
+                width: 61px;
+                height: 19px;
+                background: url(/images/management/btn_setClose_on.gif) no-repeat;
+}
+#sel {
+        background: #efefef;
+        padding: 5px;
+        margin-bottom: 5px;
+}
+
+
+/* 試用期間
+--------------------------------------------------- */
+#probation{
+        background: url(/images/management/bg_rcms.gif) 0 -806px no-repeat;
+            color: #cc0000;
+        padding:8px 0 0 103px;
+                height:32px;
+                border:2px solid #cc0000;
+}
+.btn_order{
+                text-align:right;
+}
+.btn_order img{
+                margin-right:5px;
+}
+#btn_pay{
+               text-align:center;
+}
+table #pay{
+               margin:10px 0 20px 0;
+               font-weight:bold;
+
+}
+#pay_type_1 table,
+#pay_type_9 table{
+               border:1px solid#ccc;
+}
+#pay_type_1 #card {
+               margin-bottom:30px;
+}
+#pay_type_1 p,
+#pay_type_3 p,
+#pay_type_9 p{
+               font-weight:bold;
+               margin-bottom:10px;
+}
+
+#pay_type_1 th,
+#pay_type_3 th{
+               width:150px;
+
+}
+.sublist th{
+               width:270px;
+}
+.sublist td{
+               width:80px;
+               text-align:center;
+}
+
+
+/* 翻訳ボタン
+---------------------------------------------------------------- */
+.major_language {
+    padding: 5px 0;
+}
+.major_language .g_translate a {
+    display: block;
+    text-align: center;
+    width: 45px;
+    height: 14px;
+    padding-top: 2px;
+    font-size: 10px;
+    background: url(/images/management/bg_rcms.gif) 47px 330px;
+    position: absolute;
+    top: -3px;
+    left: 5px;
+}
+.major_language .g_translate {
+    position: absolute;
+}
+.primary_text {
+    margin-bottom: 10px;
+}
+.primary_text .g_translate a {
+    display: block;
+    text-align: center;
+    width: 45px;
+    height: 14px;
+    padding-top: 2px;
+    font-size: 10px;
+    background: url(/images/management/bg_rcms.gif) 47px 330px;
+}
+.primary_contents {
+    padding: 5px;
+    border: 1px solid #d3d3d3;
+}
+.primary_contents .btn {
+    text-align: right;
+}
+
+/* タグ入力
+---------------------------------------------------------------- */
+div.tagsinput{
+    padding: 3px 0px 3px 0px;
+    border:none;
+    background: #FFF;
+    overflow-y: auto;
+}
+
+span.tags_title {
+    border:solid px #000;
+    background-color: #FEDF6A;
+    font-size: 12px;
+    padding: 3px 10px 3px 10px;
+    margin-top: 3px;
+    margin-bottom:3px;
+    float:left;
+}
+
+div.tags_seleted {
+    background: #FFF;
+    border: 1px solid #ccc;
+    overflow: auto;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    padding: 3px 3px 3px 5px;
+    margin: 3px 0;
+}
+
+div.tagsinput span.tag,
+div.tagsinput span.not_tag,
+div.tagsinput span.add,
+div.tags_seleted span.tag {
+    cursol:pointer;
+    border: 1px solid #a5d24a;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    display: block;
+    float: left;
+    padding: 5px;
+    text-decoration:none;
+    background: #cde69c;
+    color: #638421;
+    margin-right: 5px;
+    margin-bottom:5px;
+    font-size:13px;
+}
+
+div.tagsinput span.not_tag{
+    background: #FFFFFF;
+}
+
+div.tagsinput span.add {
+    border: 1px solid #FFF;
+    background: #FFF;
+}
+
+div.tags_seleted span.tag {
+    border:none;
+    padding: 2px;
+    font-weight:bold;
+    background: #FFFFFF;
+    margin-right: 1px;
+    margin-bottom:3px;
+    font-size:14px;
+    cursor: default;
+}
+
+/* 翻訳機能がつかえなくなっているので
+---------------------------------------------------------------- */
+.g_translate {
+  display: none;
+}

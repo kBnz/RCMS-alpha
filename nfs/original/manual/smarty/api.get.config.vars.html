@@ -1,0 +1,233 @@
+<HTML
+><HEAD
+><TITLE
+>get_config_vars()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="fetch()"
+HREF="api.fetch.html"><LINK
+REL="NEXT"
+TITLE="get_registered_object()"
+HREF="api.get.registered.object.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.fetch.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.get.registered.object.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.get.config.vars"
+></A
+>get_config_vars()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN5969"
+></A
+>get_config_vars()&nbsp;--&nbsp;読み込まれた設定ファイル変数を返します。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN5972"
+></A
+><H2
+>説明</H2
+>array <B
+CLASS="methodname"
+>get_config_vars</B
+> ( [string varname])<BR
+></BR
+><P
+>&#13;   パラメータが与えられない場合は 全ての読み込まれた
+   <A
+HREF="language.config.variables.html"
+>設定ファイル変数</A
+>
+   の配列が返されます。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5982"
+></A
+><P
+><B
+>例 13-1. get_config_vars()</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;読み込まれた設定ファイル変数'foo'を取得します<br /></span><span style="color: #0000BB">$myVar&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">get_config_vars</span><span style="color: #007700">(</span><span style="color: #DD0000">'foo'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;全ての設定ファイル変数を取得します<br /></span><span style="color: #0000BB">$all_config_vars&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">get_config_vars</span><span style="color: #007700">();<br /><br /></span><span style="color: #FF8000">//&nbsp;では見てみましょう<br /></span><span style="color: #0000BB">print_r</span><span style="color: #007700">(</span><span style="color: #0000BB">$all_config_vars</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="api.clear.config.html"
+><TT
+CLASS="varname"
+>clear_config()</TT
+></A
+>、
+   <A
+HREF="language.function.config.load.html"
+><TT
+CLASS="varname"
+>{config_load}</TT
+></A
+>、
+  <A
+HREF="api.config.load.html"
+><TT
+CLASS="varname"
+>config_load()</TT
+></A
+>
+   および
+  <A
+HREF="api.get.template.vars.html"
+><TT
+CLASS="varname"
+>get_template_vars()</TT
+></A
+>
+  も参照してください。
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.fetch.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.get.registered.object.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>fetch()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>get_registered_object()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

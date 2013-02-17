@@ -1,0 +1,465 @@
+@charset "Shift_JIS";
+/* 全体の設定
+------------------------------------------------------------ */
+body {
+	/*
+		ウィンドウの余白(padding)を設定するときはこのbodyで行ってください。
+		containerで余白(margin)の設定をするとレイアウトが崩れます。
+	  paddingを設定する際はOperaのバグ対策のため最下行で指定してください。
+	*/
+	font-size: 90%;
+}
+*{}
+
+h1 {size:120%;}
+
+h2 {size:110%;}
+
+h3 {size:100%;}
+
+p {}
+
+ul {}
+
+li {}
+
+hr {}
+
+.date {}
+
+/* レイアウト系の設定
+------------------------------------------------------------ */
+#container {
+/containerでmarginやpaddingをサイズで指定するとレイアウトが崩れる場合があります。
+widthを指定しない場合はメインコンテンツがブラウザウィンドウの伸縮に同期します。
+	width:760px;
+	margin-top:50px;
+}
+#header {
+	text-align:center;
+	padding-top:100px;
+	font-size:120%;
+	color:#fff;
+	padding-bottom:3px;
+}
+#header h1{
+	font-size:120%;
+	color:#fff;
+}
+.header-image{
+	background-position: center bottom;
+	background-repeat: no-repeat;
+}
+#navi{
+	padding-top:30px;
+	text-align:center;
+	width:100%;
+}
+#footpath {}
+
+#contents {
+	padding:5px 4px 0 4px;
+}
+
+#main_contents {
+	margin-bottom: 10px;
+}
+
+#side_contents_left {
+       margin-top: 5px;
+}
+
+#side_contents_right {
+       margin-top: 5px;
+}
+
+#bottom_contents {}
+
+#footer {
+	text-align:right;
+	margin-top:30px;
+	font-size:80%;
+}
+
+/* リンクの設定
+------------------------------------------------------------ */
+a:link {
+	color:#069;
+	font-size:12px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+a:visited {
+	color:#069;
+	font-size:12px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+a:hover {
+	color:#069;
+	font-size:12px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+/* ナビの設定
+------------------------------------------------------------ */
+a.menu:hover {}
+.menu {}
+
+#navi{
+	margin-top:-10px;
+	font-size: 12px;
+	text-align:center;
+	padding-bottom:10px;
+}
+#navi ul {
+	list-style-type: none;
+	width:760px;
+	margin:0 auto;
+}
+
+#navi li.navi{
+	display:block;
+	text-align:center;
+	padding:0;
+	margin:0 5px 5px 0;
+	float:left;
+
+}
+#navi li.navi a {
+	font-size: 12px;
+	padding:4px 8px;
+	color:#9cf;
+	display:block;
+	width:103px;
+	text-decoration: none;
+}
+#navi li.navi a:hover {
+	font-size: 12px;
+	background:url("/files/user/maru/8ico.gif")no-repeat;
+	background-position:0% 30%;
+	color:#069;
+	position:relative;
+	text-decoration: underline;
+}
+
+*html #navi li.navi a:hover {
+	background-image:url("/files/user/maru/8ico.gif");
+	background-repeat:no-repeat;
+	background-position:0% 30%;	
+}
+
+#navi li.navi strong {
+	font-size: 12px;
+	background:url("/files/user/maru/8navi.gif")no-repeat;
+	background-position:0% 30%;
+	color:#069;
+	padding:4px 8px;
+	width:103px;
+	display:block;
+}
+*html #navi li.navi strong {
+	background-image:url("/files/user/maru/8navi.gif");
+	background-position:0% 30%;
+	background-repeat:no-repeat;
+}
+/* フットパスの設定
+------------------------------------------------------------ */
+#footpath{
+	display:none;
+}
+.footpath{}
+
+#footpath li.footpath{
+	float: left;
+	list-style-type: none;
+	margin-right: 5px;
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-top: 3px;
+	padding-right: 3px;
+	padding-bottom: 3px;
+	padding-left: 15px;
+}
+
+#footpath li.footpath a {
+	display: block;
+}
+
+ヘッダーの設定
+------------------------------------------------------------ */
+.mng_line{}
+
+/* フッターの設定
+------------------------------------------------------------ */
+#adidas_logo{}
+
+#footer{
+	color: #FCC;
+}
+#footer_contents a{
+	color:#9cf;
+}
+#footer_contents{
+	padding: 5px;
+}
+
+#footer_bottom{}
+
+/* トップ&ボトムコンテンツの設定
+------------------------------------------------------------ */
+/*枠設定*/
+
+#top_contents li, #bottom_contents li{
+	list-style-type: disc;
+}
+#top_contents .module_body, #bottom_contents .module_body{
+	height: 100%;
+        margin-top: 3px;
+        margin-bottom: 10px;
+        border-bottom: #666;
+        border-right: #666;
+        border-left: #666;
+}
+#top_contents .module_top{}
+	
+#top_contents .module_body{}
+
+#top_contents .module_body_centertop{}
+
+#top_contents .module_body_centerleft{}
+
+#top_contents .module_body_centerright{}
+
+#top_contents .module_body_centerbottom{}
+
+#top_contents .module_body_lefttop{}
+
+#top_contents .module_body_righttop{}
+
+#top_contents .module_body_leftbottom{}
+
+#top_contents h2.module_title, #bottom_contents h2.module_title{
+	line-height: 100%;
+	height: 20px;
+	border-bottom:1px dashed #069;
+	color: #069;
+}
+#top_contents h2.module_title a, #bottom_contents h2.module_title a{
+	margin-bottom:10px;
+}
+
+#top_contents .module_contents, #bottom_contents .module_contents{
+	margin-bottom:20px;
+	background:#036;
+}
+#side_contents_left .module_body_rightbottom{
+	border:none;
+}
+/* メインコンテンツの設定
+------------------------------------------------------------ */
+/*枠設定*/
+#main_contents .module_body, #top_contents .module_body, #bottom_contents .module_body, {
+	background:#036;
+	height:100%; /* IE対策 */
+}
+#main_contents .module_body_centertop,#top_contents .module_body_centertop,#bottom_contents .module_body_centertop{
+	background-image: url(/files/user/maru/bg_title2.gif);
+	background-repeat: repeat-x;
+	background-position: 0% 0%;
+}
+
+#main_contents .module_body_centerleft,#top_contents .module_body_centerleft,#bottom_contents .module_body_centerleft{
+	background-image: url(/files/user/maru/center_left.gif);
+	background-repeat: repeat-y;
+	background-position: 0% 0%;
+}
+
+#main_contents .module_body_centerright,#top_contents .module_body_centerright,#bottom_contents .module_body_centerright{
+	background-image: url(/files/user/maru/center_right.gif);
+	background-repeat: repeat-y;
+	background-position: 100% 0%;
+}
+
+#main_contents .module_body_centerbottom,#top_contents .module_body_centerbottom,#bottom_contents .module_body_centerbottom{
+	background-image: url(/files/user/maru/center_btm.gif);
+	background-repeat: repeat-x;
+	background-position: 0% 100%;
+}
+
+#main_contents .module_body_lefttop,#top_contents .module_body_lefttop,#bottom_contents .module_body_lefttop{
+	background-image: url(/files/user/maru/left_top.gif);
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
+}
+#main_contents .module_body_righttop,#top_contents .module_body_righttop,#bottom_contents .module_body_righttop{
+	background-image: url(/files/user/maru/right_top.gif);
+	background-repeat: no-repeat;
+	background-position: 100% 0%;
+}
+
+#main_contents .module_body_leftbottom,#top_contents .module_body_leftbottom,#bottom_contents .module_body_leftbottom{
+	background-image: url(/files/user/maru/left_btm.gif);
+	background-repeat: no-repeat;
+	background-position: 0% 100%;
+}
+
+#main_contents .module_body_rightbottom,#top_contents .module_body_rightbottom,#bottom_contents .module_body_rightbottom{
+	background-image: url(/files/user/maru/right_btm.gif);
+	background-repeat: no-repeat;
+	background-position: 100% 100%;
+	padding: 20px;
+	margin-bottom: 30px;
+}
+#main_contents .module_title,#top_contents .module_title,#bottom_contents .module_title{
+	padding-left: 20px;
+	margin-bottom: 25px;
+	color:#FFFFFF !important;
+}
+.topics_list_digest,.blog_calendar,.blog_archive,.blog_top,.calendar_dater,.weekly_calendar,.inquiry_detail,.calendar_list,.keyword_list_detail,.member_list,.blog_new_list_mini,.survey_new_list{
+	background:#036;
+}
+
+#main_contents .module_body_rightbottom, #top_contents .module_body_rightbottom, #bottom_contents .module_body_rightbottom {
+	margin-bottom: 10px;
+}
+#main_module{
+	background:#036;}
+
+.page_links { width:150px; }
+
+/* サイドコンテンツ 左右の設定
+------------------------------------------------------------ */
+
+#side_contents_right ul, #side_contents_left ul{
+}
+
+#side_contents_right li, #side_contents_left li{
+	margin-bottom:10px;
+	margin-top:0px;
+}
+#side_contents_right h2, #side_contents_left h2{
+	color:#fff;
+}
+#side_contents_right h2 a, #side_contents_left h2 a{}
+
+#side_contents_right div.module_body, #side_contents_left div.module_body {
+	height: 100%;
+}
+#side_contents_right h2.module_title,#side_contents_left h2.module_title{
+        font-size: 100%;
+        color: #036;
+	text-align:center;
+        margin: -8px auto 20px auto;
+	height: 24px;
+	background:url("/files/user/maru/sideTitleR.gif")no-repeat;
+	padding-top:5px;
+}
+
+*html #side_contents_right h2.module_title,#side_contents_left h2.module_title{
+	background-image:url("/files/user/maru/sideTitleR.gif");
+	background-repeat:no-repeat;
+        margin: -8px auto 20px auto;
+	height: 24px;
+	padding-top:5px;
+}
+
+#side_contents_left h2.module_title{
+        font-size: 100%;
+        color: #036;
+	text-align:center;
+        margin: -10px auto 20px auto;
+	height: 24px;
+	background:url("/files/user/maru/sideTitleL.gif")no-repeat;
+	padding-top:5px;
+	background-position:right;
+}
+
+#side_contents_right div.module_bottom, #side_contents_left div.module_bottom{}
+
+#side_contents_right div.module_contents, #side_contents_left div.module_contents{
+	color:#666;
+	font-size:12px;
+	line-height:100%;
+}
+
+#side_contents_right li.module-list-item, #side_contents_left li.module-list-item {}
+
+/*枠設定*/
+#side_contents_right .module_top, #side_contents_left .module_top{}
+	
+#side_contents_right .module_body, #side_contents_left .module_body{
+	margin-bottom:5px;
+}
+
+#side_contents_right .module_body_centertop, #side_contents_left .module_body_centertop{}
+
+#side_contents_right .module_body_centerleft, #side_contents_left .module_body_centerleft{}
+
+#side_contents_right .module_body_centerright, #side_contents_left .module_body_centerright{}
+
+#side_contents_right .module_body_centerbottom, #side_contents_left .module_body_centerbottom{}
+
+#side_contents_right .module_body_lefttop, #side_contents_left .module_body_lefttop{}
+
+#side_contents_right .module_body_righttop, #side_contents_left .module_body_righttop{
+	margin-left:10px;
+}
+
+#side_contents_right .module_body_leftbottom, #side_contents_left .module_body_leftbottom{
+	padding:3px;
+}
+
+#side_contents_right .module_body_rightbottom, #side_contents_left .module_body_rightbottom{
+	margin-bottom:10px;}
+
+#side_contents_right .module_title, #side_contents_left .module_title{}
+
+* モジュール内の細かい設定
+------------------------------------------------------------ */
+ /* サイドコンテンツのリレーションリンク */
+#side_contents_right .relation_link, #side_contents_left .relation_link {
+	text-align:right;
+}
+
+#main_contents .relation_link {
+
+}
+.relation_link{
+	text-align:right;
+}
+a.small_text,a.small_text:visited {
+	text-align:right;
+}
+
+a.small_text:hover {}
+table.list {
+	width: 100%;
+	border: 1px solid #9cf;
+	margin-top: 2px;
+	background-color:#E1F5FF;
+	margin-bottom: 2px;
+}
+table.list td{
+	padding: 2px;
+	border-bottom: 1px dotted #9cf;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+table.list th{
+	text-align: center;
+	color: #069;
+	background-color:#9cf;
+	font-weight:bold;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+dt {}
+dd {}
+/* Opera バグ対策のため最下行でbodyを指定する
+------------------------------------------------------------ */
+body {
+	background: #000 url(/files/user/maru/sim8Bg.gif) top center no-repeat;
+	color:#69c;
+	font-size:80%;
+}

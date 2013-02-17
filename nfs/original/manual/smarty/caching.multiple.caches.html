@@ -1,0 +1,391 @@
+<HTML
+><HEAD
+><TITLE
+>ページごとに複数のキャッシュ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="キャッシュ"
+HREF="caching.html"><LINK
+REL="PREVIOUS"
+TITLE="キャッシュ"
+HREF="caching.html"><LINK
+REL="NEXT"
+TITLE="キャッシュのグループ"
+HREF="caching.groups.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="caching.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 14章キャッシュ</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="caching.groups.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="caching.multiple.caches"
+></A
+>ページごとに複数のキャッシュ</H1
+><P
+>&#13;     <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>
+     や <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+     のひとつの呼び出しから、複数のキャッシュファイルを持つ事が出来ます。
+     例えば <TT
+CLASS="literal"
+>display('index.tpl')</TT
+> を呼び出した時、
+     いくつかの状況に応じて異なった内容の出力を持っているかもしれず、
+     その出力ごとに別のキャッシュを持たせたいと思うかもしれません。
+     これは、関数を呼び出す時に第２パラメータとして
+     <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> を渡す事で可能です。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6846"
+></A
+><P
+><B
+>例 14-6. display() に $cache_id を渡す</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$my_cache_id&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$_GET</span><span style="color: #007700">[</span><span style="color: #DD0000">'article_id'</span><span style="color: #007700">];<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$my_cache_id</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;     上記の例では、<TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> として
+     <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>
+     に変数 <TT
+CLASS="literal"
+>$my_cache_id</TT
+> を渡しました。
+     それぞれにユニークな <TT
+CLASS="literal"
+>$my_cache_id</TT
+>
+     の値を与える事で、<TT
+CLASS="filename"
+>index.tpl</TT
+> の別々のキャッシュが生成されます。
+     この例では、<TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> として使われる
+     <TT
+CLASS="literal"
+>article_id</TT
+> は URL から渡されています。
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+      クライアント (Web ブラウザ) から Smarty (又はいくつかの PHP アプリケーション)
+      に値を渡すときには用心しなくてはいけません。前の例で、URL から article_id
+      を扱うのは便利そうにみえましたが、それは悪い結果をもたらすかもしれません。
+      <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> はファイルシステムにディレクトリを作成するのに使用され、
+      そしてもしユーザーが article_id に極めて大きな値を渡そうとしたり、速いペースでランダムの
+      article_id を送信するスクリプトを記述した場合、
+      これはサーバレベルの問題を引き起こすかもしれません。必ず、
+      値を利用する前に渡されたデータの汚染チェックを行って下さい。おそらくこの例では、
+      あなたは article_id が10文字かつ英数字のみで構成され、データベース内に有効な
+      article_id が存在しなければならない事を知っています。これをチェックして下さい！
+     </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;     <A
+HREF="api.is.cached.html"
+><TT
+CLASS="varname"
+>is_cached()</TT
+></A
+> と
+     <A
+HREF="api.clear.cache.html"
+><TT
+CLASS="varname"
+>clear_cache()</TT
+></A
+>
+     には、第２パラメータとして同じ <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+>
+     を渡すようにしましょう。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6868"
+></A
+><P
+><B
+>例 14-7. is_cached() に cache_id を渡す</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$my_cache_id&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$_GET</span><span style="color: #007700">[</span><span style="color: #DD0000">'article_id'</span><span style="color: #007700">];<br /><br />if(!</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">is_cached</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">,</span><span style="color: #0000BB">$my_cache_id</span><span style="color: #007700">))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;キャッシュが有効でないので、ここで変数の割り当てを行いますn<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$contents&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">get_database_contents</span><span style="color: #007700">();<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">$contents</span><span style="color: #007700">);<br />}<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">,</span><span style="color: #0000BB">$my_cache_id</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;     <A
+HREF="api.clear.cache.html"
+><TT
+CLASS="varname"
+>clear_cache()</TT
+></A
+>
+     の第１パラメータとして <TT
+CLASS="constant"
+>NULL</TT
+> を渡すと、指定した
+     <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> のすべてのキャッシュをクリアすることができます。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6876"
+></A
+><P
+><B
+>例 14-8. 特定のcache_idの全てのキャッシュをクリアする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /><br /></span><span style="color: #FF8000">//&nbsp;cache_idが"sports"のキャッシュをすべてクリアする<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">clear_cache</span><span style="color: #007700">(</span><span style="color: #0000BB">null</span><span style="color: #007700">,</span><span style="color: #DD0000">'sports'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">,</span><span style="color: #DD0000">'sports'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;     このように同じ <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> を与える事で、
+     キャッシュをまとめて <SPAN
+CLASS="QUOTE"
+>"グループ化"</SPAN
+> する事が出来ます。
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="caching.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="caching.groups.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>キャッシュ</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="caching.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>キャッシュのグループ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

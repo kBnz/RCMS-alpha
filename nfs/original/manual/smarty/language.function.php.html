@@ -1,0 +1,292 @@
+<HTML
+><HEAD
+><TITLE
+>{php}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{literal}"
+HREF="language.function.literal.html"><LINK
+REL="NEXT"
+TITLE="{section},{sectionelse}"
+HREF="language.function.section.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.literal.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.section.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.php"
+></A
+>{php}</H1
+><P
+>&#13;  <TT
+CLASS="varname"
+>{php}</TT
+> タグで、PHP コードを直接テンプレートに埋め込むことができます。
+  <A
+HREF="variable.php.handling.html"
+><TT
+CLASS="parameter"
+><I
+>$php_handling</I
+></TT
+></A
+>
+  の設定にかかわらず、これはエスケープされません。
+  このタグは上級ユーザのためのものなので通常は必要とされません。
+ </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+   <TT
+CLASS="varname"
+>{php}</TT
+> ブロック内の PHP 変数にアクセスするには、PHP の
+   <A
+HREF="http://php.net/global"
+TARGET="_top"
+><TT
+CLASS="literal"
+>global</TT
+></A
+>
+   キーワードを使う必要があります。
+</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2394"
+></A
+><P
+><B
+>例 7-28. {php} タグ内での PHP コード</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{php}
+   // PHP スクリプトをテンプレートから直接インクルードします
+   include('/path/to/display_weather.php');
+{/php}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2397"
+></A
+><P
+><B
+>例 7-29. {php} タグで global を使用して変数を代入する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+{*&nbsp;このテンプレートは&nbsp;{php}&nbsp;ブロックを含み、その中で変数&nbsp;$varX&nbsp;を割り当てます&nbsp;*}<br />{php}<br />&nbsp;&nbsp;&nbsp;global&nbsp;$foo,&nbsp;$bar;<br />&nbsp;&nbsp;&nbsp;if($foo&nbsp;==&nbsp;$bar){<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;'This&nbsp;will&nbsp;be&nbsp;sent&nbsp;to&nbsp;browser';<br />&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;//&nbsp;変数を&nbsp;Smarty&nbsp;に割り当てます<br />&nbsp;&nbsp;$this-&gt;assign('varX','Toffee');<br />{/php}<br />{*&nbsp;変数を出力します&nbsp;*}<br />&lt;strong&gt;{$varX}&lt;/strong&gt;&nbsp;is&nbsp;my&nbsp;fav&nbsp;ice&nbsp;cream&nbsp;:-)</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="variable.php.handling.html"
+><TT
+CLASS="parameter"
+><I
+>$php_handling</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.include.php.html"
+><TT
+CLASS="varname"
+>{include_php}</TT
+></A
+>、
+  <A
+HREF="language.function.include.html"
+><TT
+CLASS="varname"
+>{include}</TT
+></A
+>、
+  <A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>
+  および
+  <A
+HREF="tips.componentized.templates.html"
+>コンポーネント化したテンプレート</A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.literal.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.section.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{literal}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{section},{sectionelse}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

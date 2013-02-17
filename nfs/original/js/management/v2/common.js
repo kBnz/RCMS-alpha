@@ -1,0 +1,1 @@
+var DelayDoFunction = function(t, func){var timer = setInterval(function() {var tPs = $(t).offset().top;var bSc = $(this).scrollTop() + $(window).height();if(bSc > tPs && $(t).css('display') != 'none') {clearInterval(timer);func();}}, 500);}

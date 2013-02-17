@@ -1,0 +1,559 @@
+<HTML
+><HEAD
+><TITLE
+>トラブルシューティング</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="付録"
+HREF="appendixes.html"><LINK
+REL="PREVIOUS"
+TITLE="付録"
+HREF="appendixes.html"><LINK
+REL="NEXT"
+TITLE="ヒント & 裏ワザ"
+HREF="tips.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="appendixes.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tips.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="troubleshooting"
+></A
+>第 17章トラブルシューティング</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="troubleshooting.html#smarty.php.errors"
+>Smarty/PHP エラー</A
+></DT
+></DL
+></DIV
+><P
+></P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="smarty.php.errors"
+></A
+>Smarty/PHP エラー</H1
+><P
+>&#13;    Smarty は、タグの属性が不足していたり、誤った変数名を指定していた時など、
+    多くのエラーをキャッチする事ができます。
+    キャッチすると次の例のようなエラーが表示されます。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7584"
+></A
+><P
+><B
+>例 17-1. Smarty エラー</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Warning: Smarty: [in index.tpl line 4]: syntax error: unknown tag - '%blah'
+       in /path/to/smarty/Smarty.class.php on line 1041
+
+Fatal error: Smarty: [in index.tpl line 28]: syntax error: missing section name
+       in /path/to/smarty/Smarty.class.php on line 1041</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    Smarty はテンプレート名・エラー行番号・エラー内容を示します。
+    その次のエラーは、Smarty クラスにおいてエラーが発生した実際の行番号から成るメッセージです。
+   </P
+><P
+>&#13;    タグの閉じ忘れのような、Smarty がキャッチできないエラーがあります。
+    通常、このような場合のエラーは PHP コンパイル時にパースエラーで終了します。 
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7589"
+></A
+><P
+><B
+>例 17-2. PHP パースエラー</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Parse error: parse error in /path/to/smarty/templates_c/index.tpl.php on line 75</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    PHP パースエラーの場合のエラー行番号は、
+    テンプレートそのものではなくコンパイルされた PHP スクリプトに一致します。
+    通常、テンプレートを見ることで構文エラーを見つけられます。
+    一般的な間違いとしては、
+    <A
+HREF="language.function.if.html"
+><TT
+CLASS="varname"
+>{if}{/if}</TT
+></A
+> や
+    <A
+HREF="language.function.if.html"
+><TT
+CLASS="varname"
+>{section}{/section}</TT
+>
+    </A
+> タグの閉じ忘れ、<TT
+CLASS="varname"
+>{if}</TT
+>
+    タグ内のロジックの構文の誤りなどがあります。もしエラーが見つけられない場合は、
+    テンプレートのどこに該当するエラーがあるかを見い出すために、
+    コンパイルされた PHP ファイルを開いて行番号のあたりを調べる必要があります。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7598"
+></A
+><P
+><B
+>例 17-3. その他共通のエラー</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Warning: Smarty error: unable to read resource: "index.tpl" in...
+or
+Warning: Smarty error: unable to read resource: "site.conf" in...</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <P
+></P
+><UL
+><LI
+><P
+>&#13;      <A
+HREF="api.variables.html#variable.template.dir"
+>&#13;      <TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+>
+      が存在しない不正なディレクトリか、もしくは存在しても
+      <TT
+CLASS="filename"
+>index.tpl</TT
+> が
+      <TT
+CLASS="filename"
+>templates/</TT
+>
+      ディレクトリ内にありません。
+      </P
+></LI
+><LI
+><P
+>&#13;        <A
+HREF="language.function.config.load.html"
+>&#13;        <TT
+CLASS="varname"
+>{config_load}</TT
+></A
+>
+        関数がテンプレート内にあり (もしくは
+        <A
+HREF="api.config.load.html"
+><TT
+CLASS="varname"
+>config_load()</TT
+></A
+>
+        で呼び出されており)、その際の
+        <A
+HREF="variable.config.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$config_dir</I
+></TT
+>
+        </A
+> が存在しない不正なディレクトリか、もしくは存在しても
+        <TT
+CLASS="filename"
+>site.conf</TT
+> がそのディレクトリ内にありません。
+        </P
+></LI
+></UL
+>
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Fatal error: Smarty error: the $compile_dir 'templates_c' does not exist,
+or is not a directory...</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><UL
+><LI
+><P
+>&#13;    <A
+HREF="variable.compile.dir.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$compile_dir</I
+></TT
+></A
+>
+    に不正な値が入っており、そのようなディレクトリが存在しないか、もしくは
+    <TT
+CLASS="filename"
+>templates_c</TT
+> の指定がディレクトリではなくファイルです。
+    </P
+></LI
+></UL
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Fatal error: Smarty error: unable to write to $compile_dir '....</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><UL
+><LI
+><P
+>&#13;    <A
+HREF="variable.compile.dir.html"
+>&#13;   <TT
+CLASS="parameter"
+><I
+>$compile_dir</I
+></TT
+></A
+> に Web サーバによる書き込み権限がありません。
+    <A
+HREF="installing.smarty.basic.html"
+>Smarty のインストール</A
+>
+    のページ下部のパーミッションの項を参照してください。
+    </P
+></LI
+></UL
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Fatal error: Smarty error: the $cache_dir 'cache' does not exist,
+or is not a directory. in /..</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><UL
+><LI
+><P
+>&#13;    <A
+HREF="variable.caching.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+> が有効であるにも関わらず、
+    <A
+HREF="variable.cache.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$cache_dir</I
+></TT
+></A
+>
+    が存在しない不正なディレクトリか、もしくは存在しても
+    <TT
+CLASS="filename"
+>cache/</TT
+> がディレクトリではなくファイルである、という意味です。
+    </P
+></LI
+></UL
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>Fatal error: Smarty error: unable to write to $cache_dir '/...</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><UL
+><LI
+><P
+>&#13;    <A
+HREF="variable.caching.html"
+><TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+>
+    が有効であるにも関わらず、<A
+HREF="variable.cache.dir.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$cache_dir</I
+></TT
+></A
+>
+    に Web サーバによる書き込み権限がない、という意味です。
+    <A
+HREF="installing.smarty.basic.html"
+>Smarty のインストール</A
+>
+    のページ下部のパーミッションの項を参照してください。
+    </P
+></LI
+></UL
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   <A
+HREF="chapter.debugging.console.html"
+>デバッグ</A
+>、
+   <A
+HREF="variable.error.reporting.html"
+>&#13;   <TT
+CLASS="parameter"
+><I
+>$error_reporting</I
+></TT
+></A
+>
+   および
+   <A
+HREF="api.trigger.error.html"
+><TT
+CLASS="varname"
+>trigger_error()</TT
+></A
+>
+   の項も参照してください。
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="appendixes.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tips.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>付録</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendixes.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ヒント &#38; 裏ワザ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

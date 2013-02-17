@@ -1,0 +1,286 @@
+<HTML
+><HEAD
+><TITLE
+>$security</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$php_handling"
+HREF="variable.php.handling.html"><LINK
+REL="NEXT"
+TITLE="$secure_dir"
+HREF="variable.secure.dir.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.php.handling.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.secure.dir.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.security"
+></A
+>$security</H1
+><P
+>&#13;       <TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+> は <TT
+CLASS="constant"
+>TRUE</TT
+> または <TT
+CLASS="constant"
+>FALSE</TT
+> となり、
+       デフォルトは <TT
+CLASS="constant"
+>FALSE</TT
+> です。これは、
+       テンプレート言語によってシステムのセキュリティが脆弱になる危険性を減らしたい場合や、
+       (例えばFTPによって) テンプレートを編集するグループにあまり信用がおけない時に最適です。
+       セキュリティを有効にすると、<A
+HREF="variable.security.settings.html"
+>&#13;      <TT
+CLASS="parameter"
+><I
+>$security_settings</I
+></TT
+></A
+>
+       によってオーバーライドされない限りは次の規則をテンプレート言語へ適用します。
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>If <A
+HREF="variable.php.handling.html"
+><TT
+CLASS="parameter"
+><I
+>$php_handling</I
+></TT
+></A
+>
+が <TT
+CLASS="constant"
+>SMARTY_PHP_ALLOW</TT
+> に設定されていれば、
+それを暗黙のうちに <TT
+CLASS="constant"
+>SMARTY_PHP_PASSTHRU</TT
+> に変更します。
+</P
+></LI
+><LI
+><P
+>&#13;PHP 関数を <A
+HREF="language.function.if.html"
+><TT
+CLASS="varname"
+>{if}</TT
+></A
+>
+ステートメント内で使用することができません。ただし
+<A
+HREF="variable.security.settings.html"
+><TT
+CLASS="parameter"
+><I
+>$security_settings</I
+></TT
+></A
+>
+で指定されているものは除きます。
+</P
+></LI
+><LI
+><P
+>&#13;テンプレートは、
+<A
+HREF="variable.secure.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$secure_dir</I
+></TT
+></A
+>
+配列に格納されているディレクトリからのみ取得できます。
+</P
+></LI
+><LI
+><P
+>&#13;ローカルファイルは、
+<A
+HREF="variable.secure.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$secure_dir</I
+></TT
+></A
+>
+配列に格納されているディレクトリから
+<A
+HREF="language.function.fetch.html"
+><TT
+CLASS="varname"
+>{fetch}</TT
+></A
+>
+を使用することによってのみ取得できます。
+</P
+></LI
+><LI
+><P
+>&#13;<A
+HREF="language.function.php.html"
+><TT
+CLASS="varname"
+>{php}{/php}</TT
+></A
+> タグは使用できません。
+</P
+></LI
+><LI
+><P
+>&#13;PHP 関数を修飾子として使用することはできません。ただし
+<A
+HREF="variable.security.settings.html"
+><TT
+CLASS="parameter"
+><I
+>$security_settings</I
+></TT
+></A
+>
+で指定されているものは除きます。
+</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.php.handling.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.secure.dir.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$php_handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$secure_dir</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

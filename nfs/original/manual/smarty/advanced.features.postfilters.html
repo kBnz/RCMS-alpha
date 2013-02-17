@@ -1,0 +1,257 @@
+<HTML
+><HEAD
+><TITLE
+>ポストフィルタ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="拡張機能"
+HREF="advanced.features.html"><LINK
+REL="PREVIOUS"
+TITLE="プリフィルタ"
+HREF="advanced.features.prefilters.html"><LINK
+REL="NEXT"
+TITLE="アウトプットフィルタ"
+HREF="advanced.features.outputfilters.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="advanced.features.prefilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 15章拡張機能</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="advanced.features.outputfilters.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="advanced.features.postfilters"
+></A
+>ポストフィルタ</H1
+><P
+>&#13;  ポストフィルタは、テンプレートが
+  <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>コンパイルされた後に</I
+></SPAN
+>
+  実行されるPHPユーザ定義関数です。ポストフィルタは、
+  <A
+HREF="api.register.postfilter.html"
+>登録する</A
+>
+  か、あるいは <A
+HREF="api.load.filter.html"
+><TT
+CLASS="varname"
+>load_filter()</TT
+></A
+>
+  関数や <A
+HREF="variable.autoload.filters.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$autoload_filters</I
+></TT
+></A
+> 変数によって
+  <A
+HREF="variable.plugins.dir.html"
+>プラグインディレクトリ</A
+> から読み込みます。
+  Smarty は内部でユーザ定義関数の第１パラメータにコンパイルされたテンプレートのソースコードを渡すので、
+  関数内で処理を行った後にその結果のソースコードを戻り値として返すようにします。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7035"
+></A
+><P
+><B
+>例 15-3. ポストフィルタを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;このユーザ定義関数をアプリケーションに加えます<br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">add_header_comment</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_source</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #DD0000">"&lt;?php&nbsp;echo&nbsp;\"&lt;!--&nbsp;Created&nbsp;by&nbsp;Smarty!&nbsp;--&gt;\n\";&nbsp;?&gt;\n"</span><span style="color: #007700">.</span><span style="color: #0000BB">$tpl_source</span><span style="color: #007700">;<br />}<br /><br /></span><span style="color: #FF8000">//&nbsp;ポストフィルタを登録します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_postfilter</span><span style="color: #007700">(</span><span style="color: #DD0000">'add_header_comment'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;   上のポストフィルタは、このようなコンパイル済みテンプレート
+   <TT
+CLASS="filename"
+>index.tpl</TT
+> を作成します。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;!-- Created by Smarty! --&#62;
+{* 以下、残りのコンテンツ *}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13; <A
+HREF="api.register.postfilter.html"
+><TT
+CLASS="varname"
+>register_postfilter()</TT
+></A
+>、
+ <A
+HREF="advanced.features.prefilters.html"
+>プリフィルタ</A
+>
+ および
+ <A
+HREF="api.load.filter.html"
+><TT
+CLASS="varname"
+>load_filter()</TT
+></A
+>
+ も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="advanced.features.prefilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="advanced.features.outputfilters.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>プリフィルタ</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="advanced.features.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>アウトプットフィルタ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

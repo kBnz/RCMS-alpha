@@ -1,0 +1,657 @@
+<HTML
+><HEAD
+><TITLE
+>予約変数 {$smarty}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="変数"
+HREF="language.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="設定ファイルから読み込まれた変数"
+HREF="language.config.variables.html"><LINK
+REL="NEXT"
+TITLE="変数の修飾子"
+HREF="language.modifiers.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.config.variables.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 4章変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.modifiers.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.variables.smarty"
+></A
+>予約変数 {$smarty}</H1
+><P
+>&#13;  PHP の予約変数 <TT
+CLASS="parameter"
+><I
+>{$smarty}</I
+></TT
+> を使用すると、
+  環境変数やリクエスト変数にアクセスすることができます。
+  アクセスできる内容について、以下に説明します。
+ </P
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.request"
+></A
+>リクエスト変数</H2
+><P
+>&#13;   <TT
+CLASS="literal"
+>$_GET</TT
+>、<TT
+CLASS="literal"
+>$_POST</TT
+>、
+   <TT
+CLASS="literal"
+>$_COOKIE</TT
+>、<TT
+CLASS="literal"
+>$_SERVER</TT
+>、
+   <TT
+CLASS="literal"
+>$_ENV</TT
+> および <TT
+CLASS="literal"
+>$_SESSION</TT
+>
+   (<A
+HREF="variable.request.vars.order.html"
+>&#13;   <TT
+CLASS="varname"
+>$request_vars_order</TT
+></A
+>
+   および <A
+HREF="variable.request.use.auto.globals.html"
+>&#13;   <TT
+CLASS="varname"
+>$request_use_auto_globals</TT
+></A
+> を参照してください)
+   といった <A
+HREF="http://php.net/reserved.variables"
+TARGET="_top"
+>リクエスト変数</A
+>
+   にアクセスするには、下の例のようにします。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN552"
+></A
+><P
+><B
+>例 4-7. リクエスト変数の表示</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* ($_GET) http://www.example.com/index.php?page=foo から page の内容を表示 *}
+{$smarty.get.page}
+
+{* ($_POST['page']) フォームから送信された変数"page"の値を表示 *}
+{$smarty.post.page}
+
+{* クッキーに登録された"username"の値を表示 ($_COOKIE['username']) *}
+{$smarty.cookies.username}
+
+{* サーバ変数"SERVER_NAME"の値を表示 ($_SERVER['SERVER_NAME']) *}
+{$smarty.server.SERVER_NAME}
+
+{* 環境変数"PATH"の値を表示 *}
+{$smarty.env.PATH}
+
+{* phpのセッション変数"id"の値を表示 ($_SESSION['id']) *}
+{$smarty.session.id}
+
+{* get/post/cookies/server/envの値から、変数"username"の値を表示 *}
+{$smarty.request.username}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+    歴史的な理由から、<TT
+CLASS="parameter"
+><I
+>{$SCRIPT_NAME}</I
+></TT
+> には直接アクセスできます。
+    しかし、この値にアクセスする方法としては
+    <TT
+CLASS="parameter"
+><I
+>{$smarty.server.SCRIPT_NAME}</I
+></TT
+> が推奨されています。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;a href="{$SCRIPT_NAME}?page=smarty"&#62;click me&#60;/a&#62;
+&#60;a href="{$smarty.server.SCRIPT_NAME}?page=smarty"&#62;click me&#60;/a&#62;</PRE
+></TD
+></TR
+></TABLE
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.now"
+></A
+>{$smarty.now}</H2
+><P
+>&#13;   現在の <A
+HREF="http://php.net/function.time"
+TARGET="_top"
+>タイムスタンプ</A
+>
+   にアクセスするには <TT
+CLASS="parameter"
+><I
+>{$smarty.now}</I
+></TT
+> を使用します。
+   この値は、いわゆるエポック (1970年1月1日) からの経過秒数が含まれます。
+   また、これを直接
+   <A
+HREF="language.modifier.date.format.html"
+><TT
+CLASS="varname"
+>date_format</TT
+>
+   </A
+> 修飾子に渡して表示させることができます。実行するたびに
+   <A
+HREF="http://php.net/function.time"
+TARGET="_top"
+><TT
+CLASS="varname"
+>time()</TT
+></A
+>
+   がコールされることに注意しましょう。つまり、全体を処理するのに３秒かかるスクリプトがあったとして、
+   その最初と最後でそれぞれ <TT
+CLASS="parameter"
+><I
+>$smarty.now</I
+></TT
+>
+   をコールすると、その値には２秒の差が生じます。
+  <DIV
+CLASS="informalexample"
+><A
+NAME="AEN570"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* date_format 修飾子を用いて、現在の日付と時刻を表示します *}
+{$smarty.now|date_format:'%Y-%m-%d %H:%M:%S'}</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+>
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.const"
+></A
+>{$smarty.const}</H2
+><P
+>&#13;   PHP 定数の値に直接アクセスできます。<A
+HREF="smarty.constants.html"
+>smarty 定数</A
+> も参照してください。
+   </P
+><DIV
+CLASS="informalexample"
+><A
+NAME="AEN576"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;php&nbsp;で定義されている定数<br /></span><span style="color: #0000BB">define</span><span style="color: #007700">(</span><span style="color: #DD0000">'MY_CONST_VAL'</span><span style="color: #007700">,</span><span style="color: #DD0000">'CHERRIES'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><P
+>定数を出力するテンプレート</P
+><DIV
+CLASS="informalexample"
+><A
+NAME="AEN579"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{$smarty.const.MY_CONST_VAL}</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.capture"
+></A
+>{$smarty.capture}</H2
+><P
+>&#13;   組み込みの
+   <A
+HREF="language.builtin.functions.html#language.function.capture"
+>&#13;   <TT
+CLASS="varname"
+>{capture}..{/capture}</TT
+></A
+>
+   関数でキャプチャしたテンプレートの出力にアクセスするには
+   <TT
+CLASS="parameter"
+><I
+>{$smarty.capture}</I
+></TT
+> 変数を使用します。
+   詳細は <A
+HREF="language.builtin.functions.html#language.function.capture"
+>&#13;    <TT
+CLASS="varname"
+>{capture}</TT
+></A
+> のページを参照してください。
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.config"
+></A
+>{$smarty.config}</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>{$smarty.config}</I
+></TT
+> 変数は、読み込まれた
+   <A
+HREF="language.config.variables.html"
+>config 変数</A
+>
+   を参照するのに使用できます。
+   <TT
+CLASS="parameter"
+><I
+>{$smarty.config.foo}</I
+></TT
+> は
+   <TT
+CLASS="parameter"
+><I
+>{#foo#}</I
+></TT
+> と同義です。詳細は
+   <A
+HREF="language.function.config.load.html"
+>{config_load}</A
+>
+   のページを参照してください。
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.loops"
+></A
+>{$smarty.section}、{$smarty.foreach}</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>{$smarty.section}</I
+></TT
+> 変数および
+   <TT
+CLASS="parameter"
+><I
+>{$smarty.foreach}</I
+></TT
+> 変数は、
+   <A
+HREF="language.function.section.html"
+><TT
+CLASS="varname"
+>{section}</TT
+></A
+>
+   および
+   <A
+HREF="language.function.foreach.html"
+><TT
+CLASS="varname"
+>{foreach}</TT
+></A
+>
+   のループプロパティを参照するために使用します。
+   この中には <TT
+CLASS="varname"
+>.first</TT
+>、<TT
+CLASS="varname"
+>.index</TT
+>
+   といった有用な値が含まれます。
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.template"
+></A
+>{$smarty.template}</H2
+><P
+>&#13;   現在処理中のテンプレートの名前を返します。
+   次の例の <TT
+CLASS="filename"
+>container.tpl</TT
+> と、そこからインクルードしている
+   <TT
+CLASS="filename"
+>banner.tpl</TT
+> の両方で
+   <TT
+CLASS="parameter"
+><I
+>{$smarty.template}</I
+></TT
+> を使用しています。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;b&#62;Main container is {$smarty.template}&#60;/b&#62;
+{include file='banner.tpl'}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    出力は、このようになります。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;b&#62;Main page is container.tpl&#60;/b&#62;
+banner.tpl</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.version"
+></A
+>{$smarty.version}</H2
+><P
+>&#13;   このテンプレートをコンパイルした Smarty のバージョンを返します。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;div id="footer"&#62;Powered by Smarty {$smarty.version}&#60;/div&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="language.variables.smarty.ldelim"
+></A
+>{$smarty.ldelim}、{$smarty.rdelim}</H2
+><P
+>&#13;   これらの変数を使用して、左右のデリミタをそのまま表示します。
+   <A
+HREF="language.function.ldelim.html"
+>&#13;   <TT
+CLASS="varname"
+>{ldelim}、{rdelim}</TT
+></A
+> と同じです。
+  </P
+><P
+>&#13;   <A
+HREF="language.variables.html#language.assigned.variables"
+>assigned variables</A
+> および
+   <A
+HREF="language.config.variables.html"
+>config variables</A
+>
+   も参照してください。
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.config.variables.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.modifiers.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>設定ファイルから読み込まれた変数</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>変数の修飾子</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

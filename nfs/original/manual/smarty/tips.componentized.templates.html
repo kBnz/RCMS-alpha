@@ -1,0 +1,269 @@
+<HTML
+><HEAD
+><TITLE
+>コンポーネント化したテンプレート</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="ヒント & 裏ワザ"
+HREF="tips.html"><LINK
+REL="PREVIOUS"
+TITLE="WAP/WML"
+HREF="tips.wap.html"><LINK
+REL="NEXT"
+TITLE="E-mail アドレスを混乱させる"
+HREF="tips.obfuscating.email.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tips.wap.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 18章ヒント &#38; 裏ワザ</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tips.obfuscating.email.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="tips.componentized.templates"
+></A
+>コンポーネント化したテンプレート</H1
+><P
+>&#13;    習慣的に、アプリケーションにテンプレートをプログラミングする手順は次のように進みます。
+    はじめに php アプリケーションにおいて変数を蓄積します
+    (おそらくデータベースのクエリーによって)。それから Smarty
+    オブジェクトのインスタンスを作成して変数を割り当て
+    (<A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>)、
+    テンプレートを表示 (<A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>)
+    します。仮に株式相場表示を行うテンプレートがあったとしましょう。
+    これは php アプリケーションにより株式情報のデータを収集し、
+    テンプレートにこれらの変数を割り当てて表示します。
+    もし、前もってデータを取得する事を気にせずに、
+    テンプレートを単にインクルードする事で株式相場表示をアプリケーションに追加できれば良いと思いませんか？
+   </P
+><P
+>&#13;    これは、内容をフェッチし、テンプレート変数に割り当てるための
+    カスタムプラグインを書くことで実現できます
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7774"
+></A
+><P
+><B
+>例 18-7. コンポーネント化したテンプレート</B
+></P
+><P
+>&#13;      <TT
+CLASS="filename"
+>function.load_ticker.php</TT
+> -
+      このファイルを
+      <A
+HREF="variable.plugins.dir.html"
+>&#13;      <TT
+CLASS="parameter"
+><I
+>プラグインのディレクトリ</I
+></TT
+></A
+>
+      においてください。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;株式情報のデータを取得するための関数を用意します<br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">fetch_ticker</span><span style="color: #007700">(</span><span style="color: #0000BB">$symbol</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;様々なリソースから&nbsp;$ticker_info&nbsp;を<br />&nbsp;&nbsp;&nbsp;//&nbsp;取得するロジックをここに記述します<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">return&nbsp;</span><span style="color: #0000BB">$ticker_info</span><span style="color: #007700">;<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">smarty_function_load_ticker</span><span style="color: #007700">(</span><span style="color: #0000BB">$params</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;関数をコールします<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$ticker_info&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">fetch_ticker</span><span style="color: #007700">(</span><span style="color: #0000BB">$params</span><span style="color: #007700">[</span><span style="color: #DD0000">'symbol'</span><span style="color: #007700">]);<br /><br />&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;テンプレート変数を割り当てます<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">$params</span><span style="color: #007700">[</span><span style="color: #DD0000">'assign'</span><span style="color: #007700">],&nbsp;</span><span style="color: #0000BB">$ticker_info</span><span style="color: #007700">);<br />}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;          <TT
+CLASS="filename"
+>index.tpl</TT
+>
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{load_ticker symbol='SMARTY' assign='ticker'}
+
+銘柄: {$ticker.name} 株価: {$ticker.price}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <A
+HREF="language.function.include.php.html"
+><TT
+CLASS="varname"
+>{include_php}</TT
+></A
+>、
+    <A
+HREF="language.function.include.html"
+><TT
+CLASS="varname"
+>{include}</TT
+></A
+>
+    および
+    <A
+HREF="language.function.php.html"
+><TT
+CLASS="varname"
+>{php}</TT
+></A
+>
+    も参照してください。
+   </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tips.wap.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tips.obfuscating.email.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>WAP/WML</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tips.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>E-mail アドレスを混乱させる</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

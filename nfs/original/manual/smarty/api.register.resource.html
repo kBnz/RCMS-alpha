@@ -1,0 +1,295 @@
+<HTML
+><HEAD
+><TITLE
+>register_resource()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="register_prefilter()"
+HREF="api.register.prefilter.html"><LINK
+REL="NEXT"
+TITLE="trigger_error()"
+HREF="api.trigger.error.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.register.prefilter.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.trigger.error.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.register.resource"
+></A
+>register_resource()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN6492"
+></A
+>register_resource()&nbsp;--&nbsp;リソースプラグインを動的に登録します。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN6495"
+></A
+><H2
+>説明</H2
+>void <B
+CLASS="methodname"
+>register_resource</B
+> ( string name, array resource_funcs)<BR
+></BR
+><P
+>&#13;   <A
+HREF="template.resources.html"
+>リソースプラグイン</A
+>
+   を動的に登録します。パラメータとして、
+   リソース名および実行する PHP ユーザ定義関数の名前を格納した配列を渡します。
+   テンプレートを取得するための関数の定義の仕方は、
+   <A
+HREF="template.resources.html"
+>テンプレートリソース</A
+>
+   の項を参照してください。
+     <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+    リソース名の長さは少なくとも２文字以上である必要があります。
+    １文字のリソース名は無視され、<TT
+CLASS="literal"
+>$smarty-&#62;display('c:/path/to/index.tpl');</TT
+>
+    のようにファイルパスの一部として使用されます。
+   </P
+></BLOCKQUOTE
+></DIV
+>
+
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;   PHP関数名が含まれる配列 <TT
+CLASS="parameter"
+><I
+>resource_funcs</I
+></TT
+>
+   には４つまたは５つの要素が必要です。
+   </P
+></LI
+><LI
+><P
+>&#13;   要素が４つの場合は、<TT
+CLASS="literal"
+>source</TT
+>、
+   <TT
+CLASS="literal"
+>timestamp</TT
+>、<TT
+CLASS="literal"
+>secure</TT
+> および
+   <TT
+CLASS="literal"
+>trusted</TT
+> がリソースの関数としてそれぞれコールバックされます。
+   </P
+></LI
+><LI
+><P
+>&#13;   要素が５つの場合は、最初の要素はリソースを実装するオブジェクトの参照または
+   オブジェクトのクラス名またはクラスである必要があり、続く４つの要素は 
+   <TT
+CLASS="literal"
+>source</TT
+>、<TT
+CLASS="literal"
+>timestamp</TT
+>、<TT
+CLASS="literal"
+>secure</TT
+>
+   および <TT
+CLASS="literal"
+>trusted</TT
+> を実装したメソッド名である必要があります。
+  </P
+></LI
+></UL
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6529"
+></A
+><P
+><B
+>例 13-1. register_resource()</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_resource</span><span style="color: #007700">(</span><span style="color: #DD0000">'db'</span><span style="color: #007700">,&nbsp;array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'db_get_template'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'db_get_timestamp'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'db_get_secure'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'db_get_trusted'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="api.unregister.resource.html"
+><TT
+CLASS="varname"
+>unregister_resource()</TT
+></A
+>
+  および
+  <A
+HREF="template.resources.html"
+>テンプレートリソース</A
+>
+  も参照してください。
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.register.prefilter.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.trigger.error.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>register_prefilter()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>trigger_error()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

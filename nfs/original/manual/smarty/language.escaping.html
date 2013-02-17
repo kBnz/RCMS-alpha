@@ -1,0 +1,264 @@
+<HTML
+><HEAD
+><TITLE
+>Smarty の構文解析を回避する</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="基本構文"
+HREF="language.basic.syntax.html"><LINK
+REL="PREVIOUS"
+TITLE="演算子"
+HREF="language.math.html"><LINK
+REL="NEXT"
+TITLE="変数"
+HREF="language.variables.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.math.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 3章基本構文</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.variables.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.escaping"
+></A
+>Smarty の構文解析を回避する</H1
+><P
+>&#13;  時々、Smarty の構文解析の対象にしたくないと望む、
+  もしくはそうする必要がある部分があります。 典型的な例としては、
+  テンプレートに Javascript や CSS コードが含まれるときです。
+  それらの言語が Smarty のデフォルトの
+  <A
+HREF="language.function.ldelim.html"
+>デリミタ</A
+>
+  である { と } を使用するときに問題が発生します。
+ </P
+><P
+>&#13;  もっとも単純な解決方法は、Javascript と CSS コードをそれぞれファイルに切り分け、
+  それらにアクセスするために標準的な HTML の機能を使用する事で状況を回避する事です。
+ </P
+><P
+>&#13;  リテラルコンテンツを含めるには <A
+HREF="language.function.literal.html"
+>&#13;  <TT
+CLASS="varname"
+>{literal}..{/literal}</TT
+></A
+> ブロックを使用します。
+  HTML エンティティの使用法と同様に、 <A
+HREF="language.function.ldelim.html"
+><TT
+CLASS="varname"
+>{ldelim}</TT
+></A
+>、<A
+HREF="language.function.ldelim.html"
+><TT
+CLASS="varname"
+>{rdelim}</TT
+></A
+> あるいは <A
+HREF="language.variables.smarty.html#language.variables.smarty.ldelim"
+>&#13;  <TT
+CLASS="varname"
+>{$smarty.ldelim}</TT
+></A
+> を使用して現在のデリミタを表示することができます。
+ </P
+><P
+>&#13;  単純に Smarty の <A
+HREF="variable.left.delimiter.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$left_delimiter</I
+></TT
+></A
+> および
+  <A
+HREF="variable.right.delimiter.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$right_delimiter</I
+></TT
+></A
+>
+  を変更するだけでも便利になることが多々あります。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN439"
+></A
+><P
+><B
+>例 3-8. デリミタを変更する例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">left_delimiter&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'&lt;!--{'</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">right_delimiter&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'}--&gt;'</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'foo'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'bar'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Albert'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'example.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;   テンプレートはこのようになります。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>Welcome &#60;!--{$name}--&#62; to Smarty
+&#60;script language="javascript"&#62;
+  var foo = &#60;!--{$foo}--&#62;;
+  function dosomething() {
+    alert("foo is " + foo);
+  }
+  dosomething();
+&#60;/script&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.math.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.variables.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>演算子</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.basic.syntax.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>変数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

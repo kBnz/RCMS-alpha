@@ -1,0 +1,563 @@
+<HTML
+><HEAD
+><TITLE
+>{config_load}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="NEXT"
+TITLE="{foreach},{foreachelse}"
+HREF="language.function.foreach.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.foreach.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.config.load"
+></A
+>{config_load}</H1
+><P
+>&#13;   <TT
+CLASS="varname"
+>{config_load}</TT
+> を使用して、
+   <A
+HREF="config.files.html"
+>設定ファイル</A
+> からテンプレートに
+   <A
+HREF="language.config.variables.html"
+><TT
+CLASS="parameter"
+><I
+>#変数#</I
+></TT
+></A
+>
+   を読み込みます。
+ </P
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN1649"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>file</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インクルードする設定ファイルの名前</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>section</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>読み込むセクションの名前</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>scope</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>no</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>local</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;      読み込む変数のスコープの処理方法。local、parent、global
+      のいずれかを指定します。 local を指定すると、
+      変数がローカルファイルのテンプレート変数として読み込まれます。 parent を指定すると、
+      該当ファイルとその親ファイルのテンプレート変数として読み込まれます。
+      global を指定すると、すべてのテンプレートでテンプレート変数として利用できます。
+     </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>global</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>boolean</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>No</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;      変数が親テンプレートから利用できるかどうか。scope=parent と同じです
+      (注: この属性は非推奨です。代わりに scope 属性を使用するようになっていますが、
+      まだサポートされています。scope 属性を指定すると、この値は無視されます)。
+     </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN1692"
+></A
+><P
+><B
+>例 7-3. {config_load}</B
+></P
+><P
+>&#13;   <TT
+CLASS="filename"
+>example.conf</TT
+> ファイル
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+># これは設定ファイルのコメントです
+
+# グローバル変数
+pageTitle = "Main Menu"
+bodyBgColor = #000000
+tableBgColor = #000000
+rowBgColor = #00ff00
+
+# customer 変数セクション
+[Customer]
+pageTitle = "Customer Info"</PRE
+></TD
+></TR
+></TABLE
+><P
+>テンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{config_load file="example.conf"}
+
+&#60;html&#62;
+&#60;title&#62;{#pageTitle#|default:"No title"}&#60;/title&#62;
+&#60;body bgcolor="{#bodyBgColor#}"&#62;
+&#60;table border="{#tableBorderSize#}" bgcolor="{#tableBgColor#}"&#62;
+   &#60;tr bgcolor="{#rowBgColor#}"&#62;
+      &#60;td&#62;First&#60;/td&#62;
+      &#60;td&#62;Last&#60;/td&#62;
+      &#60;td&#62;Address&#60;/td&#62;
+   &#60;/tr&#62;
+&#60;/table&#62;
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="config.files.html"
+>設定ファイル</A
+>
+  には、セクションも含まれます。<TT
+CLASS="parameter"
+><I
+>section</I
+></TT
+>
+  属性を指定する事で、そのセクション内の変数を読み込む事ができます。
+  セクションを指定したとしても、
+  グローバルな設定変数は常に読み込まれることに注意しましょう。
+  グローバル変数と同じ名前のセクション変数があった場合は、
+  セクション変数の内容が優先されます(グローバル変数の値を上書きします)。
+ </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+   設定ファイルの <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>sections</I
+></SPAN
+> と組み込みのテンプレート関数
+   <A
+HREF="language.function.section.html"
+><TT
+CLASS="varname"
+>{section}</TT
+></A
+>
+   には特に関連はありません。単にたまたま名前が同じであるというだけのことです。
+  </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN1707"
+></A
+><P
+><B
+>例 7-4. セクションを指定した {config_load} 関数</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{config_load file='example.conf' section='Customer'}
+
+&#60;html&#62;
+&#60;title&#62;{#pageTitle#}&#60;/title&#62;
+&#60;body bgcolor="{#bodyBgColor#}"&#62;
+&#60;table border="{#tableBorderSize#}" bgcolor="{#tableBgColor#}"&#62;
+   &#60;tr bgcolor="{#rowBgColor#}"&#62;
+      &#60;td&#62;First&#60;/td&#62;
+      &#60;td&#62;Last&#60;/td&#62;
+      &#60;td&#62;Address&#60;/td&#62;
+   &#60;/tr&#62;
+&#60;/table&#62;
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;設定ファイル変数の配列については
+<A
+HREF="variable.config.overwrite.html"
+><TT
+CLASS="parameter"
+><I
+>$config_overwrite</I
+></TT
+></A
+>
+を参照してください。
+</P
+><P
+>&#13;  <A
+HREF="config.files.html"
+>設定ファイル</A
+> のページ、
+  <A
+HREF="language.config.variables.html"
+>config 変数</A
+> のページ、
+  <A
+HREF="variable.config.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$config_dir</I
+></TT
+></A
+>、
+  <A
+HREF="api.get.config.vars.html"
+><TT
+CLASS="varname"
+>get_config_vars()</TT
+></A
+>
+  および
+  <A
+HREF="api.config.load.html"
+><TT
+CLASS="varname"
+>config_load()</TT
+></A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.foreach.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>組み込み関数</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{foreach},{foreachelse}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

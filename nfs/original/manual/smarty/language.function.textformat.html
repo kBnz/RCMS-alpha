@@ -1,0 +1,738 @@
+<HTML
+><HEAD
+><TITLE
+>{textformat}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="カスタム関数"
+HREF="language.custom.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{popup_init}"
+HREF="language.function.popup.init.html"><LINK
+REL="NEXT"
+TITLE="設定ファイル"
+HREF="config.files.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.popup.init.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 8章カスタム関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config.files.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.textformat"
+></A
+>{textformat}</H1
+><P
+>&#13;   <TT
+CLASS="varname"
+>{textformat}</TT
+> は、
+   テキストを整形するために用いる
+   <A
+HREF="plugins.block.functions.html"
+>ブロック関数</A
+> です。
+   これは基本的に空白と特殊文字を取り除き、
+   境界でラップして行をインデントする事によって段落を整形します。
+  </P
+><P
+>&#13;   明示的にパラメータを設定したり、あらかじめ決められたスタイルを使用したりできます。現在、
+   <SPAN
+CLASS="QUOTE"
+>"email"</SPAN
+> のみが有効なスタイルです。
+ </P
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN4700"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>style</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>あらかじめ決められたスタイル</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>indent</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>number</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>0</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>各行をインデントするキャラクタ数</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>indent_first</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>number</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>0</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>最初の行をインデントするキャラクタ数</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>indent_char</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>(半角スペース１個)</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インデントするために使われるキャラクタ(又は文字列)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>wrap</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>number</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>80</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>各行をいくつのキャラクタ数でラップするか</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>wrap_char</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>\n</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>各行を分割するためのキャラクタ(又は文字列)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>wrap_cut</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>boolean</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+><TT
+CLASS="constant"
+>FALSE</TT
+></I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+><TT
+CLASS="constant"
+>TRUE</TT
+> ならば、単語の境界の代わりに正確なキャラクタ数で行を分割します。</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>assign</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>出力が割り当てられるテンプレート変数</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN4773"
+></A
+><P
+><B
+>例 8-27. {textformat}</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{textformat wrap=40}
+
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+
+   This is bar.
+
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+
+   {/textformat}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>This is foo. This is foo. This is foo.
+   This is foo. This is foo. This is foo.
+
+   This is bar.
+
+   bar foo bar foo foo. bar foo bar foo
+   foo. bar foo bar foo foo. bar foo bar
+   foo foo. bar foo bar foo foo. bar foo
+   bar foo foo. bar foo bar foo foo.</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{textformat wrap=40 indent=4}
+
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+
+   This is bar.
+
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+
+   {/textformat}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>This is foo. This is foo. This is
+   foo. This is foo. This is foo. This
+   is foo.
+
+   This is bar.
+
+   bar foo bar foo foo. bar foo bar foo
+   foo. bar foo bar foo foo. bar foo
+   bar foo foo. bar foo bar foo foo.
+   bar foo bar foo foo. bar foo bar
+   foo foo.</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{textformat wrap=40 indent=4 indent_first=4}
+
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+
+   This is bar.
+
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+
+   {/textformat}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>This is foo. This is foo. This
+   is foo. This is foo. This is foo.
+   This is foo.
+
+   This is bar.
+
+   bar foo bar foo foo. bar foo bar
+   foo foo. bar foo bar foo foo. bar
+   foo bar foo foo. bar foo bar foo
+   foo. bar foo bar foo foo. bar foo
+   bar foo foo.</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{textformat style="email"}
+
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+   This is foo.
+
+   This is bar.
+
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+   bar foo bar foo     foo.
+
+   {/textformat}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>This is foo. This is foo. This is foo. This is foo. This is foo. This is
+   foo.
+
+   This is bar.
+
+   bar foo bar foo foo. bar foo bar foo foo. bar foo bar foo foo. bar foo
+   bar foo foo. bar foo bar foo foo. bar foo bar foo foo. bar foo bar foo
+   foo.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.function.strip.html"
+><TT
+CLASS="varname"
+>{strip}</TT
+></A
+>
+  および
+  <A
+HREF="language.modifier.wordwrap.html"
+><TT
+CLASS="varname"
+>wordwrap</TT
+></A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.popup.init.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config.files.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{popup_init}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.custom.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>設定ファイル</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

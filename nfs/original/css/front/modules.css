@@ -1,0 +1,2368 @@
+@charset "UTF-8";
+
+/*----------------------------------------------------------
+ 記事[topics]の設定
+------------------------------------------------------------ */
+ul.topics_headline{
+	font-size: 100%;
+	padding-bottom:6px;
+	line-height:160%;
+}
+
+.topics_ymd{
+	margin-top: 0px;
+	padding: 0px;
+	text-align: right;
+}
+
+.topics_contents{
+	margin: 20px 18px 10px 18px;
+	padding: 0px;
+	line-height: 150%;
+}
+
+.topics_contents img{
+	padding: 3px;
+}
+
+.topics_contents p{
+	line-height: 150%;
+	padding-bottom:7px;
+}
+
+.topics_contents table{
+	border: 1px solid ;
+	border-collapse: collapse;
+}
+
+.topics_contents th{
+	background-color: #660000;
+	color:#ffffff;
+	font-weight:bold;
+}
+
+.topics_contents div.pageInfo {
+  margin: 10px 0;
+  text-align: right;
+}
+
+.topics_contents div.pageInfo li{
+  display: inline;
+  margin: 0 2px;
+  padding: 0;
+  background-color: #FFF;
+  border: 1px solid #CCC;
+}
+
+.topics_contents div.pageInfo li.current{
+  background-color: #CCC;
+}
+
+.topics_contents div.pageInfo li.summary{
+  border: none;
+  background-color: transparent;
+}
+
+.topics_contents div.pageInfo li a{
+  margin: 0;
+  padding: 0 6px;
+  text-decoration: none !important;
+  text-align: center;
+}
+
+.topics_list_digest div.topicsItem,
+.topics_list_photo div.topicsItem {
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px dashed #ccc;
+}
+.topics_list_digest div.topicsItem .ymd {
+	margin-left: 20px;
+}
+.topics_list_digest div.topicsItem .digest {
+	margin-top: 5px;
+}
+.topics_list_digest span.group {
+	color: #999;
+	font-size: 0.7em;
+}
+.topics_list_photo h3 {
+	margin-bottom: 5px;
+}
+.topics_list_photo span.group {
+	font-size: 0.8em;
+}
+.topics_list_photo .photo {
+	float: right;
+	margin-left: 10px;
+	width: 150px;
+	font-size: 0.8em;
+}
+.topics_list_photo .goDetail {
+	text-align: right;
+	margin-top: 10px;
+}
+
+.topics_calendar table.navi {
+	width: 100%;
+	margin-bottom: 3px;
+}
+.topics_calendar table.navi td{
+	text-align: center;
+}
+.topics_calendar table.navi td a{
+	margin-left: 3px;
+	margin-right: 3px;
+}
+.topics_calendar table.calendar {
+	width: 100%;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+}
+.topics_calendar table.calendar td, .topics_calendar table.calendar th{
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+.topics_calendar table.calendar th{
+	text-align: center;
+	width: 14%;
+}
+.topics_calendar table.calendar td{
+	text-align: right;
+	padding: 2px 4px 2px 0;
+}
+
+/*  拡張項目  */
+
+.topics_contents dl.extensions {
+	margin-bottom: 15px;
+}
+.topics_contents dl.extensions dt {
+	float: left;
+	width: 150px;
+	padding: 5px 0;
+	font-weight: bold;
+	clear: both;
+}
+.topics_contents dl.extensions dd {
+	padding: 5px 0 5px 170px;
+}
+
+/*----------------------------------------------------------
+ 自由HTML[staticcontents]の設定
+------------------------------------------------------------ */
+div.staticcontents p{
+	line-height: 150%;
+}
+
+/*----------------------------------------------------------
+ 試合[game_detail]の設定
+------------------------------------------------------------ */
+div.game_detail .score {
+	margin-bottom: 20px;
+}
+div.game_detail .score:after {
+	content:".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+div.game_detail .score div {
+	float:left;
+	margin-right: 15px;
+}
+div.game_detail .score p {
+	margin-top: 5px;
+}
+div.game_detail table .center {
+	text-align: center;
+}
+div.game_detail table.score_table {
+	border: 1px solid #666;
+	background-color: #ffffff;
+	border-collapse:collapse;
+	width:250px;
+}
+div.game_detail table.score_table td,
+div.game_detail table.score_table th {
+	text-align: center;
+	padding: 2px 5px;
+	border: 1px solid #666;
+}
+div.game_detail table.gameinfo_table {
+	border: 1px solid #666;
+	background-color: #ffffff;
+	border-collapse:collapse;
+}
+div.game_detail table.gameinfo_table th {
+	background-color: #efefef;
+	border-collapse:collapse;
+	vertical-align: top;
+	padding: 2px 5px 2px 5px;
+	border-bottom: 1px dotted #666;
+}
+div.game_detail table.gameinfo_table td {
+	padding: 2px 10px 2px 10px;
+	border-bottom: 1px dotted #666;
+}
+div.game_detail .comment {
+	margin-bottom :20px;
+}
+
+div.game_detail table.self_member_table {
+	background-color: #ffffff;
+	border: 1px solid #666;
+	font-size: 90%;
+	line-height: 130%;
+	border-collapse:separate;
+	margin-bottom: 15px;
+}
+div.game_detail th.self_member_table,
+.self_team_nm {
+	background-color: #aaa;
+	color:#ffffff;
+	font-weight: bold;
+	line-height: 100%;
+}
+div.game_detail span.self_team_nm,
+div.game_detail span.opp_team_nm {
+	padding: 3px 15px;
+}
+div.game_detail table.reserve_table {
+	border: 1px solid #666;
+	font-size: 90%;
+	line-height: 130%;
+	width:464px;
+	margin-bottom: 15px;
+	border-collapse: separate;
+}
+div.game_detail table.self_member_table th,
+div.game_detail table.reserve_table th,
+div.game_detail table.opp_member_table th {
+	padding: 3px;
+	text-align: center;
+}
+div.game_detail table.self_member_table td,
+div.game_detail table.reserve_table td,
+div.game_detail table.opp_member_table td {
+	padding: 3px;
+	background-color: #ffffff;
+}
+div.game_detail table.opp_member_table {
+	border: 1px solid #666;
+	font-size: 90%;
+	line-height: 130%;
+	border-collapse: separate;
+	width:464px;
+}
+div.game_detail th.opp_member_table,.opp_team_nm {
+	background-color: #aaa;
+	color:#ffffff;
+	font-weight: bold;
+}
+div.game_detail table.score_detail_table {
+	margin-bottom: 15px;
+	width: 100%;
+}
+div.game_detail table.score_detail_table th,
+div.game_detail table.score_detail_table td {
+	border: 1px solid #666;
+	text-align: center;
+	padding: 2px 5px;
+}
+div.game_detail table.score_detail_table2,
+div.game_detail table.self_member_table2 {
+	margin: 5px 0 15px;
+	width: 100%;
+}
+div.game_detail table.score_detail_table2 th,
+div.game_detail table.self_member_table2 th {
+	border: 1px solid #666;
+	text-align: center;
+	padding: 2px 5px;
+	font-weight: normal;
+	background-color: #aaa;
+	color: #fff;
+}
+div.game_detail table.score_detail_table2 th.number,
+div.game_detail table.self_member_table2 th.number {
+	width: 45px;
+}
+div.game_detail table.score_detail_table2 th.member {
+	width: 110px;
+}
+div.game_detail table.score_detail_table2 td,
+div.game_detail table.self_member_table2 td  {
+	border: 1px solid #666;
+	text-align: center;
+	padding: 2px 5px;
+}
+
+/*----------------------------------------------------------
+ アンケート[survey]の設定
+------------------------------------------------------------ */
+.survey_pf {
+	margin-top:0.5em;
+	margin-left:1em;
+}
+.survey_pf_title {
+	width: 200px;
+}
+.survey_pf td {
+	padding-top:0.25em;
+	padding-bottom:0.25em;
+}
+
+.survey_q {
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+}
+.survey_require {
+	color:red;
+	font-size:0.75em;
+	margin-left:0.5em;
+}
+.survey_a {
+	margin-top:0.25em;
+	margin-left:2em;
+}
+.survey_unanswered {
+	font-style: italic;
+	color: #add8e6;
+}
+
+/* "集計結果は公表していません"のラベル */
+.survey_total_private {
+	font-style: italic;
+	color: #333333;
+}
+
+/* -- 集計結果リスト -- */
+.survey_az_question {
+	margin-top: 1em;
+}
+
+.survey_az_question h4 {
+	font-size: 1.25em;
+	padding-bottom: 0.15em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px dashed black;
+}
+
+.survey_az_question h4 a {
+	font-size: 11px;
+	margin-left: 30px;
+}
+
+.survey_az_question .require {
+	color: red;
+	font-size: 11px;
+	margin-left: 0.5em;
+}
+
+.survey_az_question .result_list {
+	font-size: 11px;
+}
+
+.survey_az_question .result_list th {
+	background: #FFCC66;
+	padding: 2px;
+	text-align: center;
+}
+
+.survey_az_question .result_list td {
+	background: #eee;
+	padding: 2px 2px 2px 4px;
+	text-align: right;
+}
+.survey_az_question .graph {
+	padding-right: 0;
+}
+.survey_az_question .graph img {
+	display: block;
+	margin-left: 20px;
+}
+/* -- 集計結果リスト ここまで -- */
+
+/* -- 集計結果 検索フォーム -- */
+#survey_az_search {
+	padding: 1em;
+	border: 1px solid #999999;
+}
+
+#survey_az_search td {
+	border-bottom: 1px dashed #cccccc;
+}
+
+#survey_az_search .label {
+	white-space: nowrap;
+}
+
+#survey_az_search .checked {
+	background: Aqua;
+}
+/* -- 集計結果 検索フォーム ここまで -- */
+
+/*----------------------------------------------------------
+ ブログ[blog]の設定
+------------------------------------------------------------ */
+
+/* ----- ブログ共通 ----- */
+/* ブログTOPへのリンク */
+div.blog_top_link {
+	text-align:right;
+}
+
+/* プラグイン見出し */
+h3.plugin_header {
+	border-top: 1px dotted #ccc;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	padding-top: 10px;
+	font-weight: bold;
+	font-size: 0.875em;
+	color: #000;
+}
+
+/* ----- 最新記事一覧(小) blog_new_list_mini.html ----- */
+ul#blog_new_list_mini {
+	margin:0;
+	padding:0;
+}
+ul#blog_new_list_mini li {
+	list-style-type:none;
+}
+
+/* ----- メンバー詳細用ブログ一覧 blog_writing_list.html ----- */
+div.blog_writing_list ul {
+	margin:0;
+	padding:0;
+}
+div.blog_writing_list ul li {
+	list-style-type:none;
+}
+div.blog_writing_list ul ul{
+	margin-left:10px;
+	margin-bottom:4px;
+	padding:0;
+	font-size:90%;
+}
+
+/* ----- ブログ記事 本文 ----- */
+/* 各記事のBOX */
+div.blog_item {
+	margin-top: 15px;
+	margin-bottom: 60px;
+}
+div.blog_contents{
+	line-height: 170%;
+}
+
+div.blog_contents img {
+	margin: 3px;
+}
+
+/* 記事タイトル */
+div.blog_item h4.subject {
+	border-bottom: 1px solid #999999;
+	border-left: 7px solid #999999;
+	margin-bottom: 10px;
+	padding: 3px 3px 3px 8px;
+}
+div.blog_item h4.subject span {
+	font-weight: normal;
+}
+div.blog_item h4.subject span.article_tit { /* 記事タイトル */
+	font-size: 110%;
+	font-weight: bold;
+}
+div.blog_item h4.subject span.blog_tit { /* Blogタイトル */
+	font-size: 90%;
+	margin-left: 10px;
+}
+div.blog_item span.blog_author { /* blog著者 */
+	margin-right: 10px;
+}
+div.blog_item .post { 
+	font-size: 90%;
+	text-align: right;
+	margin-bottom: 15px;
+}
+div.blog_item .post img { 
+	vertical-align: middle;
+	margin-left: 10px;
+}
+
+div.blog_item .ref_outside_blog { /* 外部ブログ */
+	margin-top: 30px;
+	border: 1px solid #cccccc;
+	padding: 5px;
+	text-align: center;
+}
+
+
+/* ----- ブログコメント ----- */
+
+/* コメントBOX */
+div.blog_comment {
+	color: #606060;
+	font-size: 0.875em;
+}
+/* コメントヘッダー */
+div.blog_comment h4 {
+	font-weight: normal;
+	font-size: 1em;
+}
+/* 書き込み済みコメント本文 */
+div.blog_comment p.comment {
+	margin-top: 0.25em;
+	margin-left: 1em;
+}
+/* コメント入力フォーム */
+div.blog_comment div.comment_input th{
+	padding-bottom: 5px;
+	padding-right: 10px;
+	font-weight: normal;
+	text-align:right;
+}
+div.blog_comment div.comment_input td{
+	padding-bottom: 5px;
+}
+
+/* コメント入力エラーメッセージ */
+div.blog_comment ul.blog_comment_errors {
+	font-size: 0.875em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	color: red;
+}
+/* コメントサンキューメッセージ */
+div.blog_comment p.blog_comment_thank {
+	font-weight: bold;
+	font-size: 0.875em;
+	margin-left: 50px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+/* ----- ブログコメント ----- */
+
+/* ----- ブログカレンダー & トピックスのカレンダーも ----- */
+div.blog_calendar table, div.monthly_calendar table {
+	font-family: monospace;
+}
+
+div.blog_calendar td, div.monthly_calendar td {
+	border: solid 1px #CCCCCC;
+	text-align: right;
+	padding-right: 3px;
+	padding-left: 3px;
+}
+
+/* ----- ブログ一覧 ----- */
+.blog_list .rss {
+	text-align: right;
+}
+.blog_list li {
+list-style-type: none;
+margin-bottom: 7px;
+}
+.blog_list li span {
+margin-left: 10px;
+}
+
+/* 月別ブログ記事タイトル一覧 */
+#brog_all_item_list dl {
+	margin-top: 5px;
+	border-bottom: dotted 1px #999999;
+	padding-bottom: 3px;
+}
+
+#brog_all_item_list dt { /* 投稿日時 */
+	font-size: 90%;
+}
+
+#brog_all_item_list dd { /* 記事タイトル */
+	margin-left: 1em;
+}
+
+div.blog_new_list td {
+	border-bottom: dotted 1px #999999;
+	padding: 3px;
+}
+
+/* ----- ブログ書いた人 ----- 
+.blog_member p.photo {
+	float: left;
+	margin-right: 5px;
+}
+.blog_member .relation_link {
+	clear: both;
+}
+*/
+
+
+/*----------------------------------------------------------
+ 問い合わせ[inquiry]の設定
+------------------------------------------------------------ */
+.inquiry_list ul {
+	margin-top: 10px;
+	list-style-type:none;
+}
+.inquiry_list li {
+	margin-bottom:10px;
+}
+.inquiry_list li p{
+	margin-left:15px;
+}
+.inquiry_detail .input_form {
+	margin-left:10px;
+	margin-bottom:10px;
+}
+.inquiry_detail .input_form_header, .inquiry_detail .input_form_footer {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.inquiry_detail .message {
+	width: 80%;
+	height: 150px;
+}
+.inquiry_detail .user_profile {
+	width: 80%;
+}
+.inquiry_detail .thanks {
+	height:150px;
+	margin-top:30px;
+}
+#inquiry_form p.input_form_header,
+#inquiry_form p.input_form_footer{
+	background-color: #EEEEEE;
+	padding: 3px;
+}
+#inquiry_form div{
+	border-top: dotted 1px #999999;
+	padding-top: 3px;
+}
+
+/*----------------------------------------------------------
+ 掲示板[BBS]の設定
+------------------------------------------------------------ */
+
+/* 親子記事共通 */
+.bbs_item {
+	margin-top: 5px;
+	border: 1px solid #ccc;
+	padding:5px;
+	line-height:170%;
+}
+
+.bbs_item .head {
+	margin-left: 4px;
+	margin-right: 4px;
+	border-bottom: 1px solid #ccc;
+	line-height:170%;
+}
+.bbs_item .date {
+	margin-left: 20px;
+}
+.bbs_item .new, div.bbs_show_tree ul.bbs_show_tree li .new{
+	margin-left: 4px;
+	color: #f00;
+	font-weight: bold;
+}
+.bbs_item .act {
+	text-align: right;
+	margin-right: 10px;
+}
+.bbs_item h3 {
+	background-color:#7B8689;
+	color:#fff;
+	padding: 2px;
+}
+
+.bbs_item img {
+	background-color:#ffffff;
+	padding: 3px;
+	border: 1px solid #999999;
+	margin-left: 10px;
+}
+
+/* ___スレッド表示___ */
+div.bbs_show_thread .children {
+	margin-left: 40px;
+}
+div.bbs_show_thread .children .bbs_item h3 {
+	background-color:#eee;
+	color:#000;
+	padding: 2px;
+}
+/* ___ツリー表示___ */
+/* 全体に有効な設定 */
+div.bbs_show_tree ul.bbs_show_tree li {
+	list-style-type: disc;
+}
+div.bbs_show_tree ul.bbs_show_tree li .name {
+	margin-left: 5px;
+	margin-right: 5px;
+	font-style: italic;
+}
+/* 子記事に有効な設定 */
+div.bbs_show_tree ul.bbs_show_tree li li{}
+div.bbs_show_tree ul.bbs_show_tree li ul{
+	margin-left: 20px;
+}
+div.bbs_show_tree span.delmsg {
+	color:#003366;
+	font-weight:bold;
+}
+
+/* 改ページ */
+div.bbs_show_tree .pageInfo, div.bbs_show_thread .pageInfo, div.bbs_show_list .pageInfo {
+	text-align: right;
+}
+
+/* 記事投稿フォーム(入力) */
+table.bbs_input_form {
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+}
+table.bbs_input_form th {
+	width: 120px;
+}
+table.bbs_input_form th, table.bbs_input_form td{
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	padding: 4px;
+}
+table.bbs_input_form .name, table.bbs_input_form .title, table.bbs_input_form .mail, table.bbs_input_form .url {
+	width: 180px;
+}
+table.bbs_input_form .note {
+	width: 350px;
+	height: 150px;
+}
+
+/* 記事投稿フォーム(確認) */
+table.bbs_show_verify_form {
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+}
+table.bbs_show_verify_form th {
+	width: 120px;
+}
+table.bbs_show_verify_form th, table.bbs_show_verify_form td{
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	padding: 4px;
+}
+
+/* 違反投稿フォーム */
+table.bbs_report_form {
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+}
+table.bbs_report_form th, table.bbs_report_form td{
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	padding: 4px;
+}
+
+/* カテゴリ毎一覧 */
+.bbs_list_by_category .category_list {
+	margin-bottom: 15px;
+}
+
+
+/*----------------------------------------------------------
+ フォトアルバム[photo]の設定
+------------------------------------------------------------ */
+div.photo_subList { /* IEバグ対策用 */
+	width: 100%;
+}
+
+div.photo_subList p.subitem_list { /* 標準の文字サイズで4行までを対象 */
+	height: 170px;
+}
+
+.photo_info ul .link {
+	margin-left: 5px;
+}
+.photo_info ul li {
+	list-style-type: disc;
+}
+
+div.photo_detail .photo_box {
+	text-align: center;
+}
+div.photo_detail .comment {
+	text-align: center;
+}
+.photo_new .photo_new_list,
+.photo_top .photo_top_list {
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+/*----------------------------------------------------------
+ メンバー[member]の設定
+------------------------------------------------------------ */
+#member_detail .member_photo {
+	float: left;
+	margin-right: 10px;
+}
+#member_detail .member_profile table th {
+	padding: 3px 10px 3px 0;
+}
+#member_detail .member_profile table td {
+	padding: 3px 0;
+}
+#member_detail .member_comment h3 {
+	background-color: #efefef;
+	padding: 3px 0 3px 10px;
+	margin: 10px 0;
+}
+#member_detail .member_comment dt {
+	border-bottom: 1px dotted #999999;
+	padding: 0 0 5px 5px;
+	font-weight: bold;
+}
+#member_detail .member_comment dd {
+	margin: 5px 0 15px 10px;
+}
+
+/*----------------------------------------------------------
+ メンバー[memberrugby]の設定
+------------------------------------------------------------ */
+.memberrugby_detail #member_profile table {
+	float: left;
+	margin: 0 20px 15px 0;
+}
+.memberrugby_detail #member_profile table th {
+	padding: 3px 10px;
+	background-color: #CDCEBC;
+	color: #660000;
+	border-bottom: dotted 1px #999999;
+}
+.memberrugby_detail #member_profile table td {
+	padding: 3px 10px;
+	border-bottom: dotted 1px #999999;
+}
+.memberrugby_detail h3 {
+	background-color: #EEEEEE;
+	margin-bottom: 15px;
+	padding: 3px;
+}
+.memberrugby_detail dl.member_comment dt {
+	padding-left: 15px;
+	background-repeat: no-repeat;
+	border-bottom: dotted 1px;
+	border-color: #999999;
+	color: #666666;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.memberrugby_detail dl.member_comment dd {
+	padding-left: 15px;
+	padding-bottom:15px;
+}
+
+/*----------------------------------------------------------
+ メルマガ[magazine]の設定
+------------------------------------------------------------ */
+
+table.mailmg_bn_tbl { /* バックナンバーテーブル */
+	line-height:130%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.mailmg_bn_tbl img {
+	margin-right: 10px;
+}
+
+table.mailmg_bn_tbl td {
+	border-bottom: dotted 1px #999999;
+}
+
+table.mailmg_bn_tbl span.article_name { /* バックナンバー項目名 */
+	display: block;
+	width: 60px;
+	float: left;
+	padding: 2px;
+	background-color: #EEEEEE;
+	color: #666666;
+}
+div.magazine_list h3,
+div.magazine_detail h3 {
+	padding: 5px 10px;
+	background-color: #EEE;
+	border: 1px solid #CCC;
+}
+div.magazine_info {
+	border-bottom: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	padding: 10px;
+	margin-bottom: 15px;
+}
+div.magazine_info img {
+	float: left;
+	display: inelin;
+	margin: 5px 10px 10px 3px;
+}
+div.magazine_info p.text {
+	margin-top: 5px;
+	margin-left: 3px;
+}
+div.magazine_info p.text span{
+	display: none;
+}
+div.magazine_info ul.link, .magazine_bn ul.link{
+	margin-left: 5px;
+	margin-bottom: 5px;
+	text-align:right;
+}
+div.magazine_info ul.link li, .magazine_bn ul.link li{
+	list-style-type: none;
+	display: inline;
+	font-size: 12px;
+	margin-right: 10px;
+}
+div.magazine_info .reg{
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+div.magazine_info .reg .mail input {
+	margin-left: 5px;
+}
+div.magazine_info .reg img.captcha {
+	float:none;
+	display: inline;
+}
+div.magazine_info .reg .btn {
+	margin-top: 5px;
+}
+div.magazine_info .reg #sub, div.magazine_info .reg #cancel {
+	padding: 0px 20px 0px 20px;
+}
+div.magazine_bn h1 {
+	padding: 5px;
+	background-color: #EEE;
+	border: 1px solid #CCC;
+	font-size: 20px;
+}
+div.magazine_bn .list {
+	margin-left: 5px;
+	margin-bottom: 10px;
+}
+div.magazine_bn .row {
+	margin-top: 20px;
+}
+div.magazine_bn .row h2 {
+	border-bottom: 1px solid #CCC;
+	background-color: #EEE;
+}
+div.magazine_bn .row h2 span {display: none;}
+div.magazine_bn .row .time {text-align: right;}
+div.magazine_bn .row .time span {margin-right: 5px;}
+div.magazine_bn .row .body {
+	
+}
+
+/*----------------------------------------------------------
+ リンク[link]の設定
+------------------------------------------------------------ */
+.link_list .module_contents h2 {
+	font-size: 100%;
+	padding: 2px 2px 2px 10px;
+	margin: 20px 0 10px 0;
+	background-color: #EEEEEE;
+	color: #666666;
+}
+
+.link_list .module_contents p {
+	border-bottom: dotted 1px #999999;
+	padding: 0 5px 5px 5px; 
+	margin: 5px 0; 
+}
+.link_detail .link_block {
+	border-bottom: dotted 1px #999999;
+	padding: 5px;
+}
+.link_list .module_contents div.link_block,
+.link_detail .module_contents div.link_block {
+	margin-left: 20%;
+	margin-right: 20%;
+}
+
+/*----------------------------------------------------------
+ 地図情報[location]の設定
+------------------------------------------------------------ */
+.location_detail table.list {
+	margin-bottom: 10px;
+}
+
+/*----------------------------------------------------------
+ カレンダー[calendar]の設定
+------------------------------------------------------------ */
+/*年のナビ*/
+ul.naviYear {
+	margin-left: auto ;
+	margin-right: auto ;
+	font-size: 90%;
+	width:95%;
+}
+ul.naviYear li {
+	list-style: none;
+	display: inline;
+}
+ul.naviYear li.pre	{float:left;}
+ul.naviYear li.next {float:right;text-align:right;}
+/* 矢印を消したい、矢印画像を使いたい場合はこれを参考にしてください。*/
+/*
+ul.naviYear li.pre	a {padding-left:15px;  background: url(/xxxxx/xx.gif) no-repeat;}
+ul.naviYear li.next a {padding-right:15px; background: url(/xxxxx/xx.gif) no-repeat right;}
+ul.naviYear li.pre	.arrow {display:none;}
+ul.naviYear li.next .arrow {display:none;}
+*/
+
+/*月のナビ*/
+ul.naviMonth {
+	margin-left: auto ;
+	margin-right: auto ;
+	padding-bottom: 3px;
+	font-size: 90%;
+	width:95%;
+	text-align:center;
+	border-bottom: 1px dotted #333333;
+}
+ul.naviMonth li {
+	list-style: none;
+	display: inline;
+	margin-left: 10px;
+}
+/*現在表示中の月*/
+ul.naviMonth li.current {
+	font-weight:bold;
+}
+
+/* カレンダー見出し */
+div.calendar_list .header {
+	margin-left: auto ;
+	margin-right: auto ;
+	margin-top:5px;
+	margin-bottom:5px;
+	width:95%;
+}
+div.calendar_list .header .pre	{
+	width:30%;
+	padding-left:3em;
+	text-align:left;
+	font-size: 90%;
+}
+div.calendar_list .header .this {
+	width:40%;
+	text-align:center;
+	font-weight: bold;
+	font-size: 130%;
+}
+div.calendar_list .header .next {
+	width:30%;
+	padding-right:3em;
+	text-align:right;
+	font-size: 90%;
+}
+
+/*	カレンダー本体 */
+div.calendar_list .calendar {
+	width:95%;
+	margin-left: auto ;
+	margin-right: auto ;
+	margin-bottom: 5px ;
+	background-color: #f0f0f0;
+	font-size: 95%;
+	border-collapse: separate ;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+}
+
+/* カレンダーの曜日タイトル */
+div.calendar_list .calendar .header th {
+	font-weight:bold;
+	font-size: 120%;
+	background-color: #cccccc;
+	text-align:center;
+	width:14%;
+}
+div.calendar_list .calendar .daysHeader th {
+	font-weight:bold;
+	background-color: #dfdfdf;
+	text-align:center;
+	border-left: 1px solid #fff;
+	border-top: 1px solid #fff;
+	height:30px;
+}
+div.calendar_list .calendar .header .Mon {color: #666666;border-right:1px solid #fff;}
+div.calendar_list .calendar .header .Tue {color: #666666;border-right:1px solid #fff;}
+div.calendar_list .calendar .header .Wed {color: #666666;border-right:1px solid #fff;}
+div.calendar_list .calendar .header .Thu {color: #666666;border-right:1px solid #fff;}
+div.calendar_list .calendar .header .Fri {color: #666666;border-right:1px solid #fff;}
+div.calendar_list .calendar .header .Sat {color: #006699;border-right:1px solid #fff;}
+div.calendar_list .calendar .header .Sun {color: #993333;}
+
+/* 日のセル */
+div.calendar_list .calendar td {
+	font-size: 90%;
+	width:14%;
+	height:100px;
+	border-left: 1px solid #fff;
+	border-top: 1px solid #fff;
+	padding: 5px;
+	vertical-align: top;
+}
+/* 曜日ごと */
+div.calendar_list .calendar th.Sat,
+div.calendar_list .calendar td.Sat {color: #006699;}
+
+div.calendar_list .calendar th.Sun,
+div.calendar_list .calendar td.Sun {color: #993333;}
+/* 祝日 */
+div.calendar_list .calendar td.holiday {color: #993333;}
+/* 本日 */
+div.calendar_list .calendar td.today {border: 2px solid #ffff00;}
+/* 日付 */
+div.calendar_list .calendar td p {
+	font-weight:bold;
+	margin-bottom: 4px;
+}
+/* 祝日などの文字 */
+div.calendar_list .calendar td .head span{margin-left: 10px;}
+/* 内容表示部分 */
+div.calendar_list .calendar td .body {color: #000000;width:100%;height:100%;}
+
+div.calendar_list .calendar td ul{
+	padding: 0;
+	margin: 0;
+}
+div.calendar_list .calendar td ul li{
+	padding: 0;
+	margin: 0;
+	list-style-type:none;
+	list-style-position:outside;
+}
+
+/* ----- 週間スケジュール ----- */
+.weekly_calendar .day {
+	font-weight:bold;
+	color: #666666;
+	font-family: "Arial", "Helvetica", "sans-serif", "ＭＳ Ｐゴシック", "Osaka";
+}
+.weekly_calendar .saturday {
+	font-weight: bold;
+	color: #006699;
+	font-family: "Arial", "Helvetica", "sans-serif", "ＭＳ Ｐゴシック", "Osaka";
+}
+.weekly_calendar .holiday,
+.weekly_calendar .sunday {
+	font-weight: bold;
+	color: #993333;
+	font-family: "Arial", "Helvetica", "sans-serif", "ＭＳ Ｐゴシック", "Osaka";
+}
+.weekly_calendar .calendar_data {
+		font-size:90%;
+}
+
+
+/* ----- カソウ　日次スケジュール ----- */
+
+div.calendar_list .dayly_calendar th {
+	background-color: #efefef;
+	border: 1px solid #cccccc;
+	text-align: center;
+	padding: 3px;
+}
+div.calendar_list .dayly_calendar td {
+	border: 1px solid #cccccc;
+	text-align: center;
+	padding: 3px;
+}
+
+/* ----- カソウ　週間スケジュール ----- */
+
+div.calendar_list .weeklyIndex {
+	text-align: center;
+	margin: 0px 0px 10px 0px;
+}
+div.calendar_list .weeklyIndex span {
+	margin: 0px 15px 0px 15px;
+	font-weight: bold;
+}
+div.calendar_list ul.categoryList li {
+	list-style: none;
+	float: left;
+	border-right: 1px solid #999999;
+	padding-right: 5px;
+	margin: 0px 5px 5px 0px;
+	font-size: 90%;
+}
+div.calendar_list .categoryName {
+	clear: both;
+	font-weight: bold;
+	float: left;
+	margin: 5px 10px 10px 0px;
+}
+div.calendar_list .weekly_calendar {
+	clear: both;
+}
+div.calendar_list .weekly_calendar th {
+	background-color: #efefef;
+	border: 1px solid #cccccc;
+	text-align: center;
+	padding: 3px;
+}
+div.calendar_list .weekly_calendar td {
+	border: 1px solid #cccccc;
+	text-align: center;
+	padding: 3px;
+}
+
+/* ----- カソウ　月カレンダー（小） ----- */
+
+.kasou_calendar .module_contents {
+	border: 1px solid #cccccc;
+	padding: 2px;
+}
+.kasou_calendar .module_contents table {
+	border-collapse: separate;
+}
+.kasou_calendar .module_contents th {
+	text-align: center;
+	background-color: #cccccc;
+	padding: 3px 0px 3px 0px;
+}
+.kasou_calendar .module_contents td {
+	text-align: center;
+	background-color: #efefef;
+	padding: 3px 0px 3px 0px;
+}
+
+/*----------------------------------------------------------
+ プログラム[program]の設定
+------------------------------------------------------------ */
+table.program_list td{ /* クラスの一覧に使うテーブル */
+	text-align: left;
+}
+
+table.program_list th{ /* クラスの一覧に使うテーブル */
+	text-align: left;
+}
+
+table.program_list span.recommend{
+	font-size: 85%;
+	color: #FF0000;
+}
+
+table.program_list div.recommend{
+	font-size: 85%;
+}
+
+/* スケジュール詳細 */
+table.program_schedule_detail {
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-collapse: collapse;
+}
+table.program_schedule_detail th, table.program_schedule_detail td {
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	padding: 3px;
+}
+
+table.schedule_list { /* 予定の一覧に使うテーブル */
+	border: 1px solid;
+}
+table.schedule_list td{ 	
+	border: 1px solid;
+	text-align: center;
+}
+table.schedule_list th{ 	
+	border: 1px solid;
+}
+
+.reserved{
+	background-color: #dddddd;
+}
+
+/*----------------------------------------------------------
+ 用語辞典[keyword]の設定
+------------------------------------------------------------ */
+.keyword_list li {
+	padding:5px;
+}
+div.keyword_search_index ul li {
+	margin-left: 2px;
+	margin-right: 2px;
+	list-style-type: none;
+	display: inline;
+}
+div.keyword_search_index ul li.none a {
+	text-decoration:none;
+}
+div.keyword_detail h3 {
+	margin: 20px 0px 5px 0px;
+}
+div.keyword_detail li {
+	margin-bottom: 5px;
+}
+
+/*----------------------------------------------------------
+ RSS[RSS]の設定
+------------------------------------------------------------ */
+/* ----- RSS一覧table ----- */
+table.rss_listtbl {
+}
+
+table.rss_listtbl a {
+	margin-right: 15px;
+}
+
+table.rss_listtbl th{
+	background-color: #f3f3f3;
+	border-bottom: dotted 1px #999999;
+	padding: 5px;
+}
+
+table.rss_listtbl td{
+	border-bottom: dotted 1px #999999;
+	padding: 5px;
+}
+
+/* 各モジュールのBOX */
+div.rss_item {
+	margin-top: 15px;
+	margin-bottom: 30px;
+}
+
+/* モジュール名 */
+div.rss_item h4.module_nm {
+	width: 95%;
+	border-bottom: 1px solid #999999;
+	border-left: 10px solid #999999;
+	margin-bottom: 10px;
+	padding: 3px;
+	font-size: 110%;
+	font-weight: bold;
+}
+
+/*----------------------------------------------------------
+ 課題[tasklist]の設定
+------------------------------------------------------------ */
+table.tasklist_list td.deadline {color: #ff0000;}
+table.tasklist_list td.serious1 {}
+table.tasklist_list td.serious2 {background: #ffcc66;}
+table.tasklist_list td.serious3 {background: #ff8800;}
+table.tasklist_list td.serious4 {background: #ff0000;}
+table.tasklist_list td.priority1 {}
+table.tasklist_list td.priority2 {background: #ffcc66;}
+table.tasklist_list td.priority3 {background: #ff8800;}
+table.tasklist_list td.priority4 {background: #ff0000;}
+div.tasklist_list .add_item, div.tasklist_detail .add_item {
+	margin-top: 5px;
+	text-align: right;
+}
+div.tasklist_list .add_item a, div.tasklist_detail .add_item a{
+	margin-left: 15px;
+}
+div.tasklist_detail table.tasklist_list th {
+	width: 150px;
+}
+
+/*----------------------------------------------------------
+ ヘルプ[help]の設定
+------------------------------------------------------------ */
+
+/*  ヘルプ一覧  */
+
+.help_list h3 {
+	background-color: #eee;
+	padding: 5px 10px;
+	margin-bottom: 5px;
+}
+.help_list h4 {
+	background-color: #eee;
+	padding: 5px 10px;
+	margin: 0 0 5px 20px;
+}
+.help_list dd {
+	margin-bottom: 15px;
+}
+.help_list dl.child {
+	margin: 0 0 0 20px;
+}
+
+/*  ヘルプカテゴリー別一覧  */
+
+.help_category_detail div.helpItem {
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px dashed #ccc;
+}
+.help_category_detail div.helpItem .digest {
+	margin-top: 5px;
+}
+
+/*----------------------------------------------------------
+ メール[mail]の設定
+------------------------------------------------------------ */
+.mailer table {
+	border: 0;
+	width: 100%;
+	margin: 0px auto 10px auto;
+}
+
+.mailer th {
+	font-weight: bold;
+	border-bottom: 1px dashed #ccc;
+	padding: 7px;
+}
+
+.mailer td {
+	border-bottom: 1px dashed #ccc;
+	padding: 7px;
+}
+
+.mailer table table {
+	width: 300px;
+	margin: 0px;
+}
+
+.mailer table table td {
+	padding: 3px;
+	border-bottom: 1px dashed #ccc;
+	margin-bottom: 4px;
+}
+
+/* 送信先選択のポップアップ画面 */
+#mail_dest_list {
+	margin: 5px 5px;
+	padding: 10px 5px;
+}
+#mail_dest_list table {
+	border: 0;
+	width: 100%;
+	margin: 0px auto 10px auto;
+	border-top: 1px dashed #ccc;
+}
+
+#mail_dest_list td {
+	border-bottom: 1px dashed #ccc;
+	padding: 4px;
+}
+#mail_dest_list fieldset {
+	padding: 10px 10px;
+	border: 1px solid #ccc;
+}
+#mail_dest_list fieldset input[type="text"] {
+	width: 200px;
+}
+#mail_dest_list fieldset input[type="submit"] {
+	width: 50px;
+}
+
+/*----------------------------------------------------------
+ カタログ[catalog]の設定
+------------------------------------------------------------ */
+.CatalogItem {
+	margin-bottom: 10px;
+}
+.catalog_list h3 {
+	clear: both;
+	margin-bottom: 5px;
+}
+.catalog_list .firstItem_left,
+.catalog_detail .firstItem_left {
+	float: left;
+	margin: 0 10px 5px 0;
+}
+.catalog_list .firstItem_right,
+.catalog_detail .firstItem_right {
+	float: right;
+	margin: 0 0 5px 10px;
+}
+.catalog_detail .item p {
+	margin-bottom: 8px;
+}
+
+
+/*----------------------------------------------------------
+ 動画[movie]の設定
+------------------------------------------------------------ */
+.movie_box	{
+	text-align:center;
+}
+
+div.movie_list p.subitem_list { /* 標準の文字サイズで4行までを対象 */
+	height: 170px;
+}
+
+/*----------------------------------------------------------
+ メンバー学生[memberrugby]検索系の設定
+------------------------------------------------------------ */
+.memberrugby_search_position h4,
+.memberrugby_search_area h4 {
+	margin-top:5px;
+	font-size: 100%;
+}
+.memberrugby_search_position p,
+.memberrugby_search_area p {
+	margin-left:5px;
+}
+
+.memberrugby_search_position p a,
+.memberrugby_search_grade p a,
+.memberrugby_search_area p a {
+	margin: 0 3px;
+}
+
+
+/*----------------------------------------------------------
+ カート[cart]の設定
+------------------------------------------------------------ */
+
+table.cart_order_table,
+table.cart_order_input_table {
+	width: 100%;
+	margin: 5px 0 10px 0;
+}
+table.cart_order_table th,
+table.cart_order_input_table th {
+	text-align: center;
+	padding: 5px;
+	border: 1px solid #cccccc;
+	background-color: #efefef;
+}
+table.cart_order_input_table th {
+	width: 20%;
+}
+table.cart_order_table td,
+table.cart_order_input_table td {
+	padding: 5px;
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
+}
+table.cart_order_table th.goods {
+	width: 50%;
+}
+table.cart_order_table th.price,
+table.cart_order_table td.price {
+	text-align: right;
+	background-color: #ffffff;
+}
+table.cart_order_table td.order,
+table.cart_order_table td.cancel {
+	text-align: center;
+}
+table.cart_order_table input,
+table.cart_order_table select,
+table.cart_order_input_table input,
+table.cart_order_input_table select {
+	margin-bottom: 0px;
+}
+.cart_show .input_button,
+.cart_order_input .input_button {
+	margin-top: 10px;
+	text-align: center;
+}
+
+/*----------------------------------------------------------
+ RCMS[rcms]の設定
+------------------------------------------------------------ */
+.rcms_info_list dt {
+	width: 75px;
+	float: left;
+	clear: both;
+	margin-bottom: 5px;
+}
+.rcms_info_list dd {
+	margin:0 0 5px 75px; 
+}
+
+/*----------------------------------------------------------
+ 試合卓球[gametabletennis]の設定
+------------------------------------------------------------ */
+.gametabletennis_detail table.gameinfo_table {
+	margin-bottom: 15px;
+}
+.gametabletennis_detail table.gameinfo_table th {
+	font-weight: normal;
+	padding: 5px;
+	vertical-align: top;
+}
+.gametabletennis_detail table.gameinfo_table td {
+	padding: 5px;
+}
+.gametabletennis_detail h3 {
+	background-color: #efefef;
+	margin-bottom: 10px;
+	padding: 3px 0 3px 10px;
+}
+.gametabletennis_detail table.score_table {
+	margin-bottom: 20px;
+}
+.gametabletennis_detail table.score_table th,
+.gametabletennis_detail table.score_table td {
+	border: 1px solid #666666;
+	text-align: center;
+}
+.gametabletennis_detail table.score_table th.self_team {
+	color: #ffffff;
+	width: 100px;
+	padding: 0 5px;
+}
+.gametabletennis_detail table.score_table th.opp_team {
+	background-color: #999999;
+	color: #ffffff;
+	width: 100px;
+	padding: 0 5px;
+}
+.gametabletennis_detail table.score_table td {
+	padding: 1px;
+}
+.gametabletennis_detail table.score_table td.round {
+	width: 85px;
+}
+.gametabletennis_detail table.score_table td.total {
+	width: 30px;
+}
+.gametabletennis_detail table.detail {
+	background-color: #dfdfdf;
+	width: 85px;
+}
+.gametabletennis_detail table.detail td {
+	width: 15px;
+	border: 1px solid #ffffff !important;
+}
+
+/*----------------------------------------------------------
+ 試合テニス[gametennis]の設定
+------------------------------------------------------------ */
+.gametennis_detail table.gameinfo_table {
+	margin-bottom: 15px;
+}
+.gametennis_detail table.gameinfo_table th {
+	font-weight: normal;
+	padding: 5px;
+	vertical-align: top;
+}
+.gametennis_detail table.gameinfo_table td {
+	padding: 5px;
+}
+.gametennis_detail h3 {
+	background-color: #efefef;
+	margin-bottom: 10px;
+	padding: 3px 0 3px 10px;
+}
+.gametennis_detail table.score_table {
+	margin-bottom: 20px;
+}
+.gametennis_detail table.score_table th,
+.gametennis_detail table.score_table td {
+	border: 1px solid #666666;
+	text-align: center;
+}
+.gametennis_detail table.score_table th.self_team {
+	color: #ffffff;
+	width: 100px;
+	padding: 0 5px;
+}
+.gametennis_detail table.score_table th.opp_team {
+	background-color: #999999;
+	color: #ffffff;
+	width: 100px;
+	padding: 0 5px;
+}
+.gametennis_detail table.score_table td {
+	padding: 1px;
+}
+.gametennis_detail table.score_table td.round {
+	width: 85px;
+}
+.gametennis_detail table.score_table td.total {
+	width: 30px;
+}
+.gametennis_detail table.detail {
+	background-color: #dfdfdf;
+	width: 85px;
+}
+.gametennis_detail table.detail td {
+	width: 15px;
+	border: 1px solid #ffffff !important;
+}
+
+
+/*----------------------------------------------------------
+ PDF（記事とラグビー）
+------------------------------------------------------------ */
+.pdf_area {
+	margin-top: 30px;
+	border-top: 1px solid #cccccc;
+	padding-top: 5px;
+}
+.pdf_area ul:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.pdf_area li {
+	list-style-type: none;
+}
+.pdf_area li img {
+	position: relative;
+	top: 5px;
+	margin-right: 5px;
+}
+.acrobat_link {
+	margin-top: 10px;
+	font-size: 10px;
+}
+.acrobat_link .banner {
+	float: left;
+	margin-right: 10px;
+}
+
+/*----------------------------------------------------------
+ クーポン[coupon]の設定
+------------------------------------------------------------ */
+.coupon_detail .coupon_info,
+.coupon_list .coupon_info {
+	border: 1px solid #999;
+	width: 90%;
+	margin: 0 auto;
+	padding: 10px;
+}
+.coupon_detail h3,
+.coupon_list h3 {
+	font-size: 120%;
+	text-align: center;
+	background-color: #efefef;
+	padding: 3px 0;
+	margin-bottom: 10px;
+}
+.coupon_detail p.detail,
+.coupon_list p.detail {
+	text-align:left;
+	color: #cc0000;
+	padding: 10px 20px;
+}
+.coupon_detail p.alert,
+.coupon_list p.alert {
+	border-top: 1px dotted #999;
+	padding: 5px;
+	margin-top: 5px;
+	font-size: 90%;
+}
+.coupon_detail dl.shop_address,
+.coupon_list dl.shop_address {
+	clear: both;
+	font-size: 90%;
+	padding: 10px 0 0 0;
+}
+.coupon_detail dl.shop_address dt,
+.coupon_list dl.shop_address dt {
+	float: left;
+}
+.customer_info {
+	margin-top: 10px;
+}
+.customer_info table {
+	width: 98%;
+	margin-bottom: 15px;
+}
+.customer_info th {
+	width: 55px;
+	padding: 8px 0 2px 15px;
+	font-weight: normal;
+}
+.customer_info td {
+	border-bottom: 1px solid #999;
+	padding: 5px 0;
+}
+.customer_info p{
+	font-size: 90%;
+}
+p.print {
+	margin-top: 10px;
+	text-align: right;
+}
+
+
+/*----------------------------------------------------------
+ 店舗情報[restaurant]の設定
+------------------------------------------------------------ */
+.restaurant_detail .pr_text {
+	margin-bottom: 15px;
+	line-height: 180%;
+}
+.restaurant_detail h3 {
+	margin-bottom: 10px;
+}
+.restaurant_detail .pr_photo {
+	width: 520px;
+	margin: 20px auto 0 auto;
+}
+.restaurant_detail .pr_photo li {
+	width: 250px;
+	float: left;
+	display: inline;
+	margin: 0 5px 20px 5px;
+	text-align: center;
+}
+.pr_photo li img {
+	margin-bottom: 5px;
+}
+.pr_photo :after {
+	content:".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/*  食べログ写真  */
+
+.restaurant_tabelog li {
+	list-style-type: none;
+	float: left;
+	padding: 0 5px 5px 5px;
+}
+.restaurant_tabelog p {
+	clear: both;
+	padding-top: 10px;
+	text-align: right;
+}
+
+
+/*  周辺イベント  */
+
+.restaurant_artbeat .image {
+	float: left;
+	margin-right: 15px;
+}
+.artbeat_event {
+	clear: both;
+	margin-bottom: 10px;
+}
+.artbeat_event dl {
+	margin: 10px 0;
+}
+.artbeat_event dt {
+	float: left;
+}
+.artbeat_event:after {
+	content:".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/*----------------------------------------------------------
+ メニュー[restaurant_menu]の設定
+------------------------------------------------------------ */
+.restaurant_menu_detail li {
+	list-style-type: none;
+}
+.restaurant_menu01:after,
+.restaurant_menu02:after,
+.restaurant_menu_detail .sub_navi:after,
+.restaurant_menu_detail .l_category_photo:after,
+.restaurant_menu_detail .s_category_photo:after,
+.restaurant_menu_detail .menu_list:after,
+.restaurant_menu_detail .menu_normal:after,
+.restaurant_menu_detail .menu_photo:after {
+	content:".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/*  大カテ写真  */
+
+.l_category_photo li {
+	text-align: center;
+	float: left;
+	padding: 0 5px 15px 5px;
+}
+.l_category_photo .large {
+	width: 520px;
+	margin: 0 auto;
+}
+.l_category_photo .large li {
+	width: 250px;
+}
+.l_category_photo .large .photo {
+	height: 200px;
+}
+.l_category_photo .small  {
+	clear: both;
+	width:480px;
+	margin: 0 auto;
+}
+.l_category_photo .small li {
+	width: 150px;
+}
+.l_category_photo .small .photo {
+	height: 120px;
+}
+.l_category_photo .text {
+	margin-top: 5px;
+}
+
+
+/*  大カテゴリ 上 */
+
+.restaurant_menu01 .sub_navi {
+	margin-bottom: 15px;
+}
+.restaurant_menu01 .sub_navi li {
+	margin: 5px 8px 5px 10px;
+	display: inline;
+	float: left;
+	font-weight: bold;
+}
+
+/*  大カテゴリ 左 */
+
+.restaurant_menu02 .sub_navi {
+	float: left;
+	width: 20%;
+}
+.restaurant_menu02 .menu_contents {
+	float: left;
+	width: 80%;
+}
+
+/*  メニュー  */
+
+.restaurant_menu01 .menu_contents {
+	clear: both;
+}
+.restaurant_menu_detail .menu_list {
+	margin: 0 0 20px 0;
+	clear: both;
+	height: 1%;
+}
+.restaurant_menu_detail h3 {
+	clear: both;
+	border-bottom: 1px dotted #333333;
+	padding: 0 0 3px 5px;
+	margin-bottom: 5px;
+}
+.restaurant_menu_detail h4 {
+	float: left;
+	clear: both;
+}
+.restaurant_menu_detail .menu_detail p.price {
+	float: right;
+}
+.restaurant_menu_detail .menu_normal p.detail {
+	clear: both;
+	font-size: 90%;
+	padding-top: 5px;
+}
+.restaurant_menu_detail .menu_normal {
+	padding: 5px 10px;
+	clear: both;
+}
+
+/*  メニュー写真あり  */
+
+.restaurant_menu_detail .menu_photo {
+	clear: both;
+	padding: 5px 10px 10px 10px;
+}
+.restaurant_menu_detail .menu_photo .photo {
+	float: left;
+	width: 100px;
+}
+
+.restaurant_menu_detail .menu_photo .menu_detail {
+	float: right;
+	width: 82%;
+}
+.restaurant_menu_detail .menu_left .menu_photo .menu_detail {
+	float: right;
+	width: 77%;
+}
+.restaurant_menu02 .menu_contents .menu_photo .menu_detail {
+	float: right;
+	width: 78%;
+}
+.restaurant_menu02 .menu_contents .menu_left .menu_photo .menu_detail {
+	float: right;
+	width: 70%;
+}
+.restaurant_menu_detail .menu_photo p.detail {
+	clear: both;
+	font-size: 90%;
+	padding-top: 10px;
+}
+
+/*  アルバム風  */
+
+.restaurant_menu_detail .menu_album {
+	font-size: 10px;
+	text-align: center;
+	width: 124px;
+	float: left;
+	margin: 5px;
+	height: 136px;
+	background: url(/files/user/img/menu_bg_bottom.gif) no-repeat left bottom;
+}
+.restaurant_menu_detail .menu_album .photo {
+	background: url(/files/user/img/menu_bg_top.gif) no-repeat;
+	padding: 10px 1px 5px 0;
+}
+.restaurant_menu_detail .menu_album h4 {
+	font-weight: normal;
+	float: none;
+	margin: 0 8px;
+	line-height: 120%;
+}
+.restaurant_menu_detail .menu_album .menu_detail p.price {
+	margin-bottom: 5px;
+	float: none;
+}
+.restaurant_menu_detail .menu_album p.detail {
+	display: none;
+}
+
+/*  小カテ写真 下 */
+
+.s_category_photo {
+	padding: 15px 0 0 0;
+	font-size: 90%;
+	clear: both;
+}
+.s_category_photo p {
+	width: 125px;
+	float: left;
+	margin: 0 10px;
+	display: inline;
+}
+
+/*  小カテ写真 右 */
+
+.restaurant_menu_detail .menu_left {
+	float:left;
+	width: 78%;
+}
+.restaurant_menu02 .menu_contents .menu_left {
+	float:left;
+	width: 74%;
+}
+.restaurant_menu_detail .s_category_photo_right {
+	width: 125px;
+	float: right;
+	margin: 5px 5px 0 0;
+	font-size: 90%;
+}
+.restaurant_menu_detail .s_category_photo_right p {
+	margin-bottom: 10px;
+}
+
+/*----------------------------------------------------------
+ 投票[vote]の設定
+------------------------------------------------------------ */
+.answer_input table.vote_answer_table {
+	width: 100%;
+margin: 15px 0;
+}
+.answer_input table.vote_answer_table th {
+	width: 80px;
+	padding: 5px 5px 5px 0;
+}
+.answer_input table.vote_answer_table td {
+	padding: 5px 0 5px 5px;
+}
+.answer_input .require {
+	font-weight: normal;
+	font-size: 80%;
+	color: #ff0000;
+	margin-left: 5px;
+}
+.answer_input .entryform_bt {
+	text-align: center;
+}
+
+/*----------------------------------------------------------
+ 商品[shopping]の設定
+------------------------------------------------------------ */
+.shopping_list .category {
+	font-size: 10px;
+	text-align: right;
+}
+.shopping_list .shoppingItem,
+.shopping_detail .shoppingItem {
+	margin-bottom: 20px;
+}
+.shopping_list .item {
+	margin: 5px 0;
+}
+.shopping_detail .item {
+	margin: 10px 0;
+}
+.shopping_detail .stock_message,
+.shopping_list .select,
+.shopping_detail .select {
+	text-align: right;
+}
+
+/*  レイアウト  */
+.shopping_list .firstItem_left,
+.shopping_detail .firstItem_left {
+	float: left;
+	padding: 0 15px 0 0;
+}
+.shopping_list .item_left,
+.shopping_detail .item_left {
+	float: left;
+}
+.shopping_list .firstItem_right,
+.shopping_detail .firstItem_right {
+	float: right;
+	padding: 0 0 0 15px;
+}
+.shopping_list .item_right,
+.shopping_detail .item_right {
+	float: left;
+}
+
+
+/*----------------------------------------------------------
+ その他
+------------------------------------------------------------ */
+/* ------ page_links ------ */
+.page_links {margin-top:4px;margin-bottom:1px;}
+.page_links span {margin: 0 2px;font-size: 13px;}
+.page_links .allCnt {}
+.page_links .range {margin-left: 5px;}
+.page_links a.first {margin-left: 3px;}
+.page_links a.back	{margin-left: 3px;margin-right:3px;}
+.page_links a.next	{margin-left: 3px;margin-right:3px;}
+.page_links a.last	{}
+.page_links a span {display: inline;}
+.page_links a.first span {padding-left: 16px;background: url(/images/management/page_l2.gif) no-repeat center left; width: 15px;height:12px;}
+.page_links a.back	span {padding-left:  11px;background: url(/images/management/page_l.gif) no-repeat center left; width: 10px;height:12px;}
+.page_links a.next	span {padding-right: 11px;background: url(/images/management/page_r.gif) no-repeat center right; width: 10px;height:12px;}
+.page_links a.last	span {padding-right: 16px;background: url(/images/management/page_r2.gif) no-repeat center right; width: 15px;height:12px;}
+.page_links a.page, .page_links span.current {margin:0 2px;}
+.page_links span.current {
+	font-weight: bold;
+	font-size: 14px;
+}
+/* ------ page_links ------ */
+
+/* ------ minitabs ------ */
+ul.minitabs {
+	margin: 10px 15px 10px 15px;
+	padding: 0 0 20px 10px;
+	border-bottom: 2px solid #FF6600;
+}
+ul.minitabs li {
+	margin: 0;
+	padding: 0;
+	display: inline;
+	list-style-type: none;
+}
+ul.minitabs a:link, ul.minitabs a:visited, ul.minitabs li span{
+	float: left;
+	font-size: 13px;
+	line-height: 15px;
+	font-weight: bold;
+	padding: 0 12px 6px 12px;
+	text-decoration: none;
+	color: #708491;
+	color: #666;
+}
+
+ul.minitabs a:link.active, ul.minitabs a:visited.active, ul.minitabs a:hover {
+	padding-bottom: 6px;
+	color: #000;
+	background: url(/images/management/minitab.gif) no-repeat bottom center;
+}
+/* ------ minitabs ------ */
+
+/* ------ フォーム入力の必須、入力ヒント ------ */
+.required {color: #FF0000; font-size: 0.875em;}
+.hint {color: #008000; font-size: 0.875em;}
+span.required, span.hint {margin-left: 10px;}
+p.required, span.hint {margin:5px;}
+/* ------ フォーム入力の必須、入力ヒント ------ */
+
+
+/* 会社沿革
+------------------------------------------------------------ */
+.companyhistory_list table {
+	margin-bottom: 10px;
+}
+.companyhistory_list table th {
+	width: 150px;
+	text-align: left;
+}
+.companyhistory_list_year table.list td.date {
+	width: 150px !important;
+}
+
+/* ぐるなび
+------------------------------------------------------------ */
+.gnavi_detail img.restaurantImage{
+	max-width:90%;
+}
+
+
+/* 外部データ
+------------------------------------------------------------ */
+.api_general_search dd {
+	margin-bottom: 15px;
+}
+
+/* サイトマップ
+------------------------------------------------------------ */
+.sitemap2 h3 {
+	margin-bottom: 7px;
+}
+.sitemap2 h3.home {
+	float: left;
+	padding-right: 20px;
+}
+.sitemap2 .sitemap_list div {
+	float: left;
+	padding-right: 20px;
+	white-space: nowrap;
+}
+
+}
+
+.sitemap2 ul ul {
+	margin-top: 5px;
+}
+.sitemap2 li {
+	margin-bottom: 5px;
+	list-style-type: none;
+	list-style-position: outside;
+}
+.sitemap2 .sitemap_list:after {
+	content:".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* セミナー
+------------------------------------------------------------ */
+.seminar_search table{
+	border-collapse: collapse;
+	margin-bottom:10px;
+}
+
+.seminar_search th,.seminar_search td{
+	padding: 3px;
+}
+#btn_seminar_search{
+	text-align:center;
+	margin:0 auto;
+}
+
+/* マイページ
+------------------------------------------------------------ */
+.mypage_content_list .items {
+  margin: 0 0 0 10px;
+}
+
+.mypage_content_list .items li{
+  margin: 0 0 10px 0;
+}
+
+.mypage_content_list .info {
+  margin: 4px 0 0 0; 
+  text-align: right;
+}
+.mypage_content_list .info li{
+  display: inline; 
+  margin: 0 0 0 10px;
+}
+
+/* ヘッダサブメニュー
+------------------------------------------------------------ */
+#snavi {
+	text-align: right;
+	padding: 10px 10px 0 0;
+}
+#snavi li {
+	display: inline;
+	padding: 0 0 0 10px;
+}
+
+/* フッタメニュー
+------------------------------------------------------------ */
+.footer_link li {
+	display: inline;
+	padding: 0 10px 0 0;
+}
+
+/* タグ入力
+---------------------------------------------------------------- */
+div.tagsinput,
+div.tags_seleted {
+    border:none;
+    background: #FFF;
+    overflow-y: auto;
+}
+div.tagsinput span.tag,
+div.tagsinput span.not_tag,
+div.tagsinput span.add,
+div.tags_seleted span.tag {
+    cursol:pointer;
+    border: 1px solid #a5d24a;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    display: block;
+    float: left;
+    padding: 5px;
+    text-decoration:none;
+    background: #cde69c;
+    color: #638421;
+    margin-right: 5px;
+    margin-bottom:5px;
+    font-family: helvetica;
+    font-size:13px;
+    cursor: pointer;
+}
+
+div.tagsinput span.not_tag{
+    background: #FFFFFF;
+}
+
+div.tagsinput span.add {
+    border: 1px solid #FFF;
+    background: #FFF;
+}
+
+
+div.tags_seleted span.tag {
+    border:none;
+    padding: 2px;
+    font-weight:bold;
+    background: #FFFFFF;
+    margin-right: 1px;
+    margin-bottom:3px;
+    font-size:14px;
+    cursor: default;
+}
+

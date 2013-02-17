@@ -1,0 +1,207 @@
+<HTML
+><HEAD
+><TITLE
+>$compile_check</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$autoload_filters"
+HREF="variable.autoload.filters.html"><LINK
+REL="NEXT"
+TITLE="$force_compile"
+HREF="variable.force.compile.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.autoload.filters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.force.compile.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.compile.check"
+></A
+>$compile_check</H1
+><P
+>&#13;       SmartyはPHPアプリケーションの各リクエスト時に、
+       現在のテンプレートが最後に訪れた時から変更されている（タイムスタンプが異なる）
+       かどうかを検査します。もし変更されているならば、
+       そのテンプレートを再コンパイルします。
+       そのテンプレートが一度もコンパイルされていなかった場合は、
+       この設定に関係なくコンパイルを行います。この変数のデフォルトは <TT
+CLASS="constant"
+>TRUE</TT
+> です。
+      </P
+><P
+>&#13;       テンプレートが変更される予定がないアプリケーションがいったん稼動に入れば、
+       もはや compile_checkの ステップは必要ありません。
+       最大限のパフォーマンスを向上させるために、必ず
+       <TT
+CLASS="parameter"
+><I
+>$compile_check</I
+></TT
+> を <TT
+CLASS="constant"
+>FALSE</TT
+> に設定して下さい。
+       また、この設定を <TT
+CLASS="constant"
+>FALSE</TT
+> に変更した後にテンプレートファイルが変更された場合、
+       そのテンプレートが再コンパイルされる事は「ない」ので変更は反映されない事に注意してください。
+       <A
+HREF="variable.caching.html"
+><TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+> と
+       <TT
+CLASS="parameter"
+><I
+>$compile_check</I
+></TT
+> が共に有効ならば、
+       テンプレートファイルが更新されるとキャッシュファイルが再生成されます
+       詳細は、<A
+HREF="variable.force.compile.html"
+>&#13;       <TT
+CLASS="parameter"
+><I
+>$force_compile</I
+></TT
+></A
+> および <A
+HREF="api.clear.compiled.tpl.html"
+><TT
+CLASS="varname"
+>clear_compiled_tpl()</TT
+>
+       </A
+> を参照してください。
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.autoload.filters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.force.compile.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$autoload_filters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$force_compile</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,262 @@
+<HTML
+><HEAD
+><TITLE
+>append()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="NEXT"
+TITLE="append_by_ref()"
+HREF="api.append.by.ref.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.functions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.append.by.ref.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.append"
+></A
+>append()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN5475"
+></A
+>append()&nbsp;--&nbsp;割り当てられたテンプレート配列に要素を追加します。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN5478"
+></A
+><H2
+>説明</H2
+>void <B
+CLASS="methodname"
+>append</B
+> ( mixed var)<BR
+></BR
+>void <B
+CLASS="methodname"
+>append</B
+> ( string varname, mixed var [, bool merge])<BR
+></BR
+><P
+>&#13;   もし文字列を追加する場合は、 配列の値としてコンバートされた後に追加されます。
+   配列名/値のペアを明示的に指定するか、それらが格納された連想配列を指定します。
+   配列ではないテンプレート変数に対して追加した場合、
+   その変数を配列に変換した後で追加されます。 任意の第３パラメータに <TT
+CLASS="constant"
+>TRUE</TT
+>
+   が渡された場合は、値は現在のテンプレート配列に追加される代わりにマージされます。
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+  <TT
+CLASS="parameter"
+><I
+>merge</I
+></TT
+> パラメータは配列のキーを尊重するので、
+  インデックスが数値である２つの配列をマージする場合、
+  それらはお互い上書きされるか不連続なキーの配列になるかもしれません。
+  これは、数値のキーを全て削除した後に再びキーに番号付けを行う、PHP
+  の <A
+HREF="http://php.net/array_merge"
+TARGET="_top"
+><TT
+CLASS="varname"
+>array_merge()</TT
+></A
+>
+  関数とは違っています。
+ </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5506"
+></A
+><P
+><B
+>例 13-1. append</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;これは、事実上&nbsp;assign()&nbsp;と同じです<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append</span><span style="color: #007700">(</span><span style="color: #DD0000">'foo'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Fred'</span><span style="color: #007700">);<br /></span><span style="color: #FF8000">//&nbsp;これ以降、foo&nbsp;をテンプレート内で配列として使用することができます<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append</span><span style="color: #007700">(</span><span style="color: #DD0000">'foo'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Albert'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$array&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #0000BB">1&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'one'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">2&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'two'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append</span><span style="color: #007700">(</span><span style="color: #DD0000">'X'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$array</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$array2&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #0000BB">3&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'three'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">4&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'four'</span><span style="color: #007700">);<br /></span><span style="color: #FF8000">//&nbsp;配列&nbsp;X&nbsp;に２番目の要素を追加します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append</span><span style="color: #007700">(</span><span style="color: #DD0000">'X'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$array2</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;連想配列を渡します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append</span><span style="color: #007700">(array(</span><span style="color: #DD0000">'city'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Lincoln'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'state'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Nebraska'</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="api.append.by.ref.html"
+><TT
+CLASS="varname"
+>append_by_ref()</TT
+></A
+>、
+  <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>
+  および
+  <A
+HREF="api.get.template.vars.html"
+><TT
+CLASS="varname"
+>get_template_vars()</TT
+></A
+>
+  も参照してください。
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.append.by.ref.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Smarty クラスメソッド</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>append_by_ref()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

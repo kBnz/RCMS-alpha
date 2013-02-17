@@ -1,0 +1,343 @@
+<HTML
+><HEAD
+><TITLE
+>基本構文</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><LINK
+REL="PREVIOUS"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><LINK
+REL="NEXT"
+TITLE="変数"
+HREF="language.syntax.variables.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.syntax.variables.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="language.basic.syntax"
+></A
+>第 3章基本構文</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="language.basic.syntax.html#language.syntax.comments"
+>コメント</A
+></DT
+><DT
+><A
+HREF="language.syntax.variables.html"
+>変数</A
+></DT
+><DT
+><A
+HREF="language.syntax.functions.html"
+>関数</A
+></DT
+><DT
+><A
+HREF="language.syntax.attributes.html"
+>属性</A
+></DT
+><DT
+><A
+HREF="language.syntax.quotes.html"
+>ダブルクォート内に埋め込まれた変数</A
+></DT
+><DT
+><A
+HREF="language.math.html"
+>演算子</A
+></DT
+><DT
+><A
+HREF="language.escaping.html"
+>Smarty の構文解析を回避する</A
+></DT
+></DL
+></DIV
+><P
+>&#13;  全てのテンプレートタグはデリミタによって囲まれます。
+  デフォルトではデリミタは <TT
+CLASS="literal"
+>{</TT
+> と <TT
+CLASS="literal"
+>}</TT
+>
+  ですが、これは <A
+HREF="variable.left.delimiter.html"
+>変更可能</A
+> です。
+ </P
+><P
+>&#13;  このマニュアルで挙げる例ではデフォルトのデリミタを利用しています。
+  Smarty では、デリミタ外の内容は静的コンテンツとして表示されます。
+  Smarty がテンプレ ートタグを見つけると、その解釈を試みて適切な出力に置換します。
+ </P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.syntax.comments"
+></A
+>コメント</H1
+><P
+>&#13;  テンプレートのコメントはまずアスタリスクで囲まれ、次にそれを
+  <A
+HREF="variable.left.delimiter.html"
+>デリミタ</A
+>
+  タグで囲みます。このような形式になります。
+  </P
+><DIV
+CLASS="informalexample"
+><A
+NAME="AEN304"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* これはコメントです *}</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><P
+>&#13;  Smarty のコメントは、テンプレートの最終的な出力には表示されません。この点は
+  <TT
+CLASS="literal"
+>&#60;!-- HTML のコメント --&#62;</TT
+> とは異なります。
+  これは、テンプレート内での内部的なメモとして使用するのに便利です。
+  誰にもバレません ;-)
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN308"
+></A
+><P
+><B
+>例 3-1. テンプレート内のコメント</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* これは Smarty コメントです。コンパイルされた結果には登場しません。 *}
+&#60;html&#62;
+&#60;head&#62;
+&#60;title&#62;{$title}&#60;/title&#62;
+&#60;/head&#62;
+&#60;body&#62;
+
+{* 別の Smarty コメント *}
+&#60;!-- HTML コメント。これはブラウザに送信されます --&#62;
+
+{* この、複数行の
+   Smarty コメントは
+   ブラウザへは送信されません
+*}
+
+{*********************************************************
+クレジットブロックを含む複数行のコメント
+  @ author:         bg@example.com
+  @ maintainer:     support@example.com
+  @ para:           var that sets block style
+  @ css:            the style output
+**********************************************************}
+
+{* メインロゴなどを含むヘッダファイル *}
+{include file='header.tpl'}
+
+
+{* 開発メモ: 変数 $includeFile の値は foo.php で設定されています *}
+&#60;!-- 本体コンテンツブロックを表示します --&#62;
+{include file=$includeFile}
+
+{* この &#60;select&#62; ブロックは余分 *}
+{*
+&#60;select name="company"&#62;
+  {html_options options=$vals selected=$selected_id}
+&#60;/select&#62;
+*}
+
+&#60;!-- アフィリエイトのヘッダは無効にします --&#62;
+{* $affiliate|upper *}
+
+{* コメントを入れ子にすることはできません *}
+{*
+&#60;select name="company"&#62;
+  {* &#60;option value="0"&#62;-- none -- &#60;/option&#62; *}
+  {html_options options=$vals selected=$selected_id}
+&#60;/select&#62;
+*}
+
+
+{* テンプレート用の cvs タグ。以下の 36 はアメリカの通貨記号ですが、
+. cvs がこれを変換してしまいます…… *}
+{* &#38;#36;Id: Exp &#38;#36; *}
+{* $Id: *}
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.syntax.variables.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>テンプレートデザイナのための Smarty</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>変数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

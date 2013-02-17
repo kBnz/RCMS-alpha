@@ -1,0 +1,243 @@
+@charset "UTF-8";
+/* 全体の設定
+------------------------------------------------------------ */
+body {
+	/*
+		ウィンドウの余白(padding)を設定するときはこのbodyで行ってください。
+		containerで余白(margin)の設定をするとレイアウトが崩れます。
+	  paddingを設定する際はOperaのバグ対策のため最下行で指定してください。
+	*/
+	font-size: 12px !important;
+	color: #666666;
+	line-height: 140%;
+}
+
+
+
+/* レイアウト系の設定
+------------------------------------------------------------ */
+#container {
+	/*
+	containerでmarginやpaddingを指定するとレイアウトが崩れる場合があります。
+	containerでの指定はwidthのみとしてください。
+	widthを指定しない場合はメインコンテンツがブラウザウィンドウの伸縮に同期します。
+	*/
+	border-right: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+}
+#contents {
+	padding: 0px 10px;
+}
+#main_contents .module_body,
+#top_contents .module_body,
+#bottom_contents .module_body {
+	height:100%; /* IE対策 */
+}
+
+/* 三段組左メイン用の設定
+------------------------------------------------------------ */
+.layout7 #sub_module4 .module_body_rightbottom {
+	margin-right: 10px;
+}
+
+/* 二段組右メイン2用の設定
+------------------------------------------------------------ */
+.layout8 #main_module {
+	margin-right: 10px;
+}
+
+/* ナビの設定
+------------------------------------------------------------ */
+
+/* \\\\ */
+#navi ul.navi {
+	height: 1%;
+}
+#navi ul.navi:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+#navi {
+	margin-bottom: 5px;
+}
+#navi ul.navi {
+	background: url(/images/css/simple8/naviback02.gif);
+}
+#navi li.navi {
+	font-size: 14px;
+	list-style: none;
+	float:left;
+	height: 31px;
+	white-space: nowrap;
+}
+#navi li.navi a {
+	display: block;
+	padding: 6px 15px 4px 15px;
+	color: #666666;
+	font-weight: bold;
+	text-decoration: none;
+	border-right: 1px solid #cccccc;
+
+}
+#navi strong {
+	display: block;
+	background: url(/images/css/simple8/naviback01.gif) repeat-x;
+	color: #ffffff;
+	padding: 6px 15px 4px 15px;
+	border-right: 1px solid #cccccc;
+}
+#navi li.navi a:hover {
+	color: #8ED200;
+	text-decoration: underline;
+
+}
+
+/* フットパスの設定
+------------------------------------------------------------ */
+#footpath{
+	font-size: 10px;
+	margin: 0px 10px 10px 10px;
+}
+#footpath li.footpath{
+	float: left;
+	list-style-type: none;
+	padding: 3px;
+	margin-right: 2px;
+}
+#footpath li.footpath a {
+	display: block;
+}
+
+/* ヘッダーの設定
+------------------------------------------------------------ */
+.mng_line{}
+
+#header {
+	color: #8ED200;
+	padding: 10px 20px;
+}
+
+/* フッターの設定
+------------------------------------------------------------ */
+#footer {
+	margin-top: 15px;
+}
+#footer_contents {
+	border-top: 1px dotted #666666;
+	padding: 5px;
+	margin: 0px 10px;
+}
+#footer address {
+	font-style: normal;
+}
+#footer p {
+	text-align: right;
+}
+
+
+
+/* メインコンテンツの設定
+------------------------------------------------------------ */
+
+#main_contents .module_body_rightbottom{
+	margin-bottom: 30px;
+}
+
+#main_contents .module_title{
+
+	padding: 0px 10px 5px 10px;
+	margin-bottom: 10px;
+	color: #8ED200;
+	border-bottom: 1px dotted #8ED200;
+}
+
+/* トップコンテンツの設定
+------------------------------------------------------------ */
+#top_contents .module_body_rightbottom{
+	margin-bottom: 30px;
+}
+
+#top_contents .module_title{
+
+	padding: 0px 10px 5px 10px;
+	margin-bottom: 10px;
+	color: #8ED200;
+	border-bottom: 1px dotted #8ED200;
+}
+
+/* ボトムコンテンツの設定
+------------------------------------------------------------ */
+#bottom_contents .module_body_rightbottom{
+	margin-bottom: 30px;
+}
+
+#bottom_contents .module_title{
+
+	padding: 0px 10px 5px 10px;
+	margin-bottom: 10px;
+	color: #8ED200;
+	border-bottom: 1px dotted #8ED200;
+}
+
+
+/* サイドコンテンツ の設定
+------------------------------------------------------------ */
+#side_contents_right .module_contents,
+#side_contents_left .module_contents{
+	margin-bottom: 15px;
+	background-color: #f5f5f5;
+	padding: 8px;
+}
+
+#side_contents_right .module_title,
+#side_contents_left .module_title {
+	padding: 5px 10px;
+	color: #8ED200;
+	background-color: #F2FCD1;
+	border-bottom: 1px dotted #8ED200;
+}
+#side_contents_right li,
+#side_contents_left li {
+	margin-bottom: 5px;
+}
+
+/* モジュール内の細かい設定
+------------------------------------------------------------ */
+.relation_link {
+	text-align: right;
+	margin-top: 5px;
+}
+table.list  {
+	border: 1px solid #cccccc;
+	width: 100%;
+}
+table.list th {
+	background-color: #dddddd;
+	text-align: center;
+	padding: 3px;
+	border-bottom: 1px solid #cccccc;
+}
+table.list td {
+	padding: 3px;
+	border-bottom: 1px dotted #cccccc;
+}
+div.blog_contents,
+.topics_contents {
+	font-size:100% !important;
+}
+div.blog_item h4.subject {
+	font-size: 100%;
+	background-color: #F2FCD1;
+	border: none !important;
+	padding: 5px 10px !important;
+}
+.blog_detail .posting_ymdt {
+	margin-right: 10px;
+}
+.blog_contents {
+	margin: 0 10px;
+}

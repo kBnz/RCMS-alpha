@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+/*----------------------------------------------------------
+		印刷用
+------------------------------------------------------------ */
+
+@media print {
+
+	#mng_box,
+	#lightwindow_overlay,
+	#lightwindow {
+		display: none;
+	}
+
+	/*  カレンダー  */
+
+	div.calendar_list .calendar {
+		border-collapse: collapse;
+		border-bottom: none;
+		border-right: none;
+		background-color: #fff;
+	}
+
+	div.calendar_list .calendar .header th {
+		background-color: #fff;
+		border: 1px solid #333 !important;
+	}
+
+	div.calendar_list .calendar td {
+		border: 1px solid #333 !important;
+	}
+
+}
+

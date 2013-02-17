@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+------------------------------------------------------------ */
+body {
+	text-align:center;
+}
+
+.mng_line {
+	width:900px;
+	margin-left: auto;margin-right: auto;
+	text-align:left;
+}
+
+#container {
+	width:900px;
+	margin-left: auto;margin-right: auto;
+	text-align:left;
+}
+
+#header {
+}
+
+#navi {
+}
+
+#footpath {
+}
+
+#contents {
+}
+
+#top_contents {
+}
+
+#main_contents {
+	width:100%;
+	float:left;
+	margin-right:-385px; 
+}
+#main_module,
+#sub_module2 {
+	margin-right:392px;
+}
+#side_contents_right {
+	width:385px;
+	float:left;
+}
+#sub_module4 {
+	width:242px;
+	float:left;
+	margin-right:7px;
+}
+#sub_module5 {
+	width:135px;
+	float:left;
+}
+#bottom_contents {
+	width:100%;
+	clear: both;
+}
+
+#footer {
+	width:100%;
+	clear:both;
+}
+

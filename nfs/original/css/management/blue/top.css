@@ -1,0 +1,394 @@
+@charset "UTF-8";
+
+/* メニューのタブ
+------------------------------------------------------------ */
+.host {
+	height: 25px;
+	margin: 15px 0px 10px 0px;
+	border-bottom: 2px solid #1382B4;
+}
+.host h2 {
+	background: url(/images/management/blue/bg_rcms.gif) 0px -300px no-repeat;
+	font-size: 14px;
+	padding: 7px 5px 0px 42px;
+	margin-right: 10px;
+	width: 148px;
+	height: 18px;
+	float: left;
+}
+.host p.tab {
+	background: url(/images/management/blue/bg_rcms.gif) -148px -72px no-repeat;
+	font-size: 14px;
+	padding: 7px 5px 0px 20px;
+	width: 170px;
+	margin-right: 10px;
+	height: 18px;
+	float: left;
+}
+.host p.button {
+	text-align: right;
+}
+.host .rcms_link {
+	float: right;
+	margin: 2px 5px 0 0;
+}
+.host .rcms_link p {
+	background: url(/images/management/blue/bg_rcms.gif) -346px -72px no-repeat;
+	font-size: 10px;
+	padding: 3px 4px 3px 18px;
+}
+
+
+
+/* メインレイアウト（二段）
+------------------------------------------------------------ */
+
+#main  {
+	clear: both;
+}
+#main #left {
+	width: 520px;
+	margin-right: 20px;
+	float: left;
+	display: inline;
+}
+#main #right {
+	width: 240px;
+	float: left;
+}
+
+div#content h3 {
+	background: url(/images/management/blue/bg_rcms.gif) 0px -660px no-repeat;
+	color: #fff;
+	padding: 4px 0px 5px 5px;
+	font-weight:bold;
+	font-size: 12px;
+}
+
+#main .admin_memo ,
+#main #inquiry ,
+#main .menu ,
+#main .new_detail_comment,
+#main .new_detail_bbs,
+#main .new_detail_tb ,
+#main .mobile_qr ,
+#main .new ,
+#main .unauthorized ,
+#main .update ,
+#main .infomation,
+#main .use,
+#main .shortcut,
+#main .sitemap_easy,
+#main .widget,
+#main .access,
+#main .menu_often_use,
+#main .menu_used_recently
+ {
+	margin-top: 20px;
+}
+
+
+/* 管理メモ
+------------------------------------------------------------ */
+.admin_memo {
+	background:#C0DEED;
+}
+
+#admin_memo_area {
+	padding: 8px;
+	font-size:8pt;
+}
+#admin_memo_line {
+	text-align:right;
+	margin:5px;
+}
+.admin_memo textarea{margin:0 auto 8px 8px;}
+
+
+/* メニュー
+------------------------------------------------------------ */
+.menu .menu_list {
+	background: url(/images/management/menu_bg_top.gif) no-repeat;
+	margin-top: 8px;
+	padding: 3px 6px 0px 6px;
+}
+.menu .menu_list_bottom {
+	background: url(/images/management/menu_bg_bottom.gif) no-repeat left bottom;
+	padding: 0px 0px 3px 0px;
+}
+.menu table {
+	border-bottom: 1px dotted #666666;
+	width: 505px;
+}
+.menu table.last {
+	border: none;
+}
+.menu th {
+	background-color: #efefef;
+	width: 100px;
+	text-align: center;
+	padding: 3px 0px 3px 0px;
+}
+.menu td {
+	font-size: 10px;
+	padding-left: 10px;
+}
+.menu ul {
+	width: 400px;
+}
+.menu li {
+	background: url(/images/management/blue/bg_rcms.gif) -733px 2px no-repeat ;
+	padding: 0px 0px 0px 9px;
+	margin-right: 10px;
+	float: left;
+	white-space: nowrap;
+}
+
+div#content ul#mainnav li{
+	margin: 5px 5px 0px;
+}
+
+/* 新着詳細
+------------------------------------------------------------ */
+.new_detail_comment span {
+	margin-right: 7px;
+}
+.new_detail_bbs dl dt, .new_detail_tb dl dt {
+	float: left;
+	margin-right: 7px;
+}
+.new_detail_comment dl,
+.new_detail_bbs dl,
+.new_detail_tb dl {
+	font-size: 10px;
+	margin-top: 4px;
+}
+
+.new_detail_comment dl dd,
+.new_detail_bbs dl dd,
+.new_detail_tb dl dd {
+	border-bottom: 1px dotted #666666;
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+}
+
+
+
+/* 更新履歴
+------------------------------------------------------------ */
+.update .contents_menu {
+	background: url(/images/management/blue/bg_rcms.gif) -733px -12px no-repeat;
+	padding:	0px 15px ;
+	font-size: 10px;
+	float: right;
+	top: -3px;
+	right: 0px;
+}
+.update .rss {
+	float: right;
+}
+
+
+/* 右側ボックス背景
+------------------------------------------------------------ */
+.rightBox_top {
+	background: url(/images/management/rightBox_top.gif) no-repeat;
+	margin-top: 10px;
+}
+.rightBox_bottom {
+	background: url(/images/management/rightBox_bottom.gif) no-repeat left bottom;
+	padding: 10px;
+}
+
+/* お知らせ
+------------------------------------------------------------ */
+.infomation dl {
+	margin: 0px 5px 0px 0px;
+	font-size: 10px;
+}
+.infomation dt {
+	padding: 5px 0px 0px 5px;
+	float: left;
+	clear: both;
+}
+.infomation dd {
+	padding: 5px 0px 5px 35px;
+	border-bottom: 1px dotted #666666;
+}
+
+/* 利用状況
+------------------------------------------------------------ */
+.use {
+	background: url(/images/management/blue/bg_rcms.gif) 0px -330px no-repeat;
+	height: 30px;
+	margin-bottom: 10px;
+}
+.use dt {
+	float: left;
+	padding: 8px 10px 0 10px;
+}
+.use dd {
+	padding-top: 8px;
+}
+
+/* アクセス数
+------------------------------------------------------------ */
+div#content .access {
+	margin-bottom: 15px;
+	border: 1px solid #98CC66;
+}
+div#content .access div.title {
+	background: url(/images/management/blue/bg_rcms.gif) 0px -157px no-repeat;
+	font-size: 10px;
+	padding: 1px 0px 0px 7px;
+	height: 15px;
+}
+div#content .access div.title h3 {
+	background:none;
+	padding:0;
+	float: left;
+}
+.access p {
+	font-size: 10px;
+	float: right;
+	margin-right: 5px;
+}
+.access dl {
+	height: 20px;
+	margin-top: 5px;
+}
+.access dt {
+	float: left;
+	margin-left: 13px;
+}
+.access dl.traffic dt {
+	padding-top: 3px;
+}
+.access dl.traffic dd {
+	float: left;
+	color: #5FAF23;
+	font-weight: bold;
+	font-size: 18px;
+	padding-top: 2px;
+}
+.access dl.traffic dd span {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+
+
+/* 新着情報
+------------------------------------------------------------ */
+.new .new_list {
+	border-bottom: 1px dotted #666666;
+	padding-bottom: 4px;
+}
+.new .new_list .rss {
+	float: right;
+}
+.new .new_list li {
+	background: url(/images/management/arrow.gif) no-repeat 0px 3px;
+	font-size: 10px;
+	padding: 0px 10px 0px 17px;
+	float: left;
+}
+.new h4 {
+	clear: both;
+	font-size: 10px;
+	margin: 5px 0px 3px 0px;
+}
+.new h5 {
+	clear: both;
+	float: left;
+	margin-right: 5px;
+}
+
+.new ul.new_list2 li {
+	float: left;
+	font-size: 10px;
+	margin: 3px 5px 0px 0px;
+}
+*/
+
+/* スケジュール
+------------------------------------------------------------ */
+.schedule {
+	margin-top: 15px;
+}
+.schedule table {
+	width: 220px;
+}
+.schedule table caption {
+	font-size: 14px;
+	font-weight: bold;
+	color: #666666;
+}
+.schedule table th {
+	background-color: #e6e6e6;
+	text-align: center;
+	padding: 2px;
+	width: 25px;
+	font-weight: bold;
+	color: #666666;
+}
+.schedule table td {
+	text-align: center;
+	padding: 2px;
+}
+.schedule .event {
+	background-color: #E9F5FC;
+	padding: 4px 8px 4px 8px;
+	color: #666666;
+}
+.schedule .event p {
+	font-weight: bold;
+}
+.schedule .event li {
+	font-size: 10px;
+	list-style: disc;
+	margin-left: 20px;
+}
+
+
+/* PRスペース
+------------------------------------------------------------ */
+.pr {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+/* QRコード
+------------------------------------------------------------ */
+.mobile_qr {
+	text-align: center;
+}
+
+/* この画面で使うガジェットを設定
+------------------------------------------------------------ */
+#use_widget h3{
+	margin: 0 0 10px 0;
+}
+.use_widget_input{
+	margin: 10px 0 0 0;
+}
+
+#use_widget label{
+	padding: 0px!important;
+	margin:5px 10px 5px 0;
+}
+#use_widget label input{
+	margin-right:5px;
+}
+
+#use_widget label:hover {
+	background:#ffefcc;
+}
+
+/* サイト全体を把握しよう！サイトマップ
+------------------------------------------------------------ */
+.sitemap_easy ul {
+	zoom: 1;
+}
+

@@ -1,0 +1,330 @@
+<HTML
+><HEAD
+><TITLE
+>{ldelim},{rdelim}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{insert}"
+HREF="language.function.insert.html"><LINK
+REL="NEXT"
+TITLE="{literal}"
+HREF="language.function.literal.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.insert.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.literal.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.ldelim"
+></A
+>{ldelim},{rdelim}</H1
+><P
+>&#13;   <TT
+CLASS="varname"
+>{ldelim}</TT
+> および <TT
+CLASS="varname"
+>{rdelim}</TT
+>
+   は、テンプレートのデリミタを
+   <A
+HREF="language.escaping.html"
+>エスケープ</A
+> します。
+   デフォルトでは、これは <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>{</B
+></SPAN
+>
+   および <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>}</B
+></SPAN
+> となります。
+   Javascript や CSS のようなテキストのあつまりをエスケープするためには
+   <A
+HREF="language.function.literal.html"
+><TT
+CLASS="varname"
+>{literal}{/literal}</TT
+></A
+>
+   を使用することもできます。<A
+HREF="language.variables.smarty.html#language.variables.smarty.ldelim"
+><TT
+CLASS="parameter"
+><I
+>{$smarty.ldelim}</I
+></TT
+></A
+>
+   も参照してください。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2344"
+></A
+><P
+><B
+>例 7-23. {ldelim}, {rdelim}</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* これは、テンプレートからデリミタのリテラルを出力します *}
+
+{ldelim}funcname{rdelim} is how functions look in Smarty!</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    上の例の出力
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>{funcname} is how functions look in Smarty!</PRE
+></TD
+></TR
+></TABLE
+><P
+>Javascript を使用する別の例</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;script language="JavaScript"&#62;
+function foo() {ldelim}
+    ... コード ...
+{rdelim}
+&#60;/script&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   出力
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;script language="JavaScript"&#62;
+function foo() {
+    .... コード ...
+}
+&#60;/script&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2353"
+></A
+><P
+><B
+>例 7-24. 別の Javascript の例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;script language="JavaScript" type="text/javascript"&#62;
+    function myJsFunction(){ldelim}
+        alert("The server name\n{$smarty.server.SERVER_NAME}\n{$smarty.server.SERVER_ADDR}");
+    {rdelim}
+&#60;/script&#62;
+&#60;a href="javascript:myJsFunction()"&#62;Click here for Server Info&#60;/a&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.function.literal.html"
+><TT
+CLASS="varname"
+>{literal}</TT
+></A
+>
+  および <A
+HREF="language.escaping.html"
+>Smarty の構文解析を回避</A
+>
+  も参照してください。
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.insert.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.literal.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{insert}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{literal}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

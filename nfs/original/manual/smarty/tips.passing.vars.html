@@ -1,0 +1,300 @@
+<HTML
+><HEAD
+><TITLE
+>ヘッダテンプレートにタイトルの変数を渡す</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="ヒント & 裏ワザ"
+HREF="tips.html"><LINK
+REL="PREVIOUS"
+TITLE="変数のデフォルトの扱い"
+HREF="tips.default.var.handling.html"><LINK
+REL="NEXT"
+TITLE="日付"
+HREF="tips.dates.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tips.default.var.handling.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 18章ヒント &#38; 裏ワザ</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tips.dates.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="tips.passing.vars"
+></A
+>ヘッダテンプレートにタイトルの変数を渡す</H1
+><P
+>&#13;    テンプレートの大半が同じヘッダ及びフッタを使用する場合は、それらを単体のテンプレートに分割して
+    <A
+HREF="language.function.include.html"
+>&#13;    <TT
+CLASS="varname"
+>{include}</TT
+></A
+> するのが普通です。
+    しかしどのページから呼び出されたかによって、
+    そのヘッダに異なるタイトルを持たせる必要があるとすればどうなるでしょうか？
+    インクルードされる際に、タイトルを
+    <A
+HREF="language.syntax.attributes.html"
+>属性</A
+>
+    としてヘッダに渡す事ができます。 
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7700"
+></A
+><P
+><B
+>例 18-3. ヘッダテンプレートにタイトルの変数を渡す</B
+></P
+><P
+>&#13;    <TT
+CLASS="filename"
+>mainpage.tpl</TT
+> - メインページを描画する際に、
+    <SPAN
+CLASS="QUOTE"
+>"Main Page"</SPAN
+> というタイトルを
+    <TT
+CLASS="filename"
+>header.tpl</TT
+> に私、それをタイトルとして使用します。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{include file='header.tpl' title='Main Page'}
+{* ここにテンプレートの本体を記述します *}
+{include file='footer.tpl'}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <TT
+CLASS="filename"
+>archives.tpl</TT
+> - アーカイブページを描画する際には、
+    タイトルは <SPAN
+CLASS="QUOTE"
+>"Archives"</SPAN
+> となります。
+    この例では、ハードコーディングされた変数ではなく
+    <TT
+CLASS="filename"
+>archives_page.conf</TT
+>
+    から変数を取得していることに注意しましょう。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{config_load file='archive_page.conf'}
+
+{include file='header.tpl' title=#archivePageTitle#}
+{* ここにテンプレートの本体を記述します *}
+{include file='footer.tpl'}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <TT
+CLASS="filename"
+>header.tpl</TT
+> - <TT
+CLASS="literal"
+>$title</TT
+> 変数が設定されていない場合に、
+    <SPAN
+CLASS="QUOTE"
+>"Smarty News"</SPAN
+> と表示します。これは
+    <A
+HREF="language.modifier.default.html"
+><TT
+CLASS="varname"
+>default</TT
+></A
+>
+    修飾子を使用して実現しています。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;html&#62;
+&#60;head&#62;
+&#60;title&#62;{$title|default:'Smarty News'}&#60;/title&#62;
+&#60;/head&#62;
+&#60;body&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <TT
+CLASS="filename"
+>footer.tpl</TT
+>
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tips.default.var.handling.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tips.dates.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>変数のデフォルトの扱い</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tips.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>日付</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

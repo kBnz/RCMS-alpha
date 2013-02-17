@@ -1,0 +1,321 @@
+<HTML
+><HEAD
+><TITLE
+>{literal}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{ldelim},{rdelim}"
+HREF="language.function.ldelim.html"><LINK
+REL="NEXT"
+TITLE="{php}"
+HREF="language.function.php.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.ldelim.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.php.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.literal"
+></A
+>{literal}</H1
+><P
+>&#13;  <TT
+CLASS="varname"
+>{literal}</TT
+> タグに囲まれたデータのブロックは、
+  リテラルとして認識されます。これは一般的に、Javascript やスタイルシートなどで
+  中括弧がテンプレートの
+  <A
+HREF="variable.left.delimiter.html"
+>デリミタ</A
+>
+  として解釈されるとまずい場合に使用します。
+  <TT
+CLASS="varname"
+>{literal}{/literal}</TT
+> タブの内部は解釈されず、
+  そのままで表示されます。<TT
+CLASS="varname"
+>{literal}</TT
+>
+  ブロック内にテンプレートタグを含める必要がある場合は、代わりに
+  <A
+HREF="language.function.ldelim.html"
+><TT
+CLASS="varname"
+>{ldelim}{rdelim}</TT
+></A
+>
+  で個々のデリミタをエスケープしてください。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2369"
+></A
+><P
+><B
+>例 7-25. {literal} タグ</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{literal}
+&#60;script type="text/javascript"&#62;
+&#60;!--
+  function isblank(field) {
+    if (field.value == '')
+      { return false; }
+    else
+      {
+      document.loginform.submit();
+      return true;
+    }
+  }
+// --&#62;
+&#60;/script&#62;
+{/literal}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2372"
+></A
+><P
+><B
+>例 7-26. Javascript の関数の例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;script language="JavaScript" type="text/javascript"&#62;
+{literal}
+function myJsFunction(name, ip){
+   alert("The server name\n" + name + "\n" + ip);
+}
+{/literal}
+&#60;/script&#62;
+&#60;a href="javascript:myJsFunction('{$smarty.server.SERVER_NAME}','{$smarty.server.SERVER_ADDR}')"&#62;Click here for the Server Info&#60;/a&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2375"
+></A
+><P
+><B
+>例 7-27. テンプレート内での css style</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* included this style .. as an experiment *}
+&#60;style type="text/css"&#62;
+{literal}
+/* this is an intersting idea for this section */
+.madIdea{
+    border: 3px outset #ffffff;
+    margin: 2 3 4 5px;
+    background-color: #001122;
+}
+{/literal}
+&#60;/style&#62;
+&#60;div class="madIdea"&#62;With smarty you can embed CSS in the template&#60;/div&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.function.ldelim.html"
+><TT
+CLASS="varname"
+>{ldelim} {rdelim}</TT
+></A
+>
+  および
+  <A
+HREF="language.escaping.html"
+>Smarty の構文解析を回避</A
+>
+  のページも参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.ldelim.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.php.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{ldelim},{rdelim}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{php}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

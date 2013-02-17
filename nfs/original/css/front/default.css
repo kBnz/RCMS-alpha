@@ -1,0 +1,148 @@
+@charset "UTF-8";
+
+/* 基本設定
+------------------------------------------------------------ */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+h1 {font-size: 140%;}
+h2 {font-size: 120%;}
+h3 {font-size: 110%;}
+h4 {font-size: 100%;}
+BLOCKQUOTE {padding: 10px 20px;}
+
+ul,ol,dl {
+	list-style-position: inside;
+}
+
+.small_text {font-size: 80%;}
+
+table {
+
+	border-collapse: collapse;
+}
+.clr {clear:both;}
+img { border-width: 0px; }
+
+/* ヘッダーの設定
+------------------------------------------------------------ */
+.mng_line{
+	font-size: 80%;
+	background-color:#ffffff;
+}
+
+#control_panel{
+	overflow:hidden;
+	height:0px;
+	background-color:#ffffff;
+	color:#000000;
+}
+#control_panel a:link,
+#control_panel a:visited{
+	color:#0033CC;
+}
+#control_panel a:hover{
+	color:#FF3300;
+}
+
+/* ------メッセージ表示部分------ */
+.msgtable {background-color: #DDDDFF; border: solid 2px #3333FF; margin:5px;}
+.errtable {background-color: #FFDDDD; border: solid 2px #FF3333; margin:5px;}
+.errmsg {color: #CC0000;}
+/* ------メッセージ表示部分------ */
+
+/* ------ エラー画面 ------*/
+div#page_auth_view,
+div#page_message,
+div#page_notfound,
+div#page_timeout,
+div#page_sys_err{
+	padding: 50px 50px;
+	text-align: center;
+}
+div#page_auth_view .link,
+div#page_timeout .link,
+div#page_message .link,
+div#page_notfound .link,
+div#page_sys_err .link{
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+/* ------検索結果表示部分------ */
+
+div.searchItem
+{
+		margin-bottom: 10px;
+		padding-bottom: 20px;
+		border-bottom-width: 1px;
+		border-bottom-style: dashed;
+		border-bottom-color: rgb(204, 204, 204);
+}
+
+.searchItem .digest
+{
+	font-size: 80%;
+}
+
+.searchItem .digest .searchWord0 {
+	background-color: #FFFF99;
+	font-weight: bold;
+}
+
+.searchItem .digest .searchWord1 {
+	background-color: #FF99FF;
+	font-weight: bold;
+}
+
+.searchItem .digest .searchWord2 {
+	background-color: #9999FF;
+	font-weight: bold;
+}
+
+.searchItem .addLink {
+		font-size:80%;
+		float:right;
+}
+
+.searchItem .title {
+		font-size:110%;
+}
+
+/* ------検索結果表示部分------ */
+
+/* ------ preview ------ */
+div.preview_box {position:absolute;left:0px;top:0px;width:300px;height:50px;z-index:1;background-color:#eeeeee;}
+/* ------ //preview ---- */
+
+
+/*
+ float clear
+-------------------------------------------------------------------------*/
+.clearFix:after{
+	content:".";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}
+.clearFix{
+	display:inline-table;
+	min-height:1%;
+}
+/* \*/
+html .clearFix{
+	* height:1%;
+}
+.clearFix{
+	display:block;
+}
+/* */
+
+
+body {
+		font-family:"ＭＳ Ｐゴシック", Osaka, Arial, Helvetica, sans-serif;
+}
+

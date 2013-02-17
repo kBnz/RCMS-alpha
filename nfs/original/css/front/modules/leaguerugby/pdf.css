@@ -1,0 +1,82 @@
+body{
+	background:#ccc;
+	font-size:80%;
+	width:750px;
+	margin: 0 auto;
+}
+
+td{
+	font-size:80%;
+	background:#fff;
+}
+tr{
+	background:#fff;
+}
+td.team{
+	background:#FFCC00;
+	height:20px;
+	padding-top:3px;
+	font-weight:bold;
+	text-align:center;
+}
+td.point{
+	background:#FF3333;
+	height:20px;
+	padding-top:3px;
+	font-weight:bold;
+	text-align:center;
+}
+td.point2{
+	font-size:130%;
+	font-weight:bold;
+}
+td.point3{
+	font-size:200%;
+	font-weight:bold;
+}
+table.main{
+	width:750px;
+}
+td.title{
+	text-align:center;
+	font-size:90%;
+	font-weight:bold;
+}
+.date{
+	text-align:right;
+}
+td.logo{
+	 width:100px;
+}
+.txt_1{
+	background:#ccc;
+	width:20%;
+}
+.txt_2{
+	background:#ccc;
+	width:35%;
+}
+.txt_3{
+	background:#ccc;
+	font-weight:bold;
+}
+.txt_4{
+	text-align:center;
+	font-weight:bold;
+}
+.txt_5{
+	font-weight:bold;
+}
+.txt_6{
+	font-weight:bold;
+	text-align:right;
+}
+td.glay{
+	background:#ccc;
+	text-align:center;
+}
+td.no{
+	background:#E3E3E3;
+	text-align:center;
+}
+.list2{	text-align:center;}

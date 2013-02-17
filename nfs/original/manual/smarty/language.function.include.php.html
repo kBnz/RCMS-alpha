@@ -1,0 +1,511 @@
+<HTML
+><HEAD
+><TITLE
+>{include_php}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{include}"
+HREF="language.function.include.html"><LINK
+REL="NEXT"
+TITLE="{insert}"
+HREF="language.function.insert.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.include.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.insert.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.include.php"
+></A
+>{include_php}</H1
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+    <TT
+CLASS="varname"
+>{include_php}</TT
+> は Smarty ではほとんど推奨されていません。
+    カスタムテンプレート関数を使用すれば、同等の機能を実現できます。
+    <TT
+CLASS="varname"
+>{include_php}</TT
+> を使用する理由がもしあるとすれば、
+    <A
+HREF="variable.plugins.dir.html"
+><TT
+CLASS="filename"
+>plugins/</TT
+></A
+>
+    ディレクトリやアプリケーションのコードから PHP 関数を完全に隔離したい場合などです。
+    詳細は <A
+HREF="tips.componentized.templates.html"
+>コンポーネント化したテンプレートの例
+    </A
+> を参照してください。
+   </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN2171"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>file</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インクルードする PHP ファイル名</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>once</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>boolean</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+><TT
+CLASS="constant"
+>TRUE</TT
+></I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>同じ PHP ファイルが複数回インクルードされた場合に、一度だけインクルードするかどうか</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>assign</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>include_php の出力を格納する変数名</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>&#13;  <TT
+CLASS="varname"
+>{include_php}</TT
+> タグを使用して、PHP スクリプトをテンプレートにインクルードします。
+  <A
+HREF="variable.security.html"
+><TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+></A
+>
+  が有効な場合は、PHP スクリプトは <A
+HREF="variable.trusted.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$trusted_dir</I
+></TT
+></A
+>
+  で指定されたディレクトリに存在する必要があります。<TT
+CLASS="varname"
+>{include_php}</TT
+>
+  タグには <TT
+CLASS="parameter"
+><I
+>file</I
+></TT
+> 属性が必須で、
+  ここにはインクルードする PHP ファイルへのパスを指定します。
+  このパスは <A
+HREF="variable.trusted.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$trusted_dir</I
+></TT
+></A
+>
+  からの相対パスか絶対パスのいずれかとなります。
+ </P
+><P
+>&#13;  デフォルトでは、PHPファイルはテンプレート内で複数回呼ばれても一度しかインクルードしません。
+  <TT
+CLASS="parameter"
+><I
+>once</I
+></TT
+> 属性によって毎回インクルードするべきかどうかを指定できます。
+  この属性を <TT
+CLASS="constant"
+>FALSE</TT
+> に設定すると、テンプレート内でインクルードの指示がある毎に
+  PHP スクリプトをインクルードします。
+ </P
+><P
+>&#13;  オプションで <TT
+CLASS="parameter"
+><I
+>assign</I
+></TT
+> 属性を渡すこともできます。
+  これは、<TT
+CLASS="varname"
+>{include_php}</TT
+> の出力をブラウザに表示させる代わりに
+  変数に格納したい場合に、その変数名を指定します。
+ </P
+><P
+>&#13;  Smarty オブジェクトは、インクルードした PHP スクリプト内で
+  <TT
+CLASS="parameter"
+><I
+>$this</I
+></TT
+> として使用可能です。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2226"
+></A
+><P
+><B
+>例 7-21. {include_php} 関数</B
+></P
+><P
+><TT
+CLASS="filename"
+>load_nav.php</TT
+> ファイル</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;mysql&nbsp;データベースから変数の値を読み込み、それをテンプレートに割り当てます<br /></span><span style="color: #007700">require_once(</span><span style="color: #DD0000">'database.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$db&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Db</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">$db</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">query</span><span style="color: #007700">(</span><span style="color: #DD0000">'select&nbsp;url,&nbsp;name&nbsp;from&nbsp;navigation&nbsp;order&nbsp;by&nbsp;name'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'navigation'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$db</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">getRows</span><span style="color: #007700">());<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;   テンプレート
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* 絶対パス、あるいは $trusted_dir からの相対パスか *}
+{include_php file='/path/to/load_nav.php'}
+
+{foreach item='nav' from=$navigation}
+  &#60;a href="{$nav.url}"&#62;{$nav.name}&#60;/a&#62;&#60;br /&#62;
+{/foreach}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.function.include.html"
+><TT
+CLASS="varname"
+>{include}</TT
+></A
+>、
+  <A
+HREF="variable.security.html"
+><TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+></A
+>、
+<A
+HREF="variable.trusted.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$trusted_dir</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.php.html"
+><TT
+CLASS="varname"
+>{php}</TT
+></A
+>、<A
+HREF="language.builtin.functions.html#language.function.capture"
+><TT
+CLASS="varname"
+>{capture}</TT
+></A
+>、<A
+HREF="template.resources.html"
+>テンプレートリソース</A
+> および <A
+HREF="tips.componentized.templates.html"
+>コンポーネント化したテンプレート</A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.include.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.insert.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{include}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{insert}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

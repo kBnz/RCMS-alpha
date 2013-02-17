@@ -1,0 +1,230 @@
+<HTML
+><HEAD
+><TITLE
+>アウトプットフィルタプラグイン</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><LINK
+REL="PREVIOUS"
+TITLE="プリフィルタ/ポストフィルタプラグイン"
+HREF="plugins.prefilters.postfilters.html"><LINK
+REL="NEXT"
+TITLE="リソースプラグイン"
+HREF="plugins.resources.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="plugins.prefilters.postfilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 16章プラグインによる Smarty の拡張</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.resources.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="plugins.outputfilters"
+></A
+>アウトプットフィルタプラグイン</H1
+><P
+>&#13;     アウトプットフィルタプラグインは、テンプレートが読み込まれて実行された後
+     (しかしその出力が表示される前)にテンプレートの出力を操作します。
+    </P
+><DIV
+CLASS="funcsynopsis"
+><A
+NAME="AEN7461"
+></A
+><P
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>string <B
+CLASS="function"
+>smarty_outputfilter_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+></B
+></CODE
+> (string $template_output, object &#38;$smarty)</CODE
+></P
+><P
+></P
+></DIV
+><P
+>&#13;     アウトプットフィルタの第１パラメータは、処理を行うテンプレート出力です。
+     第２パラメータは、プラグインを呼び出したSmartyのインスタンスです。
+     このプラグインは戻り値に、修正されたテンプレート出力を返すようにして下さい。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7471"
+></A
+><P
+><B
+>例 16-9. アウトプットフィルタプラグイン</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">/*<br />&nbsp;*&nbsp;Smarty&nbsp;plugin<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*&nbsp;File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outputfilter.protect_email.php<br />&nbsp;*&nbsp;Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outputfilter<br />&nbsp;*&nbsp;Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protect_email<br />&nbsp;*&nbsp;Purpose:&nbsp;&nbsp;email&nbsp;アドレスの&nbsp;@&nbsp;を&nbsp;%40&nbsp;に変換し、<br />&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;スパムボットからほんの少しだけ保護する<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*/<br />&nbsp;</span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">smarty_outputfilter_protect_email</span><span style="color: #007700">(</span><span style="color: #0000BB">$output</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'!(\S+)@([a-zA-Z0-9\.\-]+\.([a-zA-Z]{2,3}|[0-9]{1,3}))!'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'$1%40$2'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$output</span><span style="color: #007700">);<br />&nbsp;}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;     <A
+HREF="api.register.outputfilter.html"
+>&#13;     <TT
+CLASS="varname"
+>register_outputfilter()</TT
+></A
+>
+     および
+     <A
+HREF="api.unregister.outputfilter.html"
+>&#13;     <TT
+CLASS="varname"
+>unregister_outputfilter()</TT
+></A
+>
+     も参照してください。
+     </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plugins.prefilters.postfilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.resources.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>プリフィルタ/ポストフィルタプラグイン</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>リソースプラグイン</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

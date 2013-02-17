@@ -1,0 +1,324 @@
+<HTML
+><HEAD
+><TITLE
+>設定ファイルから読み込まれた変数</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="変数"
+HREF="language.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="変数"
+HREF="language.variables.html"><LINK
+REL="NEXT"
+TITLE="予約変数 {$smarty}"
+HREF="language.variables.smarty.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.variables.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 4章変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.variables.smarty.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.config.variables"
+></A
+>設定ファイルから読み込まれた変数</H1
+><P
+>&#13; <A
+HREF="config.files.html"
+>設定ファイル</A
+>
+ から読み込まれた変数を参照するには、それをハッシュマーク (<TT
+CLASS="literal"
+>#</TT
+>)
+ で囲むか、あるいは Smarty 変数 <A
+HREF="language.variables.smarty.html#language.variables.smarty.config"
+>&#13; <TT
+CLASS="parameter"
+><I
+>$smarty.config</I
+></TT
+></A
+> を使用します。
+  ２つ目の方法は、クォートされた属性値の中に含める場合に便利です。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN514"
+></A
+><P
+><B
+>例 4-6. 設定ファイルの変数</B
+></P
+><P
+>&#13;     サンプルの設定ファイル - <TT
+CLASS="filename"
+>foo.conf</TT
+>:
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>pageTitle = "This is mine"
+bodyBgColor = '#eeeeee'
+tableBorderSize = 3
+tableBgColor = "#bbbbbb"
+rowBgColor = "#cccccc"</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;     <TT
+CLASS="parameter"
+><I
+>#hash#</I
+></TT
+> 方式のテンプレート
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{config_load file='foo.conf'}
+&#60;html&#62;
+&#60;title&#62;{#pageTitle#}&#60;/title&#62;
+&#60;body bgcolor="{#bodyBgColor#}"&#62;
+&#60;table border="{#tableBorderSize#}" bgcolor="{#tableBgColor#}"&#62;
+&#60;tr bgcolor="{#rowBgColor#}"&#62;
+    &#60;td&#62;First&#60;/td&#62;
+    &#60;td&#62;Last&#60;/td&#62;
+    &#60;td&#62;Address&#60;/td&#62;
+&#60;/tr&#62;
+&#60;/table&#62;
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;     <A
+HREF="language.variables.smarty.html#language.variables.smarty.config"
+>&#13;     <TT
+CLASS="parameter"
+><I
+>$smarty.config</I
+></TT
+></A
+> 方式のテンプレート
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{config_load file='foo.conf'}
+&#60;html&#62;
+&#60;title&#62;{$smarty.config.pageTitle}&#60;/title&#62;
+&#60;body bgcolor="{$smarty.config.bodyBgColor}"&#62;
+&#60;table border="{$smarty.config.tableBorderSize}" bgcolor="{$smarty.config.tableBgColor}"&#62;
+&#60;tr bgcolor="{$smarty.config.rowBgColor}"&#62;
+    &#60;td&#62;First&#60;/td&#62;
+    &#60;td&#62;Last&#60;/td&#62;
+    &#60;td&#62;Address&#60;/td&#62;
+&#60;/tr&#62;
+&#60;/table&#62;
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;     どちらの場合も出力は同じです。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;html&#62;
+&#60;title&#62;This is mine&#60;/title&#62;
+&#60;body bgcolor="#eeeeee"&#62;
+&#60;table border="3" bgcolor="#bbbbbb"&#62;
+&#60;tr bgcolor="#cccccc"&#62;
+	&#60;td&#62;First&#60;/td&#62;
+	&#60;td&#62;Last&#60;/td&#62;
+	&#60;td&#62;Address&#60;/td&#62;
+&#60;/tr&#62;
+&#60;/table&#62;
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  変数は、設定ファイルから読み込まれるまで使用できません。
+  詳細は、後ほど
+  <A
+HREF="language.function.config.load.html"
+>&#13;  <TT
+CLASS="varname"
+>{config_load}</TT
+></A
+>
+  の項で説明します。
+</P
+><P
+>&#13;  <A
+HREF="language.syntax.variables.html"
+>変数</A
+> および
+  <A
+HREF="language.variables.smarty.html"
+>予約変数
+  $smarty</A
+> も参照してください。
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.variables.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.variables.smarty.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>変数</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>予約変数 {$smarty}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

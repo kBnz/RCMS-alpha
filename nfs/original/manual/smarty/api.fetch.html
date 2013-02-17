@@ -1,0 +1,421 @@
+<HTML
+><HEAD
+><TITLE
+>fetch()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="display()"
+HREF="api.display.html"><LINK
+REL="NEXT"
+TITLE="get_config_vars()"
+HREF="api.get.config.vars.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.display.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.get.config.vars.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.fetch"
+></A
+>fetch()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN5906"
+></A
+>fetch()&nbsp;--&nbsp;テンプレートの出力を返します。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN5909"
+></A
+><H2
+>説明</H2
+>string <B
+CLASS="methodname"
+>fetch</B
+> ( string template [, string cache_id [, string $compile_id]])<BR
+></BR
+><P
+>&#13;   これは、テンプレートを
+   <A
+HREF="api.display.html"
+>表示する</A
+>
+   のではなくその出力を返します。第１パラメータには、有効な
+   <A
+HREF="template.resources.html"
+>テンプレートリソース</A
+>
+   の種類を含んだパスを指定する事ができます。任意の第２パラメータには
+   <TT
+CLASS="parameter"
+><I
+>キャッシュID</I
+></TT
+> を渡す事ができます。
+   詳細は、<A
+HREF="caching.html"
+>キャッシュの項目</A
+> を参照してください。
+  </P
+><P
+>&#13; 任意の第３パラメータとして <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+>
+ を渡すことができます。
+ 異なる言語でコンパイルされた別々のテンプレートが存在するような、
+ 同じテンプレートの異なるバージョンをコンパイルしたい場合に利用します。
+ <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> の別の利用法としては、複数の
+ <A
+HREF="api.variables.html#variable.template.dir"
+><TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+>
+ を持っているが
+ <A
+HREF="variable.compile.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$compile_dir</I
+></TT
+></A
+>
+ は１つしかない場合などがあります。各
+ <A
+HREF="api.variables.html#variable.template.dir"
+><TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+>
+ に別々の <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> をセットしなければ、
+ 同名のテンプレートはお互いに上書きされてしまいます。
+ この関数をコールする度に compile_id を渡す代わりに、一度
+ <A
+HREF="variable.compile.id.html"
+>&#13; <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+></A
+> 変数をセットすることもできます。
+</P
+><P
+>&#13;   <TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5941"
+></A
+><P
+><B
+>例 13-1. fetch()</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">include(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br /><br /></span><span style="color: #FF8000">//&nbsp;キャッシュが存在しない場合はデータベースを呼び出します<br /></span><span style="color: #007700">if(!</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">is_cached</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">))&nbsp;{<br /><br />&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;ダミーデータを用意<br />&nbsp;&nbsp;</span><span style="color: #0000BB">$address&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'245&nbsp;N&nbsp;50th'</span><span style="color: #007700">;<br />&nbsp;&nbsp;</span><span style="color: #0000BB">$db_data&nbsp;</span><span style="color: #007700">=&nbsp;array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'City'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Lincoln'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'State'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Nebraska'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'Zip'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'68502'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">);<br /><br />&nbsp;&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'Name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Fred'</span><span style="color: #007700">);<br />&nbsp;&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'Address'</span><span style="color: #007700">,</span><span style="color: #0000BB">$address</span><span style="color: #007700">);<br />&nbsp;&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">$db_data</span><span style="color: #007700">);<br /><br />}<br /><br /></span><span style="color: #FF8000">//&nbsp;出力を取り込みます<br /></span><span style="color: #0000BB">$output&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">fetch</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;ここで$outputについて何かの処理を行います<br /></span><span style="color: #007700">echo&nbsp;</span><span style="color: #0000BB">$output</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+>
+  </P
+><P
+>&#13;   <TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5945"
+></A
+><P
+><B
+>例 13-2. Email の送信に fetch() を使用する</B
+></P
+><P
+>&#13;     <TT
+CLASS="filename"
+>email_body.tpl</TT
+> テンプレート
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>Dear {$contact.name},
+
+Welcome and thankyou for signing up as a member of our user group,
+
+Click on the link below to login with your user name of '{$contact.login_id}'
+so you can post in our forums.
+
+http://{$smarty.server.SERVER_NAME}/login/
+
+List master
+Some user group
+
+{include file='email_disclaimer.tpl'}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;     <A
+HREF="language.function.textformat.html"
+>&#13;     <TT
+CLASS="varname"
+>{textformat}</TT
+></A
+> 修飾子を用いた
+     <TT
+CLASS="filename"
+>email_disclaimer.tpl</TT
+>
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{textformat wrap=40}
+Unless you are named "{$contact.name}", you may read only the "odd numbered
+words" (every other word beginning with the first) of the message above. If you have
+violated that, then you hereby owe the sender 10 GBP for each even
+numbered word you have read
+{/textformat}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;     PHP の
+     <A
+HREF="http://php.net/function.mail"
+TARGET="_top"
+>&#13;     <TT
+CLASS="varname"
+>mail()</TT
+></A
+> 関数を用いたPHPスクリプト
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;pear&nbsp;や&nbsp;adodb&nbsp;などを使用して、データベースから連絡先を取得します<br /></span><span style="color: #0000BB">$query&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'select&nbsp;name,&nbsp;email,&nbsp;login_id&nbsp;from&nbsp;contacts&nbsp;where&nbsp;contact_id='</span><span style="color: #007700">.</span><span style="color: #0000BB">$contact_id</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$contact&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$db</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">getRow</span><span style="color: #007700">(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'contact'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$contact</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">mail</span><span style="color: #007700">(</span><span style="color: #0000BB">$contact</span><span style="color: #007700">[</span><span style="color: #DD0000">'email'</span><span style="color: #007700">],&nbsp;</span><span style="color: #DD0000">'Subject'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">fetch</span><span style="color: #007700">(</span><span style="color: #DD0000">'email_body.tpl'</span><span style="color: #007700">));<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+>
+  </P
+><P
+>&#13;   <A
+HREF="language.function.fetch.html"
+><TT
+CLASS="varname"
+>{fetch}</TT
+></A
+>、
+   <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>、
+   <A
+HREF="language.function.eval.html"
+><TT
+CLASS="varname"
+>{eval}</TT
+></A
+>、
+   および
+   <A
+HREF="api.template.exists.html"
+><TT
+CLASS="varname"
+>template_exists()</TT
+></A
+>
+   も参照してください。
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.display.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.get.config.vars.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>display()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>get_config_vars()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

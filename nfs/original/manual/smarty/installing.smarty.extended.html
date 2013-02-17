@@ -1,0 +1,265 @@
+<HTML
+><HEAD
+><TITLE
+>拡張セットアップ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="インストール"
+HREF="installation.html"><LINK
+REL="PREVIOUS"
+TITLE="基本的なインストール"
+HREF="installing.smarty.basic.html"><LINK
+REL="NEXT"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="installing.smarty.basic.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 2章インストール</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="installing.smarty.extended"
+></A
+>拡張セットアップ</H1
+><P
+>&#13;    これは、<A
+HREF="installing.smarty.basic.html"
+>基本的なインストール</A
+>
+    の続きです。まず先にこちらから読んで下さい！
+   </P
+><P
+>&#13;    Smarty をより柔軟にするセットアップ方法は、
+    <A
+HREF="http://php.net/ref.classobj"
+TARGET="_top"
+>クラスを拡張</A
+>
+    してあなたの Smarty の環境を初期化する事です。
+    ディレクトリパスの設定を同じ変数に何度も割り当てる代わりに、一箇所でそれらを行う事が出来ます。
+    </P
+><P
+>&#13;    新しいディレクトリ<TT
+CLASS="filename"
+>/php/includes/guestbook/</TT
+>
+     を作成し、<TT
+CLASS="filename"
+>setup.php</TT
+> という新しいファイルを作成しましょう。
+     この例の環境では <TT
+CLASS="filename"
+>/php/includes</TT
+>
+     が <TT
+CLASS="literal"
+>include_path</TT
+> です。
+     例と同じようにするか、あるいは絶対パスを使用して下さい。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN280"
+></A
+><P
+><B
+>例 2-10. /php/includes/guestbook/setup.php</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;Smartyライブラリを読み込みます<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;setup.phpはアプリケーションに必要なライブラリファイルを<br />//&nbsp;読み込むのに適した場所です。それをここで行うことができます。例:<br />//&nbsp;require('guestbook/guestbook.lib.php');<br /><br /></span><span style="color: #007700">class&nbsp;</span><span style="color: #0000BB">Smarty_GuestBook&nbsp;</span><span style="color: #007700">extends&nbsp;</span><span style="color: #0000BB">Smarty&nbsp;</span><span style="color: #007700">{<br /><br />&nbsp;&nbsp;&nbsp;function&nbsp;</span><span style="color: #0000BB">Smarty_GuestBook</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;{<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;クラスのコンストラクタ。<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;これらは新しいインスタンスで自動的にセットされます。<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">template_dir&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/templates/'</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">compile_dir&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/templates_c/'</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">config_dir&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/configs/'</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">cache_dir&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/web/www.example.com/guestbook/cache/'</span><span style="color: #007700">;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'app_name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Guest&nbsp;Book'</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;}<br /><br />}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   では、<TT
+CLASS="filename"
+>index.php</TT
+> ファイルを修正し、
+   <TT
+CLASS="filename"
+>setup.php</TT
+> を使うようにしてみましょう。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN286"
+></A
+><P
+><B
+>例 2-11. /web/www.example.com/guestbook/htdocs/index.php</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'guestbook/setup.php'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty_GuestBook</span><span style="color: #007700">();<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Ned'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   このように、アプリケーションのために全てを自動的に初期化する
+   <TT
+CLASS="literal"
+>Smarty_GuestBook()</TT
+>
+   クラスを使う事で、Smarty のインスタンスをとても簡単に作成することができました。 
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installing.smarty.basic.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>基本的なインストール</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>テンプレートデザイナのための Smarty</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

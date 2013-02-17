@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xml:lang="ja" xmlns="http://purl.org/rss/1.0/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <channel rdf:about="http://cms.diverta.co.jp">
+        <title>早稲田大学ラグビー蹴球部 更新履歴</title>
+        <link>http://cms.diverta.co.jp/management/</link>
+        <description>更新履歴の一覧です。</description>
+        <dc:language>ja</dc:language>
+        <dc:date>2006-03-27T13:16:48+09:00</dc:date>
+        <items>
+            <rdf:Seq>
+                <rdf:li rdf:resource="http://cms.diverta.co.jp/management/?mt=member&amp;ct=member_edit&amp;member_id=2588" />
+                <rdf:li rdf:resource="http://cms.diverta.co.jp/management/?mt=member&amp;ct=member_edit&amp;member_id=2587" />
+            </rdf:Seq>
+        </items>
+    </channel>
+    <item rdf:about="http://cms.diverta.co.jp/management/?mt=member&amp;ct=member_edit&amp;member_id=2588">
+        <title>伊東 英俊[メンバー]を新規追加</title>
+        <link>http://cms.diverta.co.jp/management/?mt=member&amp;ct=member_edit&amp;member_id=2588</link>
+        <dc:date>2006-03-27T13:16:48.061714+09:00</dc:date>
+        <dc:creator>非ログインメンバー</dc:creator>
+    </item>
+    <item rdf:about="http://cms.diverta.co.jp/management/?mt=member&amp;ct=member_edit&amp;member_id=2587">
+        <title>加藤 健太[メンバー]を新規追加</title>
+        <link>http://cms.diverta.co.jp/management/?mt=member&amp;ct=member_edit&amp;member_id=2587</link>
+        <dc:date>2006-03-24T11:15:40.727569+09:00</dc:date>
+        <dc:creator>非ログインメンバー</dc:creator>
+    </item>
+</rdf:RDF>

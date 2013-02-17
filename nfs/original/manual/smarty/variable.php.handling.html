@@ -1,0 +1,217 @@
+<HTML
+><HEAD
+><TITLE
+>$php_handling</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$default_template_handler_func"
+HREF="variable.default.template.handler.func.html"><LINK
+REL="NEXT"
+TITLE="$security"
+HREF="variable.security.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.default.template.handler.func.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.security.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.php.handling"
+></A
+>$php_handling</H1
+><P
+>&#13;       テンプレートに埋め込まれた PHP コードの扱いを設定します。
+       これには４つの設定があり、デフォルトは
+       <TT
+CLASS="constant"
+>SMARTY_PHP_PASSTHRU</TT
+> です。
+       テンプレート内の <A
+HREF="language.function.php.html"
+>&#13;       <TT
+CLASS="varname"
+>{php}{/php}</TT
+></A
+> 
+       タグで囲まれたPHPコードには影響を及ぼさない事に注意して下さい。
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;       <TT
+CLASS="constant"
+>SMARTY_PHP_PASSTHRU</TT
+> - PHPコードを実行せずにそのまま出力します。
+       </P
+></LI
+><LI
+><P
+>&#13;       <TT
+CLASS="constant"
+>SMARTY_PHP_QUOTE</TT
+> - PHPコードをHTMLエンティティとして表示します。
+         </P
+></LI
+><LI
+><P
+>&#13;       <TT
+CLASS="constant"
+>SMARTY_PHP_REMOVE</TT
+> - PHPコードをテンプレートから除去します。
+         </P
+></LI
+><LI
+><P
+>&#13;       <TT
+CLASS="constant"
+>SMARTY_PHP_ALLOW</TT
+> - PHPコードを実行します。
+         </P
+></LI
+></UL
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+        テンプレート内にPHPコードを埋め込む事は、とにかく避けるべきです。 代わりに、
+        <A
+HREF="plugins.functions.html"
+>カスタム関数</A
+> または
+        <A
+HREF="plugins.modifiers.html"
+>修飾子</A
+> を使用します。
+       </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.default.template.handler.func.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.security.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$default_template_handler_func</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$security</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

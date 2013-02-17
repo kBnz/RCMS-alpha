@@ -1,0 +1,354 @@
+@charset "UTF-8";
+body{
+    height:100%;
+}
+
+#main_container{
+    width: auto;
+    height: auto;
+    display: -webkit-box;
+    display: -moz-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 50px 5px 5px 55px;
+}
+
+.rcms_ui_page_list input[type="text"] {
+    margin: 5px;
+    background-color: #ffffff;
+    filter: progid:DXImageTransformMicrosoft.gradient(startColorstr='#e3e3e3',endColorstr='#ffffff');
+    background: -webkit-gradient(linear,left top,left bottom,from(#e3e3e3),color-stop(0.3,#fafafa),to(#ffffff));
+    background: -moz-linear-gradient(top,#e3e3e3,#fafafa 30%,#ffffff);
+    border: 1px solid #b5b8c8;
+    height: 22px;
+    width: 200px;
+    line-height: 1.8;
+    padding-left: 5px;
+    position: absolute;
+    top: 0;
+}
+
+.content {
+    overflow-y: visible;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+#list_col {
+    min-width: 200px;
+    background: #efefef;
+    min-height: 100px;
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    position: relative;
+} 
+
+#edit_col {
+    -webkit-box-ordinal-group: 2;
+    -moz-box-ordinal-group: 2;
+    -webkit-box-flex: 1;/* Safari,Google Chrome用 */
+    -moz-box-flex: 1;/* Firefox用 */
+    background: #ffffff;
+    min-height: 100px;  
+    min-width: 500px;
+    position: relative;
+    padding-left: 5px;
+    border: 1px solid #cccccc;
+}  
+
+
+
+
+/* リスト */
+.rcms_ui_page_list {
+    border: 1px solid #cccccc;
+    line-height: 20px;
+    padding-top: 66px;
+}
+
+.rcms_ui_page_list ul{
+    position: relative;
+    background: #fff;
+}
+
+.rcms_ui_page_list li{
+    position: relative;
+    height:20px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #fff;
+    line-height: 20px;
+}
+
+.rcms_ui_page_list li:hover {
+    background: -webkit-gradient(linear,left top,left bottom,from(#e5e5e5),color-stop(0.6,#f5f6Ff),to(#ffffff));
+    background: -moz-linear-gradient(top,#e5e5e5,#f5f6f7 60%,#ffffff);
+    border: 1px solid #b5b8c8;
+    cursor: pointer;
+    color: #ff6600;
+    text-decoration: underline;
+}
+
+#list_col ul li:nth-child(even) {
+    background: #f5f5f5;
+}
+
+.rcms_ui_page_list li div{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+}
+
+.rcms_ui_page_list .col_1{
+    left:0px;
+    width:195px;
+}
+.rcms_ui_page_list .col_2{
+    left:205px;
+}
+
+.rcms_ui_page_list .header {
+    position: absolute;
+    top: 35px;
+    height: 30px;
+    width: 100%;
+    filter: progid:DXImageTransformMicrosoft.gradient(startColorstr='#ffffff',endColorstr='#dbdbdb');
+    background: -webkit-gradient(linear,left top,left bottom,from(#ffffff),color-stop(0.6,#f5f6f7),to(#dbdbdb));
+    background: -moz-linear-gradient(top,#ffffff,#f5f6f7 60%,#dbdbdb);
+    border-top: 1px solid #cccccc;
+}
+
+.header .col_1,
+.header .col_2 {
+    padding-left: 5px;
+    font-weight: bold;
+    line-height: 30px;
+}
+
+.rcms_ui_page_list .header .handle{
+    width:5px;
+    height: 30px;
+    border-left: #ccc 1px solid;
+    left:200px;
+    z-index: 100;
+    cursor: col-resize;
+}
+
+.rcms_ui_page_list .header div{
+    position: absolute;
+}
+
+.rcms_ui_page_list col_1 span{
+    height: 20px;
+}
+
+.rcms_ui_page_list li:first-child .nest_level_1 span{
+    background: url(../../../css/management/rcms_ui/treeview_arrow_down.png) no-repeat 7px center;
+    padding-left: 18px;
+    margin-left: 0;
+}
+
+.rcms_ui_page_list .nest_level_1 span{
+    background: url(../../../css/management/rcms_ui/treeview_arrow_right.png) no-repeat 7px center;
+    padding-left: 18px;
+    margin-left: 15px;
+}
+
+.rcms_ui_page_list .nest_level_2 span {
+    padding-left: 15px;
+    margin-left: 30px;
+}
+
+.rcms_ui_page_list .nest_level_3 span{
+    padding-left: 15px;
+    margin-left: 45px;
+}
+.rcms_ui_page_list .nest_level_4 span{
+    padding-left: 15px;
+    padding-left:60px;
+}
+.rcms_ui_page_list .nest_level_5 span{
+    padding-left: 15px;
+    padding-left:75px;
+}
+
+.col_2 span a {
+    color: #666666;
+}
+
+.col_2 span a:hover {
+    color: #ff6600;
+}
+
+#main_container #info_detail {
+    background-color: #ffffff;
+    height: 100px;
+    min-height: 100px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    border: 1px solid #cccccc;
+    border-top: 0 none;
+    width: 100%;
+    min-width: 200px;
+    bottom: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding: 3px 0;
+}
+
+#info_detail table th {
+    background-color: #efefef;
+    text-align: left;
+    line-height: 1.5;
+    padding: 5px 3px 5px 5px;
+    width: 100px;
+}
+
+#info_detail table td {
+    padding: 3px 3px 3px 5px;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+/* ハンドル */
+
+#handle_col {
+    width: 5px;
+    height: 100%;
+    top: 0;
+    right: -5px;
+    position: absolute;
+    z-index: 100;
+    cursor: col-resize;
+    background-image: url(../../../css/management/rcms_ui/handler_col_icon.png);
+    background-repeat: repeat-y;
+    background-position: left center;
+    border-top: 1px solid #cccccc;
+}
+
+#handle_row{
+    width: 100%;
+    height: 5px;
+    right: 0;
+    left: 0;
+    position: absolute;
+    z-index: 100;
+    cursor: row-resize;
+    background-image: url(../../../css/management/rcms_ui/handler_row_icon.png);
+    background-repeat: repeat-x;
+    background-position: left center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+* 開発着手前からあるもの
+*/
+.page_list {
+background-color: #fff;
+border: 1px solid #ccc;
+padding: 10px;
+}
+#sitemap ul {
+margin: 0 0 0 15px;
+} 
+#sitemap ol {margin: 0 0 1em 2em;}
+#sitemap ul ul, 
+.page ol ul {
+margin: 0 0 0 1.6em; 
+}
+#sitemap ul ol,
+ .page ol ol {
+margin: 0 0 0 2em; 
+font-size: 0.95em;
+}
+
+#sitemap, #dragHelper {display: none; margin: 0; list-style: none;}
+#dragHelper { background: #eee;}
+#sitemap ul, #dragHelper ul {font-size: 1em; list-style: none;}
+#sitemap li, #dragHelper li {display: block; width: 100%; display: block; clear: both; }
+
+#sitemap dl, 
+#dragHelper div {
+position: relative; 
+display: block; 
+height: 12px;
+padding: 5px 10px;
+}
+
+#sitemap dt, #dragHelper dt {
+float: left; 
+font-weight: bold; 
+line-height: 1em; 
+}
+#sitemap .sm2_liOpen dt {
+margin-left: 5px;
+}
+
+#sitemap dd, #dragHelper dd {
+float: right;
+text-align:left;
+width: 230px;
+}
+
+#sitemap a, #dragHelper a {border: none;}
+#sitemap .sm2_expander, #dragHelper .sm2_expander {position: absolute; left: 0; top: 4px;}
+
+#sitemap .sm2_liOpen > dl > .sm2_expander,
+#dragHelper .sm2_liOpen > dl > .sm2_expander {
+display: block; 
+width: 11px; 
+height: 1em; 
+background: url(/js/jquerySitemap/images/excol_open.gif) center left no-repeat;
+text-decoration:none;
+}
+#sitemap .sm2_liClosed > dl > .sm2_expander, #dragHelper .sm2_liClosed > dl > .sm2_expander {display: block; width: 15px; height: 1em; background: url(/js/jquerySitemap/images/excol_closed.gif) 50% 50% no-repeat;text-decoration:none;}
+#sitemap .sm2_liClosed ul, #dragHelper .sm2_liClosed ul {display: none;}
+#sitemap .dropzone { height:6px; background-color:#fff; border-bottom:4px solid #fff; }
+
+#sitemap dl:hover{
+background:#dfdfdf;
+cursor: pointer;
+}
+.page_type {
+float :left;
+width: 90px;
+}
+/**
+* 開発着手前からあるもの ここまで
+*/
+

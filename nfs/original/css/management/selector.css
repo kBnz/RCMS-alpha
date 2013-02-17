@@ -1,0 +1,27 @@
+
+#selector h3 {
+  margin-top:20px;
+  margin-bottom:10px;
+  border-bottom: 1px dashed #999999;
+}
+#nav_info1, nav_info2 {
+  height: 1em;
+}
+#bm_al,#bm_sl {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-top: 1px solid #999999;
+    border-left: 1px solid #999999;
+    border-collapse: collapse;
+}
+#bm_al th, #bm_al td, #bm_sl th, #bm_sl td{
+    border-right: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+}
+#bm_al th, #bm_sl th{
+    background: #ffcc66;
+}
+.selected_row {
+  background-color: #cccccc;
+}
+

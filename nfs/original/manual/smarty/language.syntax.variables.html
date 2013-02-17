@@ -1,0 +1,277 @@
+<HTML
+><HEAD
+><TITLE
+>変数</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="基本構文"
+HREF="language.basic.syntax.html"><LINK
+REL="PREVIOUS"
+TITLE="基本構文"
+HREF="language.basic.syntax.html"><LINK
+REL="NEXT"
+TITLE="関数"
+HREF="language.syntax.functions.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.basic.syntax.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 3章基本構文</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.syntax.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.syntax.variables"
+></A
+>変数</H1
+><P
+>&#13;  テンプレート変数は、先頭にドル記号 $ を付けます。変数名には
+  <A
+HREF="http://php.net/language.variables"
+TARGET="_top"
+>PHP の変数</A
+>
+  と同様に英数字およびアンダースコアが使用できます。
+  配列の参照には、インデックスの数値もしくはそれ以外の文字を使用できます。
+  オブジェクトのプロパティとメソッドの参照も同様です。</P
+><P
+>&#13;  <A
+HREF="language.config.variables.html"
+>Config ファイルの変数</A
+>
+  にはドル記号を付けず、参照する際にはハッシュマーク # で囲むか、
+  <A
+HREF="language.variables.smarty.html#language.variables.smarty.config"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$smarty.config</I
+></TT
+></A
+>
+  変数として指定します。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN319"
+></A
+><P
+><B
+>例 3-2. 変数</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{$foo}        &#60;-- 単純な変数 (配列やオブジェクト以外) を表示します。
+{$foo[4]}     &#60;-- 0から始まるインデックスを持った配列の5番目の要素を表示します。
+{$foo.bar}    &#60;-- "bar"というキーに対応する配列の値を表示します。PHP の $foo['bar'] と同じです。
+{$foo.$bar}   &#60;-- 変数のキーに対応する配列の値を表示します。PHP の PHP $foo[$bar] と同じです。
+{$foo-&#62;bar}   &#60;-- オブジェクトのプロパティ "bar"を表示します。
+{$foo-&#62;bar()} &#60;-- オブジェクトのメソッド"bar"の返り値を表示します。
+{#foo#}       &#60;-- configファイル変数"foo"を表示します。
+{$smarty.config.foo} &#60;-- {#foo#}と同じです。
+{$foo[bar]}   &#60;-- sectionループ内でのみ正当な構文です。{section}の項を参照のこと。
+{assign var=foo value='baa'}{$foo} &#60;--  "baa"を表示します。{assign}の項を参照のこと。
+
+その他多くの組み合わせが可能です。
+
+{$foo.bar.baz}
+{$foo.$bar.$baz}
+{$foo[4].baz}
+{$foo[4].$baz}
+{$foo.bar.baz[4]}
+{$foo-&#62;bar($baz,2,$bar)} &#60;-- パラメータを渡します。
+{"foo"}       &#60;-- 静的な値を使用できます。
+
+{* サーバ変数 "SERVER_NAME" の内容を表示します ($_SERVER['SERVER_NAME'])*}
+{$smarty.server.SERVER_NAME}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="literal"
+>$_GET</TT
+> や
+ <TT
+CLASS="literal"
+>$_SESSION</TT
+> などのようなリクエスト変数は、
+ 予約済の変数 <A
+HREF="language.variables.smarty.html"
+>&#13; <TT
+CLASS="parameter"
+><I
+>$smarty</I
+></TT
+></A
+> の値で取得します。
+ </P
+><P
+>&#13;  <A
+HREF="language.variables.smarty.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$smarty</I
+></TT
+></A
+>、
+  <A
+HREF="language.config.variables.html"
+>config 変数</A
+>、
+  <A
+HREF="language.custom.functions.html#language.function.assign"
+><TT
+CLASS="varname"
+>{assign}</TT
+></A
+>
+  および
+  <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.basic.syntax.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.syntax.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>基本構文</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.basic.syntax.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>関数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

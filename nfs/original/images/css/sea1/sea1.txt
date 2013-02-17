@@ -1,0 +1,253 @@
+@charset "UTF-8";
+/* 全体
+------------------------------------------------------------ */
+body {
+	font-size: 80% !important;
+	color: #666666;
+	line-height: 140%;
+	background:#ED8A10;
+}
+/* レイアウト系
+------------------------------------------------------------ */
+#container {
+	/*
+	containerでmarginやpaddingを指定するとレイアウトが崩れる場合があります。
+	containerでの指定はwidthのみとしてください。
+	widthを指定しない場合はメインコンテンツがブラウザウィンドウの伸縮に同期します。
+	*/
+	width: 809px;
+	background: url(/files/user/sea1/bg.gif) repeat-y;
+}
+#contents {
+	width: 750px;
+	margin: 10px auto;
+}
+#main_contents .module_body,
+#top_contents .module_body,
+#bottom_contents .module_body {
+	height:100%; /* IE対策 */
+}
+
+a:link {
+	color: #3399CC;
+	text-decoration:none;
+}
+a:visited {
+	color: #3399CC;
+	text-decoration:none;
+}
+a:hover{
+	color: #3399CC;
+	text-decoration:underline;
+}
+/* フットパス
+------------------------------------------------------------ */
+#footpath{
+	width: 732px;
+	margin: 10px auto;
+	font-size: 10px;
+}
+#footpath li.footpath{
+	float: left;
+	list-style-type: none;
+	padding: 3px;
+	margin-right: 2px;
+}
+#footpath li.footpath a {
+	display: block;
+}
+
+/* ヘッダー
+------------------------------------------------------------ */
+
+#header{
+	position: relative;
+	width:759px;
+	height:188px;
+	margin: 0px auto;
+	padding: 10px 0px 0px 0px;
+	background-image: url("/files/user/sea1/header.gif");
+	background-repeat: repeat-x;
+	background-position: top left;
+}
+#header h1 span {
+	display: block;
+	margin:10px 20px 20px 0;
+}
+#header h1 a {
+	color: #3399CC;
+	font-size: 180%;
+	text-decoration:none;
+}
+#header h1 span a:hover {
+	text-decoration:underline;
+}
+
+/* フッター
+------------------------------------------------------------ */
+#footer {
+	width: 759px;
+	margin: 0 auto;
+	padding-top:40px;
+	text-align: right;
+	background: url(/files/user/sea1/fotter.gif) no-repeat;
+}
+/* ナビ
+------------------------------------------------------------ */
+#navi ul.navi:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+#navi {
+	width: 730px;
+	margin: 0 auto;
+	padding: 0 10px 40px 0px;
+	background: url(/files/user/sea1/naviUn.gif) no-repeat;
+	background-position:bottom;
+}
+#navi li.navi {
+	font-size: 12px;
+	list-style: none;
+	float:left;
+	width: 117px;
+	margin: 0px 3px 0 0;
+	text-align: center;
+}
+#navi li.last{ margin-right: 0px;}
+#navi li.navi a {
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
+	color: #492B05;
+	padding: 3px 0;
+}
+#navi strong {
+	display: block;
+	color: #492B05;
+	background: url(/files/user/sea1/naviS.gif) no-repeat;
+	background-position:center;
+	padding: 3px 0;
+}
+#navi li.navi a:hover {
+	background: url(/files/user/sea1/navi.gif) no-repeat;
+	background-position:center;
+}
+#navi ul.navi {
+	height: 1%;
+}
+/* メインコンテンツ
+------------------------------------------------------------ */
+#main_contents .module_contents{
+	margin: 0 0 30px 0;
+}
+#main_contents .module_title {
+	background: url(/files/user/sea1/title2.gif) no-repeat;
+	padding: 10px 0px 0px 45px;
+	margin-right:10px;
+	margin-bottom: 10px;
+	color: #fff;
+	height: 29px;
+}
+/* トップコンテンツ
+------------------------------------------------------------ */
+#top_contents .module_contents{
+	margin: 0 0 30px 15px;
+}
+#top_contents .module_title{
+	background: url(/files/user/sea1/title1.gif) no-repeat;
+	padding: 10px 0px 0px 45px;
+	margin-bottom: 10px;
+	color: #fff;
+	height: 29px;
+}
+
+/* ボトムコンテンツ
+------------------------------------------------------------ */
+#bottom_contents .module_contents{
+	margin: 0 0 30px 15px;
+}
+#bottom_contents .module_title{
+	background: url(/files/user/sea1/title3.gif) no-repeat;
+	padding: 10px 0px 0px 45px;
+	margin-bottom: 10px;
+	color: #fff;
+	height: 29px;
+}
+
+/* サイドコンテンツ
+------------------------------------------------------------ */
+#side_contents_right .module_contents,
+#side_contents_left .module_contents{
+	margin: 0 0px 25px 3px;
+	width:90%;
+}
+
+#side_contents_right .module_title,
+#side_contents_left .module_title {
+	background-image: url("/files/user/sea1/sideTitle.gif");
+	background-repeat:repeat-x;
+	color: #996633;
+	font-size: 12px;
+	margin-bottom: 8px;
+	padding-bottom:10px;
+	text-align:center;
+}
+/* モジュール内の細かい設定
+------------------------------------------------------------ */
+.relation_link {	text-align: right;}
+table.list { width: 80%; border: 1px solid #996633;}
+
+table.list td{
+	padding: 1px;
+	border-bottom: 1px solid #996633;
+	background-color:#ffffff;
+}
+table.list th{
+	padding: 1px;
+	text-align: center;
+	color: #ffffff;
+	background-color:#996633;
+	border-bottom: 1px solid #996633;
+	font-weight:bold;
+}
+div.blog_contents,
+.topics_contents {
+	font-size:90% !important;
+}
+div.blog_item h4.subject {
+	font-size: 100%;
+	border-bottom: none !important;
+	border-left: none !important;
+	padding: 5px 10px !important;
+}
+.blog_detail .posting_ymdt {
+	margin-right: 10px;
+}
+.blog_contents {
+	margin: 0 10px;
+}
+#side_contents_right li,
+#side_contents_left li {
+	margin-bottom: 5px;
+}
+div.blog_item h4.subject{
+	font-size: 100%;
+	border-bottom:1px solid #DAE6FF !important;
+	border-left:10px solid #DAE6FF !important;
+	padding:5px 10px;
+}
+.bbs_item h3{
+	background-color: #DAE6FF !important;
+	color: #0066CC !important;
+	padding:2px;
+}
+ul.topics_headline{
+	margin-left:15px;
+}
+
+/* Opera バグ対策
+------------------------------------------------------------ */
+body {}

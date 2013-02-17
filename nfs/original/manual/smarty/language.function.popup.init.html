@@ -1,0 +1,293 @@
+<HTML
+><HEAD
+><TITLE
+>{popup_init}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="カスタム関数"
+HREF="language.custom.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{popup}"
+HREF="language.function.popup.html"><LINK
+REL="NEXT"
+TITLE="{textformat}"
+HREF="language.function.textformat.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.popup.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 8章カスタム関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.textformat.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.popup.init"
+></A
+>{popup_init}</H1
+><P
+>&#13;  <A
+HREF="language.function.popup.html"
+><TT
+CLASS="varname"
+>{popup}</TT
+></A
+>
+  は、ポップアップウィンドウ用のライブラリである
+  <A
+HREF="http://www.bosrup.com/web/overlib/"
+TARGET="_top"
+>overLib</A
+> と統合しています。
+  これは、ヘルプウィンドウやツールチップといった状況依存の情報を表示するために使用します。
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;  <TT
+CLASS="varname"
+>{popup_init}</TT
+> は、<A
+HREF="language.function.popup.html"
+>&#13; <TT
+CLASS="varname"
+>{popup}</TT
+></A
+> 関数を使用する予定のページ内で
+  <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>一度だけ</I
+></SPAN
+> 呼び出す必要があります。呼び出す場所としては
+  <TT
+CLASS="literal"
+>&#60;head&#62;</TT
+> タグの中がお勧めです。
+ </P
+></LI
+><LI
+><P
+>&#13; パスは、実行するスクリプトの場所からの相対パスか、あるいは完全修飾形式のパスとなります。
+ テンプレートからの相対パスではありません。
+</P
+></LI
+><LI
+><P
+>&#13;  <A
+HREF="http://www.bosrup.com/web/overlib/"
+TARGET="_top"
+>overLib</A
+> の作者は
+  Erik Bosrup で、ホームページ/ダウンロード先は
+  <A
+HREF="http://www.bosrup.com/web/overlib/"
+TARGET="_top"
+>http://www.bosrup.com/web/overlib/</A
+> です。
+ </P
+></LI
+></UL
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN4681"
+></A
+><P
+><B
+>例 8-26. {popup_init}</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;head&#62;
+{* popup_init は、ページの先頭で一度だけ呼ばれる必要があります。 *}
+{popup_init src='javascripts/overlib/overlib.js'}
+
+{* 完全修飾形式の url の例 *}
+{popup_init src='http://myserver.org/my_js_libs/overlib/overlib.js'}
+&#60;/head&#62;
+
+// 最初の例の出力
+&#60;head&#62;
+&#60;div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"&#62;&#60;/div&#62;
+&#60;script type="text/javascript" language="JavaScript" src="javascripts/overlib/overlib.js"&#62;&#60;/script&#62;
+&#60;/head&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>XHTML の検証: </B
+><TT
+CLASS="literal"
+>{popup_init}</TT
+> は
+strict な検証を行いません。strict で検証すると
+<TT
+CLASS="literal"
+>document type does not allow element "div" here;</TT
+>
+というエラーが出るでしょう
+(<TT
+CLASS="literal"
+>&#60;div&#62;</TT
+> タグを <TT
+CLASS="literal"
+>&#60;head&#62;</TT
+>
+の中で使用しているからです)。
+
+つまり、<TT
+CLASS="literal"
+>&#60;script&#62;</TT
+> タグと
+<TT
+CLASS="literal"
+>&#60;div&#62;</TT
+> タグを手動で追加する必要があります。
+</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.popup.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.textformat.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{popup}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.custom.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{textformat}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

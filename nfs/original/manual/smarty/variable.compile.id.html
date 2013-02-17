@@ -1,0 +1,259 @@
+<HTML
+><HEAD
+><TITLE
+>$compile_id</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$error_reporting"
+HREF="variable.error.reporting.html"><LINK
+REL="NEXT"
+TITLE="$use_sub_dirs"
+HREF="variable.use.sub.dirs.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.error.reporting.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.use.sub.dirs.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.compile.id"
+></A
+>$compile_id</H1
+><P
+>&#13;  コンパイルファイルを識別するための id です。すべての関数呼び出しで毎回
+  <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> を渡すかわりに
+  <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> を指定すると、その後は暗黙のうちにこれを使用します。
+ </P
+><P
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> を使用すると、同一の
+  <A
+HREF="variable.compile.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$compile_dir</I
+></TT
+></A
+>
+  を別々の <A
+HREF="api.variables.html#variable.template.dir"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$template_dirs</I
+></TT
+></A
+> で使用できないという制限を回避できます。
+  異なる <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> をそれぞれの
+  <A
+HREF="api.variables.html#variable.template.dir"
+><TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+>
+  </A
+> で指定すると、Smarty はコンパイルしたテンプレートを
+  <TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+> で区別します。
+ </P
+><P
+>&#13;  例として、コンパイル時刻でテンプレートをローカライズ (言語依存のパーツを翻訳)
+  する <A
+HREF="plugins.prefilters.postfilters.html"
+>prefilter</A
+>
+  を用いる場合、<TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+>
+  に現在の言語を使用することで、各言語についてのコンパイルしたテンプレートのセットを得ることができます。
+ </P
+><P
+>&#13;  別の例としては、複数のドメイン/複数のバーチャルホスト
+  をまたがって同じコンパイルディレクトリを使用する場合があります。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5428"
+></A
+><P
+><B
+>例 12-6. バーチャルホスト環境での $compile_id</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">compile_id&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$_SERVER</span><span style="color: #007700">[</span><span style="color: #DD0000">'SERVER_NAME'</span><span style="color: #007700">];<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">compile_dir&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'/path/to/shared_compile_dir'</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.error.reporting.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.use.sub.dirs.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$error_reporting</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$use_sub_dirs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

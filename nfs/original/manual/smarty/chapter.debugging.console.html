@@ -1,0 +1,315 @@
+<HTML
+><HEAD
+><TITLE
+>デバッギングコンソール</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><LINK
+REL="PREVIOUS"
+TITLE="設定ファイル"
+HREF="config.files.html"><LINK
+REL="NEXT"
+TITLE="プログラマのための Smarty"
+HREF="smarty.for.programmers.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config.files.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="chapter.debugging.console"
+></A
+>第 10章デバッギングコンソール</H1
+><P
+>&#13;  Smarty にはデバッギングコンソールが用意されています。
+  このコンソールは、
+  <A
+HREF="language.function.include.html"
+>インクルード</A
+>
+  された全てのテンプレートについての情報と、現在実行中のテンプレートに
+  <A
+HREF="api.assign.html"
+>割り当てられた</A
+> 変数及び
+  <A
+HREF="language.config.variables.html"
+>設定</A
+>
+  ファイルの変数の値を表示します。Smarty の配布ファイル群に含まれているテンプレート
+  <TT
+CLASS="literal"
+>debug.tpl</TT
+> が、コンソールを表示するためのものです。
+  </P
+><P
+>&#13;  <TT
+CLASS="literal"
+>debug.tpl</TT
+> (デフォルトでは <A
+HREF="smarty.constants.html#constant.smarty.dir"
+>&#13;  <TT
+CLASS="constant"
+>SMARTY_DIR</TT
+></A
+> 内にあります) に
+  <A
+HREF="variable.debug.tpl.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$debug_tpl</I
+></TT
+></A
+> のテンプレートリソースのパスを示す必要がある場合は、
+  Smarty で
+  <A
+HREF="variable.debugging.html"
+><TT
+CLASS="parameter"
+><I
+>$debugging</I
+></TT
+></A
+>
+  を <TT
+CLASS="constant"
+>TRUE</TT
+> に設定します。
+  ページを読み込む時に Javascript による新たなコンソールウィンドウが現れ、
+  現在のページにおける、インクルードされたすべてのテンプレートの名前と
+  定義されている変数の値を表示します。</P
+><P
+>特定のテンプレートに有効な変数を調べる場合は、テンプレート関数
+  <A
+HREF="language.function.debug.html"
+>&#13;  <TT
+CLASS="varname"
+>{debug}</TT
+></A
+> を参照してください。
+  デバッギングコンソールを無効にするには
+  <A
+HREF="variable.debugging.html"
+><TT
+CLASS="parameter"
+><I
+>$debugging</I
+></TT
+></A
+>
+  を <TT
+CLASS="constant"
+>FALSE</TT
+> に設定します。また、一時的にデバッギングコンソールを有効にするには、
+  <A
+HREF="variable.debugging.ctrl.html"
+><TT
+CLASS="parameter"
+><I
+>$debugging_ctrl</I
+></TT
+>
+  で URL の中に <TT
+CLASS="literal"
+>SMARTY_DEBUG</TT
+> を含めます。
+  </A
+>.
+ </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+   <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+   API を使用している場合はデバッギングコンソールは動作せず、
+   <A
+HREF="api.display.html"
+>&#13;   <TT
+CLASS="varname"
+>display()</TT
+></A
+> の場合のみ使用できます。
+   このコンソールは、生成されたテンプレートの終端に追加される
+   Javascript の集合です。Javascript がお好みでないなら、
+   希望の出力になるように <TT
+CLASS="literal"
+>debug.tpl</TT
+>
+   を修正してください。デバッグ情報はキャッシュされず、
+   デバッギングコンソールの出力には <TT
+CLASS="literal"
+>debug.tpl</TT
+>
+   自体の情報は含まれません。
+  </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+   各テンプレートと設定ファイルの読み込みにかかる時間は、ほんの数秒です。
+  </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    <A
+HREF="troubleshooting.html"
+>トラブルシューティング</A
+>、
+    <A
+HREF="variable.error.reporting.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$error_reporting</I
+></TT
+></A
+>
+    および
+    <A
+HREF="api.trigger.error.html"
+><TT
+CLASS="varname"
+>trigger_error()</TT
+></A
+>
+    も参照してください。
+   </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config.files.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>設定ファイル</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>プログラマのための Smarty</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

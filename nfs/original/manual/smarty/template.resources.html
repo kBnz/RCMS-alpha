@@ -1,0 +1,530 @@
+<HTML
+><HEAD
+><TITLE
+>テンプレートリソース</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="拡張機能"
+HREF="advanced.features.html"><LINK
+REL="PREVIOUS"
+TITLE="キャッシュハンドラ関数"
+HREF="section.template.cache.handler.func.html"><LINK
+REL="NEXT"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="section.template.cache.handler.func.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 15章拡張機能</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="template.resources"
+></A
+>テンプレートリソース</H1
+><P
+>&#13;   テンプレートは様々なリソースから呼び出して使用できます。テンプレートを
+  <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>、
+  <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+   したり別のテンプレートからインクルードしたりする際には、
+   リソースの種類に続けて適切なパスとテンプレート名を指定します。
+   リソースを明示的に指定しない場合は <A
+HREF="variable.default.resource.type.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$default_resource_type</I
+></TT
+></A
+> の値であるとみなします。
+   </P
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates.from.template.dir"
+></A
+>$template_dir からのテンプレート</H2
+><P
+>&#13;     <A
+HREF="api.variables.html#variable.template.dir"
+>&#13;     <TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+> からのテンプレートを使用する場合は、
+     テンプレートリソースの指定は必要ありません。しかし、一貫性を保つために
+     <TT
+CLASS="literal"
+>file:</TT
+> リソースを使用してもかまいません。使用したいテンプレートへのパスを、
+     <A
+HREF="api.variables.html#variable.template.dir"
+>&#13;     <TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+>
+     のルートディレクトリからの相対パスで指定します。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7127"
+></A
+><P
+><B
+>例 15-6. $template_dir のテンプレートを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'admin/menu.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'file:admin/menu.tpl'</span><span style="color: #007700">);&nbsp;</span><span style="color: #FF8000">//&nbsp;上と同じ<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>Smarty のテンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{include file='index.tpl'}
+{* 以下は、上と同じです *}
+{include file='file:index.tpl'}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates.from.any.dir"
+></A
+>任意のディレクトリからのテンプレート</H2
+><P
+>&#13;     <A
+HREF="api.variables.html#variable.template.dir"
+>&#13;     <TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+>
+     の外に置かれたテンプレートを使うには、リソースの種類
+     <TT
+CLASS="literal"
+>file:</TT
+> を指定しなければなりません。
+     その後にテンプレートへの絶対パスを続けます。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7138"
+></A
+><P
+><B
+>例 15-7. 任意のディレクトリからのテンプレートを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'file:/export/templates/index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'file:/path/to/my/templates/menu.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;      Smarty のテンプレート
+     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{include file='file:/usr/local/share/templates/navigation.tpl'}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="templates.windows.filepath"
+></A
+>Windows のファイルパス</H3
+><P
+>&#13;      通常、Windows 環境の場合はファイルパスの先頭にドライブレター (C:)
+      が含まれます。ネームスペースの衝突を回避して期待通りの結果を得るために、
+      必ず <TT
+CLASS="literal"
+>file:</TT
+> を使用して下さい。
+     </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7147"
+></A
+><P
+><B
+>例 15-8. Windows ファイルパスからテンプレートを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'file:C:/export/templates/index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'file:F:/path/to/my/templates/menu.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;      Smarty テンプレート
+     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{include file='file:D:/usr/local/share/templates/navigation.tpl'}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates.from.elsewhere"
+></A
+>その他のリソース内のテンプレート</H2
+><P
+>&#13;     データベース・ソケット・LDAP 等の
+     PHPによってアクセス可能なリソースからテンプレートを取得する事ができます。
+     そのためにはリソースプラグイン関数を記述し、それを登録する必要があります。
+    </P
+><P
+>&#13;     リソースプラグイン関数についての詳細な情報は
+     <A
+HREF="plugins.resources.html"
+>リソースプラグイン</A
+>
+     の項を参照してください。
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+      元から存在する <TT
+CLASS="literal"
+>file:</TT
+> リソースは上書きできないことに注意しましょう。
+      しかし、ファイルシステム上のテンプレートを別の方法で取得するテンプレートを作成することはできます。
+      それを別のリソース名で登録すればよいのです。
+     </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7160"
+></A
+><P
+><B
+>例 15-9. カスタムリソースを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;これらの関数をアプリケーションに追加します<br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">db_get_template&nbsp;</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$tpl_source</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;ここでデータベースを呼び出し、取得したテンプレートを<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;$tpl_source&nbsp;に代入します<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SQL</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">query</span><span style="color: #007700">(</span><span style="color: #DD0000">"select&nbsp;tpl_source<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;my_table<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;tpl_name='$tpl_name'"</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">num_rows</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tpl_source&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">record</span><span style="color: #007700">[</span><span style="color: #DD0000">'tpl_source'</span><span style="color: #007700">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">db_get_timestamp</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$tpl_timestamp</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;$tpl_timestampに代入するためにデータベースを呼び出します<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SQL</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">query</span><span style="color: #007700">(</span><span style="color: #DD0000">"select&nbsp;tpl_timestamp<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;my_table<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;tpl_name='$tpl_name'"</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">num_rows</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tpl_timestamp&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$sql</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">record</span><span style="color: #007700">[</span><span style="color: #DD0000">'tpl_timestamp'</span><span style="color: #007700">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">db_get_secure</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;全てのテンプレートがセキュアであると仮定します<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />}<br /><br />function&nbsp;</span><span style="color: #0000BB">db_get_trusted</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;テンプレートから使用しません<br /></span><span style="color: #007700">}<br /><br /></span><span style="color: #FF8000">//&nbsp;テンプレートリソース名"db"を登録します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_resource</span><span style="color: #007700">(</span><span style="color: #DD0000">"db"</span><span style="color: #007700">,&nbsp;array(</span><span style="color: #DD0000">"db_get_template"</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"db_get_timestamp"</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"db_get_secure"</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"db_get_trusted"</span><span style="color: #007700">));<br /><br /></span><span style="color: #FF8000">//&nbsp;phpスクリプトからテンプレートリソースを使用します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">"db:index.tpl"</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;      Smarty テンプレート
+     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{include file='db:/extras/navigation.tpl'}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="default.template.handler.function"
+></A
+>デフォルトのテンプレートハンドラ関数</H2
+><P
+>&#13;     テンプレートリソースからテンプレートの取得に失敗した際に、
+     テンプレートのコンテンツを取り戻すために呼び出されるユーザ定義関数を指定します。
+     この関数の使用方法の１つとして、その場限りのテンプレートを作成する処理を行います。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7168"
+></A
+><P
+><B
+>例 15-10. デフォルトのテンプレートハンドラ関数を使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;アプリケーション内のどこかでこの関数を呼び出します<br /><br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">make_template&nbsp;</span><span style="color: #007700">(</span><span style="color: #0000BB">$resource_type</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$resource_name</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$template_source</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$template_timestamp</span><span style="color: #007700">,<br />&amp;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;</span><span style="color: #0000BB">$resource_type&nbsp;</span><span style="color: #007700">==&nbsp;</span><span style="color: #DD0000">'file'&nbsp;</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(&nbsp;!&nbsp;</span><span style="color: #0000BB">is_readable&nbsp;</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$resource_name&nbsp;</span><span style="color: #007700">))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;テンプレートファイルを生成し、コンテンツを返します<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$template_source&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"This&nbsp;is&nbsp;a&nbsp;new&nbsp;template."</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;require_once&nbsp;</span><span style="color: #0000BB">SMARTY_CORE_DIR&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'core.write_file.php'</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">smarty_core_write_file</span><span style="color: #007700">(&nbsp;array(&nbsp;</span><span style="color: #DD0000">'filename'</span><span style="color: #007700">=&gt;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">template_dir&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">DIRECTORY_SEPARATOR&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$resource_name</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'contents'</span><span style="color: #007700">=&gt;</span><span style="color: #0000BB">$template_source&nbsp;</span><span style="color: #007700">),&nbsp;</span><span style="color: #0000BB">$smarty_obj&nbsp;</span><span style="color: #007700">);&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;ファイルではない場合<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">return&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br /></span><span style="color: #FF8000">//&nbsp;デフォルトのハンドラをセット<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">default_template_handler_func&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'make_template'</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="section.template.cache.handler.func.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>キャッシュハンドラ関数</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="advanced.features.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>プラグインによる Smarty の拡張</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

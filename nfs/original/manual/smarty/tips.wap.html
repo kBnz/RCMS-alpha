@@ -1,0 +1,244 @@
+<HTML
+><HEAD
+><TITLE
+>WAP/WML</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="ヒント & 裏ワザ"
+HREF="tips.html"><LINK
+REL="PREVIOUS"
+TITLE="日付"
+HREF="tips.dates.html"><LINK
+REL="NEXT"
+TITLE="コンポーネント化したテンプレート"
+HREF="tips.componentized.templates.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tips.dates.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 18章ヒント &#38; 裏ワザ</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tips.componentized.templates.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="tips.wap"
+></A
+>WAP/WML</H1
+><P
+>&#13;    WAP/WML テンプレートはテンプレートコンテンツに加え、php
+    によって <A
+HREF="http://php.net/header"
+TARGET="_top"
+>Content-Type ヘッダ</A
+>
+    が渡される必要があります。これを実行する容易な方法は、
+    ヘッダを出力するカスタム関数を記述する事です。
+    もし <A
+HREF="caching.html"
+>キャッシュ</A
+> を有効にしている場合はキャッシュは機能しないので、
+    <A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>
+    タグを用いて出力を行います (<TT
+CLASS="varname"
+>{insert}</TT
+>
+    タグはキャッシュされない事を覚えていて下さい)。
+    もしテンプレートの前にブラウザに何か出力されていると、
+    ヘッダの出力は失敗する可能性があります。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7761"
+></A
+><P
+><B
+>例 18-6. WML Content-Type ヘッダを出力するために {insert} を使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;apache&nbsp;で拡張子.wml&nbsp;の設定がされている事を確認して下さい！<br />//&nbsp;この関数をアプリケーション内あるいは&nbsp;Smarty.addons.php&nbsp;で定義します<br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">insert_header</span><span style="color: #007700">(</span><span style="color: #0000BB">$params</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;この関数は、パラメータ&nbsp;$content&nbsp;を期待します<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">if&nbsp;(empty(</span><span style="color: #0000BB">$params</span><span style="color: #007700">[</span><span style="color: #DD0000">'content'</span><span style="color: #007700">]))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">header</span><span style="color: #007700">(</span><span style="color: #0000BB">$params</span><span style="color: #007700">[</span><span style="color: #DD0000">'content'</span><span style="color: #007700">]);<br />&nbsp;&nbsp;&nbsp;return;<br />}<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;     Smarty テンプレートは、次のように insert タグから始まる必要があります。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{insert name=header content="Content-Type: text/vnd.wap.wml"}
+
+&#60;?xml version="1.0"?&#62;
+&#60;!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml"&#62;
+
+&#60;!-- 新しい wml のデッキ --&#62;
+&#60;wml&#62;
+ &#60;!-- 最初のカード --&#62;
+ &#60;card&#62;
+  &#60;do type="accept"&#62;
+   &#60;go href="#two"/&#62;
+  &#60;/do&#62;
+  &#60;p&#62;
+   Smarty 版の WAP へようこそ!
+   OK を押すと次に進みます……
+  &#60;/p&#62;
+ &#60;/card&#62;
+ &#60;!-- 二枚目のカード --&#62;
+ &#60;card id="two"&#62;
+  &#60;p&#62;
+   どう？簡単でしょ？
+  &#60;/p&#62;
+ &#60;/card&#62;
+&#60;/wml&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tips.dates.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tips.componentized.templates.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>日付</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tips.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>コンポーネント化したテンプレート</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,245 @@
+<HTML
+><HEAD
+><TITLE
+>定数</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プログラマのための Smarty"
+HREF="smarty.for.programmers.html"><LINK
+REL="PREVIOUS"
+TITLE="プログラマのための Smarty"
+HREF="smarty.for.programmers.html"><LINK
+REL="NEXT"
+TITLE="SMARTY_CORE_DIR"
+HREF="constant.smarty.core.dir.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="constant.smarty.core.dir.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="smarty.constants"
+></A
+>第 11章定数</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="smarty.constants.html#constant.smarty.dir"
+>SMARTY_DIR</A
+></DT
+><DT
+><A
+HREF="constant.smarty.core.dir.html"
+>SMARTY_CORE_DIR</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="constant.smarty.dir"
+></A
+>SMARTY_DIR</H1
+><P
+>&#13;     この定数には、Smarty のクラスファイルが置かれた場所への
+     <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>システム上でのフルパス</B
+></SPAN
+> を指定します。
+     定義されていない場合、Smarty は自動的に適切な値に決定しようと試みます。
+     定義した場合、<SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>必ずスラッシュで終わるようにします。</B
+></SPAN
+>
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN4875"
+></A
+><P
+><B
+>例 11-1. SMARTY_DIR</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;Smartyのディレクトリパスを*nixスタイルでセットする<br /></span><span style="color: #0000BB">define</span><span style="color: #007700">(</span><span style="color: #DD0000">'SMARTY_DIR'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'/usr/local/lib/php/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;Smartyのパスをwindowsスタイルでセットする<br /></span><span style="color: #0000BB">define</span><span style="color: #007700">(</span><span style="color: #DD0000">'SMARTY_DIR'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'c:/webroot/libs/Smarty-v.e.r/libs/'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;'S'が大文字であることに注意して、smartyクラスをインクルードします。<br /></span><span style="color: #007700">require_once(</span><span style="color: #0000BB">SMARTY_DIR&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.variables.smarty.html#language.variables.smarty.const"
+><TT
+CLASS="parameter"
+><I
+>$smarty.const</I
+></TT
+></A
+>
+  および
+  <A
+HREF="variable.php.handling.html"
+><TT
+CLASS="parameter"
+><I
+>$php_handling 定数</I
+></TT
+></A
+>
+  も参照してください。
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="constant.smarty.core.dir.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>プログラマのための Smarty</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SMARTY_CORE_DIR</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

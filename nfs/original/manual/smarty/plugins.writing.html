@@ -1,0 +1,194 @@
+<HTML
+><HEAD
+><TITLE
+>プラグインの記述</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><LINK
+REL="PREVIOUS"
+TITLE="命名規約"
+HREF="plugins.naming.conventions.html"><LINK
+REL="NEXT"
+TITLE="テンプレート関数プラグイン"
+HREF="plugins.functions.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="plugins.naming.conventions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 16章プラグインによる Smarty の拡張</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="plugins.writing"
+></A
+>プラグインの記述</H1
+><P
+>&#13;     プラグインは Smarty によってファイルシステムから自動的に読み込まれるか、
+     register_* API 関数のうちの１つを経由して動的に登録する事ができます。
+     また、それらは unregister_* API 関数を使う事によって未登録にする事ができます。
+    </P
+><P
+>&#13;     動的に登録されるプラグインについてはプラグイン関数の命名規約に従う必要はありません。
+    </P
+><P
+>&#13;     Smarty にバンドルされたいくらかのプラグインに関する場合と同様に、
+     プラグインが別のプラグインによって提供される機能に依存する場合は次の方法で必要とされるプラグインを読み込みます。
+    </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require_once&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">_get_plugin_filepath</span><span style="color: #007700">(</span><span style="color: #DD0000">'function'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'html_options'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;     基本的に、Smarty のオブジェクトは常に最後のパラメータとしてプラグインに渡されます。
+     ただし、例外が２つあります。
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;     変数の修飾子は Smarty オブジェクトを渡しません。
+     </P
+></LI
+><LI
+><P
+>&#13;     ブロックの場合は Smarty オブジェクトの後に <TT
+CLASS="parameter"
+><I
+>$repeat</I
+></TT
+>
+     が渡されます。これは、以前のバージョンの Smarty
+     との後方互換性を保つためのものです。
+     </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plugins.naming.conventions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>命名規約</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>テンプレート関数プラグイン</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

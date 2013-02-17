@@ -1,0 +1,274 @@
+<HTML
+><HEAD
+><TITLE
+>append_by_ref()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="append()"
+HREF="api.append.html"><LINK
+REL="NEXT"
+TITLE="assign()"
+HREF="api.assign.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.append.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.assign.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.append.by.ref"
+></A
+>append_by_ref()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN5517"
+></A
+>append_by_ref()&nbsp;--&nbsp;参照として値を追加します。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN5520"
+></A
+><H2
+>説明</H2
+>void <B
+CLASS="methodname"
+>append_by_ref</B
+> ( string varname, mixed var [, bool merge])<BR
+></BR
+><P
+>&#13;   これを使用して、テンプレートに参照として値を
+   <A
+HREF="api.append.html"
+><TT
+CLASS="varname"
+>追加</TT
+></A
+> します。
+   値を参照で追加すると、元の値が変更されると
+   追加した値も変更されます。
+   <A
+HREF="advanced.features.html#advanced.features.objects"
+>オブジェクト</A
+> の場合は、
+   <TT
+CLASS="varname"
+>append_by_ref()</TT
+> を使用すると
+   追加されたオブジェクトをメモリ内でコピーすることを避けられます。
+   詳細は、PHP マニュアルのリファレンスの説明を参照して下さい。
+   任意の第３パラメータに <TT
+CLASS="constant"
+>TRUE</TT
+> が渡された場合は、
+   値は現在のテンプレート配列に追加される代わりにマージされます。 
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+  <TT
+CLASS="parameter"
+><I
+>merge</I
+></TT
+> パラメータは配列のキーを尊重するので、
+  インデックスが数値である２つの配列をマージする場合、
+  それらはお互い上書きされるか不連続なキーの配列になるかもしれません。
+  これは、数値のキーを全て削除した後に再びキーに番号付けを行う、PHP
+  の <A
+HREF="http://php.net/array_merge"
+TARGET="_top"
+><TT
+CLASS="varname"
+>array_merge()</TT
+></A
+>
+  関数とは違っています。
+ </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5546"
+></A
+><P
+><B
+>例 13-1. append_by_ref</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;名前/値&nbsp;のペアを追加します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append_by_ref</span><span style="color: #007700">(</span><span style="color: #DD0000">'Name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$myname</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">append_by_ref</span><span style="color: #007700">(</span><span style="color: #DD0000">'Address'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$address</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   <A
+HREF="api.append.html"
+><TT
+CLASS="varname"
+>append()</TT
+></A
+>、
+  <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>
+  および
+  <A
+HREF="api.get.template.vars.html"
+><TT
+CLASS="varname"
+>get_template_vars()</TT
+></A
+>
+  も参照してください。
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.append.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.assign.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>append()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>assign()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

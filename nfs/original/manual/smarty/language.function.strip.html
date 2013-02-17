@@ -1,0 +1,255 @@
+<HTML
+><HEAD
+><TITLE
+>{strip}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{section},{sectionelse}"
+HREF="language.function.section.html"><LINK
+REL="NEXT"
+TITLE="カスタム関数"
+HREF="language.custom.functions.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.section.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.custom.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.strip"
+></A
+>{strip}</H1
+><P
+>&#13;  Webデザイナーの方は、HTML コードに含まれたホワイトスペースとキャリッジリターンが
+  ブラウザの表示に影響を及ぼす問題に何度も遭遇した事があると思います。
+  問題を回避するには、テンプレートの全てのタグを連ねて記述する必要があります。
+  しかしこれでは大変読みづらく管理しにくいテンプレートになってしまいます。
+ </P
+><P
+>&#13;  <TT
+CLASS="varname"
+>{strip}{/strip}</TT
+> タグに囲まれたコンテンツは、
+  ブラウザに表示される前に、各行の先頭と終端にある
+  余分なホワイトスペースやキャリッジリターンが除去されます。
+  これによってテンプレートは可読性を維持し、
+  余分なホワイトスペースによって問題を引き起こす心配もありません。
+ </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+   <TT
+CLASS="varname"
+>{strip}{/strip}</TT
+> はテンプレート変数の内容に影響しません。
+   詳細は <A
+HREF="language.modifier.strip.html"
+>strip 修飾子</A
+>
+   を参照してください。
+  </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2747"
+></A
+><P
+><B
+>例 7-44. {strip} タグ</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* 次の例は全て１行に出力されます  *}
+{strip}
+&#60;table border='0'&#62;
+ &#60;tr&#62;
+  &#60;td&#62;
+   &#60;a href="{$url}"&#62;
+    &#60;font color="red"&#62;This is a test&#60;/font&#62;
+   &#60;/a&#62;
+  &#60;/td&#62;
+ &#60;/tr&#62;
+&#60;/table&#62;
+{/strip}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;table border='0'&#62;&#60;tr&#62;&#60;td&#62;&#60;a href="http://. snipped...&#60;/a&#62;&#60;/td&#62;&#60;/tr&#62;&#60;/table&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  上記の例は、全ての行が HTML タグで始まり HTML タグで終わる事に注意して下さい。
+  全ての行は連ねて出力されます。行の始めか終わりにプレーンテキストがある場合は、
+  連続して出力されたその結果は望むものではないかもしれません。
+ </P
+><P
+>&#13; <A
+HREF="language.modifier.strip.html"
+><TT
+CLASS="varname"
+>strip</TT
+></A
+>
+  修飾子も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.section.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.custom.functions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{section},{sectionelse}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>カスタム関数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

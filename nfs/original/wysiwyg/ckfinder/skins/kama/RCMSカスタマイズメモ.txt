@@ -1,0 +1,5 @@
+host.css
+全体的に
+cursor:default
+↓
+cursor:pointer

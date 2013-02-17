@@ -1,0 +1,296 @@
+<HTML
+><HEAD
+><TITLE
+>プラグインによる Smarty の拡張</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プログラマのための Smarty"
+HREF="smarty.for.programmers.html"><LINK
+REL="PREVIOUS"
+TITLE="テンプレートリソース"
+HREF="template.resources.html"><LINK
+REL="NEXT"
+TITLE="命名規約"
+HREF="plugins.naming.conventions.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="template.resources.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.naming.conventions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="plugins"
+></A
+>第 16章プラグインによる Smarty の拡張</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="plugins.html#plugins.howto"
+>プラグインの動作原理</A
+></DT
+><DT
+><A
+HREF="plugins.naming.conventions.html"
+>命名規約</A
+></DT
+><DT
+><A
+HREF="plugins.writing.html"
+>プラグインの記述</A
+></DT
+><DT
+><A
+HREF="plugins.functions.html"
+>テンプレート関数プラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.modifiers.html"
+>修飾子プラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.block.functions.html"
+>ブロック関数プラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.compiler.functions.html"
+>コンパイラ関数プラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.prefilters.postfilters.html"
+>プリフィルタ/ポストフィルタプラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.outputfilters.html"
+>アウトプットフィルタプラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.resources.html"
+>リソースプラグイン</A
+></DT
+><DT
+><A
+HREF="plugins.inserts.html"
+>インサートプラグイン</A
+></DT
+></DL
+></DIV
+><P
+>&#13;   Smarty 2.0 から導入されたプラグインアーキテクチャにより、
+   Smarty のほとんど全ての機能がカスタマイズ可能になりました。
+   プラグインには次のものがあります。
+   <P
+></P
+><UL
+COMPACT="COMPACT"
+><LI
+><SPAN
+>テンプレート関数プラグイン</SPAN
+></LI
+><LI
+><SPAN
+>修飾子プラグイン</SPAN
+></LI
+><LI
+><SPAN
+>ブロック関数プラグイン</SPAN
+></LI
+><LI
+><SPAN
+>コンパイラ関数プラグイン</SPAN
+></LI
+><LI
+><SPAN
+>プリフィルタプラグイン</SPAN
+></LI
+><LI
+><SPAN
+>ポストフィルタプラグイン</SPAN
+></LI
+><LI
+><SPAN
+>アウトプットフィルタプラグイン</SPAN
+></LI
+><LI
+><SPAN
+>リソースプラグイン</SPAN
+></LI
+><LI
+><SPAN
+>インサートプラグイン</SPAN
+></LI
+></UL
+>
+   リソースを除いて、register_* API
+   によって関数を登録する古い方法の後方互換性はサポートされます。 
+   API を使わずに、代わりに <TT
+CLASS="literal"
+>$custom_funcs</TT
+>,
+   <TT
+CLASS="literal"
+>$custom_mods</TT
+> や その他のクラス変数を変更していたなら、
+   API を使用するか、行った拡張をプラグインに変換するようにスクリプトを調整する必要があります。
+  </P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="plugins.howto"
+></A
+>プラグインの動作原理</H1
+><P
+>&#13;    プラグインは要求があると常に読み込まれます。テンプレートから呼び出された
+    修飾子・関数・リソース等のプラグインだけが読み込まれます。
+    さらに各プラグインは同じリクエスト内に Smarty
+    の異なるインスタンスが複数実行されていても、読み込まれるのは一度だけです。
+   </P
+><P
+>&#13;    プリフィルタ/ポストフィルタとアウトプットフィルタは少し特殊です。
+    これらはテンプレートから呼び出されないので、テンプレートが処理される前に
+    API 関数を経由して明示的に登録または読み込まれる必要があります。
+    同じ種類の複数のフィルタが実行される順序は、それらが登録または読み込まれる順序によって決まります。
+   </P
+><P
+>&#13;    <A
+HREF="variable.plugins.dir.html"
+>プラグインディレクトリ</A
+>
+    は、単一のパスを示す文字列または複数のパスを格納した配列でとなります。
+    プラグインのインストールは、単にプラグインファイルをいずれかのプラグインディレクトリ内に置くだけです。
+    そうすれば Smarty はそれを自動的に使用します。
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="template.resources.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.naming.conventions.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>テンプレートリソース</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>命名規約</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

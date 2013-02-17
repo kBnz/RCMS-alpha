@@ -1,0 +1,623 @@
+<HTML
+><HEAD
+><TITLE
+>キャッシュ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プログラマのための Smarty"
+HREF="smarty.for.programmers.html"><LINK
+REL="PREVIOUS"
+TITLE="unregister_resource()"
+HREF="api.unregister.resource.html"><LINK
+REL="NEXT"
+TITLE="ページごとに複数のキャッシュ"
+HREF="caching.multiple.caches.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.unregister.resource.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="caching.multiple.caches.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="caching"
+></A
+>第 14章キャッシュ</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="caching.html#caching.setting.up"
+>キャッシュのセットアップ</A
+></DT
+><DT
+><A
+HREF="caching.multiple.caches.html"
+>ページごとに複数のキャッシュ</A
+></DT
+><DT
+><A
+HREF="caching.groups.html"
+>キャッシュのグループ</A
+></DT
+><DT
+><A
+HREF="caching.cacheable.html"
+>キャッシュ可能なプラグインの出力の制御</A
+></DT
+></DL
+></DIV
+><P
+>&#13;   キャッシュは出力内容をファイルに保存する事によって、
+   <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>
+   又は
+   <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+   を呼び出す速度を向上させるために使用されます。キャッシュが有効の場合、
+   出力を再生成せずに表示されます。特に処理時間が長いテンプレートは、
+   キャッシュを使用する事で大きく速度が上昇するでしょう。
+   キャッシュされるのは
+   <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+>
+   又は
+   <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+   の出力結果なので、１つのキャッシュファイルが複数のテンプレートファイルや
+   設定ファイル等で構成されていることもあります。
+   </P
+><P
+>&#13;   テンプレートが動的コンテンツの場合、何をどれくらいの期間キャッシュするのか注意が必要です。
+   例えば、Webサイトの一面にそれほど変更されないコンテンツが表示されている場合は、
+   一時間かそれ以上、このページをキャッシュしても問題なく動作するでしょう。
+   一方、一分経過するごとに新しい情報が格納される天気図をページに表示する場合は、
+   このページをキャッシュする事は意味をなさないでしょう。
+   </P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="caching.setting.up"
+></A
+>キャッシュのセットアップ</H1
+><P
+>&#13;    まずはじめにキャッシュを有効にします。これは、<A
+HREF="variable.caching.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+><TT
+CLASS="literal"
+> = 1 (あるいは 2)</TT
+>
+    を設定するだけです。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6772"
+></A
+><P
+><B
+>例 14-1. キャッシュを有効にする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    いつものようにテンプレートから出力内容をパースするために
+    <TT
+CLASS="literal"
+>display('index.tpl')</TT
+> を呼び出しますが、
+    キャッシュを有効にした事でその出力内容をコピーしたファイルが
+    <A
+HREF="variable.cache.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$cache_dir</I
+></TT
+></A
+>
+    内に保存されます。次回 <TT
+CLASS="literal"
+>display('index.tpl')</TT
+>
+    が呼ばれる際には、再びテンプレートをパースする代わりにキャッシュされたコピーが使用されます。
+   </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+     <A
+HREF="variable.cache.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$cache_dir</I
+></TT
+></A
+>
+     内のファイルにはテンプレート名に類似した名前が付けられます。
+     拡張子は <TT
+CLASS="filename"
+>.php</TT
+> ですが、実際にはPHPスクリプトとして実行されません。
+     これらのファイルは編集しないで下さい！
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    各々のキャッシュされたページは、
+    <A
+HREF="variable.cache.lifetime.html"
+><TT
+CLASS="parameter"
+><I
+>$cache_lifetime</I
+></TT
+></A
+>
+    生存時間が限られています。デフォルト値は 3600 秒です。
+    期限が過ぎた後、キャッシュは再生成されます。
+    <A
+HREF="variable.caching.html"
+><TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+><TT
+CLASS="literal"
+>=2</TT
+>
+    を設定する事によって、個々のキャッシュに自分自身の生存時間を与える事が可能です。詳細は、
+    <A
+HREF="variable.cache.lifetime.html"
+><TT
+CLASS="parameter"
+><I
+>$cache_lifetime</I
+></TT
+></A
+>
+    を参照して下さい
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6794"
+></A
+><P
+><B
+>例 14-2. キャッシュごとに生存時間を設定する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">2</span><span style="color: #007700">;&nbsp;</span><span style="color: #FF8000">//&nbsp;生存時間はキャッシュごと<br /><br />//&nbsp;index.tplに5分のcache_lifetimeをセットします<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">cache_lifetime&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">300</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;home.tplに1時間のcache_lifetimeをセットします<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">cache_lifetime&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">3600</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'home.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;注:&nbsp;$caching&nbsp;=&nbsp;2の時、次のような$cache_lifetimeの設定は動作しません。<br />//&nbsp;home.tplのキャッシュの生存時間は既に1時間にセットされているので、<br />//&nbsp;もはや、$cache_lifetimeの値が尊重される事はありません。<br />//&nbsp;home.tplのキャッシュは、今までどおり1時間後に満期になるでしょう。<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">cache_lifetime&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">30</span><span style="color: #007700">;&nbsp;</span><span style="color: #FF8000">//&nbsp;30&nbsp;seconds<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'home.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <A
+HREF="variable.compile.check.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$compile_check</I
+></TT
+></A
+> が有効の時、
+    キャッシュファイルに入り組んだすべてのテンプレートファイルと設定ファイルは
+    修正されたかどうかをチェックされます。
+    もしキャッシュが生成されてからいくつかのファイルが修正されていた場合、
+    キャッシュは即座に再生成されます。
+    これは最適なパフォーマンスのためには僅かなオーバーヘッドになるので、
+    <A
+HREF="variable.compile.check.html"
+><TT
+CLASS="parameter"
+><I
+>$compile_check</I
+></TT
+>
+    </A
+> は <TT
+CLASS="constant"
+>FALSE</TT
+> にして下さい。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6803"
+></A
+><P
+><B
+>例 14-3. $compile_check を有効にする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">compile_check&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <A
+HREF="variable.force.compile.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$force_compile</I
+></TT
+></A
+> が有効の場合、
+    キャッシュファイルは常に再生成されます。これは事実上、キャッシュ機能を無効にします。通常、
+    <A
+HREF="variable.force.compile.html"
+><TT
+CLASS="parameter"
+><I
+>$force_compile</I
+></TT
+>
+    </A
+> は <A
+HREF="chapter.debugging.console.html"
+>デバッグ</A
+>
+    目的でのみ使用し、キャッシュは
+    <A
+HREF="variable.caching.html"
+><TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+>
+    </A
+><TT
+CLASS="literal"
+> = 0</TT
+>.
+    にセットして無効にするのがさらに効率の良い方法です。
+   </P
+><P
+>&#13;    <A
+HREF="api.is.cached.html"
+><TT
+CLASS="varname"
+>is_cached()</TT
+></A
+>
+    関数は、テンプレートが有効なキャッシュを持っているかどうかを調べるのに使われます。
+    もしデータベースフェッチを必要とするようなテンプレートのキャッシュが存在する場合、
+    フェッチ過程をスキップするためにこの関数を使う事が出来ます。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6818"
+></A
+><P
+><B
+>例 14-4. is_cached() を使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /><br />if(!</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">is_cached</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;キャッシュが有効でないので、ここで変数の割り当てを行います<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$contents&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">get_database_contents</span><span style="color: #007700">();<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">$contents</span><span style="color: #007700">);<br />}<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;    <A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>
+    テンプレート関数によってページの一部を動的に保つ事が出来ます。
+    例えば、すべてのページは右下に表示されるバナー以外はキャッシュが可能だとします。
+    バナー部分には
+    <A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>
+    関数を使う事によって、キャッシュされたコンテンツの中に動的な要素を保つ事ができます。
+    詳細な説明や例は、<A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>
+    のドキュメントを参照してください。
+   </P
+><P
+>&#13;    <A
+HREF="api.clear.all.cache.html"
+><TT
+CLASS="varname"
+>clear_all_cache()</TT
+></A
+>
+    関数または <A
+HREF="api.clear.cache.html"
+><TT
+CLASS="varname"
+>clear_cache()</TT
+></A
+>
+    関数によって、個々のキャッシュファイル (<A
+HREF="caching.groups.html"
+>そしてグループ</A
+>)
+    をクリアする事ができます。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6834"
+></A
+><P
+><B
+>例 14-5. キャッシュをクリアする</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">;<br /><br /></span><span style="color: #FF8000">//&nbsp;全てのキャッシュファイルをクリアします<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">clear_cache</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;index.tplのキャッシュファイルのみクリアします<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">clear_all_cache</span><span style="color: #007700">();<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.unregister.resource.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="caching.multiple.caches.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>unregister_resource()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ページごとに複数のキャッシュ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

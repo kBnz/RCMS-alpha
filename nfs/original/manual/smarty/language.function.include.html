@@ -1,0 +1,625 @@
+<HTML
+><HEAD
+><TITLE
+>{include}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{if},{elseif},{else}"
+HREF="language.function.if.html"><LINK
+REL="NEXT"
+TITLE="{include_php}"
+HREF="language.function.include.php.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.if.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.include.php.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.include"
+></A
+>{include}</H1
+><P
+>&#13;  <TT
+CLASS="varname"
+>{include}</TT
+> タグを使用して、
+  現在のテンプレートに他のテンプレートをインクルードします。
+  現在のテンプレートにて利用可能なあらゆる変数は、
+  インクルードされたテンプレートでも同じく利用可能です。
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;  <TT
+CLASS="varname"
+>{include}</TT
+> タグには、テンプレートリソースのパスを含んだ
+  <TT
+CLASS="parameter"
+><I
+>file</I
+></TT
+> 属性を必ず指定する必要があります。
+  </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="varname"
+>{include}</TT
+> の出力をブラウザに表示する代わりに変数に格納したい場合は、
+  オプションの <TT
+CLASS="parameter"
+><I
+>assign</I
+></TT
+> 属性にその変数名を定義します。
+  <A
+HREF="language.custom.functions.html#language.function.assign"
+><TT
+CLASS="varname"
+>{assign}</TT
+></A
+>
+  と同等です。
+ </P
+></LI
+><LI
+><P
+>&#13;  インクルードされたテンプレートに変数を渡すには、
+  <A
+HREF="language.syntax.attributes.html"
+>attributes</A
+>
+  を使用します。インクルードされたテンプレートに明示的に渡された変数は、
+  インクルードされたファイルのスコープでのみ有効となります。
+  そのテンプレートに同じ名前の変数が存在する場合は、
+  渡された変数がそれをオーバーライドします。
+ </P
+></LI
+><LI
+><P
+>&#13;  全ての割り当て変数の値は、インクルードされたテンプレートのスコープが閉じた後に元に戻ります。
+  これは、インクルードされたテンプレート内で全ての変数を使用可能であるということです。
+  しかし、インクルードされたテンプレート内での変数の変更は
+  <TT
+CLASS="varname"
+>{include}</TT
+>
+  の後でインクルードしている側のテンプレート内では見ることはできません。
+  </P
+></LI
+><LI
+><P
+>&#13;  <A
+HREF="api.variables.html#variable.template.dir"
+><TT
+CLASS="parameter"
+><I
+>$template_dir</I
+></TT
+></A
+>
+  ディレクトリ外にあるファイルを <TT
+CLASS="varname"
+>{include}</TT
+> するには、
+  <A
+HREF="template.resources.html"
+>テンプレートリソース</A
+> を指定します。
+  </P
+></LI
+></UL
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN2098"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>file</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インクルードするテンプレートファイル名</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>assign</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インクルードしたコンテンツの出力を格納する変数名</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>[var ...]</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>[var type]</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ローカルからテンプレートに渡す変数</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2134"
+></A
+><P
+><B
+>例 7-17. シンプルな {include} の例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;html&#62;
+&#60;head&#62;
+  &#60;title&#62;{$title}&#60;/title&#62;
+&#60;/head&#62;
+&#60;body&#62;
+{include file='page_header.tpl'}
+
+{* ここにテンプレートの本体を記述します。変数 $tpl_name
+   はたとえば 'contact.tpl' などに置き換えられます。
+*}
+{include file="$tpl_name.tpl"}
+
+{include file='page_footer.tpl'}
+&#60;/body&#62;
+&#60;/html&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2137"
+></A
+><P
+><B
+>例 7-18. {include} に変数を渡す</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{include file='links.tpl' title='Newest links' links=$link_array}
+{* ここにテンプレートの本体を記述します *}
+{include file='footer.tpl' foo='bar'}</PRE
+></TD
+></TR
+></TABLE
+><P
+>このテンプレートは、以下のような <TT
+CLASS="filename"
+>links.tpl</TT
+> をインクルードします。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;div id="box"&#62;
+&#60;h3&#62;{$title}{/h3&#62;
+&#60;ul&#62;
+{foreach from=$links item=l}
+.. 何かを行います  ...
+&#60;/foreach}
+&#60;/ul&#62;
+&#60;/div&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2143"
+></A
+><P
+><B
+>例 7-19. {include} と変数への割り当て</B
+></P
+><P
+>この例は、<TT
+CLASS="filename"
+>nav.tpl</TT
+>
+    の内容を変数 <TT
+CLASS="varname"
+>$navbar</TT
+> に割り当て、
+    ページの最初と最後に出力させるものです。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;body&#62;
+  {include file='nav.tpl' assign=navbar}
+  {include file='header.tpl' title='Smarty is cool'}
+    {$navbar}
+    {* テンプレートの本体をここへ記述します *}
+    {$navbar}
+  {include file='footer.tpl'}
+&#60;/body&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2149"
+></A
+><P
+><B
+>例 7-20. さまざまな {include} リソースの例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* ファイルの絶対パス *}
+{include file='/usr/local/include/templates/header.tpl'}
+
+{* ファイルの絶対パス(結果は上と同じ) *}
+{include file='file:/usr/local/include/templates/header.tpl'}
+
+{* Windows環境のファイルの絶対パス(接頭辞の"file:"は必須) *}
+{include file='file:C:/www/pub/templates/header.tpl'}
+
+{* "db"と名付けられたテンプレートリソースからインクルード *}
+{include file='db:header.tpl'}
+
+{* 変数名に格納された名前のテンプレートをインクルード - 例 $module = 'contacts' *}
+{include file="$module.tpl"}
+
+{* この例は、シングルクォートでは変数が展開されないため、動作しません *}
+{include file='$module.tpl'}
+
+{* 複数の可変テンプレートをインクルード - 例 amber/links.view.tpl *}
+{include file="$style_dir/$module.$view.tpl"}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.function.include.php.html"
+><TT
+CLASS="varname"
+>{include_php}</TT
+></A
+>、
+  <A
+HREF="language.function.insert.html"
+><TT
+CLASS="varname"
+>{insert}</TT
+></A
+>、
+  <A
+HREF="language.function.php.html"
+><TT
+CLASS="varname"
+>{php}</TT
+></A
+>、
+  <A
+HREF="template.resources.html"
+>テンプレートリソース</A
+> および
+  <A
+HREF="tips.componentized.templates.html"
+>コンポーネント化したテンプレート</A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.if.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.include.php.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{if},{elseif},{else}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{include_php}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

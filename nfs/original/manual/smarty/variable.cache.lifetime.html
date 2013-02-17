@@ -1,0 +1,252 @@
+<HTML
+><HEAD
+><TITLE
+>$cache_lifetime</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラス変数"
+HREF="api.variables.html"><LINK
+REL="PREVIOUS"
+TITLE="$cache_dir"
+HREF="variable.cache.dir.html"><LINK
+REL="NEXT"
+TITLE="$cache_handler_func"
+HREF="variable.cache.handler.func.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variable.cache.dir.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 12章Smarty クラス変数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="variable.cache.handler.func.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="variable.cache.lifetime"
+></A
+>$cache_lifetime</H1
+><P
+>&#13;     テンプレートのキャッシュの期限(単位：秒)です。これが切れるとキャッシュは再生成されます。
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;     <TT
+CLASS="parameter"
+><I
+>$cache_lifetime</I
+></TT
+> を使用するためには、
+     <TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+> を有効に (1 あるいは 2 のいずれかに) する必要があります。
+     </P
+></LI
+><LI
+><P
+>&#13;     この値を -1 にすると、キャッシュを無期限で有効とします。
+     </P
+></LI
+><LI
+><P
+>&#13;     この値を 0 にすると、キャッシュを常に再生成します
+     (これはテスト時にのみ有用です。
+     キャッシュを無効にするためには、より効率的な方法として <A
+HREF="variable.caching.html"
+><TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+> = 0
+     があります)。
+    </P
+></LI
+><LI
+><P
+>&#13;      各テンプレートごとに有効期限を独自に設定したい場合は
+      <A
+HREF="variable.caching.html"
+>&#13;      <TT
+CLASS="parameter"
+><I
+>$caching</I
+></TT
+></A
+> = 2
+      とします。そして
+      <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+>
+      </A
+> あるいは <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+      を呼び出す前に
+      <TT
+CLASS="parameter"
+><I
+>$cache_lifetime</I
+></TT
+> に値を設定してください。
+     </P
+></LI
+></UL
+><P
+>&#13;     <A
+HREF="variable.force.compile.html"
+>&#13;     <TT
+CLASS="parameter"
+><I
+>$force_compile</I
+></TT
+></A
+>
+     が有効の場合、キャッシュファイルは毎回再生成されるので事実上キャッシュは無効になります。
+     <A
+HREF="api.clear.all.cache.html"
+><TT
+CLASS="varname"
+>clear_all_cache()</TT
+></A
+>
+     関数で全てのキャッシュを、<A
+HREF="api.clear.cache.html"
+><TT
+CLASS="varname"
+>clear_cache()</TT
+></A
+>
+     関数で特定のキャッシュファイル (グループ) をクリアする事が出来ます。
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variable.cache.dir.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="variable.cache.handler.func.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$cache_dir</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.variables.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$cache_handler_func</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

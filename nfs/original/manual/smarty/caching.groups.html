@@ -1,0 +1,304 @@
+<HTML
+><HEAD
+><TITLE
+>キャッシュのグループ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="キャッシュ"
+HREF="caching.html"><LINK
+REL="PREVIOUS"
+TITLE="ページごとに複数のキャッシュ"
+HREF="caching.multiple.caches.html"><LINK
+REL="NEXT"
+TITLE="キャッシュ可能なプラグインの出力の制御"
+HREF="caching.cacheable.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="caching.multiple.caches.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 14章キャッシュ</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="caching.cacheable.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="caching.groups"
+></A
+>キャッシュのグループ</H1
+><P
+>&#13;      <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+> のグループを設定する事で、
+      より複雑なグループにする事が出来ます。これは <TT
+CLASS="parameter"
+><I
+>$cache_id</I
+></TT
+>
+      の値の中の <TT
+CLASS="literal"
+>|</TT
+> によって各サブグループに分けられる事で実現できます。
+      サブグループはいくらでも持つ事が出来ます。
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;      ディレクトリ階層のようなキャッシュグループを考える事が出来ます。
+      例えば <TT
+CLASS="literal"
+>'a|b|c'</TT
+> というキャッシュグループは、
+      <TT
+CLASS="literal"
+>'/a/b/c/'</TT
+> というディレクトリ構造だと考えられます。
+      </P
+></LI
+><LI
+><P
+>&#13;      <TT
+CLASS="literal"
+>clear_cache(null,'a|b|c')</TT
+>
+      はファイル <TT
+CLASS="literal"
+>'/a/b/c/*'</TT
+> を、
+      <TT
+CLASS="literal"
+>clear_cache(null,'a|b')</TT
+> はファイル
+      <TT
+CLASS="literal"
+>'/a/b/*'</TT
+> を削除するのに似ています。
+      </P
+></LI
+><LI
+><P
+>&#13;      <A
+HREF="variable.compile.id.html"
+><TT
+CLASS="parameter"
+><I
+>$compile_id</I
+></TT
+></A
+>
+      を <TT
+CLASS="literal"
+>clear_cache(null,'a|b','foo')</TT
+> のように指定すると、
+      それをキャッシュグループに追加して
+      <TT
+CLASS="literal"
+>'/a/b/c/foo/'</TT
+> として扱います。
+      </P
+></LI
+><LI
+><P
+>&#13;      テンプレート名を
+      <TT
+CLASS="literal"
+>clear_cache('foo.tpl','a|b|c')</TT
+> のように指定すると、
+      Smarty は <TT
+CLASS="literal"
+>'/a/b/c/foo.tpl'</TT
+> を削除しようと試みます。
+      </P
+></LI
+><LI
+><P
+>&#13;      また、<TT
+CLASS="literal"
+>'/a/b/*/foo.tpl'</TT
+> のように、
+      複数のキャッシュグループの下でテンプレート名を指定して削除する事は出来ません。
+      キャッシュグループは左から右へ向かう順序でのみグループ化を定義できます。
+      グループとしてそれらをクリアするためには、
+      単一のキャッシュグループ階層の下でテンプレートをグループ化する必要があります。
+     </P
+></LI
+></UL
+><P
+>&#13;      キャッシュのグループ化はテンプレートディレクトリ階層によって混乱させられるべきではなく、
+      テンプレートがどのような構造なのかも知り得ません。例えば、
+      <TT
+CLASS="filename"
+>themes/blue/index.tpl</TT
+> のようなテンプレート構造があり、
+      <SPAN
+CLASS="QUOTE"
+>"blue"</SPAN
+> テーマのキャッシュファイルを全てクリアしたい時、
+      テンプレートファイル構造をまねた 
+      <TT
+CLASS="literal"
+>display('themes/blue/index.tpl','themes|blue')</TT
+>
+      のような キャッシュグループ構造を作成する必要があり、それならば
+      <TT
+CLASS="literal"
+>clear_cache(null,'themes|blue')</TT
+>
+      によってキャッシュをクリアする事が出来ます。
+     </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6917"
+></A
+><P
+><B
+>例 14-9. $cache_id groups</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">require(</span><span style="color: #DD0000">'Smarty.class.php'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Smarty</span><span style="color: #007700">;<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">caching&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">true</span><span style="color: #007700">;<br /><br /></span><span style="color: #FF8000">//&nbsp;はじめの２つのcache_idグループが"sports|basketball"のキャッシュを全てクリアします。<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">clear_cache</span><span style="color: #007700">(</span><span style="color: #0000BB">null</span><span style="color: #007700">,</span><span style="color: #DD0000">'sports|basketball'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;はじめのcache_idグループが"sports"のキャッシュを全てクリアします。<br />//&nbsp;これは"sports|basketball"又は"sports|(anything)|(anything)|(anything)|..."を用いてインクルードされたものでしょう。<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">clear_cache</span><span style="color: #007700">(</span><span style="color: #0000BB">null</span><span style="color: #007700">,</span><span style="color: #DD0000">'sports'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;cache_id&nbsp;として"sports|basketball"を用いてfoo.tpl&nbsp;のキャッシュファイルをクリアします。<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">clear_cache</span><span style="color: #007700">(</span><span style="color: #DD0000">'foo.tpl'</span><span style="color: #007700">,</span><span style="color: #DD0000">'sports|basketball'</span><span style="color: #007700">);<br /><br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">,</span><span style="color: #DD0000">'sports|basketball'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="caching.multiple.caches.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="caching.cacheable.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ページごとに複数のキャッシュ</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="caching.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>キャッシュ可能なプラグインの出力の制御</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

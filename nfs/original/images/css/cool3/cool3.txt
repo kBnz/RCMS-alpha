@@ -1,0 +1,344 @@
+@charset "UTF-8";
+/* 全体の設定
+------------------------------------------------------------ */
+body {
+	/*
+		ウィンドウの余白(padding)を設定するときはこのbodyで行ってください。
+		containerで余白(margin)の設定をするとレイアウトが崩れます。
+	  paddingを設定する際はOperaのバグ対策のため最下行で指定してください。
+	*/
+}
+
+li {list-style-position: inside; }
+input, select { margin-bottom:10px; }
+
+/* ------------------------------------------------------------ */
+#container {
+	/*
+	containerでmarginやpaddingを指定すると正常に表示されない場合があります。
+	widthを指定しない場合はメインコンテンツの幅がブラウザウィンドウの幅に同期します。
+	*/
+	background:#fff;
+	border:1px solid #000F48;
+}
+#contents { padding:0px 10px; font-size:100%;}
+#footer { margin-top: 15px; height: 50px;}
+
+/* リンクの設定
+------------------------------------------------------------ */
+a:link ,a:visited {color: #812b00 ;}
+a:hover {color: #812b00 ;}
+a:active {color: #812b00 ;}
+
+/* navi
+------------------------------------------------------------ */
+#navi ul.navi:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+#navi ul.navi {	background: url(/images/css/cool3/navi.gif);}
+#navi li.navi {
+	font-size: 80%;
+	list-style: none;
+	float:left;
+	white-space: nowrap;
+}
+#navi li.navi a {
+	display: block;
+	text-align: center;
+	color: #fff;
+	font-weight: bold;
+	text-decoration: none;
+	border-right: 1px dotted #2781B0;
+	padding:18px 15px 10px 15px;
+	valign:middle;
+}
+#navi strong {
+	display: block;
+	color: #fff;
+	text-align: center;
+	valign:middle;
+	background-image: url(/images/css/cool3/navi_on2.gif);
+	border-right: 1px solid #000000;
+	border-left: 1px solid #2781B0;
+	padding:18px 15px 10px 15px;
+}
+*html #navi li.navi a {margin-top:1px;}
+*html #navi strong{margin-top:1px;}
+*html #navi li.navi a:hover {margin-top:1px;}
+
+#navi li.navi a:hover {
+	display: block;
+	color: #fff;
+	text-align: center;
+	valign:middle;
+	background-image: url(/images/css/cool3/navi_on2.gif);
+	padding:18px 15px 10px 15px;}
+#navi ul.navi {	height: 1%;}
+
+
+
+/* フットパスの設定
+------------------------------------------------------------ */
+#footpath{
+	font-size: 90%;
+ 	width: 90%;
+ 	margin-left:15px;
+}
+
+#footpath li.footpath{
+	float: left;
+ 	list-style-type: none;
+ 	padding: 3px;
+ 	margin-right: 2px;
+}
+
+#footpath li.footpath a {
+	display: block;
+}
+
+/* ヘッダーの設定
+------------------------------------------------------------ */
+#header {width:100%;}
+#header h1 span {display: block;}
+
+#header h1 span a { font-size: 160%; text-decoration:none;}
+
+#header h1 span a:hover{	text-decoration:underline;}
+#header{}
+#header h1 a:link,
+#header h1 a:visited { font-size:160%; color: #336699 ; text-decoration: none; }
+#header h1 a:hover { font-size:160%; text-decoration: underline; }
+.mainPhoto{padding-bottom:10px; text-align:center;}
+/* フッターの設定
+------------------------------------------------------------ */
+#footer {
+	width: 100%;
+ 	height: 100%;
+ 	margin-top: 30px;
+ 	text-align: center;
+ 	padding-top:10px;
+ 	background-image: url(/images/css/cool3/footer.gif);
+	background-repeat:repeat-x; }
+
+/* メインコンテンツの設定 (トップとボトムも含む)
+------------------------------------------------------------ */
+/*枠設定*/
+
+#main_contents .module_top, #top_contents .module_top, #bottom_contents .module_top{}
+	
+#main_contents .module_body, #top_contents .module_body, #bottom_contents .module_body{
+	margin-top: 10px;
+ 	background-image: url(/images/css/cool3/bg_modulebody.gif);
+ 	height: 100%; }
+
+#main_contents .module_body_centertop, #top_contents .module_body_centertop, #bottom_contents .module_body_centertop{
+	width:100%;
+ 	background-image: url(/images/css/cool3/center_top.gif);
+ 	background-repeat: repeat-x;
+ 	background-position: 0% 0%;
+}
+
+#main_contents .module_body_centerleft, #top_contents .module_body_centerleft, #bottom_contents .module_body_centerleft{
+	background-image: url(/images/css/cool3/center_left.gif);
+ 	background-repeat: repeat-y;
+ 	background-position: 0% 0%;
+}
+
+#main_contents .module_body_centerright, #top_contents .module_body_centerright, #bottom_contents .module_body_centerright{
+	background-image: url(/images/css/cool3/center_right.gif);
+ 	background-repeat: repeat-y;
+ 	background-position: 100% 0%;
+}
+
+#main_contents .module_body_centerbottom, #top_contents .module_body_centerbottom, #bottom_contents .module_body_centerbottom{
+	background-image: url(/images/css/cool3/center_btm.gif);
+ 	background-repeat: repeat-x;
+ 	background-position: 0% 100%;
+}
+
+#main_contents .module_body_lefttop, #top_contents .module_body_lefttop, #bottom_contents .module_body_lefttop{
+	background-image: url(/images/css/cool3/left_top.gif);
+ 	background-repeat: no-repeat;
+ 	background-position: 0% 0%;
+}
+
+#main_contents .module_body_righttop, #top_contents .module_body_righttop, #bottom_contents .module_body_righttop{
+	background-image: url(/images/css/cool3/right_top.gif);
+ 	background-repeat: no-repeat;
+ 	background-position: 100% 0%;
+}
+
+#main_contents .module_body_leftbottom, #top_contents .module_body_leftbottom, #bottom_contents .module_body_leftbottom{
+	background-image: url(/images/css/cool3/left_btm.gif);
+ 	background-repeat: no-repeat;
+	background-position: 0% 100%; 
+}
+
+#main_contents .module_body_rightbottom, #top_contents .module_body_rightbottom, #bottom_contents .module_body_rightbottom{
+	background-image: url(/images/css/cool3/right_btm.gif);
+ 	background-repeat: no-repeat;
+ 	background-position: 100% 100%;
+ 	padding-top: 0px;
+ 	padding-left: 15px;
+ 	padding-right: 15px;
+ 	padding-bottom: 35px; 
+}
+
+#main_contents .module_title, #top_contents .module_title, #bottom_contents .module_title{
+	color:#fff;
+ 	font-size:100%;
+ 	font-weight:bold;
+ 	margin-left:10px;
+ 	padding:15px 0px 5px 5px;
+ 	margin-right:10px;
+ 	margin-bottom:20px;
+}
+
+#main_contents .module_title, #top_contents .module_title, #bottom_contents .module_title span a {	color:#fff !important;}
+#main_contents .relation_link, #top_contents .relation_link, #bottom_contents .relation_link {margin-top: 17px;}
+
+/* サイドコンテンツ の設定 (左右共通)
+------------------------------------------------------------ */
+
+#side_contents_right .module_top, #side_contents_left .module_top {width:90%;}
+
+#side_contents_right h2, #side_contents_left h2{
+	background-repeat: no-repeat;
+ 	line-height: 25px; 
+	padding-left: 15px;
+ 	font-size: 100%;
+	padding-bottom:10px;
+
+}
+
+#side_contents_right h2 a, #side_contents_left h2 a{ color: #000F48;}
+
+#side_contents_right h2.module_title, #side_contents_left h2.module_title {
+	line-height: 25px;
+ 	border-bottom:none;
+ 	color:#000F48;
+ 	text-align:center;
+ 	background-image:url(/images/css/cool3/sidetitle.gif);
+	background-color:#fff;
+	background-repeat:repeat-x;
+ 	margin: 0 auto;
+	width:90%;
+}
+
+#side_contents_right div.module_bottom, #side_contents_left div.module_bottom{
+	padding:0px;
+ 	margin-bottom:5px;
+ 	height: 25px;
+ 	margin-top: 0px;
+}
+
+#side_contents_right div.module_contents, #side_contents_left div.module_contents {
+	color:#000F48;
+ 	line-height:125%;
+ 	padding:4px;
+ 	margin-left: 8px;
+ 	margin-top: -8px;	
+}
+
+/* IE排他 */
+html>body #side_contents_right div.module_contents, #side_contents_left div.module_contents{
+	margin-right: auto; 
+	margin-left: auto; }
+
+#side_contents_right ul, #side_contents_left ul{
+	margin-left: 18px; }
+
+#side_contents_right li, #side_contents_left li{
+	list-style-type: none;
+ 	list-style-position: outside;
+ 	list-style-image: url(/images/css/cool3/bullet1.gif); }
+
+/*枠設定*/
+#side_contents_right .module_title, #side_contents_left .module_title {
+	padding-left: 10px;
+ 	margin-bottom: 10px;
+ 	color: #FFFFFF;
+ 	background-color: #808080;
+}
+
+#side_contents_right .relation_link, #side_contents_left .relation_link {
+	position:absolute;
+ 	margin-left:80px;
+ 	margin-top:12px;
+}
+
+/* モジュール内の細かい設定
+------------------------------------------------------------ */
+.relation_link {	float: right; }
+
+a.small_text,a.small_text:visited {}
+
+a.small_text:hover {}
+
+table.list {
+	width: 90%;
+	border: 1px solid #0066CC; }
+
+table.list tr{
+	background-color: #fff !important; }
+
+table.list td{ padding: 2px; border-bottom: 1px solid #0066CC; }
+
+table.list th{
+	text-align: center;
+	color: #ffffff;
+ 	background-color:#fff; 	
+	border-bottom: 1px solid #0066CC;
+	font-weight:bold;
+}
+dt {}
+dd {}
+
+.monthCalendar { background-color: #fff !important; width:90%;}
+.monthCalendar td{ background-color: #fff !important; }
+.month-navi a {    color: #EEEEEE !important; }
+.BGC-dimgray { background-color: #fff !important; }
+.BGC-white { background-color: #fff !important; }
+.BGC-navi { background-color: #fff !important; }
+table.list th { color: #000099 !important; }
+.day { color: #000099 !important; }
+.saturday{ color: #000099 !important; }
+.holiday, .sunday{ color: #000099 !important; }
+.calendar_data{}
+div.blog_calendar td, div.monthly_calendar td{ border:1px solid #0066CC !important; }
+.gameinfo_table td, .gameinfo_table th { color: #000099 !important; }
+.score_table {	color: #000099 !important; }
+div.blog_item h4.subject{
+	border-bottom:1px solid #996633 !important;
+	border-left:10px solid #996633 !important;
+	margin-bottom: 10px;
+	padding:3px;
+}
+.bbs_item h3{
+	background-color: #996633 !important;
+	color: #ffffff;
+	padding: 2px;
+}
+.bbs_item{
+	margin-top: 5px;
+	border: 1px solid #996633 !important;
+	padding:5px;
+	line-height: 150%;
+}
+
+/* Opera バグ対策
+------------------------------------------------------------ */
+body {
+	color:#666;
+	padding-left: 30px;
+ 	padding-right: 30px;
+	background-image: url("/images/css/cool3/bg.gif");
+ 	background-color:#000099;
+	background-repeat:repeat-x;
+ 	background-attachment: fixed;
+}

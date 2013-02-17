@@ -1,0 +1,125 @@
+@charset "UTF-8";
+
+
+div.target table {
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: center;
+  border:0;
+  width: 100%;
+}
+
+td.layoutcol {
+  cursor:move;
+  text-align: center;
+  vertical-align: top;
+}
+td.layoutcol table {
+    border:none;
+    table-layout:fixed;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+td.layoutcol td {
+  cursor: move;
+  padding: 0;
+  margin: 0;
+  /*background:white;*/
+  -moz-user-select: none;
+  border: none;
+  font-family: arial,helvetica,sans-serif;
+  font-weight: bold;
+}
+td.layoutcol td div {
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+.label {
+  padding: 0;
+  margin-top: 10px;
+  color: black;
+  background: #eee;
+  background-repeat: no-repeat;
+  background-position: right center;
+  border: 2px solid #00c;
+  cursor: move;
+}
+.label div {
+  padding:2px;
+  margin:0px;
+  border-top:3px solid green;
+  white-space:nowrap;
+  font-size:90%;
+  font-family:arial,helvetica,sans-serif;
+  cursor:pointer;
+  color:#009;
+  text-decoration:underline;
+}
+.endlabel {
+  margin-top:10px;
+  border:none;
+  font-size:50%
+}
+
+#cust_tbl {
+  border:solid 2px #cccccc;
+}
+
+#cust_tbl span.title {
+  display: block;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+#cust_tbl div.target {
+  height: 100%;
+  padding-left:10px;
+  padding-right:10px;
+}
+#cust_tbl td.target {
+  padding-left:30px;
+  padding-right:30px;
+}
+
+#cust_tbl1, #cust_tbl2, #cust_tbl3, #cust_tbl4, #cust_tbl5, #cust_tbl6, #cust_tbl7, #cust_tbl8{
+  margin: 2px;
+  padding-top: 12px;
+  padding-bottom: 10px;
+  border-top:solid 1px #ddd;
+  border-left:solid 1px #ddd;
+  border-right:solid 1px #666;
+  border-bottom:solid 1px #666;
+}
+#cust_tbl1 {
+  background-color:#FFFF99;
+}
+#cust_tbl2 {
+  background-color: #FFCCCC;
+}
+
+#cust_tbl3 {
+  background-color: #99FF99;
+}
+
+#cust_tbl4 {
+  background-color: #99CCFF;
+}
+
+#cust_tbl5 {
+  background-color: #CCCC99;
+}
+
+#cust_tbl6 {
+  background-color: #CCCCFF;
+}
+
+#cust_tbl7 {
+  background-color: #FFCC99;
+}
+
+#cust_tbl8 {
+  background-color: #99CC66;
+}

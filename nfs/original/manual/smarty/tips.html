@@ -1,0 +1,306 @@
+<HTML
+><HEAD
+><TITLE
+>ヒント &#38; 裏ワザ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="付録"
+HREF="appendixes.html"><LINK
+REL="PREVIOUS"
+TITLE="トラブルシューティング"
+HREF="troubleshooting.html"><LINK
+REL="NEXT"
+TITLE="変数のデフォルトの扱い"
+HREF="tips.default.var.handling.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="troubleshooting.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tips.default.var.handling.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="tips"
+></A
+>第 18章ヒント &#38; 裏ワザ</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="tips.html#tips.blank.var.handling"
+>空白の変数の扱い</A
+></DT
+><DT
+><A
+HREF="tips.default.var.handling.html"
+>変数のデフォルトの扱い</A
+></DT
+><DT
+><A
+HREF="tips.passing.vars.html"
+>ヘッダテンプレートにタイトルの変数を渡す</A
+></DT
+><DT
+><A
+HREF="tips.dates.html"
+>日付</A
+></DT
+><DT
+><A
+HREF="tips.wap.html"
+>WAP/WML</A
+></DT
+><DT
+><A
+HREF="tips.componentized.templates.html"
+>コンポーネント化したテンプレート</A
+></DT
+><DT
+><A
+HREF="tips.obfuscating.email.html"
+>E-mail アドレスを混乱させる</A
+></DT
+></DL
+></DIV
+><P
+>&#13;  </P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="tips.blank.var.handling"
+></A
+>空白の変数の扱い</H1
+><P
+>&#13;    テーブルの背景が適切に機能するように <TT
+CLASS="literal"
+>&#38;nbsp;</TT
+>
+    を出力する場合のように、空白の変数が何も出力しない代わりに
+    デフォルトの値を出力したい場合があるかもしれません。
+    そのために多くの人は
+    <A
+HREF="language.function.if.html"
+><TT
+CLASS="varname"
+>{if}</TT
+></A
+>
+    {if}ステートメントを使用すると思いますが、Smartyによる変数の修飾子
+    <A
+HREF="language.modifier.default.html"
+><TT
+CLASS="varname"
+>default</TT
+>
+    </A
+> を使った簡略な方法があります。
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+><SPAN
+CLASS="QUOTE"
+>"Undefined variable"</SPAN
+> というエラーが表示されるのは、
+    PHP の <A
+HREF="http://php.net/error_reporting"
+TARGET="_top"
+>&#13;    <TT
+CLASS="varname"
+>error_reporting()</TT
+></A
+> が <TT
+CLASS="constant"
+>E_ALL</TT
+>
+    になっており、変数が Smarty に代入されていない場合です。
+    </P
+></BLOCKQUOTE
+></DIV
+>
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7673"
+></A
+><P
+><B
+>例 18-1. 変数が空白の時、&#38;nbsp; を出力する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* 長ったらしい方法 *}
+{if $title eq ''}
+   &#38;nbsp;
+{else}
+   {$title}
+{/if}
+
+{* 簡潔な方法 *}
+{$title|default:'&#38;nbsp;'}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;<A
+HREF="language.modifier.default.html"
+>&#13;<TT
+CLASS="varname"
+>default</TT
+></A
+> 修飾子および
+<A
+HREF="tips.default.var.handling.html"
+>変数のデフォルトの扱い</A
+>
+も参照してください。
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="troubleshooting.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tips.default.var.handling.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>トラブルシューティング</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendixes.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>変数のデフォルトの扱い</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

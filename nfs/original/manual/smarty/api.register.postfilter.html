@@ -1,0 +1,262 @@
+<HTML
+><HEAD
+><TITLE
+>register_postfilter()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="register_outputfilter()"
+HREF="api.register.outputfilter.html"><LINK
+REL="NEXT"
+TITLE="register_prefilter()"
+HREF="api.register.prefilter.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.register.outputfilter.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.register.prefilter.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.register.postfilter"
+></A
+>register_postfilter()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN6410"
+></A
+>register_postfilter()&nbsp;--&nbsp;ポストフィルタを動的に登録します。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN6413"
+></A
+><H2
+>説明</H2
+>void <B
+CLASS="methodname"
+>register_postfilter</B
+> ( mixed function)<BR
+></BR
+><P
+>&#13;   テンプレートをコンパイルした後で実行される
+   <A
+HREF="advanced.features.postfilters.html"
+>ポストフィルタ</A
+>
+   を動的に登録します。ポストフィルタ関数の定義の仕方は、
+   <A
+HREF="advanced.features.postfilters.html"
+>ポストフィルタ</A
+>
+   の項を参照して下さい。
+  </P
+><P
+>&#13;   PHP 関数のコールバック <TT
+CLASS="parameter"
+><I
+>function</I
+></TT
+>
+   は、次のいずれかとなります。
+   <P
+></P
+><UL
+><LI
+><P
+>&#13;       関数名を含んだ文字列
+       </P
+></LI
+><LI
+><P
+>&#13;       <TT
+CLASS="literal"
+>array(&#38;$object, $method)</TT
+> 形式の配列
+       （<TT
+CLASS="literal"
+>&#38;$object</TT
+> はオブジェクトの参照で、
+       <TT
+CLASS="literal"
+>$method</TT
+> はメソッド名を含む文字列）
+       </P
+></LI
+><LI
+><P
+>&#13;       <TT
+CLASS="literal"
+>array($class, $method)</TT
+> という形式の配列
+       （<TT
+CLASS="literal"
+>$class</TT
+> はクラス名であり、
+       <TT
+CLASS="literal"
+>$method</TT
+> はクラスのメソッド）
+       </P
+></LI
+></UL
+>
+  </P
+><P
+>&#13;  <A
+HREF="api.unregister.postfilter.html"
+>&#13;  <TT
+CLASS="varname"
+>unregister_postfilter()</TT
+></A
+>、
+  <A
+HREF="api.register.prefilter.html"
+>&#13;  <TT
+CLASS="varname"
+>register_prefilter()</TT
+></A
+>、
+  <A
+HREF="api.load.filter.html"
+><TT
+CLASS="varname"
+>load_filter()</TT
+></A
+>、
+  <A
+HREF="variable.autoload.filters.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$autoload_filters</I
+></TT
+></A
+>
+  および
+  <A
+HREF="advanced.features.outputfilters.html"
+>アウトプットフィルタ</A
+>
+  も参照してください。
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.register.outputfilter.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.register.prefilter.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>register_outputfilter()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>register_prefilter()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

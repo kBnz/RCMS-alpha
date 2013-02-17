@@ -1,0 +1,270 @@
+@charset "UTF-8";
+/* 全体の設定
+------------------------------------------------------------ */
+body {
+	/*
+		ウィンドウの余白(padding)を設定するときはこのbodyで行ってください。
+		containerで余白(margin)の設定をするとレイアウトが崩れます。
+	  paddingを設定する際はOperaのバグ対策のため最下行で指定してください。
+	*/
+	font-size: 12px !important;
+	color: #666666;
+	line-height: 140%;
+	background:#9acd32;
+}
+
+a:link,a:visited{border:none; color:#39c ;}
+a:hover{color:#3df ;}
+
+/* レイアウト系の設定
+------------------------------------------------------------ */
+#container { background:#000;}
+#contents { margin:0 auto;width:95%;}
+#main_contents .module_body,
+#top_contents .module_body,
+#bottom_contents .module_body {
+	height:100%; /* IE対策 */
+}
+
+/* 三段組左メイン用の設定
+------------------------------------------------------------ */
+.layout7 #sub_module4 .module_body_rightbottom { margin-right: 10px;}
+
+/* 二段組右メイン2用の設定
+------------------------------------------------------------ */
+.layout8 #main_module { margin-right: 10px;}
+
+/* ナビの設定
+------------------------------------------------------------ */
+#navi ul.navi:after {
+	content: ".";
+ 	display: block;
+ 	height: 0;
+ 	clear: both;
+ 	visibility: hidden;
+}
+#navi {
+	text-align:center;
+ 	margin: 0 auto;
+	background:#000;
+	width:95%;
+}
+#navi ul.navi {	padding: 3px 0px 7px 7px; }
+#navi li.navi {
+	font-size:100%;
+ 	list-style: none;
+ 	float:left;
+ 	margin: 7px 5px;
+ 	text-align: center;
+ 	padding-right:15px;
+ 	border-right:2px dotted #ccc;;
+}
+#navi li.last{ margin-right: 0px;}
+#navi li.navi a {
+	display: block;
+ 	font-weight: bold;
+ 	text-decoration: none;
+ 	word-break:keep-all;
+ 	color: #ffd700;
+	padding: 3px 5px 3px 15px;
+}
+#navi strong {
+	display: block;
+ 	color: #fff;
+ 	padding: 3px 5px 3px 15px;
+}
+#navi li.navi a:hover {
+ 	padding: 3px 5px 3px 15px;
+ 	color: #fff; 
+}
+#navi .module_body_centertop {
+	background: url(/images/css/kadomaru/navi_bg01.gif) repeat-x ;
+}
+#navi .module_body_centerleft {
+	background: url(/images/css/kadomaru/navi_bg02.gif) repeat-y ;
+}
+#navi .module_body_centerright {
+	background: url(/images/css/kadomaru/navi_bg03.gif) repeat-y  top right;
+}
+#navi .module_body_centerbottom {
+	background: url(/images/css/kadomaru/navi_bg04.gif) repeat-x bottom left;
+}
+#navi .module_body_lefttop {
+	background: url(/images/css/kadomaru/navi_bg05.gif) no-repeat ;
+}
+#navi .module_body_righttop {
+	background: url(/images/css/kadomaru/navi_bg06.gif) no-repeat top right;
+}
+#navi .module_body_leftbottom {
+	background: url(/images/css/kadomaru/navi_bg07.gif) no-repeat bottom left;
+}
+#navi .module_body_rightbottom {
+	background: url(/images/css/kadomaru/navi_bg08.gif) no-repeat bottom right;
+	padding: 5px;
+}
+
+/* フットパスの設定
+------------------------------------------------------------ */
+#footpath{
+	font-size: 10px;
+	margin: 0px 10px 10px 10px;
+}
+#footpath li.footpath{
+	float: left;
+	list-style-type: none;
+	padding: 3px;
+	margin-right: 2px;
+}
+#footpath li.footpath a {
+	display: block;
+}
+
+/* ヘッダーの設定
+------------------------------------------------------------ */
+.mng_line{}
+
+#header {
+	text-align:center;
+	margin-bottom:20px;
+}
+.mainPhoto{ padding: 30px 10px;}
+
+#header h1{
+	font-size:240%;
+	padding:20px 0;
+	background-color:#fff;
+	background-image:url("/images/css/kadomaru/contents_bg08.gif");
+	background-repeat:no-repeat;
+	background-position:bottom right
+}
+#header h1 a:link,
+#header h1 a:visited { color: #644200; text-decoration: none; }
+#header h1 a:hover { text-decoration: underline; }
+
+/* フッターの設定
+------------------------------------------------------------ */
+#footer {margin-top:20px;}
+#footer_contents {
+	padding: 10px;
+	background-color:#fff;
+	background-image: url(/images/css/kadomaru/contents_bg05.gif) ;
+	background-repeat:no-repeat;
+}
+#footer address {
+	font-style: normal;
+}
+#footer p {
+	text-align: right;
+}
+
+/* メインコンテンツの設定 (トップとボトムも含む)
+------------------------------------------------------------ */
+/*枠設定*/
+
+#main_contents .module_top, #top_contents .module_top, #bottom_contents .module_top{}
+	
+#main_contents .module_body, #top_contents .module_body, #bottom_contents .module_body{
+	margin-top: 10px;
+	background-image: url(/images/css/kadomaru/contents_bg05.gif)  ;
+	background-color:#fff;
+	background-repeat:no-repeat;
+ 	height: 100%;
+}
+
+#main_contents .module_body_lefttop, #top_contents .module_body_lefttop, #bottom_contents .module_body_lefttop{
+	background: url(/images/css/kadomaru/contents_bg05.gif) no-repeat ;
+ 	background-position: 0% 0%;
+}
+
+#main_contents .module_body_righttop, #top_contents .module_body_righttop, #bottom_contents .module_body_righttop{
+	background: url(/images/css/kadomaru/contents_bg06.gif) no-repeat top right;
+ 	background-position: 100% 0%;
+}
+
+#main_contents .module_body_leftbottom, #top_contents .module_body_leftbottom, #bottom_contents .module_body_leftbottom{
+	background: url(/images/css/kadomaru/contents_bg07.gif) no-repeat bottom left;
+ 	background-position: 0% 100%; 
+}
+
+#main_contents .module_body_rightbottom, #top_contents .module_body_rightbottom, #bottom_contents .module_body_rightbottom{
+	background: url(/images/css/kadomaru/contents_bg08.gif) no-repeat bottom right;
+ 	background-position: 100% 100%;
+ 	padding-top: 10px;
+ 	padding-left: 15px;
+ 	padding-right: 15px;
+ 	padding-bottom: 35px; 
+}
+
+#main_contents .module_title, #top_contents .module_title, #bottom_contents .module_title{
+	color:#000;
+ 	font-size:120%;
+ 	font-weight:bold;
+ 	padding:5px 0px 5px 15px;
+	margin:5px;
+	border-left:7px solid #ffd700;
+}
+
+#main_contents .relation_link, #top_contents .relation_link, #bottom_contents .relation_link {
+	margin-top: 17px; }
+#bottom_contents{
+	margin-top:10px; }
+
+/* サイドコンテンツ の設定
+------------------------------------------------------------ */
+#side_contents_right .module_contents,
+#side_contents_left .module_contents{
+	width:90%;
+	magin:10px auto;
+	padding: 8px;
+}
+#side_contents_right .module_title,
+#side_contents_left .module_title {
+	padding: 5px 0;
+	border-bottom: 2px dotted #fff;
+	width:90%;
+	text-align:center;
+	margin:0 auto;
+	color:#fff;
+	font-size:100%;
+}
+#side_contents_right li,
+#side_contents_left li {
+	margin-bottom: 5px;
+}
+
+/* モジュール内の細かい設定
+------------------------------------------------------------ */
+.relation_link {
+	text-align: right;
+	margin-top: 5px;
+}
+table.list  {
+	border: 1px solid #cccccc;
+	width: 90%;
+}
+table.list th {
+	background-color: #dddddd;
+	text-align: center;
+	padding: 3px;
+	border-bottom: 1px solid #cccccc;
+}
+table.list td {
+	padding: 3px;
+	border-bottom: 1px dotted #cccccc;
+}
+div.blog_contents,
+.topics_contents {
+	font-size:100% !important;
+}
+div.blog_item h4.subject {
+	font-size: 100%;
+	background-color: #fff;
+	border: none !important;
+	padding: 5px 10px !important;
+}
+.blog_detail .posting_ymdt {
+	margin-right: 10px;
+}
+.blog_contents {
+	margin: 0 10px;
+}

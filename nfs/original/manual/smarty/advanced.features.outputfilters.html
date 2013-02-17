@@ -1,0 +1,274 @@
+<HTML
+><HEAD
+><TITLE
+>アウトプットフィルタ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="拡張機能"
+HREF="advanced.features.html"><LINK
+REL="PREVIOUS"
+TITLE="ポストフィルタ"
+HREF="advanced.features.postfilters.html"><LINK
+REL="NEXT"
+TITLE="キャッシュハンドラ関数"
+HREF="section.template.cache.handler.func.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="advanced.features.postfilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 15章拡張機能</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="section.template.cache.handler.func.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="advanced.features.outputfilters"
+></A
+>アウトプットフィルタ</H1
+><P
+>&#13;    テンプレートが
+    <A
+HREF="api.display.html"
+><TT
+CLASS="varname"
+>display()</TT
+></A
+> 又は
+    <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+    を経由して呼び出された時、出力は１つ又は複数のアウトプットフィルタを通して送られます。
+    これは <A
+HREF="advanced.features.postfilters.html"
+>&#13;    <TT
+CLASS="varname"
+>ポストフィルタ</TT
+></A
+> とは異なります。
+    コンパイルされたテンプレートがポストフィルタによって、
+    テンプレートがディスクに保存される前に処理されるのに対し、
+    アウトプットフィルタはテンプレートが実行される時にその出力を処理します。
+   </P
+><P
+>&#13;    アウトプットフィルタは、
+    <A
+HREF="api.register.outputfilter.html"
+>登録する</A
+>
+    か、あるいは <A
+HREF="api.load.filter.html"
+><TT
+CLASS="varname"
+>load_filter()</TT
+></A
+>
+    関数や <A
+HREF="variable.autoload.filters.html"
+>&#13;    <TT
+CLASS="parameter"
+><I
+>$autoload_filters</I
+></TT
+></A
+> 変数によって
+    <A
+HREF="variable.plugins.dir.html"
+>プラグインディレクトリ</A
+> から読み込みます。
+    Smarty は内部でユーザ定義関数の第１パラメータにコンパイルされたテンプレートのソースコードを渡すので、
+    関数内で処理を行った後にその結果のソースコードを戻り値として返すようにします。
+   </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7063"
+></A
+><P
+><B
+>例 15-4. アウトプットフィルタを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;このユーザ定義関数をアプリケーションに加えます<br /></span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">protect_email</span><span style="color: #007700">(</span><span style="color: #0000BB">$tpl_output</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tpl_output&nbsp;</span><span style="color: #007700">=<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'!(\S+)@([a-zA-Z0-9\.\-]+\.([a-zA-Z]{2,3}|[0-9]{1,3}))!'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'$1%40$2'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$tpl_output</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">$tpl_output</span><span style="color: #007700">;<br />}<br /><br /></span><span style="color: #FF8000">//&nbsp;アウトプットフィルタを登録します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_outputfilter</span><span style="color: #007700">(</span><span style="color: #DD0000">'protect_email'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;これによりテンプレート出力に含まれるいくつかのemailアドレスは<br />//&nbsp;スパムボットからシンプルな保護を受けるでしょう<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   <A
+HREF="api.register.outputfilter.html"
+><TT
+CLASS="varname"
+>register_outpurfilter()</TT
+></A
+>、
+   <A
+HREF="api.load.filter.html"
+><TT
+CLASS="varname"
+>load_filter()</TT
+></A
+>、
+   <A
+HREF="variable.autoload.filters.html"
+><TT
+CLASS="parameter"
+><I
+>$autoload_filters</I
+></TT
+></A
+>、
+   <A
+HREF="advanced.features.postfilters.html"
+>ポストフィルタ</A
+> および
+   <A
+HREF="variable.plugins.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$plugins_dir</I
+></TT
+></A
+>
+   も参照してください。
+   </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="advanced.features.postfilters.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="section.template.cache.handler.func.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ポストフィルタ</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="advanced.features.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>キャッシュハンドラ関数</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

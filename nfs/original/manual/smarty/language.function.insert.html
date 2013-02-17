@@ -1,0 +1,528 @@
+<HTML
+><HEAD
+><TITLE
+>{insert}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{include_php}"
+HREF="language.function.include.php.html"><LINK
+REL="NEXT"
+TITLE="{ldelim},{rdelim}"
+HREF="language.function.ldelim.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.include.php.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.ldelim.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.insert"
+></A
+>{insert}</H1
+><P
+>&#13;   <TT
+CLASS="varname"
+>{insert}</TT
+> タグは <A
+HREF="language.function.include.html"
+><TT
+CLASS="varname"
+>{include}</TT
+></A
+>
+   タグと似た動作をします。ただ <TT
+CLASS="varname"
+>{insert}</TT
+>
+   タグは、テンプレートの <A
+HREF="caching.html"
+>キャッシュ</A
+>
+   が有効であってもキャッシュされません。
+   テンプレートが呼び出されるたびに実行されます。
+ </P
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN2254"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>name</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>呼び出すinsert関数の名前(insert_name)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>assign</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>出力を格納するテンプレート変数名</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>script</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>insert関数を呼び出す前にインクルードされるPHPスクリプト名</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>[var ...]</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>[var type]</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>insert関数に渡す変数</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>&#13;  例えば、ページの上部にバナーを表示するテンプレートを持っているとします。
+  バナーにはHTML, images, flash等が混合して含まれます。
+  したがってここに静的リンクを用いる事はできないので、
+  バナーコンテンツをキャッシュの対象にしたくありません。
+  そのためには、あらかじめ設定ファイルから取得した #banner_location_id#
+  と #site_id# の値を渡し、バナーコンテンツを表示するために
+  {insert} タグを呼び出す必要があります。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2298"
+></A
+><P
+><B
+>例 7-22. {insert} 関数</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* バナーを取得する例 *}
+{insert name="getBanner" lid=#banner_location_id# sid=#site_id#}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  この例では、name 属性に <SPAN
+CLASS="QUOTE"
+>"getBanner"</SPAN
+> を指定し、
+  パラメータに #banner_location_id# と #site_id# を渡しています。Smarty は
+  PHP アプリケーション内の insert_getBanner() 関数を探し、第１パラメータとして
+  #banner_location_id# と #site_id# の値を格納した連想配列を渡します。
+  アプリケーションにおける全ての {insert} 関数の名前は、
+  ネームスペースの衝突を避けるために "insert_" によって始まる必要があります。
+  insert_getBanner() 関数は、渡された値によって何らかの処理を行い、結果を返すべきです。
+  この結果はテンプレートの {insert} タグに置換されて表示されます。
+  この例では、Smarty は insert_getBanner(array("lid" =&#62; "12345","sid" =&#62; "67890"));
+  という関数を呼び出し、返された結果が {insert} タグの位置に表示されます。
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>assign</I
+></TT
+> 属性を指定すると、
+   <TT
+CLASS="varname"
+>{insert}</TT
+> タグの出力は
+   ブラウザに表示される代わりにテンプレート変数に格納されます。
+   <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+    出力をテンプレート変数に格納するのは、
+    <A
+HREF="variable.caching.html"
+>キャッシュ</A
+>
+    が有効な状態ではあまり有益ではありません。
+   </P
+></BLOCKQUOTE
+></DIV
+>
+  </P
+></LI
+><LI
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>script</I
+></TT
+> 属性を与えると、この PHP スクリプトは
+   <TT
+CLASS="varname"
+>{insert}</TT
+> 関数が実行される前に
+   (一度だけ) インクルードされます。
+   これは、insert 関数がまだ存在しないかもしれない場合や、insert
+   関数の動作のために PHP スクリプトを最初にインクルードする必要がある場合に指定します。
+   </P
+><P
+>&#13;   パスには、絶対パスかあるいは
+   <A
+HREF="variable.trusted.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$trusted_dir</I
+></TT
+></A
+>
+   からの相対パスを指定します。<A
+HREF="variable.security.html"
+><TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+></A
+>
+   が有効な場合は、スクリプトは
+   <A
+HREF="variable.trusted.dir.html"
+><TT
+CLASS="parameter"
+><I
+>$trusted_dir</I
+></TT
+></A
+>
+   内にある必要があります。
+  </P
+></LI
+></UL
+><P
+>&#13;   Smarty オブジェクトは第２パラメータとして渡されます。
+   これにより、<TT
+CLASS="varname"
+>{insert}</TT
+>
+   関数から Smarty オブジェクトの情報の参照や修正が可能です。
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+    テンプレートには、キャッシュの対象外となる部分を持たせる事が可能です。
+    <A
+HREF="caching.html"
+>キャッシュ</A
+> が有効の場合でも、
+    <TT
+CLASS="varname"
+>{insert}</TT
+> タグによる出力はキャッシュされません。
+    そのページが呼び出される度に動的に実行されます。
+    この動作は、バナー・投票・天気予報・検索結果・ユーザーフィードバックエリア等に向いています。
+   </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;  <A
+HREF="language.function.include.html"
+><TT
+CLASS="varname"
+>{include}</TT
+></A
+> 
+   も参照してください。
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.include.php.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.ldelim.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{include_php}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{ldelim},{rdelim}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

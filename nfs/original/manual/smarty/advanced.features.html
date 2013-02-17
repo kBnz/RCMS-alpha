@@ -1,0 +1,404 @@
+<HTML
+><HEAD
+><TITLE
+>拡張機能</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プログラマのための Smarty"
+HREF="smarty.for.programmers.html"><LINK
+REL="PREVIOUS"
+TITLE="キャッシュ可能なプラグインの出力の制御"
+HREF="caching.cacheable.html"><LINK
+REL="NEXT"
+TITLE="プリフィルタ"
+HREF="advanced.features.prefilters.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="caching.cacheable.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="advanced.features.prefilters.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="advanced.features"
+></A
+>第 15章拡張機能</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目次</B
+></DT
+><DT
+><A
+HREF="advanced.features.html#advanced.features.objects"
+>オブジェクト</A
+></DT
+><DT
+><A
+HREF="advanced.features.prefilters.html"
+>プリフィルタ</A
+></DT
+><DT
+><A
+HREF="advanced.features.postfilters.html"
+>ポストフィルタ</A
+></DT
+><DT
+><A
+HREF="advanced.features.outputfilters.html"
+>アウトプットフィルタ</A
+></DT
+><DT
+><A
+HREF="section.template.cache.handler.func.html"
+>キャッシュハンドラ関数</A
+></DT
+><DT
+><A
+HREF="template.resources.html"
+>テンプレートリソース</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="advanced.features.objects"
+></A
+>オブジェクト</H1
+><P
+>&#13;  Smarty は、テンプレートから PHP の
+  <A
+HREF="http://php.net/object"
+TARGET="_top"
+>オブジェクト</A
+>
+  へのアクセスを許可しています。オブジェクトにアクセスするには２つの方法があります。
+  </P
+><P
+></P
+><UL
+COMPACT="COMPACT"
+><LI
+><P
+>&#13; １つはテンプレートに <A
+HREF="api.register.object.html"
+>オブジェクトを登録</A
+>
+ し、<A
+HREF="language.custom.functions.html"
+>カスタム関数</A
+>
+ と似た構文を用いてアクセスする方法です。
+ </P
+></LI
+><LI
+><P
+>&#13; もう１つの方法は <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>
+ を用いてテンプレートにオブジェクトを割り当て、
+ 他の割り当てられた変数のようにオブジェクトにアクセスする方法です。
+ </P
+></LI
+></UL
+><P
+>&#13;    １つめのメソッドは素晴らしいテンプレート構文を持っています。
+    それはとてもセキュアで、 登録されたオブジェクトはいくつかのメソッドやプロパティを制限する事が出来ます。
+    しかし<SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>繰り返しの処理やオブジェクトの配列への割り当て等の事が出来ません</B
+></SPAN
+>。
+    あなたのニーズによって選択するメソッドは決まりますが、
+    テンプレート構文を最小限守るには必ず１つめのメソッドを使用して下さい。
+ </P
+><P
+>&#13;  <A
+HREF="variable.security.html"
+><TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+></A
+>
+  が有効の時、('_' から始まる) プライベートメソッドや関数にはアクセス出来ません。
+  もしメソッドとプロパティで同じ名前が存在する場合、メソッドが優先されます。
+  </P
+><P
+>&#13;  第３パラメータにメソッドやパラメータをリストした配列を与える事でアクセスを制限できます。
+  </P
+><P
+>&#13;   デフォルトではテンプレートからオブジェクトに渡されたパラメータは
+   <A
+HREF="language.custom.functions.html"
+>カスタム関数</A
+>
+   によって同じ方法で渡されます。 連想配列は第１パラメータとして渡され、
+   smarty オブジェクトは第２パラメータとして渡されます。
+   もし古いオブジェクトパラメータの渡し方のように各引数を一度に渡したいなら、第４パラメータに
+   <TT
+CLASS="constant"
+>FALSE</TT
+> を指定します。
+  </P
+><P
+>&#13;   任意の第５パラメータは
+   <TT
+CLASS="parameter"
+><I
+>format</I
+></TT
+> が <TT
+CLASS="constant"
+>TRUE</TT
+> の時だけ影響し、
+   ブロックとして扱われるべきオブジェクトのメソッドのリストを格納します。
+   これはこれらのメソッドがテンプレート内に終了タグ
+   (<TT
+CLASS="literal"
+>{foobar-&#62;meth2}...{/foobar-&#62;meth2}</TT
+>)
+   を持つことを意味し、メソッドへのパラメータは
+   <A
+HREF="plugins.block.functions.html"
+>&#13;   <TT
+CLASS="varname"
+>block-function-plugins</TT
+></A
+>
+   へのパラメータと同じ構文となります。つまり、４つのパラメータ
+   <TT
+CLASS="parameter"
+><I
+>$params</I
+></TT
+>、
+   <TT
+CLASS="parameter"
+><I
+>$content</I
+></TT
+>、
+   <TT
+CLASS="parameter"
+><I
+>&#38;$smarty</I
+></TT
+> および
+   <TT
+CLASS="parameter"
+><I
+>&#38;$repeat</I
+></TT
+> を持ち、ブロック関数プラグインのように振る舞います。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN6992"
+></A
+><P
+><B
+>例 15-1. 登録または割り当てられたオブジェクトを使用する</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;オブジェクト<br /><br /></span><span style="color: #007700">class&nbsp;</span><span style="color: #0000BB">My_Object&nbsp;</span><span style="color: #007700">{<br />&nbsp;&nbsp;function&nbsp;</span><span style="color: #0000BB">meth1</span><span style="color: #007700">(</span><span style="color: #0000BB">$params</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty_obj</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #DD0000">'this&nbsp;is&nbsp;my&nbsp;meth1'</span><span style="color: #007700">;<br />&nbsp;&nbsp;}<br />}<br /><br /></span><span style="color: #0000BB">$myobj&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">My_Object</span><span style="color: #007700">;<br /><br /></span><span style="color: #FF8000">//&nbsp;オブジェクトを&nbsp;(参照で)&nbsp;登録します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_object</span><span style="color: #007700">(</span><span style="color: #DD0000">'foobar'</span><span style="color: #007700">,</span><span style="color: #0000BB">$myobj</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;いくらかのメソッド又はプロパティを制限したい場合、それらを配列の値としてリストします<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_object</span><span style="color: #007700">(</span><span style="color: #DD0000">'foobar'</span><span style="color: #007700">,</span><span style="color: #0000BB">$myobj</span><span style="color: #007700">,array(</span><span style="color: #DD0000">'meth1'</span><span style="color: #007700">,</span><span style="color: #DD0000">'meth2'</span><span style="color: #007700">,</span><span style="color: #DD0000">'prop1'</span><span style="color: #007700">));<br /><br />&nbsp;</span><span style="color: #FF8000">//&nbsp;古いオブジェクトパラメータの形式を使いたい場合、booleanのfalseを渡します。<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">register_object</span><span style="color: #007700">(</span><span style="color: #DD0000">'foobar'</span><span style="color: #007700">,</span><span style="color: #0000BB">$myobj</span><span style="color: #007700">,</span><span style="color: #0000BB">null</span><span style="color: #007700">,</span><span style="color: #0000BB">false</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;オブジェクトを割り当てる事が可能です（できれば参照渡しで）<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign_by_ref</span><span style="color: #007700">(</span><span style="color: #DD0000">'myobj'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$myobj</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">(</span><span style="color: #DD0000">'index.tpl'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;   そして <TT
+CLASS="filename"
+>index.tpl</TT
+>
+   でオブジェクトにアクセスするには以下のようにします。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* 登録されたオブジェクトにアクセスします *}
+{foobar-&#62;meth1 p1='foo' p2=$bar}
+
+{* outputに割り当てる事が可能 *}
+{foobar-&#62;meth1 p1='foo' p2=$bar assign='output'}
+the output was {$output}
+
+{* 割り当てたオブジェクトにアクセスします *}
+{$myobj-&#62;meth1('foo',$bar)}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="api.register.object.html"
+><TT
+CLASS="varname"
+>register_object()</TT
+></A
+>
+  および
+  <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>
+  も参照してください。
+ </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="caching.cacheable.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="advanced.features.prefilters.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>キャッシュ可能なプラグインの出力の制御</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.programmers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>プリフィルタ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

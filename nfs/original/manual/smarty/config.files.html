@@ -1,0 +1,316 @@
+<HTML
+><HEAD
+><TITLE
+>設定ファイル</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="テンプレートデザイナのための Smarty"
+HREF="smarty.for.designers.html"><LINK
+REL="PREVIOUS"
+TITLE="{textformat}"
+HREF="language.function.textformat.html"><LINK
+REL="NEXT"
+TITLE="デバッギングコンソール"
+HREF="chapter.debugging.console.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.textformat.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="chapter.debugging.console.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="config.files"
+></A
+>第 9章設定ファイル</H1
+><P
+>&#13;  設定ファイルは、１つのファイルからグローバルなテンプレート変数を管理する方法として、
+  デザイナーにとって有用です。１つの例としては、テンプレートの色の指定を行う場合です。
+  通常、アプリケーションの配色を変更するには全てのテンプレートファイルを調べ、
+  該当する箇所の色の指定を変更する必要があります。
+  設定ファイルを使うと色の指定を一箇所で管理できるので、
+  更新する必要があるファイルは１つだけになります。
+ </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN4795"
+></A
+><P
+><B
+>例 9-1. 設定ファイルの記述例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+># グローバル変数
+pageTitle = "Main Menu"
+bodyBgColor = #000000
+tableBgColor = #000000
+rowBgColor = #00ff00
+
+[Customer]
+pageTitle = "Customer Info"
+
+[Login]
+pageTitle = "Login"
+focus = "username"
+Intro = """This is a value that spans more
+           than one line. you must enclose
+           it in triple quotes."""
+
+# 隠されたセクション
+[.Database]
+host=my.example.com
+db=ADDRESSBOOK
+user=php-user
+pass=foobar</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  <A
+HREF="language.config.variables.html"
+>設定ファイルの値</A
+>
+  はクォートで囲む事が出来ます(必須ではありません)。
+  シングルクォートとダブルクォートのどちらでも使用できます。
+  複数行にまたがる値を持つ場合は、値全体をトリプルクォート(""")
+  で囲みます。設定ファイルの中にコメントを記述するには、
+  行の初めに <TT
+CLASS="literal"
+>#</TT
+> (ハッシュ) を使う事を推奨します。
+ </P
+><P
+>&#13;  上記の設定ファイルの例は２つのセクションを持っています。
+  セクション名はブラケット[]に囲まれ、<TT
+CLASS="literal"
+>[</TT
+>
+  もしくは <TT
+CLASS="literal"
+>]</TT
+> を含まない任意の文字列を指定できます。
+  先頭の４つの変数は、グローバル変数 (あるいはセクションに含まれない変数)
+  です。これらの変数は常に設定ファイルから読み込まれます。
+  特定のセクションが読み込まれた場合は、
+  グローバル変数に加えてそのセクションからの変数が読み込まれます。
+  グローバル変数とセクション内に同じ変数が存在する場合はセクション内の変数が使用されます。
+  １つのセクション内に同名の２つの変数を指定した場合は、
+  <A
+HREF="variable.config.overwrite.html"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>$config_overwrite</I
+></TT
+></A
+>
+  が無効でない限りは後で指定されたものが使用されます。
+ </P
+><P
+>&#13;  設定ファイルの読み込みは、組み込みのテンプレート関数
+  <A
+HREF="language.function.config.load.html"
+><TT
+CLASS="varname"
+>&#13;  {config_load}</TT
+></A
+> あるいは API 関数 <A
+HREF="api.config.load.html"
+><TT
+CLASS="varname"
+>config_load()</TT
+></A
+>
+  によって行います。
+ </P
+><P
+>&#13;  <TT
+CLASS="literal"
+>[.hidden]</TT
+> のように変数名又はセクション名の先頭にピリオドをつける事によって、
+  変数又は全体のセクションを隠蔽する事ができます。
+  アプリケーションからは使用されるがテンプレートエンジンからは使用されないような重要なデータ
+  (DB接続に関する情報など) を取得する際に有用です。
+  テンプレートを編集をするサードパーティが存在する場合、
+  重要なデータを含んだ設定ファイルをテンプレート内に読み込む事によって盗み読まれる危険性を回避できます。
+ </P
+><P
+>&#13;  <A
+HREF="language.function.config.load.html"
+><TT
+CLASS="varname"
+>{config_load}</TT
+></A
+>、
+  <A
+HREF="variable.config.overwrite.html"
+><TT
+CLASS="parameter"
+><I
+>$config_overwrite</I
+></TT
+></A
+>、
+  <A
+HREF="api.get.config.vars.html"
+><TT
+CLASS="varname"
+>get_config_vars()</TT
+></A
+>、
+  <A
+HREF="api.clear.config.html"
+><TT
+CLASS="varname"
+>clear_config()</TT
+></A
+>
+  および
+  <A
+HREF="api.config.load.html"
+><TT
+CLASS="varname"
+>config_load()</TT
+></A
+>
+  も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.textformat.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="chapter.debugging.console.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{textformat}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="smarty.for.designers.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>デバッギングコンソール</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

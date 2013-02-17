@@ -1,0 +1,281 @@
+<HTML
+><HEAD
+><TITLE
+>assign()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="append_by_ref()"
+HREF="api.append.by.ref.html"><LINK
+REL="NEXT"
+TITLE="assign_by_ref()"
+HREF="api.assign.by.ref.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.append.by.ref.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.assign.by.ref.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.assign"
+></A
+>assign()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN5557"
+></A
+>assign()&nbsp;--&nbsp;テンプレートに値を割り当てます。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN5560"
+></A
+><H2
+>説明</H2
+>void <B
+CLASS="methodname"
+>assign</B
+> ( mixed var)<BR
+></BR
+>void <B
+CLASS="methodname"
+>assign</B
+> ( string varname, mixed var)<BR
+></BR
+><P
+>&#13;   テンプレート変数名/値のペアを明示的に指定するか、それらが格納された連想配列を指定します。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5578"
+></A
+><P
+><B
+>例 13-1. assign()</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;名前/値のペアを渡します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'Name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'Fred'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'Address'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$address</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;連想配列を渡します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(array(</span><span style="color: #DD0000">'city'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Lincoln'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'state'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Nebraska'</span><span style="color: #007700">));<br /><br /></span><span style="color: #FF8000">//&nbsp;配列を渡します<br /></span><span style="color: #0000BB">$myArray&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #DD0000">'no'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">10</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'label'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Peanuts'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'foo'</span><span style="color: #007700">,</span><span style="color: #0000BB">$myArray</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;データベース&nbsp;(例:&nbsp;adodb)&nbsp;の行を渡します<br /></span><span style="color: #0000BB">$sql&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'select&nbsp;id,&nbsp;name,&nbsp;email&nbsp;from&nbsp;contacts&nbsp;where&nbsp;contact&nbsp;='</span><span style="color: #007700">.</span><span style="color: #0000BB">$id</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'contact'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$db</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">getRow</span><span style="color: #007700">(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>&#13;   テンプレートの内容
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* 変数は、php と同様に大文字小文字を区別することに注意しましょう *}
+{$Name}
+{$Address}
+{$city}
+{$state}
+
+{$foo.no}, {$foo.label}
+{$contact.id}, {$contact.name},{$contact.email}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;  より複雑な配列の割り当てに関しては、
+  <A
+HREF="language.function.foreach.html"
+><TT
+CLASS="varname"
+>{foreach}</TT
+></A
+>
+  および
+  <A
+HREF="language.function.section.html"
+><TT
+CLASS="varname"
+>{section}</TT
+></A
+>
+  を参照してください。
+  </P
+><P
+>&#13; <A
+HREF="api.assign.by.ref.html"
+><TT
+CLASS="varname"
+>assign_by_ref()</TT
+></A
+>、
+ <A
+HREF="api.get.template.vars.html"
+><TT
+CLASS="varname"
+>get_template_vars()</TT
+></A
+>、
+ <A
+HREF="api.clear.assign.html"
+><TT
+CLASS="varname"
+>clear_assign()</TT
+></A
+>、
+ <A
+HREF="api.append.html"
+><TT
+CLASS="varname"
+>append()</TT
+></A
+>
+ および
+ <A
+HREF="language.custom.functions.html#language.function.assign"
+><TT
+CLASS="varname"
+>{assign}</TT
+></A
+>
+ も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.append.by.ref.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.assign.by.ref.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>append_by_ref()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>assign_by_ref()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

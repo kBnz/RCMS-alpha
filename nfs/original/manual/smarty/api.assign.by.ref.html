@@ -1,0 +1,266 @@
+<HTML
+><HEAD
+><TITLE
+>assign_by_ref()</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Smarty クラスメソッド"
+HREF="api.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="assign()"
+HREF="api.assign.html"><LINK
+REL="NEXT"
+TITLE="clear_all_assign()"
+HREF="api.clear.all.assign.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="api.assign.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="api.clear.all.assign.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="api.assign.by.ref"
+></A
+>assign_by_ref()</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN5600"
+></A
+>assign_by_ref()&nbsp;--&nbsp;参照として値を割り当てます。</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN5603"
+></A
+><H2
+>説明</H2
+>void <B
+CLASS="methodname"
+>assign_by_ref</B
+> ( string varname, mixed var)<BR
+></BR
+><P
+>&#13;   これを使用して、コピーを作ることなく参照として
+   テンプレートに変数を <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>割り当て</TT
+></A
+>
+   ます。詳細は、PHP マニュアルのリファレンスの説明を参照して下さい。
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+    これは参照によってテンプレートに変数を追加するのに使用されます。
+    参照による値が追加された場合は、その値が変更されると追加された元の値も変更されます。
+    <A
+HREF="advanced.features.html#advanced.features.objects"
+>objects</A
+>
+    についても、<TT
+CLASS="varname"
+>assign_by_ref()</TT
+>
+    は追加されたオブジェクトをメモリ内にコピーする事を避けます。詳細は、
+    PHP マニュアルのリファレンスの説明を参照して下さい。
+   </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN5622"
+></A
+><P
+><B
+>例 13-1. assign_by_ref()</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;名前/値のペアを渡します<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign_by_ref</span><span style="color: #007700">(</span><span style="color: #DD0000">'Name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$myname</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign_by_ref</span><span style="color: #007700">(</span><span style="color: #DD0000">'Address'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$address</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+>、
+   <A
+HREF="api.clear.all.assign.html"
+><TT
+CLASS="varname"
+>clear_all_assign()</TT
+></A
+>、
+   <A
+HREF="api.append.html"
+><TT
+CLASS="varname"
+>append()</TT
+></A
+>、
+   <A
+HREF="language.custom.functions.html#language.function.assign"
+><TT
+CLASS="varname"
+>{assign}</TT
+></A
+>
+   および
+    <A
+HREF="api.get.template.vars.html"
+><TT
+CLASS="varname"
+>get_template_vars()</TT
+></A
+>
+    も参照してください。
+   </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="api.assign.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="api.clear.all.assign.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>assign()</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="api.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>clear_all_assign()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

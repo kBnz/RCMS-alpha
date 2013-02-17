@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+/* レイアウト用ブロックの設定
+------------------------------------------------------------ */
+
+#container {
+}
+
+#header {
+}
+
+#navi {
+}
+
+#footpath {
+}
+
+#contents {
+}
+
+#top_contents {
+}
+
+#main_contents {
+}
+
+#bottom_contents {
+	width:100%;
+	clear: both;
+}
+
+#footer {
+	width:100%;
+	clear:both;
+}
+

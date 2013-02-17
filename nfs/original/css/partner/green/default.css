@@ -1,0 +1,126 @@
+@charset "UTF-8";
+
+
+/* ------------------------------------
+
+  	Default Reset & Base Style Sheet
+	Last Update 2008-10-20
+	
+	対応ブラウザ(standard mode)
+	Mac	IE5,Safari,Firefox,Opera
+	Win	IE6,IE7,Firefox,Opera
+	
+	 9px =	56.25%	|	25px = 156.25%
+	10px =	62.5%	|	26px = 162.25%
+	11px =	66.66%	|	27px = 168.75%					
+	12px =	75%		|	28px = 175%	
+	13px =	81.25%	|	29px = 181.25%
+	14px =	87.5%	|	30px = 187.5%
+	15px =	93.75%	|	31px = 193.75%
+	16px =	100%	|	32px = 200%
+	17px = 106.25%	|	33px = 206.25%
+	18px = 112.5%	|	34px = 212.5%
+	19px = 118.75%	|	35px = 218.75%
+	20px = 125%		|	36px = 225%
+	21px = 131.25%	|
+	22px = 137.5%	| 48px = 300%
+	23px = 143.75%	|	72px = 450%
+	24px = 150%		|
+
+------------------------------------- */
+
+/* IE only */
+body {
+font-family:'ＭＳ Ｐゴシック','ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,sans-serif;
+line-height:1.5em;
+font-size:12px;
+color:#333;
+background:#fff;
+}
+
+/* for safari */
+html:\66irst-child body {
+font-size: 11px;
+}
+
+
+/*各要素の幅リセット*/
+body,div,dl,dt,dd,ul,ol,li,p,pre,form,fieldset,blockquote,p,address{
+margin:0px;
+padding:0px;
+}
+
+h1,h2,h3,h4,h5,h6 {
+font-weight:normal;
+margin:0;
+padding:0;
+}
+
+td,th {
+font-size:12px;
+line-height:1.5em;
+font-weight:normal;
+}
+
+/*画像ボーダーオフ*/
+img {
+margin:0px;
+padding:0px;
+border:0px;
+}
+
+/*テーブルボーダーcollapse、フォントサイズ継承*/
+table {
+border-collapse:collapse;
+font-size:inherit;
+}
+
+
+/*無表示*/
+hr {
+display:none;
+}
+
+ul,li {
+list-style:none;
+}
+
+
+/*--クリアフィックス--*/
+.clearfix:after {
+content: ".";
+display: block;
+clear: both;
+visibility: hidden;
+font-size:.01em;
+height:1px;
+overflow:hidden;
+}
+.clearfix {
+min-height: 1px;
+}
+* html .clearfix {
+height: 1px;
+}
+
+
+/*フロート・クリアーボックス*/
+.clear {
+clear:both;
+}
+
+
+/*基本リンク設定*/
+
+a,
+a:link,
+a:visited {
+color:#2F4F88;
+text-decoration:underline;
+}
+
+a:hover,
+a:active {
+color: #FFCC00;
+text-decoration:underline;
+}

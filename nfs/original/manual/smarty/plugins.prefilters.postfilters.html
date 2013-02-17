@@ -1,0 +1,313 @@
+<HTML
+><HEAD
+><TITLE
+>プリフィルタ/ポストフィルタプラグイン</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="プラグインによる Smarty の拡張"
+HREF="plugins.html"><LINK
+REL="PREVIOUS"
+TITLE="コンパイラ関数プラグイン"
+HREF="plugins.compiler.functions.html"><LINK
+REL="NEXT"
+TITLE="アウトプットフィルタプラグイン"
+HREF="plugins.outputfilters.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="plugins.compiler.functions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 16章プラグインによる Smarty の拡張</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="plugins.outputfilters.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="plugins.prefilters.postfilters"
+></A
+>プリフィルタ/ポストフィルタプラグイン</H1
+><P
+>&#13;     プリフィルタ/ポストフィルタプラグインは概念において非常によく似ています。
+     それらの違いは実行されるタイミングにあります。
+    </P
+><DIV
+CLASS="funcsynopsis"
+><A
+NAME="AEN7422"
+></A
+><P
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>string <B
+CLASS="function"
+>smarty_prefilter_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+></B
+></CODE
+> (string $source, object &#38;$smarty)</CODE
+></P
+><P
+></P
+></DIV
+><P
+>&#13;     プリフィルタは、テンプレートソースをコンパイルする直前に何らかの処理を行うために使用されます。
+     プリフィルタ関数への第１パラメータはテンプレートソースであり、
+     これは他のプリフィルタによって既に修正されている可能性があります。
+     このプラグインは戻り値に、修正されたテンプレートソースを返すようにして下さい。
+     また、このテンプレートソースはどこにも保存されず、コンパイルする目的だけに使用される事に注意して下さい。
+    </P
+><DIV
+CLASS="funcsynopsis"
+><A
+NAME="AEN7432"
+></A
+><P
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>string <B
+CLASS="function"
+>smarty_postfilter_<TT
+CLASS="replaceable"
+><I
+>name</I
+></TT
+></B
+></CODE
+> (string $compiled, object &#38;$smarty)</CODE
+></P
+><P
+></P
+></DIV
+><P
+>&#13;     ポストフィルタは、テンプレートのコンパイルが行われてファイルシステムに保存される前に、
+     そのテンプレートのコンパイル結果（PHPスクリプト）に何らかの処理を行うために使用されます。
+     ポストフィルタへの第１パラメータはコンパイルされたテンプレートソースであり、
+     これは他のポストフィルタによって既に修正されている可能性があります。
+     このプラグインは戻り値に、修正されたテンプレートソースを返すようにして下さい。
+    </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7442"
+></A
+><P
+><B
+>例 16-7. プリフィルタプラグイン</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">/*<br />&nbsp;*&nbsp;Smarty&nbsp;plugin<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*&nbsp;File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prefilter.pre01.php<br />&nbsp;*&nbsp;Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prefilter<br />&nbsp;*&nbsp;Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pre01<br />&nbsp;*&nbsp;Purpose:&nbsp;&nbsp;html&nbsp;タグを小文字に変換する<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*/<br />&nbsp;</span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">smarty_prefilter_pre01</span><span style="color: #007700">(</span><span style="color: #0000BB">$source</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'!&lt;(\w+)[^&gt;]+&gt;!e'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'strtolower("$1")'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$source</span><span style="color: #007700">);<br />&nbsp;}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+></P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN7446"
+></A
+><P
+><B
+>例 16-8. ポストフィルタプラグイン</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">/*<br />&nbsp;*&nbsp;Smarty&nbsp;plugin<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*&nbsp;File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;postfilter.post01.php<br />&nbsp;*&nbsp;Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;postfilter<br />&nbsp;*&nbsp;Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;post01<br />&nbsp;*&nbsp;Purpose:&nbsp;&nbsp;現在のテンプレートのすべての変数をリストするスクリプトを出力する<br />&nbsp;*&nbsp;-------------------------------------------------------------<br />&nbsp;*/<br />&nbsp;</span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">smarty_postfilter_post01</span><span style="color: #007700">(</span><span style="color: #0000BB">$compiled</span><span style="color: #007700">,&nbsp;&amp;</span><span style="color: #0000BB">$smarty</span><span style="color: #007700">)<br />&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$compiled&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"&lt;pre&gt;\n&lt;?php&nbsp;print_r(\$this-&gt;get_template_vars());&nbsp;?&gt;\n&lt;/pre&gt;"&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$compiled</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">$compiled</span><span style="color: #007700">;<br />&nbsp;}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;     <A
+HREF="api.register.prefilter.html"
+>&#13;     <TT
+CLASS="varname"
+>register_prefilter()</TT
+></A
+>、
+     <A
+HREF="api.unregister.prefilter.html"
+>&#13;     <TT
+CLASS="varname"
+>unregister_prefilter()</TT
+></A
+>、
+        <A
+HREF="api.register.postfilter.html"
+>&#13;     <TT
+CLASS="varname"
+>register_postfilter()</TT
+></A
+>
+     および
+     <A
+HREF="api.unregister.postfilter.html"
+>&#13;     <TT
+CLASS="varname"
+>unregister_postfilter()</TT
+></A
+>
+     も参照してください。
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plugins.compiler.functions.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="plugins.outputfilters.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>コンパイラ関数プラグイン</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="plugins.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>アウトプットフィルタプラグイン</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

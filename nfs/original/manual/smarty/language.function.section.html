@@ -1,0 +1,2105 @@
+<HTML
+><HEAD
+><TITLE
+>{section},{sectionelse}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="組み込み関数"
+HREF="language.builtin.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{php}"
+HREF="language.function.php.html"><LINK
+REL="NEXT"
+TITLE="{strip}"
+HREF="language.function.strip.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.php.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 7章組み込み関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.strip.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.section"
+></A
+>{section},{sectionelse}</H1
+><P
+>&#13;  <TT
+CLASS="varname"
+>{section}</TT
+> は、
+  <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>データの配列</B
+></SPAN
+> をループするために使用します。
+  これは、<A
+HREF="language.function.foreach.html"
+><TT
+CLASS="varname"
+>{foreach}</TT
+></A
+>
+  が <SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>１つの連想配列</B
+></SPAN
+>
+  をループするのとは異なります。すべての <TT
+CLASS="varname"
+>{section}</TT
+>
+  タグは、終了タグ <TT
+CLASS="varname"
+>{/section}</TT
+> とペアになっている必要があります。
+   </P
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN2420"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>name</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>セクション名</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>loop</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>mixed</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ループ回数を決定する値</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>start</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>integer</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>0</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;      ループを開始するインデックス位置。この値が負の場合は、
+      配列の最後尾から開始位置が算出されます。
+      例えばループ配列に7つの値があり、そしてstartが-2であるならば、
+      開始インデックスは5になります。
+      ループ配列の長さを超えるような無効な値は、
+      自動的に最も近い値に切り捨てられます。</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>step</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>integer</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>1</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;      ループインデックスを進めるために使われるステップ値。
+      例えばstep=2なら、インデックスは0, 2, 4をループします。
+      stepの値が負の場合は、配列の前方に向かって進みます。
+     </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>max</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>integer</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>セクションがループする最大の回数</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>show</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>boolean</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+><TT
+CLASS="constant"
+>TRUE</TT
+></I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>このセクションを表示するかどうか</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+></P
+><UL
+><LI
+><P
+>&#13;   必須の属性は <TT
+CLASS="parameter"
+><I
+>name</I
+></TT
+> と <TT
+CLASS="parameter"
+><I
+>loop</I
+></TT
+>
+   です。
+   </P
+></LI
+><LI
+><P
+>&#13;    <TT
+CLASS="varname"
+>{section}</TT
+> の <TT
+CLASS="parameter"
+><I
+>name</I
+></TT
+> は、
+    英数字とアンダースコアを使って自由に命名できます。これは
+    <A
+HREF="http://php.net/language.variables"
+TARGET="_top"
+>PHP の変数</A
+>
+    と同様です。
+    </P
+></LI
+><LI
+><P
+>&#13;    {section} はネスト可能で、その場合の
+   <TT
+CLASS="varname"
+>{section}</TT
+> の名前はお互いにユニークである必要があります。
+   </P
+></LI
+><LI
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>loop</I
+></TT
+> 属性で指定されたループ変数
+   (たいていは配列) は、<TT
+CLASS="varname"
+>{section}</TT
+>
+   のループ回数を決定するために使用されます。
+   loop の値として、整数値を渡すこともできます。
+   </P
+></LI
+><LI
+><P
+>&#13;   <TT
+CLASS="varname"
+>{section}</TT
+> 内で値を表示するには、
+   変数名に続けてブラケット {} で囲んだセクション名を指定します。
+   </P
+></LI
+><LI
+><P
+>&#13;   ループ変数に値が存在しない場合は
+   <TT
+CLASS="varname"
+>{sectionelse}</TT
+> が実行されます。
+ 	</P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="varname"
+>{section}</TT
+> には、そのプロパティを操作するための
+  自身の変数があります。これらには <A
+HREF="language.variables.smarty.html#language.variables.smarty.loops"
+>&#13;  <TT
+CLASS="parameter"
+><I
+>{$smarty.section.name.property}</I
+></TT
+></A
+>
+  としてアクセスできます。<SPAN
+CLASS="QUOTE"
+>"name"</SPAN
+> は、<TT
+CLASS="parameter"
+><I
+>name</I
+></TT
+>
+  属性の値です。
+  </P
+></LI
+><LI
+><P
+>&#13;  <TT
+CLASS="varname"
+>{section}</TT
+> のプロパティには、
+  <A
+HREF="language.function.section.html#section.property.index"
+><TT
+CLASS="parameter"
+><I
+>index</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.index.prev"
+><TT
+CLASS="parameter"
+><I
+>index_prev</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.index.next"
+><TT
+CLASS="parameter"
+><I
+>index_next</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.iteration"
+><TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.first"
+><TT
+CLASS="parameter"
+><I
+>first</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.last"
+><TT
+CLASS="parameter"
+><I
+>last</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.rownum"
+><TT
+CLASS="parameter"
+><I
+>rownum</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.loop"
+><TT
+CLASS="parameter"
+><I
+>loop</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.show"
+><TT
+CLASS="parameter"
+><I
+>show</I
+></TT
+></A
+>、
+  <A
+HREF="language.function.section.html#section.property.total"
+><TT
+CLASS="parameter"
+><I
+>total</I
+></TT
+></A
+>
+  があります。
+  </P
+></LI
+></UL
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2531"
+></A
+><P
+><B
+>例 7-30. {section} でのシンプルな配列のループ</B
+></P
+><P
+>&#13;配列を Smarty に <A
+HREF="api.assign.html"
+><TT
+CLASS="varname"
+>assign()</TT
+></A
+> します。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$data&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #0000BB">1000</span><span style="color: #007700">,</span><span style="color: #0000BB">1001</span><span style="color: #007700">,</span><span style="color: #0000BB">1002</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'custid'</span><span style="color: #007700">,</span><span style="color: #0000BB">$data</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>配列を出力するテンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* この例は $custid 配列のすべての値を表示します *}
+{section name=customer loop=$custid}
+  id: {$custid[customer]}&#60;br /&#62;
+{/section}
+&#60;hr /&#62;
+{* $custid 配列のすべての値を逆順に表示します *}
+{section name=foo loop=$custid step=-1}
+  {$custid[foo]}&#60;br /&#62;
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>id: 1000&#60;br /&#62;
+id: 1001&#60;br /&#62;
+id: 1002&#60;br /&#62;
+&#60;hr /&#62;
+id: 1002&#60;br /&#62;
+id: 1001&#60;br /&#62;
+id: 1000&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2541"
+></A
+><P
+><B
+>例 7-31. {section} で配列を割り当てない例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=foo start=10 loop=20 step=2}
+  {$smarty.section.foo.index}
+{/section}
+&#60;hr /&#62;
+{section name=bar loop=21 max=6 step=-2}
+  {$smarty.section.bar.index}
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;  上の例の出力
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>10 12 14 16 18
+&#60;hr /&#62;
+20 18 16 14 12 10</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2546"
+></A
+><P
+><B
+>例 7-32. {section} の名前</B
+></P
+><P
+><TT
+CLASS="varname"
+>{section}</TT
+> の <TT
+CLASS="parameter"
+><I
+>name</I
+></TT
+>
+  は自由につけることができます。<A
+HREF="http://php.net/language.variables"
+TARGET="_top"
+>PHP
+  の変数</A
+> を参照してください。これは、<TT
+CLASS="varname"
+>{section}</TT
+>
+  内のデータを参照する際に使用します。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=anything loop=$myArray}
+  {$myArray[anything].foo}
+  {$name[anything]}
+  {$address[anything].bar}
+{/section}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2554"
+></A
+><P
+><B
+>例 7-33. {section} での連想配列のループ</B
+></P
+><P
+>これは、データの連想配列を
+   <TT
+CLASS="varname"
+>{section}</TT
+> で出力する例です。
+   次に示すのは、配列 <TT
+CLASS="parameter"
+><I
+>$contacts</I
+></TT
+>
+   を Smarty に渡す PHP スクリプトです。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$data&nbsp;</span><span style="color: #007700">=&nbsp;array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'John&nbsp;Smith'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'home'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'555-555-5555'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cell'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'666-555-5555'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'email'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'john@myexample.com'</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Jack&nbsp;Jones'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'home'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'777-555-5555'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cell'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'888-555-5555'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'email'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'jack@myexample.com'</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Jane&nbsp;Munson'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'home'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'000-555-5555'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cell'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'123456'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'email'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'jane@myexample.com'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'contacts'</span><span style="color: #007700">,</span><span style="color: #0000BB">$data</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="parameter"
+><I
+>$contacts</I
+></TT
+> を出力するテンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$contacts}
+&#60;p&#62;
+  name: {$contacts[customer].name}&#60;br /&#62;
+  home: {$contacts[customer].home}&#60;br /&#62;
+  cell: {$contacts[customer].cell}&#60;br /&#62;
+  e-mail: {$contacts[customer].email}
+&#60;/p&#62;
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;p&#62;
+  name: John Smith&#60;br /&#62;
+  home: 555-555-5555&#60;br /&#62;
+  cell: 666-555-5555&#60;br /&#62;
+  e-mail: john@myexample.com
+&#60;/p&#62;
+&#60;p&#62;
+  name: Jack Jones&#60;br /&#62;
+  home phone: 777-555-5555&#60;br /&#62;
+  cell phone: 888-555-5555&#60;br /&#62;
+  e-mail: jack@myexample.com
+&#60;/p&#62;
+&#60;p&#62;
+  name: Jane Munson&#60;br /&#62;
+  home phone: 000-555-5555&#60;br /&#62;
+  cell phone: 123456&#60;br /&#62;
+  e-mail: jane@myexample.com
+&#60;/p&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2565"
+></A
+><P
+><B
+>例 7-34. {section} での <TT
+CLASS="varname"
+>loop</TT
+> 変数の使用</B
+></P
+><P
+>この例では、<TT
+CLASS="parameter"
+><I
+>$custid</I
+></TT
+>、<TT
+CLASS="parameter"
+><I
+>$name</I
+></TT
+>
+  および <TT
+CLASS="parameter"
+><I
+>$address</I
+></TT
+> にはすべて配列が割り当てられ、
+  その要素数は同じであるものとします。まず、Smarty に配列を割り当てる
+  PHP スクリプトです。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br />$id&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #0000BB">1001</span><span style="color: #007700">,</span><span style="color: #0000BB">1002</span><span style="color: #007700">,</span><span style="color: #0000BB">1003</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'custid'</span><span style="color: #007700">,</span><span style="color: #0000BB">$id</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$fullnames&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #DD0000">'John&nbsp;Smith'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Jack&nbsp;Jones'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Jane&nbsp;Munson'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #0000BB">$fullnames</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$addr&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #DD0000">'253&nbsp;Abbey&nbsp;road'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'417&nbsp;Mulberry&nbsp;ln'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'5605&nbsp;apple&nbsp;st'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'address'</span><span style="color: #007700">,</span><span style="color: #0000BB">$addr</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="parameter"
+><I
+>loop</I
+></TT
+> 変数は、ループの回数を決定するためにのみ使用します。
+  <TT
+CLASS="varname"
+>{section}</TT
+> 内ではあらゆるテンプレート変数にアクセス可能です。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$custid}
+&#60;p&#62;
+  id: {$custid[customer]}&#60;br /&#62;
+  name: {$name[customer]}&#60;br /&#62;
+  address: {$address[customer]}
+&#60;/p&#62;
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;p&#62;
+  id: 1000&#60;br /&#62;
+  name: John Smith&#60;br /&#62;
+  address: 253 Abbey road
+&#60;/p&#62;
+&#60;p&#62;
+  id: 1001&#60;br /&#62;
+  name: Jack Jones&#60;br /&#62;
+  address: 417 Mulberry ln
+&#60;/p&#62;
+&#60;p&#62;
+  id: 1002&#60;br /&#62;
+  name: Jane Munson&#60;br /&#62;
+  address: 5605 apple st
+&#60;/p&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2579"
+></A
+><P
+><B
+>例 7-35. ネストした {section}</B
+></P
+><P
+>&#13;  {section} は無制限にネスト可能です。{section} をネストすることで、
+  多次元配列のような複雑なデータ構造にアクセスすることが可能です。
+  これは、配列を割り当てる <TT
+CLASS="filename"
+>.php</TT
+> スクリプトの例です。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br />$id&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #0000BB">1001</span><span style="color: #007700">,</span><span style="color: #0000BB">1002</span><span style="color: #007700">,</span><span style="color: #0000BB">1003</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'custid'</span><span style="color: #007700">,</span><span style="color: #0000BB">$id</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$fullnames&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #DD0000">'John&nbsp;Smith'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Jack&nbsp;Jones'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Jane&nbsp;Munson'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #0000BB">$fullnames</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$addr&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #DD0000">'253&nbsp;N&nbsp;45th'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'417&nbsp;Mulberry&nbsp;ln'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'5605&nbsp;apple&nbsp;st'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'address'</span><span style="color: #007700">,</span><span style="color: #0000BB">$addr</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$types&nbsp;</span><span style="color: #007700">=&nbsp;array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(&nbsp;</span><span style="color: #DD0000">'home&nbsp;phone'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'cell&nbsp;phone'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'e-mail'</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(&nbsp;</span><span style="color: #DD0000">'home&nbsp;phone'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'web'</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(&nbsp;</span><span style="color: #DD0000">'cell&nbsp;phone'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'contact_type'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$types</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$info&nbsp;</span><span style="color: #007700">=&nbsp;array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(</span><span style="color: #DD0000">'555-555-5555'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'666-555-5555'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'john@myexample.com'</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(&nbsp;</span><span style="color: #DD0000">'123-456-4'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'www.example.com'</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(&nbsp;</span><span style="color: #DD0000">'0457878'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'contact_info'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$info</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>このテンプレートでは、<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>$contact_type[customer]</I
+></SPAN
+>
+  は現在の顧客の連絡手段を格納した配列となります。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$custid}
+&#60;hr&#62;
+  id: {$custid[customer]}&#60;br /&#62;
+  name: {$name[customer]}&#60;br /&#62;
+  address: {$address[customer]}&#60;br /&#62;
+  {section name=contact loop=$contact_type[customer]}
+    {$contact_type[customer][contact]}: {$contact_info[customer][contact]}&#60;br /&#62;
+  {/section}
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>&#60;hr&#62;
+  id: 1000&#60;br /&#62;
+  name: John Smith&#60;br /&#62;
+  address: 253 N 45th&#60;br /&#62;
+    home phone: 555-555-5555&#60;br /&#62;
+    cell phone: 666-555-5555&#60;br /&#62;
+    e-mail: john@myexample.com&#60;br /&#62;
+&#60;hr&#62;
+  id: 1001&#60;br /&#62;
+  name: Jack Jones&#60;br /&#62;
+  address: 417 Mulberry ln&#60;br /&#62;
+    home phone: 123-456-4&#60;br /&#62;
+    web: www.example.com&#60;br /&#62;
+&#60;hr&#62;
+  id: 1002&#60;br /&#62;
+  name: Jane Munson&#60;br /&#62;
+  address: 5605 apple st&#60;br /&#62;
+    cell phone: 0457878&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2589"
+></A
+><P
+><B
+>例 7-36. データベースを使用する {sectionelse} の例</B
+></P
+><P
+>データベース (ADODB や PEAR) の検索結果を Smarty に格納します。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$sql&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'select&nbsp;id,&nbsp;name,&nbsp;home,&nbsp;cell,&nbsp;email&nbsp;from&nbsp;contacts&nbsp;'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">.</span><span style="color: #DD0000">"where&nbsp;name&nbsp;like&nbsp;'$foo%'&nbsp;"</span><span style="color: #007700">;<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'contacts'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$db</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">getAll</span><span style="color: #007700">(</span><span style="color: #0000BB">$sql</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>データベースの結果を HTML のテーブルに出力するテンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;table&#62;
+&#60;tr&#62;&#60;th&#62;&#38;nbsp;&#60;/th&#62;&#60;th&#62;Name&#62;&#60;/th&#62;&#60;th&#62;Home&#60;/th&#62;&#60;th&#62;Cell&#60;/th&#62;&#60;th&#62;Email&#60;/th&#62;&#60;/tr&#62;
+{section name=co loop=$contacts}
+  &#60;tr&#62;
+    &#60;td&#62;&#60;a href="view.php?id={$contacts[co].id}"&#62;view&#60;a&#62;&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].name}&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].home}&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].cell}&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].email}&#60;/td&#62;
+  &#60;tr&#62;
+{sectionelse}
+  &#60;tr&#62;&#60;td colspan="5"&#62;No items found&#60;/td&#62;&#60;/tr&#62;
+{/section}
+&#60;/table&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.index"
+></A
+>.index</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>index</I
+></TT
+> は現在のループインデックスを表示します。
+   0(又は <TT
+CLASS="parameter"
+><I
+>start</I
+></TT
+> 属性の値)から始まり、
+   1(又は <TT
+CLASS="parameter"
+><I
+>step</I
+></TT
+> 属性の値)ずつ増加します。
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>テクニカルノート: </B
+>
+    <TT
+CLASS="parameter"
+><I
+>step</I
+></TT
+> と <TT
+CLASS="parameter"
+><I
+>start</I
+></TT
+>
+    属性が変更されていない場合は、セクションのプロパティ <A
+HREF="language.function.section.html#section.property.iteration"
+><TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+></A
+>
+    と同じ動作をします。ただ、1 ではなく 0 から始まるという点が異なります。
+   </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2608"
+></A
+><P
+><B
+>例 7-37. {section} の <TT
+CLASS="varname"
+>index</TT
+> プロパティ</B
+></P
+><P
+>&#13;<DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>ちなみに……: </B
+><TT
+CLASS="literal"
+>$custid[customer.index]</TT
+> と
+<TT
+CLASS="literal"
+>$custid[customer]</TT
+> は同じ意味です。</P
+></BLOCKQUOTE
+></DIV
+>
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$custid}
+  {$smarty.section.customer.index} id: {$custid[customer]}&#60;br /&#62;
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>0 id: 1000&#60;br /&#62;
+1 id: 1001&#60;br /&#62;
+2 id: 1002&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.index.prev"
+></A
+>.index_prev</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>index_prev</I
+></TT
+>
+   は前回のループインデックスを表示します。最初のループでは-1がセットされます。
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.index.next"
+></A
+>.index_next</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>index_next</I
+></TT
+>
+   は次回のループインデックスを表示します。
+   ループの最後でもやはり現在のインデックスの次回の値を返します
+   (<TT
+CLASS="parameter"
+><I
+>step</I
+></TT
+> 属性の設定に従います)。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2629"
+></A
+><P
+><B
+>例 7-38. <TT
+CLASS="varname"
+>index</TT
+>、<TT
+CLASS="varname"
+>index_next</TT
+>
+ および <TT
+CLASS="varname"
+>index_prev</TT
+> プロパティ</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$data&nbsp;</span><span style="color: #007700">=&nbsp;array(</span><span style="color: #0000BB">1001</span><span style="color: #007700">,</span><span style="color: #0000BB">1002</span><span style="color: #007700">,</span><span style="color: #0000BB">1003</span><span style="color: #007700">,</span><span style="color: #0000BB">1004</span><span style="color: #007700">,</span><span style="color: #0000BB">1005</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'rows'</span><span style="color: #007700">,</span><span style="color: #0000BB">$data</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+>上の配列をテーブルに出力するテンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* $rows[row.index] と $rows[row] は同じ意味です *}
+&#60;table&#62;
+  &#60;tr&#62;
+    &#60;th&#62;index&#60;/th&#62;&#60;th&#62;id&#60;/th&#62;
+    &#60;th&#62;index_prev&#60;/th&#62;&#60;th&#62;prev_id&#60;/th&#62;
+    &#60;th&#62;index_next&#60;/th&#62;&#60;th&#62;next_id&#60;/th&#62;
+  &#60;/tr&#62;
+{section name=row loop=$rows}
+  &#60;tr&#62;
+    &#60;td&#62;{$smarty.section.row.index}&#60;/td&#62;&#60;td&#62;{$rows[row]}&#60;/td&#62;
+    &#60;td&#62;{$smarty.section.row.index_prev}&#60;/td&#62;&#60;td&#62;{$rows[row.index_prev]}&#60;/td&#62;
+    &#60;td&#62;{$smarty.section.row.index_next}&#60;/td&#62;&#60;td&#62;{$rows[row.index_next]}&#60;/td&#62;
+  &#60;/tr&#62;
+{/section}
+&#60;/table&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13; 上の例の出力するテーブルは次のようになります。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>index  id    index_prev prev_id index_next next_id
+0      1001  -1	                1          1002
+1      1002  0          1001    2          1003
+2      1003  1          1002    3          1004
+3      1004  2          1003    4          1005
+4      1005  3          1004    5</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.iteration"
+></A
+>.iteration</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+> は現在のループが反復された回数を表示します。
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+    <A
+HREF="language.function.section.html#section.property.index"
+><TT
+CLASS="parameter"
+><I
+>index</I
+></TT
+></A
+>
+    プロパティとは異なり、これは <TT
+CLASS="varname"
+>{section}</TT
+> のプロパティ
+    <TT
+CLASS="parameter"
+><I
+>start</I
+></TT
+>、<TT
+CLASS="parameter"
+><I
+>step</I
+></TT
+> および <TT
+CLASS="parameter"
+><I
+>max</I
+></TT
+>
+    の影響を受けません。
+    <TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+> も 1 から始まります。これは
+    <TT
+CLASS="parameter"
+><I
+>index</I
+></TT
+> が 0 から始まるのとは異なります。<A
+HREF="language.function.section.html#section.property.rownum"
+><TT
+CLASS="parameter"
+><I
+>rownum</I
+></TT
+></A
+>
+    は <TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+> の別名で、全く同じ働きをします。
+   </P
+></BLOCKQUOTE
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2656"
+></A
+><P
+><B
+>例 7-39. セクションのプロパティ <TT
+CLASS="varname"
+>iteration</TT
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">//&nbsp;3000&nbsp;から&nbsp;3015&nbsp;までの配列<br /></span><span style="color: #0000BB">$id&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">range</span><span style="color: #007700">(</span><span style="color: #0000BB">3000</span><span style="color: #007700">,</span><span style="color: #0000BB">3015</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$smarty</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #DD0000">'arr'</span><span style="color: #007700">,</span><span style="color: #0000BB">$id</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="literal"
+>$arr</TT
+> 配列の要素を
+<TT
+CLASS="literal"
+>step=2</TT
+> で出力するテンプレート</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=cu loop=$arr start=5 step=2}
+  iteration={$smarty.section.cu.iteration}
+  index={$smarty.section.cu.index}
+  id={$custid[cu]}&#60;br /&#62;
+{/section}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>iteration=1 index=5 id=3005&#60;br /&#62;
+iteration=2 index=7 id=3007&#60;br /&#62;
+iteration=3 index=9 id=3009&#60;br /&#62;
+iteration=4 index=11 id=3011&#60;br /&#62;
+iteration=5 index=13 id=3013&#60;br /&#62;
+iteration=6 index=15 id=3015&#60;br /&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   もうひとつの例は、<TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+> プロパティを使用して
+   5 行おきにテーブルのヘッダ部を出力します。
+   <A
+HREF="language.function.if.html"
+><TT
+CLASS="varname"
+>{if}</TT
+></A
+>
+   関数を mod 演算子とともに使用します。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#60;table&#62;
+{section name=co loop=$contacts}
+  {if $smarty.section.co.iteration % 5 == 1}
+    &#60;tr&#62;&#60;th&#62;&#38;nbsp;&#60;/th&#62;&#60;th&#62;Name&#62;&#60;/th&#62;&#60;th&#62;Home&#60;/th&#62;&#60;th&#62;Cell&#60;/th&#62;&#60;th&#62;Email&#60;/th&#62;&#60;/tr&#62;
+  {/if}
+  &#60;tr&#62;
+    &#60;td&#62;&#60;a href="view.php?id={$contacts[co].id}"&#62;view&#60;a&#62;&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].name}&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].home}&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].cell}&#60;/td&#62;
+    &#60;td&#62;{$contacts[co].email}&#60;/td&#62;
+  &#60;tr&#62;
+{/section}
+&#60;/table&#62;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.first"
+></A
+>.first</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>first</I
+></TT
+> は、現在
+   <TT
+CLASS="varname"
+>{section}</TT
+> の一回目の処理を行っている場合に
+   <TT
+CLASS="constant"
+>TRUE</TT
+> となります。
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.last"
+></A
+>.last</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>last</I
+></TT
+> は、現在
+   <TT
+CLASS="varname"
+>{section}</TT
+> の最後の処理を行っている場合に
+   <TT
+CLASS="constant"
+>TRUE</TT
+> となります。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2683"
+></A
+><P
+><B
+>例 7-40. {section} プロパティ <TT
+CLASS="varname"
+>first</TT
+> と <TT
+CLASS="varname"
+>last</TT
+></B
+></P
+><P
+>&#13;   この例は <TT
+CLASS="varname"
+>$customers</TT
+> 配列をループし、
+   ループの最初でヘッダブロック、そしてループの最後でフッタブロックを出力します。
+   <A
+HREF="language.function.section.html#section.property.total"
+><TT
+CLASS="parameter"
+><I
+>total</I
+></TT
+></A
+>
+   プロパティも使用します。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$customers}
+  {if $smarty.section.customer.first}
+    &#60;table&#62;
+    &#60;tr&#62;&#60;th&#62;id&#60;/th&#62;&#60;th&#62;customer&#60;/th&#62;&#60;/tr&#62;
+  {/if}
+
+  &#60;tr&#62;
+    &#60;td&#62;{$customers[customer].id}}&#60;/td&#62;
+    &#60;td&#62;{$customers[customer].name}&#60;/td&#62;
+  &#60;/tr&#62;
+
+  {if $smarty.section.customer.last}
+    &#60;tr&#62;&#60;td&#62;&#60;/td&#62;&#60;td&#62;{$smarty.section.customer.total} customers&#60;/td&#62;&#60;/tr&#62;
+    &#60;/table&#62;
+  {/if}
+{/section}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.rownum"
+></A
+>.rownum</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>rownum</I
+></TT
+> は現在のループが反復された回数を表示します(1から開始)。
+   これは <A
+HREF="language.function.section.html#section.property.iteration"
+><TT
+CLASS="parameter"
+><I
+>iteration</I
+></TT
+></A
+>
+   の別名で、同じ動作をします。
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.loop"
+></A
+>.loop</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>loop</I
+></TT
+> は、この
+   {section} ループの最後のインデックス番号を表示します。
+   <TT
+CLASS="varname"
+>{section}</TT
+> の内部だけでなく、外部で使用することもできます。
+     </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2703"
+></A
+><P
+><B
+>例 7-41. {section} プロパティ <TT
+CLASS="varname"
+>loop</TT
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$custid}
+  {$smarty.section.customer.index} id: {$custid[customer]}&#60;br /&#62;
+{/section}
+There are {$smarty.section.customer.loop} customers shown above.</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>0 id: 1000&#60;br /&#62;
+1 id: 1001&#60;br /&#62;
+2 id: 1002&#60;br /&#62;
+There are 3 customers shown above.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.show"
+></A
+>.show</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>show</I
+></TT
+> は、セクションのパラメータとして使用する
+   boolean 値です。<TT
+CLASS="constant"
+>FALSE</TT
+> の場合はこのセクションは表示されません。
+   <TT
+CLASS="varname"
+>{sectionelse}</TT
+> があれば、それが代わりに表示されます。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2715"
+></A
+><P
+><B
+>例 7-42. <TT
+CLASS="varname"
+>show</TT
+> プロパティ</B
+></P
+><P
+>Boolean <TT
+CLASS="varname"
+>$show_customer_info</TT
+> を PHP
+  アプリケーションから渡し、このセクションを表示するかどうかを調整します。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$customers show=$show_customer_info}
+  {$smarty.section.customer.rownum} id: {$customers[customer]}&#60;br /&#62;
+{/section}
+
+{if $smarty.section.customer.show}
+  the section was shown.
+{else}
+  the section was not shown.
+{/if}</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上の例の出力
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="screen"
+>1 id: 1000&#60;br /&#62;
+2 id: 1001&#60;br /&#62;
+3 id: 1002&#60;br /&#62;
+
+the section was shown.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="section.property.total"
+></A
+>.total</H2
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>total</I
+></TT
+> は <TT
+CLASS="varname"
+>{section}</TT
+>
+   がループしたトータル回数を表示します。これは
+   <TT
+CLASS="varname"
+>{section}</TT
+> の内部だけでなく外部でも使うことができます。
+  </P
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN2729"
+></A
+><P
+><B
+>例 7-43. <TT
+CLASS="varname"
+>total</TT
+> プロパティの例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{section name=customer loop=$custid step=2}
+  {$smarty.section.customer.index} id: {$custid[customer]}&#60;br /&#62;
+{/section}
+   There are {$smarty.section.customer.total} customers shown above.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13;   <A
+HREF="language.function.foreach.html"
+><TT
+CLASS="varname"
+>{foreach}</TT
+></A
+>
+   および
+   <A
+HREF="language.variables.smarty.html#language.variables.smarty.loops"
+><TT
+CLASS="parameter"
+><I
+>$smarty.section</I
+></TT
+></A
+>
+   も参照してください。
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.php.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.strip.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{php}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.builtin.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{strip}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,435 @@
+<HTML
+><HEAD
+><TITLE
+>{fetch}</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Smarty マニュアル"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="カスタム関数"
+HREF="language.custom.functions.html"><LINK
+REL="PREVIOUS"
+TITLE="{eval}"
+HREF="language.function.eval.html"><LINK
+REL="NEXT"
+TITLE="{html_checkboxes}"
+HREF="language.function.html.checkboxes.html"><META
+HTTP-EQUIV="Content-type"
+CONTENT="text/html; charset=utf-8"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Smarty マニュアル</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.function.eval.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>第 8章カスタム関数</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.function.html.checkboxes.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="language.function.fetch"
+></A
+>{fetch}</H1
+><P
+>&#13;   <TT
+CLASS="varname"
+>{fetch}</TT
+> は、ローカルシステムやhttp, ftpからファイルを取得し、
+   コンテンツを表示します。
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;   ファイル名が <TT
+CLASS="parameter"
+><I
+>http://</I
+></TT
+> から始まる場合は、web
+   サイト上のページを取得して表示します。
+	<DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+	   http リダイレクトはサポートしていません。
+	   必要に応じて、最後のスラッシュをつけることを忘れないようにしましょう。
+	  </P
+></BLOCKQUOTE
+></DIV
+>
+	</P
+></LI
+><LI
+><P
+>&#13;   ファイル名が <TT
+CLASS="parameter"
+><I
+>ftp://</I
+></TT
+> で始まる場合は、
+   ftp サーバからダウンロードしたファイルを表示します。
+   </P
+></LI
+><LI
+><P
+>&#13;   ローカルファイルの場合には、ファイルのフルパスあるいは
+   実行する PHP スクリプトからの相対パスを指定する必要があります。
+	 <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>注意: </B
+>
+	   テンプレートの <A
+HREF="variable.security.html"
+>&#13;       <TT
+CLASS="parameter"
+><I
+>$security</I
+></TT
+></A
+> が有効になっており、
+	   ファイルをローカルファイルシステムから取得する場合、
+	   <TT
+CLASS="varname"
+>{fetch}</TT
+> は定義済みの
+	   <A
+HREF="variable.secure.dir.html"
+>安全なディレクトリ</A
+>
+       のいずれかにあるファイルのみを受け付けます。
+	  </P
+></BLOCKQUOTE
+></DIV
+>
+  </P
+></LI
+><LI
+><P
+>&#13;   <TT
+CLASS="parameter"
+><I
+>assign</I
+></TT
+> 属性を指定すると、
+   <TT
+CLASS="varname"
+>{fetch}</TT
+> 関数の出力がこのテンプレート変数に割り当てられます。
+   テンプレートには出力されません。
+   </P
+></LI
+></UL
+><DIV
+CLASS="informaltable"
+><A
+NAME="AEN3124"
+></A
+><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>属性名</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>型</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>必須</TH
+><TH
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>デフォルト</TH
+><TH
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>概要</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>file</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>Yes</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>取得するファイル、http あるいは ftp のサイト</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>assign</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>string</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+>No</TD
+><TD
+WIDTH="20%"
+ALIGN="CENTER"
+VALIGN="MIDDLE"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n/a</I
+></SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>出力が割り当てられるテンプレート変数</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+CLASS="EXAMPLE"
+><TR
+><TD
+><DIV
+CLASS="example"
+><A
+NAME="AEN3153"
+></A
+><P
+><B
+>例 8-8. {fetch} の例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+CELLPADDING="5"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>{* テンプレートにJavaScriptを含めます *}
+{fetch file='/export/httpd/www.example.com/docs/navbar.js'}
+
+{* 他のwebサイトからテンプレートに天候のテキストを埋め込みます *}
+{fetch file='http://www.myweather.com/68502/'}
+
+{* ftp経由でニュースヘッドラインファイルを取得します *}
+{fetch file='ftp://user:password@ftp.example.com/path/to/currentheadlines.txt'}
+{* 上と同じですが、変数を使用します *}
+{fetch file="ftp://`$user`:`$password`@`$server`/`$path`"}
+
+{* 取得したコンテンツをテンプレート変数に割り当てます *}
+{fetch file='http://www.myweather.com/68502/' assign='weather'}
+{if $weather ne ''}
+  &#60;div id="weather"&#62;{$weather}&#60;/div&#62;
+{/if}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>&#13; <A
+HREF="language.builtin.functions.html#language.function.capture"
+><TT
+CLASS="varname"
+>{capture}</TT
+></A
+>、
+ <A
+HREF="language.function.eval.html"
+><TT
+CLASS="varname"
+>{eval}</TT
+></A
+>、
+ <A
+HREF="language.custom.functions.html#language.function.assign"
+><TT
+CLASS="varname"
+>{assign}</TT
+></A
+>
+ および
+ <A
+HREF="api.fetch.html"
+><TT
+CLASS="varname"
+>fetch()</TT
+></A
+>
+ も参照してください。
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.function.eval.html"
+ACCESSKEY="P"
+>前のページ</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>ホーム</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.function.html.checkboxes.html"
+ACCESSKEY="N"
+>次のページ</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>{eval}</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.custom.functions.html"
+ACCESSKEY="U"
+>上に戻る</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>{html_checkboxes}</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
